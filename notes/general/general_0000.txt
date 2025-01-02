@@ -1,0 +1,24 @@
+----------
+02.01.2025
+----------
+
+Day 1 of Pekan development.
+
+Pekan is a game engine that I've had in mind for a couple of years now.
+In that time I've researched and learned many topics related to game engine development,
+done many small projects implementing different graphics concepts and developed a few games.
+
+Last year I started writing a game engine and called it Pecan (spelled with a C).
+As reference I used
+- Game Engine tutorials by The Cherno on YouTube
+- learnopengl.com
+It was going fairly well but some months later I abandoned it for a couple of reasons:
+- I hadn't planned the architecture well enough, code had begun to become tangled.
+- I was not happy with my choice of GUI framework - Qt.
+- I was following The Cherno's tutorials too closely. I want to design and build it my way.
+
+This year I will do another attempt at making my dream game engine.
+I'm calling it Pekan (spelled with a K) so that it differs from the previous version - Pecan,
+and because Pekan has a more distinctive look to it.
+
+With that, let Pekan development officially begin!
