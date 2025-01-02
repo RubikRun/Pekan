@@ -1,0 +1,16 @@
+----------
+02.01.2025
+----------
+
+Pekan is a blank page at the moment.
+We need a setup.
+
+I've decided to use
+- C++ as a programming language
+- CMake as a build system
+- Visual Studio for development
+- OpenGL as a graphics API
+- GLFW as a windowing system
+- ImGUI as a GUI framework
+
+First step is to setup all of these technologies and have a blank page within the context of them.
