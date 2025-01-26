@@ -189,3 +189,16 @@ and integrate it in my current code here
 It worked!
 Now we have the ImGui demo, together with our OpenGL demo.
 }
+
+----------
+26.01.2025
+----------
+{
+Today let's cleanup the ImGui demo, leave only the background color control,
+and refactor code in
+    main.cpp
+into functions,
+so that it's clear which code is a setup code for which library,
+and which code is creating a demo.
+Done.
+}

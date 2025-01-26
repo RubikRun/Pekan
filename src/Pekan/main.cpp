@@ -1,15 +1,14 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#define GL_SILENCE_DEPRECATION
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 
-const unsigned int WINDOW_WIDTH = 800;
-const unsigned int WINDOW_HEIGHT = 600;
+const unsigned WINDOW_WIDTH = 800;
+const unsigned WINDOW_HEIGHT = 600;
 
 const char* glsl_version = "#version 330 core";
 
@@ -27,20 +26,13 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n\0";
 
-int main(void)
+GLFWwindow* setupWindow()
 {
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    /////// Setup GLFW
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-
     // Initialize GLFW
     if (!glfwInit())
     {
-        return -1;
+        std::cout << "ERROR: GLFW failed to initialize." << std::endl;
+        return nullptr;
     }
 
     // Set window hint for OpenGL 4.3 and OpenGL Core Profile
@@ -53,26 +45,29 @@ int main(void)
     {
         std::cout << "ERROR: Failed to create a window with GLFW." << std::endl;
         glfwTerminate();
-        return -1;
+        return nullptr;
     }
     // Make the window's context current
     glfwMakeContextCurrent(window);
     // Enalbe VSync
     glfwSwapInterval(1);
 
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    /////// Setup GLAD
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
+    return window;
+}
 
+void cleanupWindow(GLFWwindow* window)
+{
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
+
+bool loadOpenGL()
+{
     // Load OpenGL function pointers with GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "ERROR: GLAD failed to load OpenGL functions." << std::endl;
-        return -1;
+        return false;
     }
     // Set OpenGL viewport's resolution to be the same as window's resolution
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -80,28 +75,21 @@ int main(void)
     // Log OpenGL version
     std::cout << "Successfully loaded OpenGL " << glGetString(GL_VERSION) << std::endl;
 
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    /////// Setup ImGui
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
+    return true;
+}
 
+void setupImGui(GLFWwindow* window)
+{
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-    //io.ConfigViewportsNoAutoMerge = true;
-    //io.ConfigViewportsNoTaskBarIcon = true;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
 
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();
@@ -114,39 +102,12 @@ int main(void)
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
+}
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return a nullptr. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    // - Our Emscripten build process allows embedding fonts to be accessible at runtime from the "fonts/" folder. See Makefile.emscripten for details.
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != nullptr);
-
-    // Our state
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    /////// OpenGL Demo
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-
+bool setupOpenGLDemo(unsigned& shaderProgram, unsigned& vao, unsigned& vbo, unsigned& ebo)
+{
     // Compile vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    unsigned vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
     glCompileShader(vertexShader);
     // Check for shader compile errors
@@ -157,10 +118,10 @@ int main(void)
     {
         glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
         std::cout << "ERROR: Vertex shader failed to compile with the following error: " << infoLog << std::endl;
-        return -1;
+        return false;
     }
     // Compile fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    unsigned fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
     glCompileShader(fragmentShader);
     // Check for shader compile errors
@@ -169,10 +130,10 @@ int main(void)
     {
         glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
         std::cout << "ERROR: Fragment shader failed to compile with the following error: " << infoLog << std::endl;
-        return -1;
+        return false;
     }
     // Link shaders
-    unsigned int shaderProgram = glCreateProgram();
+    shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
@@ -181,7 +142,7 @@ int main(void)
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
         std::cout << "ERROR: Shader program failed to link with the following error: " << infoLog << std::endl;
-        return -1;
+        return false;
     }
     // Delete vertex shader and fragment shader, as they are already linked into a shader program
     glDeleteShader(vertexShader);
@@ -194,12 +155,11 @@ int main(void)
         -0.5f, -0.5f, 0.0f,  // bottom left
         -0.5f,  0.5f, 0.0f   // top left
     };
-    unsigned int indices[] = {
+    unsigned indices[] = {
         0, 1, 3,  // first triangle
         1, 2, 3   // second triangle
     };
     // Generate a vertex array object, a vertex buffer object, an element buffer object
-    unsigned int vao, vbo, ebo;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
@@ -215,133 +175,113 @@ int main(void)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    /////// Main Loop
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
+    return true;
+}
 
-    // Loop until the user closes the window
-    while (!glfwWindowShouldClose(window))
-    {
-        // Poll for and process events
-        glfwPollEvents();
+void renderOpenGLDemo(const unsigned& shaderProgram, const unsigned& vao)
+{
+    glUseProgram(shaderProgram);
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
 
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        /////// Handle ImGui events
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-
-        if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
-        {
-            ImGui_ImplGlfw_Sleep(10);
-            continue;
-        }
-
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        {
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
-
-        // Rendering
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        /////// Render rectangle
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        {
-            glUseProgram(shaderProgram);
-            glBindVertexArray(vao);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-            glBindVertexArray(0);
-        }
-
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        /////// Render ImGui
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////
-
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // Update and Render additional Platform Windows
-        // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-        //  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            GLFWwindow* backup_current_context = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup_current_context);
-        }
-
-        glfwSwapBuffers(window);
-    }
-
-    // Delete the vertex array object, the vertex buffer object, the element buffer object, the shader program
+void cleanupOpenGLDemo(const unsigned& shaderProgram, const unsigned& vao, const unsigned& vbo, const unsigned& ebo)
+{
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
     glDeleteProgram(shaderProgram);
+}
 
+void drawImGuiDemo(GLFWwindow* window, ImVec4& clearColor)
+{
+    if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
+    {
+        ImGui_ImplGlfw_Sleep(10);
+        return;
+    }
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowSize(ImVec2(200, 70));
+    ImGui::Begin("Pekan");
+
+    ImGui::Text("Background Color");
+    ImGui::ColorEdit3("", (float*)&clearColor);
+
+    ImGui::End();
+
+    ImGui::Render();
+}
+
+void renderImGuiDemo()
+{
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    // Update and Render additional Platform Windows
+    // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+    //  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
+}
+
+void cleanupImGuiDemo()
+{
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+int main(void)
+{
+    GLFWwindow* window = setupWindow();
+    if (window == nullptr)
+    {
+        return -1;
+    }
+    if (!loadOpenGL())
+    {
+        return -1;
+    }
+    setupImGui(window);
+
+    unsigned shaderProgram, vao, vbo, ebo;
+    if (!setupOpenGLDemo(shaderProgram, vao, vbo, ebo))
+    {
+        return -1;
+    }
+
+    ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+
+        drawImGuiDemo(window, clearColor);
+        
+        int windowWidth, windowHeight;
+        glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+        glViewport(0, 0, windowWidth, windowHeight);
+        glClearColor(clearColor.x * clearColor.w, clearColor.y * clearColor.w, clearColor.z * clearColor.w, clearColor.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        renderOpenGLDemo(shaderProgram, vao);
+        renderImGuiDemo();
+
+        glfwSwapBuffers(window);
+    }
+
+    cleanupOpenGLDemo(shaderProgram, vao, vbo, ebo);
+    cleanupImGuiDemo();
+
+    cleanupWindow(window);
     return 0;
 }

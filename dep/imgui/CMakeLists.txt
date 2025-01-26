@@ -7,7 +7,6 @@ add_library(imgui STATIC
     imgui_draw.cpp
     imgui_tables.cpp
     imgui_widgets.cpp
-    imgui_demo.cpp # TODO: This source file is only needed for ImGui's demo, so we can later remove it
     backends/imgui_impl_opengl3.cpp
     backends/imgui_impl_glfw.cpp
 )
