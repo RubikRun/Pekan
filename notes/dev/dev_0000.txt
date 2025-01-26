@@ -202,3 +202,59 @@ so that it's clear which code is a setup code for which library,
 and which code is creating a demo.
 Done.
 }
+
+{
+Pekan's setup is done.
+Call this Pekan v0.0
+
+==============================
+====begin SUM UP OF Pekan v0.0
+==============================
+
+- We have a root CMakeLists.txt file that configures everything.
+    It creates a project Pekan, that compiles into an executable, using Pekan's single source file
+        src/Pekan/main.cpp
+    Pekan links against these 3 libraries
+        GLFW - for creating and managing windows
+        GLAD - for loading OpenGL function pointers
+        ImGui - for graphical user interface
+    The way it links against them is that we have each library's source code under
+        dep/glfw
+        dep/glad
+        dep/imgui
+    and each library has a corresponding CMake file
+        dep/glfw/CMakeLists.txt
+        dep/glad/CMakeLists.txt
+        dep/imgui/CMakeLists.txt
+    that congifures the library to build into a static library.
+    Pekan links against those 3 static libraries.
+
+- Pekan has a single source file
+        src/Pekan/main.cpp
+    Inside of it we initialize GLFW and setup a window with GLFW, in this function
+        setupWindow()
+    We load OpenGL function pointers using GLAD, in this function
+        loadOpenGL()
+    We initialize and setup ImGui in this function
+        setupImGui()
+    We have an OpenGL demo that draws a single orange rectangle in the middle of the window.
+    This demo is setup in
+        setupOpenGLDemo()
+    and it renders the rectangle in
+        renderOpenGLDemo()
+    We also have an ImGui demo which renders a single GUI window
+    with a single color control, that controls the background color of the OpenGL demo.
+    The ImGui demo is drawn and rendered in
+        drawImGuiDemo()
+        renderImGuiDemo()
+    At the end we cleanup the OpenGL demo, the ImGui demo and we cleanup the GLFW window in these functions
+        cleanupOpenGLDemo()
+        cleanupImGuiDemo()
+        cleanupWindow()
+    The rest is a standard main loop that polls GLFW events
+    and runs until user closes the window.
+
+==============================
+====end SUM UP OF Pekan v0.0
+==============================
+}

@@ -40,7 +40,7 @@ GLFWwindow* setupWindow()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // Create a window
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Pekan", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Pekan v0.0", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "ERROR: Failed to create a window with GLFW." << std::endl;
