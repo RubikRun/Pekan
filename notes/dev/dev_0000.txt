@@ -1,0 +1,53 @@
+----------
+14.01.2025
+----------
+
+{
+Let's begin by setting up a CMake project.
+
+We need a
+    CMakeLists.txt
+file in the root directory.
+For now we'll have a single project called
+    Pekan
+All source code will be under directory
+    src
+Source code for project Pekan will be under
+    src/Pekan
+Let's create a single source file there
+    main.cpp
+In CMake we can make project Pekan compile into an executable using that source file.
+    add_executable(Pekan src/Pekan/main.cpp)
+
+Now we can configure project and generate a Visual Studio solution
+    cmake -B build
+Then we can open Visual Studio solution, build it and run it.
+
+All files generated under directory
+    build
+should not be commited to Git, so let's add that directory to
+    .gitignore
+}
+
+{
+Generated Visual Studio solution has 4 configurations available, I want only 2
+    Release, Debug
+so let's make CMake generate a solution with only those 2
+    set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+}
+
+----------
+17.01.2025
+----------
+
+{
+I want to use C++ 17, so let's set this as a requirement in CMake.
+}
+
+{
+When CMake generates a fresh new Visual Studio solution,
+the startup project by default is ALL_BUILD.
+I want the startup project to be Pekan.
+We can achieve this in CMake 3.6 and above, like that:
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Pekan)
+}
