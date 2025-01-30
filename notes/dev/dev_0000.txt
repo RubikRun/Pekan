@@ -146,3 +146,46 @@ Seems to work, and everything works out of the box with CMake.
 
 OpenGL setup is done now.
 }
+
+----------
+24.01.2025
+----------
+{
+Next step is to setup ImGui.
+First git clone ImGui from here
+    https://github.com/ocornut/imgui
+BUT get the docking branch
+    git clone --recursive https://github.com/ocornut/imgui.git -b docking
+Put it under
+    dep/imgui
+We'll need to compile ImGui into a static library.
+We can do that with a CMake file
+    dep/imgui/CMakeLists.txt
+and then in our root CMake file
+    CMakeLists.txt
+we need to add ImGui as a subdirectory
+    add_subdirectory(dep/imgui)
+and add ImGui to the list of link libraries for Pekan
+    target_link_libraries(Pekan PRIVATE imgui glad glfw opengl32.lib)
+ImGui's CMake file is going to be similar to GLAD's CMake file
+but we have more source files
+    add_library(imgui STATIC
+        imgui.cpp
+        imgui_draw.cpp
+        imgui_tables.cpp
+        imgui_widgets.cpp
+        imgui_demo.cpp # TODO: This source file is only needed for ImGui's demo, so we can later remove it
+        backends/imgui_impl_opengl3.cpp
+        backends/imgui_impl_glfw.cpp
+    )
+and we have to link GLFW there as well
+    target_link_libraries(imgui PUBLIC glfw)
+That's it. Not it builds imgui.lib correctly.
+Let's see now how we can use ImGui in the source code.
+I'll copy the example from imgui repo
+    examples/example_glfw_opengl3/main.cpp
+and integrate it in my current code here
+    Pekan/src/main.cpp
+It worked!
+Now we have the ImGui demo, together with our OpenGL demo.
+}
