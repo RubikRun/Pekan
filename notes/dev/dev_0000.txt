@@ -102,3 +102,47 @@ I changed folder "GLFW3" to folder "dep".
 
 GLFW is done now.
 }
+
+----------
+21.01.2025
+----------
+{
+We need to setup GLAD for loading OpenGL function pointers.
+Go to this site
+    https://glad.dav1d.de/
+Select gl
+    Version 4.3
+Select Profile
+    Core
+Make sure that "Generate a loader" under Options is checked.
+Click "Generate".
+Download file
+    glad.zip
+and extract it into a folder
+    dep/glad
+Now we'll need to compile GLAD into a static library.
+We can do that with a CMake file
+    dep/glad/CMakeLists.txt
+and then in our root CMake file
+    CMakeLists.txt
+we need to add GLAD as a subdirectory
+    add_subdirectory(dep/glad)
+and add GLAD to the list of link libraries for Pekan
+    target_link_libraries(Pekan PRIVATE glad glfw opengl32.lib)
+That's it
+
+----------
+22.01.2025
+----------
+
+Now let's write some OpenGL demo code in
+    main.cpp
+just to see if GLFW and GLAD work as expected.
+I copied and modified a bit an example from
+    learnopengl.com
+    https://learnopengl.com/Getting-started/Hello-Triangle
+It draws a rectangle in the middle of the window.
+Seems to work, and everything works out of the box with CMake.
+
+OpenGL setup is done now.
+}

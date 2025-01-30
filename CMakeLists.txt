@@ -13,12 +13,14 @@ project(Pekan)
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(dep/glfw)
+# Add GLAD subdirectory
+add_subdirectory(dep/glad)
 
 # Make project Pekan compile following source file into an executable
 add_executable(Pekan src/Pekan/main.cpp)
 
 # Set link libraries for project Pekan
-target_link_libraries(Pekan PRIVATE glfw opengl32.lib)
+target_link_libraries(Pekan PRIVATE glad glfw opengl32.lib)
 
 # Set project Pekan to be the startup project by default
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Pekan)
