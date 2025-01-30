@@ -51,3 +51,54 @@ I want the startup project to be Pekan.
 We can achieve this in CMake 3.6 and above, like that:
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Pekan)
 }
+
+----------
+19.01.2025
+----------
+{
+Let's setup OpenGL now.
+First git clone GLFW
+    https://github.com/glfw/glfw
+under
+    dep/glfw
+Then copy example code from
+    https://www.glfw.org/documentation.html
+to
+    src/Pekan/main.cpp
+GLFW already has a working CMake file
+    dep/glfw/CMakeLists.txt
+In order to build GLFW and link Pekan against it,
+we need to add GLFW as subdirectory
+    add_subdirectory(dep/glfw)
+This will generate a GLFW project and build it into a static library.
+Then we can link against that static library like that
+    target_link_libraries(Pekan PRIVATE glfw)
+We also need to link against
+    opengl32.lib
+so do that
+    target_link_libraries(Pekan PRIVATE glfw opengl32.lib)
+GLFW's CMake file generates some additional projects
+    uninstall
+    update_mappings
+I don't want to have those.
+So before adding GLFW subdirectory we can set these options
+    set(GLFW_BUILD_DOCS OFF)
+    set(GLFW_INSTALL OFF)
+and this will make GLFW NOT generate
+    uninstall
+However, looking at GLFW's CMake, the other project
+    update_mappings
+really cannot be removed with an option
+so I will just manually remove it (put it inside of an if(0) statement) in
+    dep/glfw/src/CMakeLists.txt
+Another thing that I don't like is that the glfw project is generated under folder
+    GLFW3
+I want it to be under
+    dep
+where I will put other dependecy projects as well,
+so I manually changed this in
+    dep/glfw/src/CMakeLists.txt
+I changed folder "GLFW3" to folder "dep".
+
+GLFW is done now.
+}
