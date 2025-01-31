@@ -21,6 +21,12 @@ namespace Pekan
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        renderWindow(clearColor);
+
+        ImGui::Render();
+	}
+    void SquaresGui::renderWindow(ImVec4& clearColor)
+    {
         ImGui::SetNextWindowSize(ImVec2(200, 70));
         ImGui::Begin("Pekan");
 
@@ -28,7 +34,5 @@ namespace Pekan
         ImGui::ColorEdit3("", (float*)&clearColor);
 
         ImGui::End();
-
-        ImGui::Render();
-	}
+    }
 } // namespace Pekan

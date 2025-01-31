@@ -25,6 +25,8 @@ add_executable(Pekan
     src/Pekan/SquaresScene.cpp
     src/Pekan/SquaresGui.h
     src/Pekan/SquaresGui.cpp
+    src/Pekan/PekanEngine.h
+    src/Pekan/PekanEngine.cpp
 )
 
 # Set link libraries for project Pekan

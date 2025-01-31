@@ -35,4 +35,12 @@ Let's refactor the ImGui demo into a class
 There's no real need for SquaresGui to be a class for now because we need only 1 static function
     static void render(GLFWwindow* window, ImVec4& clearColor);
 but that's okay, I'll leave it as a class, because we might need it to have some local data later.
+
+Let's also create a class
+    PekanEngine
+which will be the engine itself.
+And let's refactor initialization and cleanup of libraries to be there inside of that class.
+We can also put the whole running of demos there, for now, in this function
+    bool runExercise0000() const;
+
 }
