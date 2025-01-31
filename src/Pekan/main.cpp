@@ -1,5 +1,7 @@
 #include "SquaresScene.h"
+#include "SquaresGui.h"
 using Pekan::SquaresScene;
+using Pekan::SquaresGui;
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -93,30 +95,7 @@ void setupImGui(GLFWwindow* window)
     ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
-void drawImGuiDemo(GLFWwindow* window, ImVec4& clearColor)
-{
-    if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
-    {
-        ImGui_ImplGlfw_Sleep(10);
-        return;
-    }
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    ImGui::SetNextWindowSize(ImVec2(200, 70));
-    ImGui::Begin("Pekan");
-
-    ImGui::Text("Background Color");
-    ImGui::ColorEdit3("", (float*)&clearColor);
-
-    ImGui::End();
-
-    ImGui::Render();
-}
-
-void renderImGuiDemo()
+void renderImGuiDrawData()
 {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -132,7 +111,7 @@ void renderImGuiDemo()
     }
 }
 
-void cleanupImGuiDemo()
+void cleanupImGui()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -163,8 +142,6 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-
-        drawImGuiDemo(window, clearColor);
         
         int windowWidth, windowHeight;
         glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
@@ -173,13 +150,14 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         squaresScene.render();
-        renderImGuiDemo();
+        SquaresGui::render(window, clearColor);
+        renderImGuiDrawData();
 
         glfwSwapBuffers(window);
     }
 
     squaresScene.cleanup();
-    cleanupImGuiDemo();
+    cleanupImGui();
 
     cleanupWindow(window);
     return 0;

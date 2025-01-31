@@ -29,4 +29,10 @@ having these 3 functions
     void render();
     void cleanup();
 
+Now let's do something similar for ImGui.
+Let's refactor the ImGui demo into a class
+    SquaresGui
+There's no real need for SquaresGui to be a class for now because we need only 1 static function
+    static void render(GLFWwindow* window, ImVec4& clearColor);
+but that's okay, I'll leave it as a class, because we might need it to have some local data later.
 }
