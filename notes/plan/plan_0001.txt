@@ -1,0 +1,14 @@
+----------
+31.01.2025
+----------
+
+Now that we have all technologies setup,
+I want Pekan to have a Playground for implementing whatever
+with the technologies that it supports.
+
+I want to play around with OpenGL and ImGui,
+implementing some random game engine concepts,
+and having them all within Pekan Playground.
+
+We should be able to easily disable Pekan Playground in CMake
+and have it enabled only in dev builds.
