@@ -1,0 +1,21 @@
+----------
+31.01.2025
+----------
+
+{
+Before actually implementing Pekan Playground,
+I will start immediately playing around with OpenGL and ImGui
+directly inside of project Pekan.
+
+TODO: After implementing the Playground refactor and move whatever I've done in project Pekan into the Playground
+}
+
+{
+What I want to do today, as an exercise in OpenGL and ImGui is the following:
+--begin EXERCISE0000 DESC
+    Pekan starts with an empty graphics window and a GUI window containing only a single "+" button.
+    When user clicks the "+" button, a new white square of size 0.2 is spawned at (0, 0),
+    together with GUI controls for that square's size, position, rotation and color.
+    User is able to spawn as many squares as they want and arrange them however they want.
+--end EXERCISE0000 DESC
+}
