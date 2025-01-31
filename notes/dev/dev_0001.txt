@@ -19,3 +19,14 @@ What I want to do today, as an exercise in OpenGL and ImGui is the following:
     User is able to spawn as many squares as they want and arrange them however they want.
 --end EXERCISE0000 DESC
 }
+
+{
+Let's start from somewhere.
+Let's refactor the OpenGL demo into a class
+    SquaresScene
+having these 3 functions
+    bool init();
+    void render();
+    void cleanup();
+
+}
