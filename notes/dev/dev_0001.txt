@@ -55,4 +55,8 @@ Let's begin by adding a single "+" button in GUI,
 that when clicked adds a new square on a random position somewhere inside the window.
 Done.
 
+Now let's add dynamic controls in GUI for controlling the position and size of each new square.
+When the button is pressed we want a new square AND a new set of GUI controls to appear.
+Done.
+
 }

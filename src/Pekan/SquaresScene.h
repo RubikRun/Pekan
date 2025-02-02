@@ -9,6 +9,7 @@ namespace Pekan
 		int y = 0;
 		int width = 0;
 		int height = 0;
+		int id = -1;
 	};
 
 	// A scene of multiple squares.
@@ -19,12 +20,21 @@ namespace Pekan
 	public:
 		// Initializes the scene
 		bool init(int windowWidth, int windowHeight);
+		// Updates the scene
+		void update();
 		// Renders the scene
 		void render();
 		// Cleans up the scene
 		void cleanup();
 
-		void addRandomSquare();
+		void addSquare();
+
+		// Returns a (const) reference to the list of squares
+		const std::vector<Rectangle>& getSquares() const { return squares; }
+		std::vector<Rectangle>& getSquares() { return squares; }
+
+		int getWindowWidth() const { return windowWidth; }
+		int getWindowHeight() const { return windowHeight; }
 
 	private:
 		// Shader program ID

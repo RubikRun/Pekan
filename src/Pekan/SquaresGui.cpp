@@ -9,6 +9,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <cmath>
+
 namespace Pekan
 {
 	void SquaresGui::render(GLFWwindow* window, SquaresScene& squaresScene)
@@ -29,11 +31,27 @@ namespace Pekan
 	}
     void SquaresGui::renderWindow(SquaresScene& squaresScene)
     {
-        ImGui::SetNextWindowSize(ImVec2(200, 70));
+        ImGui::SetNextWindowSize(ImVec2(300, 720));
         ImGui::Begin("Squares");
 
-        if (ImGui::Button("+")) {
-            squaresScene.addRandomSquare();
+        if (ImGui::Button("+"))
+        {
+            squaresScene.addSquare();
+        }
+
+        std::vector<Rectangle>& squares = squaresScene.getSquares();
+        for (auto& square : squares)
+        {
+            ImGui::PushID(square.id);
+
+            ImGui::Text("Square %d", square.id + 1);
+            ImGui::SliderInt("X", &square.x, 0, squaresScene.getWindowWidth());
+            ImGui::SliderInt("Y", &square.y, 0, squaresScene.getWindowHeight());
+            ImGui::SliderInt("Size", &square.width, 0, std::max(squaresScene.getWindowWidth(), squaresScene.getWindowHeight()));
+            square.height = square.width;
+            ImGui::Separator();
+
+            ImGui::PopID(); // End unique ID scope
         }
 
         ImGui::End();

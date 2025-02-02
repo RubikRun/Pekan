@@ -61,7 +61,8 @@ namespace Pekan
         glLinkProgram(shaderProgram);
         // Check for linking errors
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-        if (!success) {
+        if (!success)
+        {
             glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
             std::cout << "ERROR in SquaresScene: Shader program failed to link with the following error: " << infoLog << std::endl;
             return false;
@@ -76,6 +77,37 @@ namespace Pekan
 
         return true;
 	}
+
+    void SquaresScene::update()
+    {
+        vertices.clear();
+        for (const Rectangle& square : squares)
+        {
+            float x = (square.x / float(windowWidth)) * 2.0f - 1.0f;
+            float y = (square.y / float(windowHeight)) * 2.0f - 1.0f;
+            float w = float(square.width) * 2.0f / float(windowWidth);
+            float h = float(square.height) * 2.0f / float(windowHeight);
+
+            float squareVertices[] =
+            {
+                x - w / 2.0f,     y - h / 2.0f,     // bottom left
+                x + w / 2.0f, y - h / 2.0f,     // bottom right
+                x + w / 2.0f, y + h / 2.0f, // top right
+
+                x - w / 2.0f,     y - h / 2.0f,     // bottom left
+                x + w / 2.0f, y + h / 2.0f, // top right
+                x - w / 2.0f,     y + h / 2.0f  // top left
+            };
+
+            vertices.insert(vertices.end(), std::begin(squareVertices), std::end(squareVertices));
+        }
+
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+    }
 
     void SquaresScene::render()
     {
@@ -92,39 +124,14 @@ namespace Pekan
         glDeleteProgram(shaderProgram);
     }
 
-    void SquaresScene::addRandomSquare() {
+    void SquaresScene::addSquare() {
         Rectangle newSquare;
         newSquare.width = 60;
         newSquare.height = 60;
-        newSquare.x = rand() % (windowWidth - newSquare.width);
-        newSquare.y = rand() % (windowHeight - newSquare.height);
+        newSquare.x = windowWidth / 2;
+        newSquare.y = windowHeight / 2;
+        newSquare.id = squares.size();
         squares.push_back(newSquare);
-
-        vertices.clear();
-        for (const Rectangle& square : squares) {
-            float x = (square.x / float(windowWidth)) * 2.0f - 1.0f;
-            float y = (square.y / float(windowHeight)) * 2.0f - 1.0f;
-            float w = float(square.width) * 2.0f / float(windowWidth);
-            float h = float(square.height) * 2.0f / float(windowHeight);
-
-            float squareVertices[] = {
-                x,     y,     // bottom left
-                x + w, y,     // bottom right
-                x + w, y + h, // top right
-
-                x,     y,     // bottom left
-                x + w, y + h, // top right
-                x,     y + h  // top left
-            };
-
-            vertices.insert(vertices.end(), std::begin(squareVertices), std::end(squareVertices));
-        }
-
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
     }
 
 } // namespace Pekan
