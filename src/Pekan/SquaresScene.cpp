@@ -4,25 +4,30 @@
 
 #include <iostream>
 
-static const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-
-static const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
+#include <ctime>
 
 namespace Pekan
 {
 
-	bool SquaresScene::init()
+    static const char* vertexShaderSource = "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
+
+    static const char* fragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "}\n\0";
+
+	bool SquaresScene::init(int windowWidth, int windowHeight)
 	{
+        this->windowWidth = windowWidth;
+        this->windowHeight = windowHeight;
+
         // Compile vertex shader
         unsigned vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
@@ -34,7 +39,7 @@ namespace Pekan
         if (!success)
         {
             glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-            std::cout << "ERROR in SquareScene: Vertex shader failed to compile with the following error: " << infoLog << std::endl;
+            std::cout << "ERROR in SquaresScene: Vertex shader failed to compile with the following error: " << infoLog << std::endl;
             return false;
         }
         // Compile fragment shader
@@ -46,7 +51,7 @@ namespace Pekan
         if (!success)
         {
             glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-            std::cout << "ERROR in SquareScene: Fragment shader failed to compile with the following error: " << infoLog << std::endl;
+            std::cout << "ERROR in SquaresScene: Fragment shader failed to compile with the following error: " << infoLog << std::endl;
             return false;
         }
         // Link shaders
@@ -58,39 +63,16 @@ namespace Pekan
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-            std::cout << "ERROR in SquareScene: Shader program failed to link with the following error: " << infoLog << std::endl;
+            std::cout << "ERROR in SquaresScene: Shader program failed to link with the following error: " << infoLog << std::endl;
             return false;
         }
         // Delete vertex shader and fragment shader, as they are already linked into a shader program
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
 
-        // Set up vertex data and configure vertex attributes
-        float vertices[] = {
-             0.5f,  0.5f, 0.0f,  // top right
-             0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left
-        };
-        unsigned indices[] = {
-            0, 1, 3,  // first triangle
-            1, 2, 3   // second triangle
-        };
-        // Generate a vertex array object, a vertex buffer object, an element buffer object
+        // Generate a vertex array object, and a vertex buffer object
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
-        glGenBuffers(1, &ebo);
-        // Bind vertex array object
-        glBindVertexArray(vao);
-        // Bind vertex buffer object and fill with vertex data
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        // Bind element buffer object and fill with indices data
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-        // Configure vertex attributes
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
 
         return true;
 	}
@@ -99,7 +81,7 @@ namespace Pekan
     {
         glUseProgram(shaderProgram);
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 2);
         glBindVertexArray(0);
     }
 
@@ -107,8 +89,42 @@ namespace Pekan
     {
         glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &vbo);
-        glDeleteBuffers(1, &ebo);
         glDeleteProgram(shaderProgram);
+    }
+
+    void SquaresScene::addRandomSquare() {
+        Rectangle newSquare;
+        newSquare.width = 60;
+        newSquare.height = 60;
+        newSquare.x = rand() % (windowWidth - newSquare.width);
+        newSquare.y = rand() % (windowHeight - newSquare.height);
+        squares.push_back(newSquare);
+
+        vertices.clear();
+        for (const Rectangle& square : squares) {
+            float x = (square.x / float(windowWidth)) * 2.0f - 1.0f;
+            float y = (square.y / float(windowHeight)) * 2.0f - 1.0f;
+            float w = float(square.width) * 2.0f / float(windowWidth);
+            float h = float(square.height) * 2.0f / float(windowHeight);
+
+            float squareVertices[] = {
+                x,     y,     // bottom left
+                x + w, y,     // bottom right
+                x + w, y + h, // top right
+
+                x,     y,     // bottom left
+                x + w, y + h, // top right
+                x,     y + h  // top left
+            };
+
+            vertices.insert(vertices.end(), std::begin(squareVertices), std::end(squareVertices));
+        }
+
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
     }
 
 } // namespace Pekan

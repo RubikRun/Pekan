@@ -1,7 +1,15 @@
 #pragma once
 
+#include <vector>
+
 namespace Pekan
 {
+	struct Rectangle {
+		int x = 0;
+		int y = 0;
+		int width = 0;
+		int height = 0;
+	};
 
 	// A scene of multiple squares.
 	// It begins empty and has API for adding new squares.
@@ -10,11 +18,13 @@ namespace Pekan
 	{
 	public:
 		// Initializes the scene
-		bool init();
+		bool init(int windowWidth, int windowHeight);
 		// Renders the scene
 		void render();
 		// Cleans up the scene
 		void cleanup();
+
+		void addRandomSquare();
 
 	private:
 		// Shader program ID
@@ -23,8 +33,14 @@ namespace Pekan
 		unsigned vao = 0;
 		// Vertex buffer object ID
 		unsigned vbo = 0;
-		// Element buffer object ID
-		unsigned ebo = 0;
+
+		// List holding currently existing squares
+		std::vector<Rectangle> squares;
+		// Array of vertex data of currently existing squares
+		std::vector<float> vertices;
+
+		int windowWidth = -1;
+		int windowHeight = -1;
 	};
 
 } // namespace Pekan

@@ -4,7 +4,6 @@ struct GLFWwindow;
 
 namespace Pekan
 {
-
 	// Pekan Engine itself,
 	// containing core engine data and functionality.
 	class PekanEngine

@@ -1,5 +1,7 @@
 #include "SquaresGui.h"
 
+#include "SquaresScene.h"
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -9,7 +11,7 @@
 
 namespace Pekan
 {
-	void SquaresGui::render(GLFWwindow* window, ImVec4& clearColor)
+	void SquaresGui::render(GLFWwindow* window, SquaresScene& squaresScene)
 	{
         if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
         {
@@ -21,17 +23,18 @@ namespace Pekan
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        renderWindow(clearColor);
+        renderWindow(squaresScene);
 
         ImGui::Render();
 	}
-    void SquaresGui::renderWindow(ImVec4& clearColor)
+    void SquaresGui::renderWindow(SquaresScene& squaresScene)
     {
         ImGui::SetNextWindowSize(ImVec2(200, 70));
-        ImGui::Begin("Pekan");
+        ImGui::Begin("Squares");
 
-        ImGui::Text("Background Color");
-        ImGui::ColorEdit3("", (float*)&clearColor);
+        if (ImGui::Button("+")) {
+            squaresScene.addRandomSquare();
+        }
 
         ImGui::End();
     }

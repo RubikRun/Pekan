@@ -14,13 +14,12 @@ using Pekan::SquaresGui;
 
 #include <iostream>
 
-const unsigned DEFAULT_WINDOW_WIDTH = 800;
-const unsigned DEFAULT_WINDOW_HEIGHT = 600;
-
-const char* DEFAULT_GLSL_VERSION = "#version 330 core";
-
 namespace Pekan
 {
+    const unsigned DEFAULT_WINDOW_WIDTH = 1280;
+    const unsigned DEFAULT_WINDOW_HEIGHT = 720;
+
+    const char* DEFAULT_GLSL_VERSION = "#version 330 core";
 
 	bool PekanEngine::init()
 	{
@@ -65,12 +64,11 @@ namespace Pekan
             return false;
         }
         SquaresScene squaresScene;
-        if (!squaresScene.init())
+        if (!squaresScene.init(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT))
         {
             return false;
         }
 
-        ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
         while (!glfwWindowShouldClose(window))
         {
             glfwPollEvents();
@@ -78,11 +76,11 @@ namespace Pekan
             int windowWidth, windowHeight;
             glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
             glViewport(0, 0, windowWidth, windowHeight);
-            glClearColor(clearColor.x * clearColor.w, clearColor.y * clearColor.w, clearColor.z * clearColor.w, clearColor.w);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             squaresScene.render();
-            SquaresGui::render(window, clearColor);
+            SquaresGui::render(window, squaresScene);
             renderImGui();
 
             glfwSwapBuffers(window);

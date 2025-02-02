@@ -11,7 +11,7 @@ TODO: After implementing the Playground refactor and move whatever I've done in 
 }
 
 {
-What I want to do today, as an exercise in OpenGL and ImGui is the following:
+What I want to do, as an exercise in OpenGL and ImGui is the following:
 --begin EXERCISE0000 DESC
     Pekan starts with an empty graphics window and a GUI window containing only a single "+" button.
     When user clicks the "+" button, a new white square of size 0.2 is spawned at (0, 0),
@@ -42,5 +42,17 @@ which will be the engine itself.
 And let's refactor initialization and cleanup of libraries to be there inside of that class.
 We can also put the whole running of demos there, for now, in this function
     bool runExercise0000() const;
+
+}
+
+----------
+02.02.2025
+----------
+
+{
+Let's stop refactoring now, and actually implement something from exercise0000.
+Let's begin by adding a single "+" button in GUI,
+that when clicked adds a new square on a random position somewhere inside the window.
+Done.
 
 }
