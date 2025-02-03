@@ -60,3 +60,14 @@ When the button is pressed we want a new square AND a new set of GUI controls to
 Done.
 
 }
+
+----------
+02.03.2025
+----------
+
+{
+First thing I'll do today is to redesign the GUI from last time a little bit.
+I want the X and Y sliders to be on the same row.
+Also fixed some padding and adaptive width issues.
+
+}

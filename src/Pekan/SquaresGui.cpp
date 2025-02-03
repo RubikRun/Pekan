@@ -29,6 +29,36 @@ namespace Pekan
 
         ImGui::Render();
 	}
+
+    static void renderSliderX(Rectangle& square, int windowWidth)
+    {
+        ImGui::PushItemWidth(0.4f * ImGui::GetContentRegionAvail().x);
+        ImGui::Text("X");
+        ImGui::SameLine();
+        ImGui::SliderInt("##X", &square.x, 0, windowWidth);
+        ImGui::PopItemWidth();
+    }
+
+    static void renderSliderY(Rectangle& square, int windowHeight)
+    {
+        ImGui::PushItemWidth(0.45f * ImGui::GetContentRegionAvail().x);
+        ImGui::SameLine();
+        ImGui::Text("Y");
+        ImGui::SameLine();
+        ImGui::SliderInt("##Y", &square.y, 0, windowHeight);
+        ImGui::PopItemWidth();
+    }
+
+    static void renderSliderSize(Rectangle& square, int windowWidth, int windowHeight)
+    {
+        ImGui::PushItemWidth(0.85f * ImGui::GetContentRegionAvail().x);
+        ImGui::Text("Size");
+        ImGui::SameLine();
+        ImGui::SliderInt("##Size", &square.width, 0, std::max(windowWidth, windowHeight));
+        square.height = square.width;
+        ImGui::PopItemWidth();
+    }
+
     void SquaresGui::renderWindow(SquaresScene& squaresScene)
     {
         ImGui::SetNextWindowSize(ImVec2(300, 720));
@@ -40,15 +70,14 @@ namespace Pekan
         }
 
         std::vector<Rectangle>& squares = squaresScene.getSquares();
-        for (auto& square : squares)
+        for (Rectangle& square : squares)
         {
             ImGui::PushID(square.id);
 
             ImGui::Text("Square %d", square.id + 1);
-            ImGui::SliderInt("X", &square.x, 0, squaresScene.getWindowWidth());
-            ImGui::SliderInt("Y", &square.y, 0, squaresScene.getWindowHeight());
-            ImGui::SliderInt("Size", &square.width, 0, std::max(squaresScene.getWindowWidth(), squaresScene.getWindowHeight()));
-            square.height = square.width;
+            renderSliderX(square, squaresScene.getWindowWidth());
+            renderSliderY(square, squaresScene.getWindowHeight());
+            renderSliderSize(square, squaresScene.getWindowWidth(), squaresScene.getWindowHeight());
             ImGui::Separator();
 
             ImGui::PopID(); // End unique ID scope
