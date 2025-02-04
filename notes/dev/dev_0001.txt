@@ -62,12 +62,15 @@ Done.
 }
 
 ----------
-02.03.2025
+03.02.2025
 ----------
 
 {
 First thing I'll do today is to redesign the GUI from last time a little bit.
 I want the X and Y sliders to be on the same row.
 Also fixed some padding and adaptive width issues.
+
+Next, I want to add control for a square's rotation.
+Since we're in 2D a rotation can be represented with a single number, so a single slider in GUI.
 
 }

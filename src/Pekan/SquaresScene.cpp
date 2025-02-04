@@ -5,6 +5,9 @@
 #include <iostream>
 
 #include <ctime>
+#include <cmath>
+
+#define PI 3.14159265359f
 
 namespace Pekan
 {
@@ -83,20 +86,28 @@ namespace Pekan
         vertices.clear();
         for (const Rectangle& square : squares)
         {
-            float x = (square.x / float(windowWidth)) * 2.0f - 1.0f;
-            float y = (square.y / float(windowHeight)) * 2.0f - 1.0f;
-            float w = float(square.width) * 2.0f / float(windowWidth);
-            float h = float(square.height) * 2.0f / float(windowHeight);
+            const float x = float(square.x);
+            const float y = float(square.y);
+            const float w = float(square.width);
+            const float h = float(square.height);
+            const float angle = float(square.rotation) * PI / 180.0f;
+            const float radius = std::sqrtf((w / 2.0f) * (w / 2.0f) + (h / 2.0f) * (h / 2.0f));
 
-            float squareVertices[] =
+            const float squareVertices[] =
             {
-                x - w / 2.0f,     y - h / 2.0f,     // bottom left
-                x + w / 2.0f, y - h / 2.0f,     // bottom right
-                x + w / 2.0f, y + h / 2.0f, // top right
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,    // bottom left
+                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
+                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,           // bottom right
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,           // top right
 
-                x - w / 2.0f,     y - h / 2.0f,     // bottom left
-                x + w / 2.0f, y + h / 2.0f, // top right
-                x - w / 2.0f,     y + h / 2.0f  // top left
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,    // bottom left
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,           // top right
+                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
+                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,    // top left
             };
 
             vertices.insert(vertices.end(), std::begin(squareVertices), std::end(squareVertices));
