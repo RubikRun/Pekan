@@ -13,23 +13,31 @@ namespace Pekan
 {
 
     static const char* vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 0) in vec2 aPos;\n"
+        "layout (location = 1) in vec4 aColor;\n"
+        "out vec4 vColor;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+        "   vColor = aColor;\n"
         "}\0";
 
     static const char* fragmentShaderSource = "#version 330 core\n"
+        "in vec4 vColor;\n"
         "out vec4 FragColor;\n"
         "void main()\n"
         "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "   FragColor = vColor;\n"
         "}\n\0";
 
 	bool SquaresScene::init(int windowWidth, int windowHeight)
 	{
         this->windowWidth = windowWidth;
         this->windowHeight = windowHeight;
+
+        // Enable blending
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Compile vertex shader
         unsigned vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -95,19 +103,30 @@ namespace Pekan
 
             const float squareVertices[] =
             {
+                // bottom left
                 (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,    // bottom left
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,
+                square.color.red, square.color.green, square.color.blue, square.color.alpha,
+                // bottom right
                 (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
-                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,           // bottom right
+                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,
+                square.color.red, square.color.green, square.color.blue, square.color.alpha,
+                // top right
                 (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,           // top right
-
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,
+                square.color.red, square.color.green, square.color.blue, square.color.alpha,
+                // bottom left
                 (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,    // bottom left
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,
+                square.color.red, square.color.green, square.color.blue, square.color.alpha,
+                // top right
                 (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,           // top right
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,
+                square.color.red, square.color.green, square.color.blue, square.color.alpha,
+                // top left
                 (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowWidth) - 1.0f,
-                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,    // top left
+                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(windowHeight) - 1.0f,
+                square.color.red, square.color.green, square.color.blue, square.color.alpha,
             };
 
             vertices.insert(vertices.end(), std::begin(squareVertices), std::end(squareVertices));
@@ -116,8 +135,10 @@ namespace Pekan
         glBindVertexArray(vao);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(1);
     }
 
     void SquaresScene::render()

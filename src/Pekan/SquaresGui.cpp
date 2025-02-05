@@ -68,6 +68,15 @@ namespace Pekan
         ImGui::PopItemWidth();
     }
 
+    static void renderEditColor(Rectangle& square)
+    {
+        ImGui::PushItemWidth(0.75f * ImGui::GetContentRegionAvail().x);
+        ImGui::Text("Color");
+        ImGui::SameLine();
+        ImGui::ColorEdit4("##Color", (float*)&square.color);
+        ImGui::PopItemWidth();
+    }
+
     void SquaresGui::renderWindow(SquaresScene& squaresScene)
     {
         ImGui::SetNextWindowSize(ImVec2(300, 720));
@@ -88,6 +97,7 @@ namespace Pekan
             renderSliderY(square, squaresScene.getWindowHeight());
             renderSliderSize(square, squaresScene.getWindowWidth(), squaresScene.getWindowHeight());
             renderSliderRotation(square);
+            renderEditColor(square);
             ImGui::Separator();
 
             ImGui::PopID(); // End unique ID scope

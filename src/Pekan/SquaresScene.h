@@ -4,12 +4,20 @@
 
 namespace Pekan
 {
+	struct Color {
+		float red = 1.0f;
+		float green = 1.0f;
+		float blue = 1.0f;
+		float alpha = 1.0f;
+	};
+
 	struct Rectangle {
 		int x = 0;
 		int y = 0;
 		int width = 0;
 		int height = 0;
 		int rotation = 0;
+		Color color;
 		int id = -1;
 	};
 
