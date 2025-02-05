@@ -1,0 +1,30 @@
+----------
+05.02.2025
+----------
+
+Let's plan the initial architecture of Pekan.
+We'll keep it simple, until there is a reason for something more.
+
+We definitely need a 2-sided architecture,
+with an engine side and an application side.
+
+ENGINE:
+- Engine will be responsible for all libraries, of course.
+    So initializing and cleaning up libraries will happen on the engine side.
+- Engine will be responsible for running the game loop
+    and keeping track of a graphics layer and a GUI layer.
+    Each frame it will update and render both layers.
+- Engine will be reponsible for running raw OpenGL and raw ImGui code,
+    and provide wrappers for them to the application.
+
+APPLICATION:
+- Application will have to provide an implementation
+    for the graphics layer and the GUI layer.
+- Application should NOT use raw OpenGL and raw ImGui code,
+    only the wrappers provided by engine.
+
+We cannot do this perfectly and completely from the get go,
+so let's set a realistic goal:
+    Implement this architecture, make it as good as possible,
+    so that the squares example from Playground
+    can be easily/cleanly done as a Pekan application.
