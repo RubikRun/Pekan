@@ -1,0 +1,133 @@
+----------
+05.02.2025
+----------
+
+{
+Before starting to implement Pekan's architecture,
+let's first add logging support.
+
+...logging support, in progress...
+}
+
+----------
+07.02.2025
+----------
+
+{
+...logging support, in progress...
+}
+
+----------
+08.02.2025
+----------
+
+{
+Okay, logging support is ready.
+
+====begin SUM UP OF LOGGING
+
+--- There are 2 new files
+        PekanLogger.h
+        PekanLogger.cpp
+    They contain logging functionality
+    that can be used throughout Pekan Engine and Pekan Applications
+
+--- To use PekanLogger, you just need to include header
+        #include "PekanLogger.h"
+    and then you can use these macros
+        PK_LOG_ERROR(...)
+        PK_LOG_WARNING(...)
+        PK_LOG_INFO(...)
+        PK_LOG_DEBUG(...)
+    to log error messages, warning messages, info messages, or debug messages.
+    Between the parentheses you can write anything, as if it's a standard C++ stream. For example
+        PK_LOG_DEBUG("threadsCount = " << threadsCount);
+        PK_LOG_ERROR("Failed to initialize version " << versionNumber << " of library.");
+    would result in these messages being logged:
+        [DEBUG]: threadsCount = 4
+        [ERROR]: Failed to initialize version 4 of library.
+    There are also these extended macros, that log the filename of the source file from where they're called
+        PK_LOG_ERRORF(...)
+        PK_LOG_WARNINGF(...)
+        PK_LOG_INFOF(...)
+        PK_LOG_DEBUGF(...)
+    In order to use these extended macros, you need to define PK_FILENAME to be the name of your current source file.
+    For example, if you want to use PekanLogger in source file
+        main.cpp
+    then you should do this
+        #include "PekanLogger.h"
+        #define PK_FILENAME "main.cpp"
+    and then you can use the extended macros, like that
+        PK_LOG_ERRORF("Failed to load OpenGL.");
+    and it would result in this message being logged:
+        [ERROR in main.cpp]: Failed to load OpenGL
+
+--- In
+        PekanLogger.h
+    there are 6 macros
+        PK_LOGGER_ERROR_SUPPORT
+        PK_LOGGER_WARNING_SUPPORT
+        PK_LOGGER_INFO_SUPPORT
+        PK_LOGGER_DEBUG_SUPPORT
+        PK_LOGGER_CONSOLE_SUPPORT
+        PK_LOGGER_FILE_SUPPORT
+    that can be set to either 0 or 1 to enable/disable support for
+        - logging of different types of messages
+        - logging to the console
+        - logging to a file
+    These 6 macros give compile-time control over the different functionalities.
+    For example, if at any point we want to fully remove error logging from our code base,
+    we can just toggle this macro to 0
+        PK_LOGGER_ERROR_SUPPORT 0
+    This might be important for performance later on.
+    "Compile-time control" means that once we build Pekan Engine or a Pekan Application
+    with a set of supported logging functionality,
+    there is no way for user to enable a logging functionality that is not supported in this build.
+
+--- If a given logging functionality is supported in a given build
+    then user can enable/disable it with these environment variables
+        PEKAN_LOGGER_ERROR_ENABLED
+        PEKAN_LOGGER_WARNING_ENABLED
+        PEKAN_LOGGER_INFO_ENABLED
+        PEKAN_LOGGER_DEBUG_ENABLED
+        PEKAN_LOGGER_CONSOLE_ENABLED
+        PEKAN_LOGGER_FILE_ENABLED
+    For example, if a build supports debug logging, meaning it's done with
+        PK_LOGGER_DEBUG_SUPPORT 1
+    then user can enable debug logging by setting
+        set PEKAN_LOGGER_DEBUG_ENABLED=1
+    or they can disable debug logging by setting
+        set PEKAN_LOGGER_DEBUG_ENABLED=0
+
+--- In
+        PekanLogger.h
+    there are 6 macros
+        DEFAULT_PEKAN_LOGGER_ERROR_ENABLED
+        DEFAULT_PEKAN_LOGGER_WARNING_ENABLED
+        DEFAULT_PEKAN_LOGGER_INFO_ENABLED
+        DEFAULT_PEKAN_LOGGER_DEBUG_ENABLED
+        DEFAULT_PEKAN_LOGGER_CONSOLE_ENABLED
+        DEFAULT_PEKAN_LOGGER_FILE_ENABLED
+    that can be set to either 0 or 1 to enable/disable by default
+        - logging of different types of messages
+        - logging to the console
+        - logging to a file
+    These 6 macros determine whether a logging functionality should be enabled or disabled
+    by default, if user has NOT specifically enabled/disabled it with an environment variable.
+
+--- Logging to a file
+    is the same as logging to the console
+    but the messages are written to a log file.
+    This log file is created in a directory that can be specified by user with this environment variable
+        PEKAN_LOG_DIR
+    If user hasn't specified a directory then OS's temporary directory will be used.
+    The name of the log file is determined at startup,
+    and it contains the current date-time so it's different each time you start Pekan Engine or a Pekan Application.
+    For example, if user has set
+        PEKAN_LOG_DIR=C:\dev\Pekan\build\.logs
+    and they start Pekan Engine at 19:39:03 on 8th of February 2025
+    then the filepath of the log file will be
+        C:\dev\Pekan\build\.logs\pekan20250208193903.log
+
+====end SUM UP OF LOGGING
+}

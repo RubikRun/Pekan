@@ -19,7 +19,15 @@ add_subdirectory(dep/glad)
 add_subdirectory(dep/imgui)
 
 # Make project Pekan compile following source file into an executable
-add_executable(Pekan src/Pekan/main.cpp)
+add_executable(Pekan
+    src/Pekan/main.cpp
+    src/Pekan/Logger/PekanLogger.h
+    src/Pekan/Logger/PekanLogger.cpp
+)
+
+# Group Logger files under a virtual folder called "Logger"
+SOURCE_GROUP("Source Files\\Logger" FILES src/Pekan/Logger/PekanLogger.cpp)
+SOURCE_GROUP("Header Files\\Logger" FILES src/Pekan/Logger/PekanLogger.h)
 
 # Set link libraries for project Pekan
 target_link_libraries(Pekan PRIVATE imgui glad glfw opengl32.lib)

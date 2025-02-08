@@ -1,11 +1,12 @@
+#define PK_FILENAME "main.cpp"
+#include "Logger/PekanLogger.h"
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
-#include <iostream>
 
 const unsigned WINDOW_WIDTH = 800;
 const unsigned WINDOW_HEIGHT = 600;
@@ -31,7 +32,7 @@ GLFWwindow* setupWindow()
     // Initialize GLFW
     if (!glfwInit())
     {
-        std::cout << "ERROR: GLFW failed to initialize." << std::endl;
+        PK_LOG_ERRORF("ERROR: GLFW failed to initialize.");
         return nullptr;
     }
 
@@ -43,7 +44,7 @@ GLFWwindow* setupWindow()
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Pekan v0.0", nullptr, nullptr);
     if (window == nullptr)
     {
-        std::cout << "ERROR: Failed to create a window with GLFW." << std::endl;
+        PK_LOG_ERRORF("ERROR: Failed to create a window with GLFW.");
         glfwTerminate();
         return nullptr;
     }
@@ -66,14 +67,14 @@ bool loadOpenGL()
     // Load OpenGL function pointers with GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "ERROR: GLAD failed to load OpenGL functions." << std::endl;
+        PK_LOG_ERRORF("ERROR: GLAD failed to load OpenGL functions.");
         return false;
     }
     // Set OpenGL viewport's resolution to be the same as window's resolution
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Log OpenGL version
-    std::cout << "Successfully loaded OpenGL " << glGetString(GL_VERSION) << std::endl;
+    PK_LOG_INFOF("Successfully loaded OpenGL " << glGetString(GL_VERSION));
 
     return true;
 }
@@ -117,7 +118,7 @@ bool setupOpenGLDemo(unsigned& shaderProgram, unsigned& vao, unsigned& vbo, unsi
     if (!success)
     {
         glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cout << "ERROR: Vertex shader failed to compile with the following error: " << infoLog << std::endl;
+        PK_LOG_ERRORF("ERROR: Vertex shader failed to compile with the following error: " << infoLog);
         return false;
     }
     // Compile fragment shader
@@ -129,7 +130,7 @@ bool setupOpenGLDemo(unsigned& shaderProgram, unsigned& vao, unsigned& vbo, unsi
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cout << "ERROR: Fragment shader failed to compile with the following error: " << infoLog << std::endl;
+        PK_LOG_ERRORF("ERROR: Fragment shader failed to compile with the following error: " << infoLog);
         return false;
     }
     // Link shaders
@@ -141,7 +142,7 @@ bool setupOpenGLDemo(unsigned& shaderProgram, unsigned& vao, unsigned& vbo, unsi
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::cout << "ERROR: Shader program failed to link with the following error: " << infoLog << std::endl;
+        PK_LOG_ERRORF("ERROR: Shader program failed to link with the following error: " << infoLog);
         return false;
     }
     // Delete vertex shader and fragment shader, as they are already linked into a shader program
