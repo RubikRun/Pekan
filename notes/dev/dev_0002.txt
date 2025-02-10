@@ -131,3 +131,33 @@ Okay, logging support is ready.
 
 ====end SUM UP OF LOGGING
 }
+
+{
+Let's start implementing Pekan's architecture now.
+First thing I'll do is create a class
+    PekanEngine
+in 2 new files
+    PekanEngine.h
+    PekanEngine.cpp
+which will be similar to the one in Playground's SquaresScene.
+The one in Playground's SquaresScene is a draft for the real PekanEngine
+which I will write now.
+
+... class PekanEngine, in progress ...
+
+----------
+10.02.2025
+----------
+
+... class PekanEngine, in progress ...
+
+Okay, I have a class PekanEngine now, and it handles
+- creating and destroying of graphics window
+- creating and destroying of GUI window
+- init and exit of all libraries
+
+The demo in
+    main.cpp
+now uses PekanEngine for these things.
+
+}

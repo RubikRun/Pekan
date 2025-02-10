@@ -23,6 +23,8 @@ add_executable(Pekan
     src/Pekan/main.cpp
     src/Pekan/Logger/PekanLogger.h
     src/Pekan/Logger/PekanLogger.cpp
+    src/Pekan/PekanEngine.h
+    src/Pekan/PekanEngine.cpp
 )
 
 # Group Logger files under a virtual folder called "Logger"

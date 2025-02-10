@@ -1,17 +1,15 @@
 #define PK_FILENAME "main.cpp"
 #include "Logger/PekanLogger.h"
 
+#include "PekanEngine.h"
+using Pekan::PekanEngine;
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
-const unsigned WINDOW_WIDTH = 800;
-const unsigned WINDOW_HEIGHT = 600;
-
-const char* glsl_version = "#version 330 core";
 
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -26,84 +24,6 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "{\n"
 "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n\0";
-
-GLFWwindow* setupWindow()
-{
-    // Initialize GLFW
-    if (!glfwInit())
-    {
-        PK_LOG_ERRORF("ERROR: GLFW failed to initialize.");
-        return nullptr;
-    }
-
-    // Set window hint for OpenGL 4.3 and OpenGL Core Profile
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // Create a window
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Pekan v0.0", nullptr, nullptr);
-    if (window == nullptr)
-    {
-        PK_LOG_ERRORF("ERROR: Failed to create a window with GLFW.");
-        glfwTerminate();
-        return nullptr;
-    }
-    // Make the window's context current
-    glfwMakeContextCurrent(window);
-    // Enalbe VSync
-    glfwSwapInterval(1);
-
-    return window;
-}
-
-void cleanupWindow(GLFWwindow* window)
-{
-    glfwDestroyWindow(window);
-    glfwTerminate();
-}
-
-bool loadOpenGL()
-{
-    // Load OpenGL function pointers with GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        PK_LOG_ERRORF("ERROR: GLAD failed to load OpenGL functions.");
-        return false;
-    }
-    // Set OpenGL viewport's resolution to be the same as window's resolution
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-    // Log OpenGL version
-    PK_LOG_INFOF("Successfully loaded OpenGL " << glGetString(GL_VERSION));
-
-    return true;
-}
-
-void setupImGui(GLFWwindow* window)
-{
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-    ImGuiStyle& style = ImGui::GetStyle();
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        style.WindowRounding = 0.0f;
-        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-    }
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-}
 
 bool setupOpenGLDemo(unsigned& shaderProgram, unsigned& vao, unsigned& vbo, unsigned& ebo)
 {
@@ -234,25 +154,11 @@ void renderImGuiDemo()
     }
 }
 
-void cleanupImGuiDemo()
-{
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-}
-
 int main(void)
 {
-    GLFWwindow* window = setupWindow();
-    if (window == nullptr)
-    {
-        return -1;
-    }
-    if (!loadOpenGL())
-    {
-        return -1;
-    }
-    setupImGui(window);
+    PekanEngine engine;
+    engine.init();
+    GLFWwindow* window = engine.getWindow();
 
     unsigned shaderProgram, vao, vbo, ebo;
     if (!setupOpenGLDemo(shaderProgram, vao, vbo, ebo))
@@ -281,8 +187,7 @@ int main(void)
     }
 
     cleanupOpenGLDemo(shaderProgram, vao, vbo, ebo);
-    cleanupImGuiDemo();
+    engine.exit();
 
-    cleanupWindow(window);
     return 0;
 }
