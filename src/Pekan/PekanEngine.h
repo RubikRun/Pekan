@@ -4,7 +4,7 @@ struct GLFWwindow;
 
 namespace Pekan
 {
-	// Pekan Engine itself.
+	// Pekan Engine itself
 	class PekanEngine
 	{
 	public:
@@ -26,6 +26,10 @@ namespace Pekan
 
 		// TEMP
 		GLFWwindow* getWindow() { return window; }
+
+		// TEMP
+		int getWindowWidth();
+		int getWindowHeight();
 
 	private: /* functions */
 

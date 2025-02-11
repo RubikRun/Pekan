@@ -160,4 +160,51 @@ The demo in
     main.cpp
 now uses PekanEngine for these things.
 
+Next step is to make the engine handle the main loop.
+Application should only provide implementation of init, update and render functions.
+
+I'll start by creating a base class
+    PekanScene
+that will just contain pure virtual functions
+    init()
+    update()
+    render()
+    exit()
+and another base class
+    PekanGUIWindow
+that will contain pure virtual functions
+    init()
+    render()
+
+However, there is some functionality that will be common for all scenes
+and some functionality that will be common for all GUI windows.
+These are the common functionalities:
+----
+1. When calling a PekanScene's
+    init()
+function we want the caller to provide width and height of the scene,
+and we want to save them to member variables in the scene.
+2. When calling a PekanGUIWindow's
+    init()
+function we want the caller to provide a pointer to the GLFW window,
+and we want to save that pointer to a member variable in the GUI window.
+3. We want a PekanGUIWindow's
+    render()
+function to create a new ImGui frame,
+then to draw ImGui elements, which is specific to the derived GUI window,
+then to render ImGui draw data
+----
+We want all of these common functionalities to be handled in the base classes,
+and provide a way for the specific parts to be implemented by derived classes.
+The way I did it here is I added a private pure virtual function
+    virtual bool _init() = 0;
+in PekanScene, that should be implemented by derived classes
+and it's called in the public function
+    init()
+after saving width and height to member variables.
+Same way for PekanGUIWindow's init() function there is a private pure virtual function
+    _init()
+and same way for PekanGUIWindow's render() function there is a private pure virtual function
+    _render()
+
 }

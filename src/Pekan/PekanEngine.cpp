@@ -22,17 +22,14 @@ namespace Pekan
 
     bool PekanEngine::init()
     {
-        // Create a window
         if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT))
         {
             return false;
         }
-        // Load OpenGL
         if (!loadOpenGL())
         {
             return false;
         }
-        // Initialize ImGui
         if (!initImGui())
         {
             return false;
@@ -51,9 +48,18 @@ namespace Pekan
         destroyWindow();
     }
 
+    int PekanEngine::getWindowWidth()
+    {
+        return DEFAULT_WINDOW_WIDTH;
+    }
+
+    int PekanEngine::getWindowHeight()
+    {
+        return DEFAULT_WINDOW_HEIGHT;
+    }
+
     bool PekanEngine::createWindow(int width, int height)
     {
-        // Initialize GLFW
         if (!glfwInit())
         {
             PK_LOG_ERRORF("Failed to initialize GLFW.");
