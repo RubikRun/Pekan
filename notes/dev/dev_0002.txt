@@ -254,3 +254,56 @@ to point to instances of DemoScene and DemoGUIWindow.
 Okay, it works! And looks good.
 
 }
+
+----------
+14.02.2025
+----------
+
+{
+Next step is to separate engine code from demo code, in 2 projects.
+So far, we have them separated in different source files.
+Engine code is in
+    PekanEngine.h
+    PekanEngine.cpp
+    PekanApplication.h
+    PekanApplication.cpp
+    PekanScene.h
+    PekanScene.cpp
+    PekanGUIWindow.h
+    PekanGUIWindow.cpp
+    PekanLogger.h
+    PekanLogger.cpp
+Demo code is in
+    main.cpp
+    DemoApplication.h
+    DemoApplication.cpp
+    DemoScene.h
+    DemoScene.cpp
+    DemoGUIWindow.h
+    DemoGUIWindow.cpp
+
+Let's separate them into 2 projects now - "Pekan" and "Demo".
+
+I did it by moving Demo files from
+    src/Pekan/Demo
+into
+    src/Demo
+and creating a new CMake file in that directory which creates project Demo
+and builds it as an executable, linking Pekan as a library.
+
+For that to work we have to make project Pekan compile into a library,
+and remove all demo files from there,
+and add Demo subdirectory.
+
+For now, in Demo we'll also have to link
+    imgui
+    glad
+because we are still using raw OpenGL calls and raw ImGui code inside of the demo,
+which will NOT be done like that in the future.
+In the future we want to have OpenGL wrappers and ImGui wrappers that Pekan provides to all applications.
+
+I also changed Demo classes to be under namespace Demo, instead of namespace Pekan.
+
+Okay, done, looks okay, and it works.
+
+}

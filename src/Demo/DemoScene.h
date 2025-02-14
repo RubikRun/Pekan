@@ -1,9 +1,10 @@
 #pragma once
 
 #include "PekanScene.h"
+using Pekan::PekanScene;
 #include "DemoGUIWindow.h"
 
-namespace Pekan
+namespace Demo
 {
 
 	class DemoScene : public PekanScene
@@ -38,4 +39,4 @@ namespace Pekan
 		const DemoGUIWindow* guiWindow = nullptr;
 	};
 
-} // namespace Pekan
+} // namespace Demo

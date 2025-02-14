@@ -1,7 +1,7 @@
 # Create project ImGui
 project(imgui)
 
-# Make project ImGui compile following source files into a library
+# Make project ImGui compile following source files into a static library
 add_library(imgui STATIC
     imgui.cpp
     imgui_draw.cpp

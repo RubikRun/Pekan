@@ -3,7 +3,7 @@
 #include "DemoScene.h"
 #include "DemoGUIWindow.h"
 
-namespace Pekan
+namespace Demo
 {
 
 	bool DemoApplication::_init()
@@ -22,4 +22,4 @@ namespace Pekan
 		return true;
 	}
 
-} // namespace Pekan
+} // namespace Demo

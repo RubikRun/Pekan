@@ -1,10 +1,11 @@
 #pragma once
 
 #include "PekanGUIWindow.h"
+using Pekan::PekanGUIWindow;
 
 #include "imgui.h"
 
-namespace Pekan
+namespace Demo
 {
 
 	class DemoGUIWindow : public PekanGUIWindow
@@ -26,4 +27,4 @@ namespace Pekan
 		ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	};
 
-} // namespace Pekan
+} // namespace Demo

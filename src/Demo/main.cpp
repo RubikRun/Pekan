@@ -4,8 +4,8 @@
 #include "PekanEngine.h"
 using Pekan::PekanEngine;
 
-#include "Demo/DemoApplication.h"
-using Pekan::DemoApplication;
+#include "DemoApplication.h"
+using Demo::DemoApplication;
 
 int main(void)
 {

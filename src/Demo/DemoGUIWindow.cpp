@@ -1,11 +1,9 @@
 #include "DemoGUIWindow.h"
-#define PK_FILENAME "DemoGUIWindow.cpp"
-#include "Logger/PekanLogger.h"
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-namespace Pekan
+namespace Demo
 {
 
 	void DemoGUIWindow::_render()
@@ -24,4 +22,4 @@ namespace Pekan
 		return true;
 	}
 
-} // namespace Pekan
+} // namespace Demo

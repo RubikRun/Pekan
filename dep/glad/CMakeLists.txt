@@ -1,7 +1,7 @@
 # Create project GLAD
 project(glad)
 
-# Make project GLAD compile following source file into a library
+# Make project GLAD compile following source file into a static library
 add_library(glad STATIC src/glad.c)
 # Add project GLAD under a folder called "dep"
 set_target_properties(glad PROPERTIES FOLDER "dep")

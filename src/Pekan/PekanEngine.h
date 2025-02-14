@@ -4,10 +4,12 @@ struct GLFWwindow;
 
 namespace Pekan
 {
+
 	// Pekan Engine itself
 	class PekanEngine
 	{
 	public:
+
 		// Initializes the engine
 		// - creating a graphics window
 		// - creating a GUI window

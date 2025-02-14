@@ -1,8 +1,9 @@
 #pragma once
 
 #include "PekanApplication.h"
+using Pekan::PekanApplication;
 
-namespace Pekan
+namespace Demo
 {
 
 	class DemoApplication : public PekanApplication
@@ -10,4 +11,4 @@ namespace Pekan
 		bool _init() override;
 	};
 
-} // namespace Pekan
+} // namespace Demo
