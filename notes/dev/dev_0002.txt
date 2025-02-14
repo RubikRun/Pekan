@@ -207,4 +207,50 @@ Same way for PekanGUIWindow's init() function there is a private pure virtual fu
 and same way for PekanGUIWindow's render() function there is a private pure virtual function
     _render()
 
+----------
+10.02.2025
+----------
+
+Today let's create a base class
+    PekanApplication
+which will handle logic common to all Pekan applications
+(that is, applications made with Pekan)
+
+Every PekanApplication should have an init() function
+    bool init(GLFWwindow* window, int width, int height)
+that takes in the GLFW window where application should be rendered,
+and width and height of the application.
+These 3 things are then saved to protected member variables
+    GLFWwindow* window = nullptr;
+    int width = -1;
+    int height = -1;
+so that derived classes can access those variables.
+
+We will also need every PekanApplication to have a scene and a GUI window,
+so we'll have 2 more protected member variables
+    std::unique_ptr<PekanScene> scene;
+    std::unique_ptr<PekanGUIWindow> guiWindow;
+They are pointers to the base classes PekanScene and PekanGUIWindow.
+Derived classes of PekanApplication will need to implement this pure virtual function
+    virtual bool _init() = 0;
+so that it sets up these 2 pointers to point to a specific scene and a specific GUI window
+(instances of classes derived from PekanScene and PekanGUIWindow)
+
+Finally, every PekanApplication can be run by calling this public function
+    void run();
+It runs the main loop and at every frame it updates and renders the scene and the GUI window.
+
+I created a class
+    DemoApplication
+which is an example of a derived class of PekanApplication.
+It is the same demo that we had before that.
+The only thing that has to be done in this DemoApplication is to implement the
+    _init()
+function so that it sets up the 2 pointers
+    scene
+    guiWindow
+to point to instances of DemoScene and DemoGUIWindow.
+
+Okay, it works! And looks good.
+
 }

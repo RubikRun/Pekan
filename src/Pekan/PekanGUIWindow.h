@@ -10,6 +10,8 @@ namespace Pekan
 	{
 	public:
 
+		virtual ~PekanGUIWindow() = default;
+
 		bool init(GLFWwindow* window)
 		{
 			this->window = window;

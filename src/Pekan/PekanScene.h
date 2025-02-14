@@ -8,6 +8,8 @@ namespace Pekan
 	{
 	public:
 
+		virtual ~PekanScene() = default;
+
 		bool init(int width, int height)
 		{
 			this->width = width;
@@ -25,7 +27,7 @@ namespace Pekan
 
 		virtual bool _init() = 0;
 
-	private: /* variables */
+	protected: /* variables */
 
 		// Width of scene, in pixels
 		int width = -1;
