@@ -327,3 +327,19 @@ we can just make everything in PekanEngine be static, and this achieves the same
 Let's first do that,
 and then continue with moving engine initialization and exiting into PekanApplication.
 }
+
+{
+Okay, at this point the basic engine architecture is implemented.
+What remains to be done now is to create !wrappers!
+of raw OpenGL and raw ImGui functions
+Those wrappers will be provided by Pekan to its applications.
+}
+
+{
+The first set of wrappers that I'm going to need are the OpenGL wrappers.
+For that I will create a new project called
+    PekanRenderer
+and I'll change project Pekan to be called
+    PekanCore
+
+}

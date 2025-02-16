@@ -1,7 +1,7 @@
 # Create project Demo
 project(Demo)
 
-# Make project Demo compile following source files into an executable
+# Add an executable Demo, compiling the following source files
 add_executable(Demo
     main.cpp
     DemoApplication.h
@@ -12,9 +12,10 @@ add_executable(Demo
     DemoGUIWindow.cpp
 )
 
-# Set link libraries for project Demo
+# Set link libraries for Demo
 target_link_libraries(Demo PRIVATE
-    Pekan
+    PekanCore
+    PekanRenderer
     imgui # TODO: This should be removed once Pekan provides ImGui wrappers
     glad # TODO: This should be removed once Pekan provides OpenGL wrappers
 )

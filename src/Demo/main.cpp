@@ -4,8 +4,15 @@
 #include "DemoApplication.h"
 using Demo::DemoApplication;
 
+#include "PekanRenderer.h"
+using Pekan::Renderer::PekanRenderer;
+
 int main(void)
 {
+    // TEMP: Just to see if PekanRenderer is linked properly
+    PekanRenderer renderer;
+    renderer.test();
+
     DemoApplication application;
     if (!application.init())
     {
