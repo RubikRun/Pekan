@@ -307,3 +307,19 @@ I also changed Demo classes to be under namespace Demo, instead of namespace Pek
 Okay, done, looks okay, and it works.
 
 }
+
+{
+Now looking at the architecture of my classes, there is something odd.
+The purpose of this file
+    main.cpp
+should be to initialize and run DemoApplication, nothing more.
+However, currently it's also initializing and exiting PekanEngine, which is not good.
+Engine initialization and exiting should be handled by PekanApplication.
+So let's do that.
+
+Actually, while I'm at it, PekanEngine should really be a singleton.
+However, I don't like actally implementing singletons in C++ because there is no real need for that,
+we can just make everything in PekanEngine be static, and this achieves the same as making a singleton class.
+Let's first do that,
+and then continue with moving engine initialization and exiting into PekanApplication.
+}

@@ -16,7 +16,7 @@ namespace Pekan
 		// - initializing all libraries
 		// 
 		// To be called once, at the beginning, before using the engine.
-		bool init();
+		static bool init();
 
 		// Exits the engine
 		// - destroying graphics window
@@ -24,38 +24,38 @@ namespace Pekan
 		// - freeing all resources
 		// 
 		// To be called once, at the end, after finished using the engine.
-		void exit();
+		static void exit();
 
 		// TEMP
-		GLFWwindow* getWindow() { return window; }
+		static GLFWwindow* getWindow() { return window; }
 
 		// TEMP
-		int getWindowWidth();
-		int getWindowHeight();
+		static int getWindowWidth();
+		static int getWindowHeight();
 
 	private: /* functions */
 
 		// Creates the graphics window,
 		// and configures it for rendering.
-		bool createWindow(int width, int height);
+		static bool createWindow(int width, int height);
 		// Destroys the graphics window.
-		void destroyWindow();
+		static void destroyWindow();
 
 		// Loads OpenGL function pointers
-		bool loadOpenGL() const;
+		static bool loadOpenGL();
 
 		// Initializes ImGui library, and creates ImGui context
-		bool initImGui() const;
+		static bool initImGui();
 		// Renders ImGui's draw data.
 		// Must be called after drawing GUI with ImGui to actually render the GUI. (that's a funny sentence lol)
-		void renderImGui() const;
+		static void renderImGui();
 		// Exists ImGui library, and destroys ImGui context
-		void exitImGui() const;
+		static void exitImGui();
 
 	private: /* variables */
 
 		// Window for rendering graphics
-		GLFWwindow* window = nullptr;
+		static GLFWwindow* window;
 	};
 
 } // namespace Pekan

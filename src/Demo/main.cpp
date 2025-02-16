@@ -9,16 +9,15 @@ using Demo::DemoApplication;
 
 int main(void)
 {
-    PekanEngine engine;
-    if (!engine.init())
+    if (!PekanEngine::init())
     {
         PK_LOG_ERRORF("Engine failed to initialize.");
         return -1;
     }
 
-    GLFWwindow* window = engine.getWindow();
-    const int width = engine.getWindowWidth();
-    const int height = engine.getWindowHeight();
+    GLFWwindow* window = PekanEngine::getWindow();
+    const int width = PekanEngine::getWindowWidth();
+    const int height = PekanEngine::getWindowHeight();
 
     DemoApplication application;
     if (!application.init(window, width, height))
@@ -28,7 +27,7 @@ int main(void)
     }
     application.run();
 
-    engine.exit();
+    PekanEngine::exit();
 
     return 0;
 }

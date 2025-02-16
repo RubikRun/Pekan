@@ -20,6 +20,8 @@ namespace Pekan
 
     const char* DEFAULT_WINDOW_TITLE = "Pekan v0.0";
 
+    GLFWwindow* PekanEngine::window = nullptr;
+
     bool PekanEngine::init()
     {
         if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT))
@@ -94,7 +96,7 @@ namespace Pekan
         window = nullptr;
     }
 
-    bool PekanEngine::loadOpenGL() const
+    bool PekanEngine::loadOpenGL()
     {
         // Load OpenGL function pointers with GLAD
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -111,7 +113,7 @@ namespace Pekan
         return true;
     }
 
-    bool PekanEngine::initImGui() const
+    bool PekanEngine::initImGui()
     {
         if (window == nullptr)
         {
@@ -144,7 +146,7 @@ namespace Pekan
         return true;
     }
 
-    void PekanEngine::renderImGui() const
+    void PekanEngine::renderImGui()
     {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -159,7 +161,7 @@ namespace Pekan
         }
     }
 
-    void PekanEngine::exitImGui() const
+    void PekanEngine::exitImGui()
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
