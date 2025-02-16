@@ -17,9 +17,11 @@ namespace Pekan
 
 		virtual ~PekanApplication() = default;
 
-		bool init(GLFWwindow* window, int width, int height);
+		bool init();
 
 		void run();
+
+		void exit();
 
 	private: /* functions */
 
@@ -35,7 +37,7 @@ namespace Pekan
 
 		std::unique_ptr<PekanGUIWindow> guiWindow;
 
-		// A graphics window where scene and GUI window are rendered
+		// A graphics window where application is rendered
 		GLFWwindow* window = nullptr;
 
 		// Width of application, in pixels

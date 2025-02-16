@@ -2,6 +2,7 @@
 #define PK_FILENAME "PekanApplication.cpp"
 #include "Logger/PekanLogger.h"
 
+#include "PekanEngine.h"
 #include "PekanScene.h"
 #include "PekanGUIWindow.h"
 
@@ -10,11 +11,17 @@
 
 namespace Pekan
 {
-    bool PekanApplication::init(GLFWwindow* window, int width, int height)
+    bool PekanApplication::init()
     {
-        this->window = window;
-        this->width = width;
-        this->height = height;
+        if (!PekanEngine::init())
+        {
+            PK_LOG_ERRORF("Engine failed to initialize.");
+            return false;
+        }
+
+        this->window = PekanEngine::getWindow();
+        this->width = PekanEngine::getWindowWidth();
+        this->height = PekanEngine::getWindowHeight();
 
         if (!_init())
         {
@@ -83,5 +90,10 @@ namespace Pekan
 
         scene->exit();
 	}
+
+    void PekanApplication::exit()
+    {
+        PekanEngine::exit();;
+    }
 
 } // namespace Pekan

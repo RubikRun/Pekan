@@ -308,6 +308,10 @@ Okay, done, looks okay, and it works.
 
 }
 
+----------
+16.02.2025
+----------
+
 {
 Now looking at the architecture of my classes, there is something odd.
 The purpose of this file
