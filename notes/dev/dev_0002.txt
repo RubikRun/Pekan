@@ -342,4 +342,27 @@ For that I will create a new project called
 and I'll change project Pekan to be called
     PekanCore
 
+Let's start implementing OpenGL wrappers.
+First, we'll need a
+    VertexBuffer
+class. This is probably the simplest OpenGL wrapper.
+We only need create(), destroy(), bind() and undbind() functions. We need
+    create()
+to take in the raw vertex data and the size of that data
+    void VertexBuffer::create(const void* data, long long size)
+It will then generate a vertex buffer in OpenGL,
+    glGenBuffers(1, &id);
+save its ID to the member variable,
+    unsigned id = 0;
+bind this generated vertex buffer,
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+and supply this vertex buffer with the given data
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+
+Then we can directly use this class VertexBuffer inside of DemoScene instead of raw OpenGL calls.
+It works!
+
+Next time think about loading OpenGL. Who should be responsible for that?
+Currently PekanEngine does it, but maybe it'd be better that PekanRenderer does it.
+Also, all OpenGL wrappers will need to check whether PekanRenderer is initialized before proceeding with their doings.
 }

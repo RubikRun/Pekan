@@ -50,8 +50,9 @@ namespace Demo
 
 	void DemoScene::exit()
 	{
+        vertexBuffer.destroy();
+
         glDeleteVertexArrays(1, &vao);
-        glDeleteBuffers(1, &vbo);
         glDeleteBuffers(1, &ebo);
         glDeleteProgram(shaderProgram);
 	}
@@ -111,17 +112,15 @@ namespace Demo
             0, 1, 3,  // first triangle
             1, 2, 3   // second triangle
         };
-        // Generate a vertex array object, a vertex buffer object, an element buffer object
+        // Create a vertex array object, and an element buffer object
         glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
         glGenBuffers(1, &ebo);
-        // Bind vertex array object
+        // Bind vertex array object and element buffer object
         glBindVertexArray(vao);
-        // Bind vertex buffer object and fill with vertex data
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        // Bind element buffer object and fill with indices data
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        // Create a vertex buffer with vertices data
+        vertexBuffer.create(vertices, sizeof(vertices));
+        // Fill element buffer object with indices data
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
         // Configure vertex attributes
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);

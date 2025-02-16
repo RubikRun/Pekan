@@ -3,6 +3,8 @@
 #include "DemoScene.h"
 #include "DemoGUIWindow.h"
 
+using Pekan::PekanScene;
+
 namespace Demo
 {
 

@@ -1,13 +1,14 @@
 #pragma once
 
 #include "PekanScene.h"
-using Pekan::PekanScene;
+#include "VertexBuffer.h"
+
 #include "DemoGUIWindow.h"
 
 namespace Demo
 {
 
-	class DemoScene : public PekanScene
+	class DemoScene : public Pekan::PekanScene
 	{
 	public:
 
@@ -26,12 +27,12 @@ namespace Demo
 
 	private: /* variables */
 
+		Pekan::Renderer::VertexBuffer vertexBuffer;
+
 		// Shader program ID
 		unsigned shaderProgram;
 		// Vertex array object ID
 		unsigned vao;
-		// Vertex buffer object ID
-		unsigned vbo;
 		// Element buffer object ID
 		unsigned ebo;
 
