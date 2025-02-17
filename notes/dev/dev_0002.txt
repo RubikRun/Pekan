@@ -376,4 +376,9 @@ A little thing that we can do for convenience is to make PekanApplication's dest
 call the exit() function so that client doesn't have to call it explicitly
 if they know that their application will be destroyed.
 
+Now I notice a little bug/mistake.
+Inside PekanApplication we are calling
+    scene->exit()
+in the run() function.
+It makes more sense to call it in the exit() function.
 }

@@ -87,13 +87,15 @@ namespace Pekan
 
             glfwSwapBuffers(window);
         }
-
-        scene->exit();
 	}
 
     void PekanApplication::exit()
     {
-        PekanEngine::exit();;
+        if (scene != nullptr)
+        {
+            scene->exit();
+        }
+        PekanEngine::exit();
     }
 
 } // namespace Pekan
