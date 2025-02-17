@@ -366,3 +366,14 @@ Next time think about loading OpenGL. Who should be responsible for that?
 Currently PekanEngine does it, but maybe it'd be better that PekanRenderer does it.
 Also, all OpenGL wrappers will need to check whether PekanRenderer is initialized before proceeding with their doings.
 }
+
+----------
+17.02.2025
+----------
+
+{
+A little thing that we can do for convenience is to make PekanApplication's destructor
+call the exit() function so that client doesn't have to call it explicitly
+if they know that their application will be destroyed.
+
+}

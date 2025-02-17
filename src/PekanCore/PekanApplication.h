@@ -15,7 +15,7 @@ namespace Pekan
 	{
 	public:
 
-		virtual ~PekanApplication() = default;
+		virtual ~PekanApplication() { exit(); }
 
 		bool init();
 

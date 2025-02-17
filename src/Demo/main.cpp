@@ -13,7 +13,6 @@ int main(void)
         return -1;
     }
     application.run();
-    application.exit();
 
     return 0;
 }
