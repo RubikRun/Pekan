@@ -2,21 +2,30 @@
 #define PK_FILENAME "DemoScene.cpp"
 #include "Logger/PekanLogger.h"
 
+using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::VertexBufferElement;
+using Pekan::Renderer::VertexBufferLayout;
+using Pekan::Renderer::ShaderDataType;
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 static const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 0) in vec2 aPos;\n"
+"layout (location = 1) in vec4 aColor;\n"
+"out vec4 vColor;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+"   vColor = aColor;\n"
 "}\0";
 
 static const char* fragmentShaderSource = "#version 330 core\n"
+"in vec4 vColor;\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"   FragColor = vColor;\n"
 "}\n\0";
 
 namespace Demo
@@ -103,10 +112,10 @@ namespace Demo
 
         // Set up vertex data and configure vertex attributes
         float vertices[] = {
-             0.5f,  0.5f, 0.0f,  // top right
-             0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left
+             0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
+             0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
+            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
         };
         unsigned indices[] = {
             0, 1, 3,  // first triangle
@@ -123,8 +132,23 @@ namespace Demo
         // Fill element buffer object with indices data
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
         // Configure vertex attributes
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
+        const VertexBufferLayout layout({
+            { ShaderDataType::Float2, "position" },
+            { ShaderDataType::Float4, "color" },
+        });
+        const std::vector<VertexBufferElement>& layoutElements = layout.getElements();
+        for (int i = 0; i < layoutElements.size(); ++i) {
+            const VertexBufferElement& element = layoutElements[i];
+            glVertexAttribPointer(
+                i,
+                element.getComponentsCount(),
+                PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+                element.normalized ? GL_TRUE : GL_FALSE,
+                layout.getStride(),
+                reinterpret_cast<void*>((long long unsigned)(element.getOffset()))
+            );
+            glEnableVertexAttribArray(i);
+        }
 
         return true;
 	}

@@ -382,3 +382,52 @@ Inside PekanApplication we are calling
 in the run() function.
 It makes more sense to call it in the exit() function.
 }
+
+----------
+18.02.2025
+----------
+
+{
+The next OpenGL wrapper that I'm going to create
+is actually an extention of the first one.
+
+So far, VertexBuffer is only a buffer of raw data.
+We need some way to specify it's layout.
+In the same file
+    VertexBuffer.h
+we will create 2 new classes
+    VertexBufferElement
+    VertexBufferLayout
+First one, VertexBufferElement, will represent a single buffer element, for example a Float4 element called "color", or a Mat4 element called "transform".
+A buffer element usually corresponds to a vertex attribute inside a shader.
+
+Side note:
+We will keep the supported shader data types in an enum
+    enum class ShaderDataType
+    {
+        None = 0, Float = 1, Float2 = 2, Float3 = 3, Float4 = 4, Mat3 = 5, Mat4 = 6, Int = 7, Int2 = 8, Int3 = 9, Int4 = 10, Bool = 11
+    };
+and we'll put this enum in a new file
+    PekanRenderer.h
+where we will also create a new class
+    class PekanRenderer
+that will contain static functions with common rendering functionality.
+For now, we need only these 3 helper functions there related to this enum ShaderDataType
+    static GLenum getShaderDataTypeOpenGLBaseType(ShaderDataType type);
+    static unsigned getShaderDataTypeSize(ShaderDataType type);
+    static unsigned getShaderDataTypeComponentsCount(ShaderDataType type);
+
+Second one, VertexBufferLayout, will be just a list of buffer elements
+with some extra functionality to calculate each element's offset and the total stride, which is info needed for OpenGL calls.
+
+That's basically it, for now.
+
+So far, our DemoScene creates a vertex buffer layout with only 1 element so it's not really a good test for our new classes.
+Let's add 1 more element to the vertex buffer layout, and let that be color. Each vertex will have a color and we'll handle it in the shaders.
+Okay, done.
+Now each vertex is a different color and the color between them is interpolated.
+
+Let's see if our classes VertexBufferElement and VertexBufferLayout will work if we use them in DemoScene.
+Yep, they work.
+Okay, considering them done now.
+}

@@ -5,6 +5,8 @@ project(PekanRenderer)
 add_library(PekanRenderer STATIC
     VertexBuffer.h
     VertexBuffer.cpp
+    PekanRenderer.h
+    PekanRenderer.cpp
 )
 
 # Set include directories for PekanRenderer

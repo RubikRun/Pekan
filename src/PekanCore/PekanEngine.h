@@ -5,7 +5,6 @@ struct GLFWwindow;
 namespace Pekan
 {
 
-	// Pekan Engine itself
 	class PekanEngine
 	{
 	public:
