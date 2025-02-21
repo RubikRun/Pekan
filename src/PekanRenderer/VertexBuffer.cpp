@@ -49,11 +49,12 @@ namespace Renderer
 		}
 	}
 
-	void VertexBuffer::create(const void* data, long long size)
+	void VertexBuffer::create(const void* data, long long size, const VertexBufferLayout& layout)
 	{
 		glGenBuffers(1, &id);
 		bind();
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+		this->layout = layout;
 	}
 
 	void VertexBuffer::destroy()

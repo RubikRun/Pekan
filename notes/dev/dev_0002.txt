@@ -431,3 +431,75 @@ Let's see if our classes VertexBufferElement and VertexBufferLayout will work if
 Yep, they work.
 Okay, considering them done now.
 }
+
+----------
+20.02.2025
+----------
+
+{
+Next OpenGL wrapper that I'm going to create is
+    VertexArray
+
+Currently nothing really connects a vertex buffer with its layout.
+First of all, it'd be good to have a member variable inside VertexBuffer
+    VertexBufferLayout layout;
+which will be the layout assosiated with that buffer, and we'll let client pass that layout into the create() function.
+That's good but vertex buffer is still not connected to its layout in OpenGL.
+
+Currently client has the responsibility to configure vertex attributes (layout) in OpenGL,
+based on the data in VertexBufferLayout, with these 2 calls
+    glEnableVertexAttribArray(...)
+    glVertexAttribPointer(...)
+but the thing is OpenGL doesn't automatically connect this vertex attribute configuration (layout) to the vertex buffer.
+It just makes this layout be the current state,
+but then if we have another vertex buffer and bind it, OpenGL will still use that old layout.
+We would have to configure vertex attributes with the layout of the second vertex buffer,
+and this, once again, will just change the "layout state", and not really connect the vertex buffer with the layout.
+So basically, every time we bind a vertex buffer we would have to configure its vertex attributes anew, which is terribly inconvenient.
+
+We could do the vertex attribute configuration inside of the bind() function of VertexBuffer, but that's ineffective,
+because it will configure vertex attributes each time when we bind a vertex buffer, as if it's configuring them for the first time.
+
+Instead, we should use a vertex array, whose purpose is exactly that.
+It's a collection of vertex buffers AND it maintains the layout state of each buffer,
+so that when we bind a vertex buffer whose vertex attributes are already configured, that configuration is automatically applied.
+
+So let's create a new class
+    VertexArray
+inside of 2 new files
+    VertexArray.h
+    VertexArray.cpp
+
+This class will have all the standard stuff for an OpenGL object
+    create(), destroy(), bind(), unbind(), id
+and it will have a list of VertexBuffer's
+    std::vector<VertexBuffer> vertexBuffers;
+and a function for adding a new vertex buffer
+    void addVertexBuffer(const VertexBuffer& vertexBuffer);
+
+When adding a new vertex buffer, so inside addVertexBuffer(), we will configure the vertex attributes, like that
+    const std::vector<VertexBufferElement>& layoutElements = layout.getElements();
+    ...
+    for (int i = 0; i < layoutElements.size(); ++i) {
+        const VertexBufferElement& element = layoutElements[i];
+        // For each element, enable and configure a vertex attribute
+        glEnableVertexAttribArray(i);
+        glVertexAttribPointer(
+            i,
+            element.getComponentsCount(),
+            PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+            element.normalized ? GL_TRUE : GL_FALSE,
+            layout.getStride(),
+            reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
+        );
+    }
+So now the 2 OpenGL calls are Pekan's responsibility, not client's.
+And, more importantly, they are done on a bound vertex array, so the vertex array will remember that this layout belongs to this vertex buffer.
+
+Now we can greatly simplify DemoScene's job around vertex array and vertex buffer
+    vertexBuffer.create(vertices, sizeof(vertices), { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
+    vertexArray.create();
+    vertexArray.addVertexBuffer(vertexBuffer);
+
+It works!
+}

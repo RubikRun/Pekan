@@ -78,15 +78,21 @@ namespace Renderer
 	class VertexBuffer
 	{
 	public:
+
 		~VertexBuffer();
 
 		// Creates the underlying vertex buffer object,
 		// initializes it with given data and binds it.
 		// @param data - raw data to be filled to the vertex buffer
 		// @param size - size of data, in bytes
-		void create(const void* data, long long size);
+		void create(const void* data, long long size, const VertexBufferLayout& layout);
 		// Deletes the vertex buffer and unbinds it.
 		void destroy();
+
+		// Checks if vertex buffer is valid, meaning that it has been successfully created and not yet destroyed
+		inline bool isValid() const { return id != 0; }
+
+		inline const VertexBufferLayout& getLayout() const { return layout; }
 
 		void bind() const;
 		void unbind() const;
@@ -95,6 +101,9 @@ namespace Renderer
 
 		// ID of the vertex buffer object
 		unsigned id = 0;
+
+		// Layout of vertex buffer
+		VertexBufferLayout layout;
 	};
 
 } // namespace Renderer

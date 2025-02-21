@@ -52,16 +52,16 @@ namespace Demo
         }
 
         glUseProgram(shaderProgram);
-        glBindVertexArray(vao);
+        vertexArray.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+        vertexArray.unbind();
 	}
 
 	void DemoScene::exit()
 	{
         vertexBuffer.destroy();
+        vertexArray.destroy();
 
-        glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &ebo);
         glDeleteProgram(shaderProgram);
 	}
@@ -121,34 +121,17 @@ namespace Demo
             0, 1, 3,  // first triangle
             1, 2, 3   // second triangle
         };
-        // Create a vertex array object, and an element buffer object
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &ebo);
-        // Bind vertex array object and element buffer object
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         // Create a vertex buffer with vertices data
-        vertexBuffer.create(vertices, sizeof(vertices));
+        vertexBuffer.create(vertices, sizeof(vertices), { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
+        // Create a vertex array. Add vertex buffer to it.
+        vertexArray.create();
+        vertexArray.addVertexBuffer(vertexBuffer);
+
+        // Create an element buffer object
+        glGenBuffers(1, &ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         // Fill element buffer object with indices data
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-        // Configure vertex attributes
-        const VertexBufferLayout layout({
-            { ShaderDataType::Float2, "position" },
-            { ShaderDataType::Float4, "color" },
-        });
-        const std::vector<VertexBufferElement>& layoutElements = layout.getElements();
-        for (int i = 0; i < layoutElements.size(); ++i) {
-            const VertexBufferElement& element = layoutElements[i];
-            glVertexAttribPointer(
-                i,
-                element.getComponentsCount(),
-                PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
-                element.normalized ? GL_TRUE : GL_FALSE,
-                layout.getStride(),
-                reinterpret_cast<void*>((long long unsigned)(element.getOffset()))
-            );
-            glEnableVertexAttribArray(i);
-        }
 
         return true;
 	}

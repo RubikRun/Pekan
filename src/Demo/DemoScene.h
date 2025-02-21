@@ -2,6 +2,7 @@
 
 #include "PekanScene.h"
 #include "VertexBuffer.h"
+#include "VertexArray.h"
 
 #include "DemoGUIWindow.h"
 
@@ -29,10 +30,10 @@ namespace Demo
 
 		Pekan::Renderer::VertexBuffer vertexBuffer;
 
+		Pekan::Renderer::VertexArray vertexArray;
+
 		// Shader program ID
 		unsigned shaderProgram;
-		// Vertex array object ID
-		unsigned vao;
 		// Element buffer object ID
 		unsigned ebo;
 
