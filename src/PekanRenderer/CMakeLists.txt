@@ -15,4 +15,4 @@ add_library(PekanRenderer STATIC
 target_include_directories(PekanRenderer PUBLIC .)
 
 # Set link libraries for PekanRenderer
-target_link_libraries(PekanRenderer PRIVATE PekanCore glad opengl32.lib)
+target_link_libraries(PekanRenderer PRIVATE PekanCore glad glm opengl32.lib)

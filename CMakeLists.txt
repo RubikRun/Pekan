@@ -22,6 +22,8 @@ add_subdirectory(dep/glfw)
 add_subdirectory(dep/glad)
 # Add ImGui subdirectory
 add_subdirectory(dep/imgui)
+# Add glm subdirectory
+add_subdirectory(dep/glm)
 
 # Add a static library PekanCore, compiling the following source files
 add_library(PekanCore STATIC
@@ -44,6 +46,7 @@ SOURCE_GROUP("Header Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.h)
 target_link_libraries(PekanCore PRIVATE
     imgui
     glfw
+    glm
     glad # TODO: This will probably NOT be need once we create OpenGL wrappers in PekanRenderer
     opengl32.lib # TODO: This will probably NOT be need once we create OpenGL wrappers in PekanRenderer
 )

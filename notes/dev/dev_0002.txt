@@ -503,3 +503,20 @@ Now we can greatly simplify DemoScene's job around vertex array and vertex buffe
 
 It works!
 }
+
+----------
+20.02.2025
+----------
+
+{
+Before implementing the next OpenGL wrapper I'll have to setup a new external library
+    glm
+This time let's add it as a git submodule.
+(I should've done this for all other libraries as well tbh, idk why I didn't, I'll do it some time in the future.)
+    git submodule add https://github.com/g-truc/glm.git dep/glm
+
+glm is a header-only library, but there is a CMake file that sets it up as such.
+We could just add glm to our include directories but since there is a CMake file let's use that
+    add_subdirectory(dep/glm)
+Okay, done. Easy.
+}
