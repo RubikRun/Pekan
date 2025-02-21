@@ -25,6 +25,12 @@ add_subdirectory(dep/imgui)
 # Add glm subdirectory
 add_subdirectory(dep/glm)
 
+# Add all projects for external libraries into a folder called "dep"
+set_target_properties(glfw PROPERTIES FOLDER "dep")
+set_target_properties(glad PROPERTIES FOLDER "dep")
+set_target_properties(imgui PROPERTIES FOLDER "dep")
+set_target_properties(glm PROPERTIES FOLDER "dep")
+
 # Add a static library PekanCore, compiling the following source files
 add_library(PekanCore STATIC
     src/PekanCore/Logger/PekanLogger.h

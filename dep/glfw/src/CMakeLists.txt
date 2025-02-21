@@ -28,7 +28,6 @@ add_custom_target(update_mappings
     SOURCES mappings.h.in "${GLFW_SOURCE_DIR}/CMake/GenerateMappings.cmake"
     VERBATIM)
 
-set_target_properties(update_mappings PROPERTIES FOLDER "dep")
 endif()
 
 if (GLFW_BUILD_COCOA)
@@ -128,8 +127,7 @@ set_target_properties(glfw PROPERTIES
                       POSITION_INDEPENDENT_CODE ON
                       C_STANDARD 99
                       C_EXTENSIONS OFF
-                      DEFINE_SYMBOL _GLFW_BUILD_DLL
-                      FOLDER "dep")
+                      DEFINE_SYMBOL _GLFW_BUILD_DLL)
 
 target_include_directories(glfw PUBLIC
                            "$<BUILD_INTERFACE:${GLFW_SOURCE_DIR}/include>"

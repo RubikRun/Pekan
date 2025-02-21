@@ -10,8 +10,6 @@ add_library(imgui STATIC
     backends/imgui_impl_opengl3.cpp
     backends/imgui_impl_glfw.cpp
 )
-# Add ImGui under a folder called "dep"
-set_target_properties(imgui PROPERTIES FOLDER "dep")
 
 # Set include directories for ImGui
 target_include_directories(imgui PUBLIC . backends)

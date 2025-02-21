@@ -520,3 +520,20 @@ We could just add glm to our include directories but since there is a CMake file
     add_subdirectory(dep/glm)
 Okay, done. Easy.
 }
+
+{
+Oops, forgot to add glm project under "dep" folder.
+Now that glm is a git submodule it doesn't make sense to just edit its CMake file and add this line to it
+    set_target_properties(glm PROPERTIES FOLDER "dep")
+What I should do instead is add this line to Pekan's root CMake file, where we add glm subdirectory.
+Yep, that works.
+Okay so if that works, then let's do it for all other libraries as well.
+Putting the library inside "dep" shouldn't be the library's responsibility,
+it should be the responsibility of whoever uses the library, in this case Pekan.
+So after adding all subdirectories in CMakeLists.txt let's add all those libraries under "dep" folder, like that
+    set_target_properties(glfw PROPERTIES FOLDER "dep")
+    set_target_properties(glad PROPERTIES FOLDER "dep")
+    set_target_properties(imgui PROPERTIES FOLDER "dep")
+    set_target_properties(glm PROPERTIES FOLDER "dep")
+It works! And it makes more sense that way.
+}
