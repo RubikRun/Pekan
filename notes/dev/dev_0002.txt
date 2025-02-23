@@ -537,3 +537,55 @@ So after adding all subdirectories in CMakeLists.txt let's add all those librari
     set_target_properties(glm PROPERTIES FOLDER "dep")
 It works! And it makes more sense that way.
 }
+
+{
+Next OpenGL wrapper that I'm going to create is
+    Shader
+
+It needs to contain all stuff standard to an OpenGL object, so
+    create(), destroy(), bind(), unbind(), isValid(), id
+
+When client creates a shader we want them to provide source code for vertex shader and fragment shader, so we'll take these 2 parameters
+    void Shader::create(const char* vertexShaderSource, const char* fragmentShaderSource);
+What we need to do in create() function is to compile the 2 sub-shaders and link them into a single shader program.
+Let's create a private member function for compiling a sub-shader, given its source code and its type
+    unsigned compileShader(GLenum shaderType, const char* sourceCode);
+Then we can use that function twice in create() to compile the vertex and the fragment shader
+    const GLuint vertexShaderID = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
+    const GLuint fragmentShaderID = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+and then we can create the final shader program where we attach those 2 sub-shaders and link them
+    id = glCreateProgram();
+    glAttachShader(id, vertexShaderID);
+    glAttachShader(id, fragmentShaderID);
+    glLinkProgram(id);
+At the end we can delete the sub-shaders because the final shader program contains them.
+That's about it for create().
+
+The other thing that client should be able to do with a shader is set uniform values inside the shader.
+This might not be the best way to do it, but for now I'll just have a separate member function for each uniform type that we need to support,
+and for now we will support only these 3:
+    void setUniform1f(const char* uniformName, float value);
+    void setUniform3fv(const char* uniformName, const glm::vec3& value);
+    void setUniformMatrix4fv(const char* uniformName, const glm::mat4& value);
+Later whenever we need a new uniform type we will just add a new member function.
+This will not be the final solution, ultimately we should do something with templates/macros, but good enough for now.
+Each of these functions needs to retrieve the location of the uniform with given name inside the shader,
+and then set the given value to that uniform location.
+Let's create a function for retrieving the uniform location for a given uniform name, because this is common to all uniform types.
+    int getUniformLocation(const std::string& uniformName) const;
+A little optimization that we can do here is we can cache uniform locations,
+so that if client sets some uniform multiple times we don't retrieve it's location by an OpenGL call each time anew.
+Instead we will retrieve the uniform location with an OpenGL call only the first time,
+we will cache it,
+and subsequent times we will just get the uniform location from cache.
+The cache can be a simple std::unordered_map from string to int
+    mutable std::unordered_map<std::string, int> uniformLocationCache;
+That's it for uniforms.
+
+----------
+23.02.2025
+----------
+
+Shader class is basically ready now, let's test it by using it in DemoScene.
+Okay, it works.
+}

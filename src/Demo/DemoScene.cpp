@@ -51,64 +51,25 @@ namespace Demo
             glClear(GL_COLOR_BUFFER_BIT);
         }
 
-        glUseProgram(shaderProgram);
+        shader.bind();
         vertexArray.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         vertexArray.unbind();
+        shader.unbind();
 	}
 
 	void DemoScene::exit()
 	{
         vertexBuffer.destroy();
         vertexArray.destroy();
+        shader.destroy();
 
         glDeleteBuffers(1, &ebo);
-        glDeleteProgram(shaderProgram);
 	}
 
 	bool DemoScene::_init()
 	{
-        // Compile vertex shader
-        unsigned vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-        glCompileShader(vertexShader);
-        // Check for shader compile errors
-        int success;
-        char infoLog[512];
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-            PK_LOG_ERRORF("ERROR: Vertex shader failed to compile with the following error: " << infoLog);
-            return false;
-        }
-        // Compile fragment shader
-        unsigned fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-        glCompileShader(fragmentShader);
-        // Check for shader compile errors
-        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-            PK_LOG_ERRORF("ERROR: Fragment shader failed to compile with the following error: " << infoLog);
-            return false;
-        }
-        // Link shaders
-        shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, vertexShader);
-        glAttachShader(shaderProgram, fragmentShader);
-        glLinkProgram(shaderProgram);
-        // Check for linking errors
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-        if (!success) {
-            glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-            PK_LOG_ERRORF("ERROR: Shader program failed to link with the following error: " << infoLog);
-            return false;
-        }
-        // Delete vertex shader and fragment shader, as they are already linked into a shader program
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
+        shader.create(vertexShaderSource, fragmentShaderSource);
 
         // Set up vertex data and configure vertex attributes
         float vertices[] = {

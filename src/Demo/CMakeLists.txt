@@ -16,6 +16,7 @@ add_executable(Demo
 target_link_libraries(Demo PRIVATE
     PekanCore
     PekanRenderer
+    glm
     imgui # TODO: This should be removed once Pekan provides ImGui wrappers
     glad # TODO: This should be removed once Pekan provides OpenGL wrappers
 )
