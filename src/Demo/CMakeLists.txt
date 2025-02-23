@@ -20,3 +20,7 @@ target_link_libraries(Demo PRIVATE
     imgui # TODO: This should be removed once Pekan provides ImGui wrappers
     glad # TODO: This should be removed once Pekan provides OpenGL wrappers
 )
+
+# Set Demo's working directory to be Demo's source directory
+# so that we can write filepaths of resources relative to Demo's source directory.
+set_target_properties(Demo PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")

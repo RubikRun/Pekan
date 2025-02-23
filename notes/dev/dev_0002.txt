@@ -589,3 +589,25 @@ That's it for uniforms.
 Shader class is basically ready now, let's test it by using it in DemoScene.
 Okay, it works.
 }
+
+{
+Before continuing, now is a good time to write a function that reads a text file into a string,
+so that we can read shader's source code from file, instead of having it hardcoded.
+
+Let's create 2 new files in PekanCore
+    PekanUtils.h
+    PekanUtils.cpp
+for utility functions, not really related to the specifics of Pekan, just every-day useful functions.
+We can add our new function for reading a text file there
+    std::string readFileToString(const char* filePath);
+and we can use that to read shader's source code from these 2 new files
+    src/Demo/resources/vertex.shader
+    src/Demo/resources/fragment.shader
+
+In CMake I had to change Demo's working directory to be Demo's source directory. By default it's the build directory.
+I needed to do this because in Demo's source code I want to be able to write filepaths to resources like that
+    "resources/vertex.shader"
+instead of
+    "../../src/Demo/resources/vertex.shader"
+or whatever the path is, if it was relative to the build directory.
+}

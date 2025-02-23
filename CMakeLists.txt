@@ -42,11 +42,16 @@ add_library(PekanCore STATIC
     src/PekanCore/PekanScene.h
     src/PekanCore/PekanGUIWindow.h
     src/PekanCore/PekanGUIWindow.cpp
+    src/PekanCore/Utils/PekanUtils.h
+    src/PekanCore/Utils/PekanUtils.cpp
 )
 
 # Group Logger files under a virtual folder called "Logger"
 SOURCE_GROUP("Source Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.cpp)
 SOURCE_GROUP("Header Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.h)
+# Group Utils files under a virtual folder called "Utils"
+SOURCE_GROUP("Source Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.cpp)
+SOURCE_GROUP("Header Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.h)
 
 # Set link libraries for PekanCore
 target_link_libraries(PekanCore PRIVATE
