@@ -29,6 +29,7 @@ namespace Renderer {
 
 		// Functions for setting the value of a uniform inside the shader
 		void setUniform1f(const char* uniformName, float value);
+		void setUniform2fv(const char* uniformName, const glm::vec2& value);
 		void setUniform3fv(const char* uniformName, const glm::vec3& value);
 		void setUniformMatrix4fv(const char* uniformName, const glm::mat4& value);
 

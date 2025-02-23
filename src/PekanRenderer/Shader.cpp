@@ -61,6 +61,12 @@ namespace Renderer {
 		glUniform1f(location, value);
 	}
 
+	void Shader::setUniform2fv(const char* uniformName, const glm::vec2& value)
+	{
+		const GLint location = getUniformLocation(uniformName);
+		glUniform2fv(location, 1, glm::value_ptr(value));
+	}
+
 	void Shader::setUniform3fv(const char* uniformName, const glm::vec3& value) {
 		const GLint location = getUniformLocation(uniformName);
 		glUniform3fv(location, 1, glm::value_ptr(value));

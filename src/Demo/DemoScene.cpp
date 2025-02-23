@@ -19,6 +19,10 @@ namespace Demo
 
 	void DemoScene::update()
 	{
+        shader.bind();
+        const ImVec2& position = guiWindow->getPosition();
+        shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+        shader.unbind();
 	}
 
 	void DemoScene::render()

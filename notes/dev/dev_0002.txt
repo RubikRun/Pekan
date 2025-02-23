@@ -611,3 +611,20 @@ instead of
     "../../src/Demo/resources/vertex.shader"
 or whatever the path is, if it was relative to the build directory.
 }
+
+{
+Our current DemoScene doesn't really test uniforms because it doesn't have any uniforms.
+Let's add a uniform to our vertex shader - a uniform for the square's position
+    uniform vec2 uPosition;
+Let's also add another component to GUI for controlling square's position
+    ImVec2 position = ImVec2(0.0f, 0.0f);
+Now all we need to do is set the value of uPosition uniform to the current value from GUI, and do this every frame, so inside
+    DemoScene::update()
+do this
+    const ImVec2& position = guiWindow->getPosition();
+    shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+We will also have to bind the shader before doing this, because we specifically unbind it at the end of render().
+
+Okay, it works.
+Considering shaders done now.
+}
