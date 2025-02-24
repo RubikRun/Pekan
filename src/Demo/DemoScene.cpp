@@ -51,10 +51,9 @@ namespace Demo
 	void DemoScene::exit()
 	{
         vertexBuffer.destroy();
+        indexBuffer.destroy();
         vertexArray.destroy();
         shader.destroy();
-
-        glDeleteBuffers(1, &ebo);
 	}
 
 	bool DemoScene::_init()
@@ -75,17 +74,17 @@ namespace Demo
             0, 1, 3,  // first triangle
             1, 2, 3   // second triangle
         };
+
+        // Create a vertex array
+        vertexArray.create();
+
         // Create a vertex buffer with vertices data
         vertexBuffer.create(vertices, sizeof(vertices), { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
-        // Create a vertex array. Add vertex buffer to it.
-        vertexArray.create();
-        vertexArray.addVertexBuffer(vertexBuffer);
+        // Create an index buffer with indices data
+        indexBuffer.create(indices, sizeof(indices));
 
-        // Create an element buffer object
-        glGenBuffers(1, &ebo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        // Fill element buffer object with indices data
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        // Add vertex buffer to vertex array
+        vertexArray.addVertexBuffer(vertexBuffer);
 
         return true;
 	}

@@ -3,3 +3,5 @@
 0002 23.02.2024 (TODO): Create a base class RenderingComponent with common functions and variables
                         between different OpenGL objects, for example Shader, VertexBuffer, VertexArray, etc.
                         All of them need to have create(), destroy(), bind(), unbind(), isValid(), id, etc.
+0003 23.02.2024 (TODO): Provide optional parameter of create() function of VertexBuffer and IndexBuffer
+                        for the value that is currently hardcoded as GL_STATIC_DRAW

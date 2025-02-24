@@ -628,3 +628,18 @@ We will also have to bind the shader before doing this, because we specifically 
 Okay, it works.
 Considering shaders done now.
 }
+
+{
+Next OpenGL wrapper will be
+    IndexBuffer
+It's really simple because it's the same as VertexBuffer,
+only difference is we're passing this to OpenGL calls
+    GL_ELEMENT_ARRAY_BUFFER
+instead of this
+    GL_ARRAY_BUFFER
+It could be argued that it's better to have a single Buffer class and let this buffer type be a parameter,
+but for now, having only 2 types of buffers, I don't want to overcomplicate stuff so I'll leave it like that.
+
+Let's try using IndexBuffer in DemoScene.
+Okay, it works.
+}

@@ -2,6 +2,7 @@
 
 #include "PekanScene.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
 
@@ -31,12 +32,11 @@ namespace Demo
 
 		Pekan::Renderer::VertexBuffer vertexBuffer;
 
+		Pekan::Renderer::IndexBuffer indexBuffer;
+
 		Pekan::Renderer::VertexArray vertexArray;
 
 		Pekan::Renderer::Shader shader;
-
-		// Element buffer object ID
-		unsigned ebo;
 
 		// GUI window for controlling background's color
 		const DemoGUIWindow* guiWindow = nullptr;

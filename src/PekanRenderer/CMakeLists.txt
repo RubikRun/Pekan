@@ -3,10 +3,12 @@ project(PekanRenderer)
 
 # Add a static library PekanRenderer, compiling the following source files
 add_library(PekanRenderer STATIC
-    VertexBuffer.h
-    VertexBuffer.cpp
     PekanRenderer.h
     PekanRenderer.cpp
+    VertexBuffer.h
+    VertexBuffer.cpp
+    IndexBuffer.h
+    IndexBuffer.cpp
     VertexArray.h
     VertexArray.cpp
     Shader.h
