@@ -48,6 +48,8 @@ namespace Renderer
 		// Sets background's color, used to clear window
 		static void setBackgroundColor(const glm::vec4& backgroundColor);
 
+	private: /* functions */
+
 		// Returns the OpenGL enum value corresponding to the given draw mode
 		static unsigned getDrawModeOpenGLEnum(DrawMode drawMode);
 
@@ -61,6 +63,9 @@ namespace Renderer
 
 		// Returns number of components of a given shader data type
 		static unsigned getShaderDataTypeComponentsCount(ShaderDataType type);
+
+		friend class VertexArray;
+		friend class VertexBufferElement;
 	};
 
 } // namespace Renderer
