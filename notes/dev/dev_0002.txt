@@ -660,4 +660,26 @@ Let's first create wrapper functions for the first 2 inside PekanRenderer
 and use them in DemoScene.
 Done, it works.
 
+Now create a similar wrapper function for glDrawElements()
+    static void draw(unsigned elementsCount, DrawMode mode);
+We don't need the last 2 parameters of glDrawElements() for now, so we will support only the first 2.
+For the last 2 we'll just hardcode
+    GL_UNSIGNED_INT, 0
+meaning
+    use GL_UNSIGNED_INT as indices type
+and
+    use 0 (nullptr) as indices data
+so basically we don't use indices.
+We have our indices in an IndexBuffer so we don't need these parameters. If we need them later we'll add them then.
+
+I didn't want to use OpenGL enums for the draw mode because then client would have to pass OpenGL values and we want client to NOT use raw OpenGL.
+So I had to create a Pekan enum DrawMode with the 12 different values corresponding to the 12 OpenGL enums that glDrawElements() supports.
+For easy conversion between this Pekan enum and the OpenGL enum I added this function
+    static unsigned getDrawModeOpenGLEnum(DrawMode drawMode);
+
+Now the implementation of PekanRenderer's draw() function is just this
+    glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0);
+
+Let's see if it works in DemoScene.
+Yep, it works.
 }

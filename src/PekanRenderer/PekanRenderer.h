@@ -14,15 +14,38 @@ namespace Renderer
 		None = 0, Float = 1, Float2 = 2, Float3 = 3, Float4 = 4, Mat3 = 5, Mat4 = 6, Int = 7, Int2 = 8, Int3 = 9, Int4 = 10, Bool = 11
 	};
 
+	// Enum for different types of draw modes. Each mode specifies a kind of primitive to render.
+	enum class DrawMode
+	{
+		Points = 0,
+		LineStrip = 1,
+		LineLoop = 2,
+		Lines = 3,
+		LineStripAdjacency = 4,
+		LinesAdjacency = 5,
+		TriangleStrip = 6,
+		TriangleFan = 7,
+		Triangles = 8,
+		TriangleStripAdjacency = 9,
+		TrianglesAdjacency = 10,
+		Patches = 11
+	};
+
 	class PekanRenderer
 	{
 	public:
+
+		// Draws elements from currently bound vertex buffer
+		static void draw(unsigned elementsCount, DrawMode mode);
 
 		// Clears everything rendered on window
 		static void clear();
 
 		// Sets background's color, used to clear window
 		static void setBackgroundColor(const glm::vec4& backgroundColor);
+
+		// Returns the OpenGL enum value corresponding to the given draw mode
+		static unsigned getDrawModeOpenGLEnum(DrawMode drawMode);
 
 		// Returns the OpenGL base data type corresponding to the given shader data type.
 		// Here "base type" means that the given shader data type can be multi-component

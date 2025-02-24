@@ -7,6 +7,7 @@ using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::VertexBufferElement;
 using Pekan::Renderer::VertexBufferLayout;
 using Pekan::Renderer::ShaderDataType;
+using Pekan::Renderer::DrawMode;
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -42,7 +43,7 @@ namespace Demo
 
         shader.bind();
         vertexArray.bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        PekanRenderer::draw(6, DrawMode::Triangles);
         vertexArray.unbind();
         shader.unbind();
 	}

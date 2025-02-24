@@ -5,3 +5,4 @@
                         All of them need to have create(), destroy(), bind(), unbind(), isValid(), id, etc.
 0003 23.02.2024 (TODO): Provide optional parameter of create() function of VertexBuffer and IndexBuffer
                         for the value that is currently hardcoded as GL_STATIC_DRAW
+0004 24.02.2024 (TODO): Wrap all OpenGL calls in an OpenGL error-checking macro

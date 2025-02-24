@@ -9,6 +9,11 @@ namespace Pekan
 namespace Renderer
 {
 
+	void PekanRenderer::draw(unsigned elementsCount, DrawMode mode)
+	{
+		glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0);
+	}
+
 	void PekanRenderer::clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -19,9 +24,31 @@ namespace Renderer
 		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
 	}
 
+	unsigned PekanRenderer::getDrawModeOpenGLEnum(DrawMode drawMode)
+	{
+		switch (drawMode)
+		{
+			case DrawMode::Points:    return GL_POINTS;
+			case DrawMode::LineStrip:   return GL_LINE_STRIP;
+			case DrawMode::LineLoop:   return GL_LINE_LOOP;
+			case DrawMode::Lines:   return GL_LINES;
+			case DrawMode::LineStripAdjacency:     return GL_LINE_STRIP_ADJACENCY;
+			case DrawMode::LinesAdjacency:     return GL_LINES_ADJACENCY;
+			case DrawMode::TriangleStrip:      return GL_TRIANGLE_STRIP;
+			case DrawMode::TriangleFan:     return GL_TRIANGLE_FAN;
+			case DrawMode::Triangles:     return GL_TRIANGLES;
+			case DrawMode::TriangleStripAdjacency:     return GL_TRIANGLE_STRIP_ADJACENCY;
+			case DrawMode::TrianglesAdjacency:     return GL_TRIANGLES_ADJACENCY;
+			case DrawMode::Patches: return GL_PATCHES;
+		}
+		PK_LOG_ERRORF("Unknown DrawMode, cannot determine OpenGL enum.");
+		return 0;
+	}
+
 	GLenum PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
 	{
-		switch (type) {
+		switch (type)
+		{
 			case ShaderDataType::Float:    return GL_FLOAT;
 			case ShaderDataType::Float2:   return GL_FLOAT;
 			case ShaderDataType::Float3:   return GL_FLOAT;
@@ -40,7 +67,8 @@ namespace Renderer
 
 	unsigned PekanRenderer::getShaderDataTypeSize(ShaderDataType type)
 	{
-		switch (type) {
+		switch (type)
+		{
 			case ShaderDataType::Float:    return 4;
 			case ShaderDataType::Float2:   return 4 * 2;
 			case ShaderDataType::Float3:   return 4 * 3;
@@ -59,7 +87,8 @@ namespace Renderer
 
 	unsigned PekanRenderer::getShaderDataTypeComponentsCount(ShaderDataType type)
 	{
-		switch (type) {
+		switch (type)
+		{
 			case ShaderDataType::Float:   return 1;
 			case ShaderDataType::Float2:  return 2;
 			case ShaderDataType::Float3:  return 3;
