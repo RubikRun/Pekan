@@ -643,3 +643,21 @@ but for now, having only 2 types of buffers, I don't want to overcomplicate stuf
 Let's try using IndexBuffer in DemoScene.
 Okay, it works.
 }
+
+----------
+24.02.2025
+----------
+
+{
+Now looking at DemoScene, the only raw OpenGL calls left are
+    glClearColor()
+    glClear()
+    glDrawElements()
+
+Let's first create wrapper functions for the first 2 inside PekanRenderer
+    static void clear();
+    static void setBackgroundColor(const glm::vec4& backgroundColor);
+and use them in DemoScene.
+Done, it works.
+
+}

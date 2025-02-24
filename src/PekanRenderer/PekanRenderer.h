@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include <glm/glm.hpp>
 
 namespace Pekan
 {
@@ -18,10 +18,16 @@ namespace Renderer
 	{
 	public:
 
+		// Clears everything rendered on window
+		static void clear();
+
+		// Sets background's color, used to clear window
+		static void setBackgroundColor(const glm::vec4& backgroundColor);
+
 		// Returns the OpenGL base data type corresponding to the given shader data type.
 		// Here "base type" means that the given shader data type can be multi-component
 		// and the function will return the type of a single component of that type.
-		static GLenum getShaderDataTypeOpenGLBaseType(ShaderDataType type);
+		static unsigned getShaderDataTypeOpenGLBaseType(ShaderDataType type);
 
 		// Returns size in bytes of a given shader data type
 		static unsigned getShaderDataTypeSize(ShaderDataType type);

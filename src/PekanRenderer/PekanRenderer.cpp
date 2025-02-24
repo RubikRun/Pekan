@@ -2,10 +2,22 @@
 #define PK_FILENAME "PekanRenderer.cpp"
 #include "Logger/PekanLogger.h"
 
+#include <glad/glad.h>
+
 namespace Pekan
 {
 namespace Renderer
 {
+
+	void PekanRenderer::clear()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	void PekanRenderer::setBackgroundColor(const glm::vec4& backgroundColor)
+	{
+		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
+	}
 
 	GLenum PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
 	{

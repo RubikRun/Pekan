@@ -31,14 +31,13 @@ namespace Demo
         if (guiWindow != nullptr)
         {
             const ImVec4& clearColor = guiWindow->getClearColor();
-            glClearColor(clearColor.x * clearColor.w, clearColor.y * clearColor.w, clearColor.z * clearColor.w, clearColor.w);
-            glClear(GL_COLOR_BUFFER_BIT);
+            PekanRenderer::setBackgroundColor(glm::vec4(clearColor.x, clearColor.y, clearColor.z, clearColor.w));
+            PekanRenderer::clear();
         }
         else
         {
-            // If there is no GUI window attached, just clear background with black
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            // If there is no GUI window attached, just clear background with default color
+            PekanRenderer::clear();
         }
 
         shader.bind();
