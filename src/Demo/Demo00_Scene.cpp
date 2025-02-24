@@ -42,7 +42,7 @@ namespace Demo
 
         shader.bind();
         vertexArray.bind();
-        PekanRenderer::draw(6, DrawMode::Triangles);
+        PekanRenderer::drawIndexed(6, DrawMode::Triangles);
         vertexArray.unbind();
         shader.unbind();
 	}

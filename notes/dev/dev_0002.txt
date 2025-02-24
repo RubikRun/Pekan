@@ -727,3 +727,21 @@ so I brought back the glm dependency of Demo project.
 There are a couple of problems, and it's good that in Demo01 I can see clearly what they are.
 It's almost obvious how we need to extend the API.
 }
+
+{
+So let's start extending PekanRenderer's API so that Demo01 doesn't need to do raw OpenGL calls.
+
+Not in any particular order, the first thing that I see is
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 2);
+We already have a draw() function in PekanRenderer() but it does a call to
+    glDrawElements()
+I'll create a new function in PekanRenderer
+    static void drawIndexed(unsigned elementsCount, DrawMode mode = DrawMode::Triangles);
+that will do this same call to
+    glDrawElements()
+and the old function
+    draw()
+will do the new call to
+    glDrawArrays()
+
+}

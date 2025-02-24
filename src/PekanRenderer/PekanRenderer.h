@@ -35,8 +35,12 @@ namespace Renderer
 	{
 	public:
 
-		// Draws elements from currently bound vertex buffer
-		static void draw(unsigned elementsCount, DrawMode mode);
+		// Draws elements from currently bound vertex buffer in the order that they appear
+		static void draw(unsigned elementsCount, DrawMode mode = DrawMode::Triangles);
+
+		// Draws elements from currently bound vertex buffer.
+		// Uses currently bound index buffer to determine which elements to draw and in what order.
+		static void drawIndexed(unsigned elementsCount, DrawMode mode = DrawMode::Triangles);
 
 		// Clears everything rendered on window
 		static void clear();

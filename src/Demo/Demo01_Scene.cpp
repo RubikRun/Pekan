@@ -80,7 +80,7 @@ namespace Demo
 
         shader.bind();
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 5);
+        PekanRenderer::draw(vertices.size() / 6);
         glBindVertexArray(0);
         shader.unbind();
 	}

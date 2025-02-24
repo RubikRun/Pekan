@@ -11,6 +11,11 @@ namespace Renderer
 
 	void PekanRenderer::draw(unsigned elementsCount, DrawMode mode)
 	{
+		glDrawArrays(getDrawModeOpenGLEnum(mode), 0, elementsCount);
+	}
+
+	void PekanRenderer::drawIndexed(unsigned elementsCount, DrawMode mode)
+	{
 		glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0);
 	}
 
