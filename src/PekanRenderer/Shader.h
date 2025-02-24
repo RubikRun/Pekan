@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "glad/glad.h"
 
 #include <string>
 #include <unordered_map>
@@ -39,7 +38,7 @@ namespace Renderer {
 		// "Shader" here means a single shader type, for example a vertex shader.
 		// It does NOT mean a whole shader program.
 		// Returns compiled shader's ID
-		unsigned compileShader(GLenum shaderType, const char* sourceCode);
+		unsigned compileShader(unsigned shaderType, const char* sourceCode);
 
 		// Returns the location inside the shader of the uniform with the given name.
 		// If such uniform doesn't exist, returns -1.

@@ -18,7 +18,6 @@ target_link_libraries(Demo PRIVATE
     PekanRenderer
     glm
     imgui # TODO: This should be removed once Pekan provides ImGui wrappers
-    glad # TODO: This should be removed once Pekan provides OpenGL wrappers
 )
 
 # Set Demo's working directory to be Demo's source directory

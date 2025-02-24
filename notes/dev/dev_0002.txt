@@ -683,3 +683,12 @@ Now the implementation of PekanRenderer's draw() function is just this
 Let's see if it works in DemoScene.
 Yep, it works.
 }
+
+{
+We reached the point where we have OpenGL wrappers for everything used in DemoScene.
+DemoScene doesn't make raw OpenGL calls anymore, instead it uses PekanRenderer's API.
+To make sure let's remove glad dependecy from Demo project in CMake.
+There were some tiny problems, glad.h was included in some PekanRenderer headers, where GLenum was used,
+but I replaced GLenum with unsigned and moved the glad.h include into the source files.
+It works now.
+}

@@ -9,7 +9,6 @@ using Pekan::Renderer::VertexBufferLayout;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 static const char* vertexShaderFilePath = "resources/vertex_shader.glsl";

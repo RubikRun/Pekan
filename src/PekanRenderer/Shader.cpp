@@ -2,6 +2,7 @@
 #define PK_FILENAME "Shader.cpp"
 #include "Logger/PekanLogger.h"
 
+#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Pekan {
@@ -77,7 +78,7 @@ namespace Renderer {
 		glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
 	}
 
-	unsigned Shader::compileShader(GLenum shaderType, const char* sourceCode) {
+	unsigned Shader::compileShader(unsigned shaderType, const char* sourceCode) {
 		const GLuint shaderID = glCreateShader(shaderType);
 		glShaderSource(shaderID, 1, &sourceCode, nullptr);
 		glCompileShader(shaderID);
