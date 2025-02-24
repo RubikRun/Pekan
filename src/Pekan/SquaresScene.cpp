@@ -145,7 +145,7 @@ namespace Pekan
     {
         glUseProgram(shaderProgram);
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 2);
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 6);
         glBindVertexArray(0);
     }
 
