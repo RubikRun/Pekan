@@ -1,4 +1,6 @@
 #include "VertexBuffer.h"
+#define PK_FILENAME "VertexBuffer.cpp"
+#include "Logger/PekanLogger.h"
 
 #include <glad/glad.h>
 
@@ -49,12 +51,22 @@ namespace Renderer
 		}
 	}
 
-	void VertexBuffer::create(const void* data, long long size, const VertexBufferLayout& layout)
+	void VertexBuffer::create(const VertexBufferLayout& layout)
 	{
+		this->layout = layout;
 		glGenBuffers(1, &id);
 		bind();
-		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-		this->layout = layout;
+	}
+
+	void VertexBuffer::create(
+		const VertexBufferLayout& layout,
+		const void* data,
+		long long size,
+		VertexBufferDataUsage dataUsage
+	)
+	{
+		create(layout);
+		setData(data, size, dataUsage);
 	}
 
 	void VertexBuffer::destroy()
@@ -62,6 +74,12 @@ namespace Renderer
 		unbind();
 		glDeleteBuffers(1, &id);
 		id = 0;
+	}
+
+	void VertexBuffer::setData(const void* data, long long size, VertexBufferDataUsage dataUsage)
+	{
+		bind();
+		glBufferData(GL_ARRAY_BUFFER, size, data, getDataUsageOpenGLEnum(dataUsage));
 	}
 
 	void VertexBuffer::bind() const
@@ -72,6 +90,24 @@ namespace Renderer
 	void VertexBuffer::unbind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	unsigned VertexBuffer::getDataUsageOpenGLEnum(VertexBufferDataUsage dataUsage)
+	{
+		switch (dataUsage)
+		{
+			case VertexBufferDataUsage::StreamDraw:     return GL_STREAM_DRAW;
+			case VertexBufferDataUsage::StreamRead:     return GL_STREAM_READ;
+			case VertexBufferDataUsage::StreamCopy:     return GL_STREAM_COPY;
+			case VertexBufferDataUsage::StaticDraw:     return GL_STATIC_DRAW;
+			case VertexBufferDataUsage::StaticRead:     return GL_STATIC_READ;
+			case VertexBufferDataUsage::StaticCopy:     return GL_STATIC_COPY;
+			case VertexBufferDataUsage::DynamicDraw:    return GL_DYNAMIC_DRAW;
+			case VertexBufferDataUsage::DynamicRead:    return GL_DYNAMIC_READ;
+			case VertexBufferDataUsage::DynamicCopy:    return GL_DYNAMIC_COPY;
+		}
+		PK_LOG_ERRORF("Unknown VertexBufferDataUsage, cannot determine OpenGL enum.");
+		return 0;
 	}
 
 } // namespace Renderer

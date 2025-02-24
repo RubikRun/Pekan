@@ -747,4 +747,45 @@ will do the new call to
 Let's do TODO 0005.
 Done.
 
+Let's address probably the biggest problem in Demo01 for our API.
+Currently VertexBuffer's create() function does 2 things
+- creates the vertex buffer object
+- fills it with data
+In Demo01 we actually need to create the vertex buffer separately at the beginning,
+and then at every frame feed it with different data.
+Layout will remain the same though, so this can still be done when adding vertex buffer to vertex array.
+
+So let's have 2 separate create() functions, one with data and one without
+    void create(const VertexBufferLayout& layout);
+    void create(const VertexBufferLayout& layout, const void* data, long long size);
+Let's also have a setData() function for setting the data after having created the vertex buffer
+    void setData(const void* data, long long size);
+
+Now I see that this final parameter of glBufferData() is also important
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+    GL_DYNAMIC_DRAW
+It's the "usage" of this data. In Demo00 it's GL_STATIC_DRAW, but here in Demo01 it has to be GL_DYNAMIC_DRAW,
+so let's provide support for this parameter in our setData() function.
+For that, we'll need to have an enum for all possible usages, similar to the DrawMode enum. So our new enum will be
+    enum class VertexBufferDataUsage
+    {
+        StreamDraw = 0,
+        StreamRead = 1,
+        StreamCopy = 2,
+        StaticDraw = 3,
+        StaticRead = 4,
+        StaticCopy = 5,
+        DynamicDraw = 6,
+        DynamicRead = 7,
+        DynamicCopy = 8
+    };
+Okay, done.
+Let's see now if we can use VertexBuffer in Demo01.
+Hmmm I did it, and it builds, but it doesn't work, shows black screen.
+Why?
+Because VertexBuffer's layout is actually handled when we add the vertex buffer to a vertex array,
+which is a bit weird, but it kinda makes sense, because VertexArray is what ties a vertex buffer to its layout.
+Let's use VertexArray as well in Demo01, and it should work.
+Yep, works now.
+
 }

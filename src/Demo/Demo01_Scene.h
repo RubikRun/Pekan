@@ -51,10 +51,11 @@ namespace Demo
 		// Array of vertex data of currently existing squares
 		std::vector<float> vertices;
 
-		Pekan::Renderer::Shader shader;
+		Pekan::Renderer::VertexBuffer vertexBuffer;
 
-		unsigned vao = 0;
-		unsigned vbo = 0;
+		Pekan::Renderer::VertexArray vertexArray;
+
+		Pekan::Renderer::Shader shader;
 	};
 
 } // namespace Demo

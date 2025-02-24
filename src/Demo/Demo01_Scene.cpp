@@ -8,6 +8,7 @@
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::VertexBufferElement;
 using Pekan::Renderer::VertexBufferLayout;
+using Pekan::Renderer::VertexBufferDataUsage;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 
@@ -64,13 +65,8 @@ namespace Demo
             vertices.insert(vertices.end(), std::begin(squareVertices), std::end(squareVertices));
         }
 
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(1);
+        vertexArray.bind();
+        vertexBuffer.setData(vertices.data(), vertices.size() * sizeof(float), VertexBufferDataUsage::DynamicDraw);
 	}
 
 	void Demo01_Scene::render()
@@ -79,16 +75,16 @@ namespace Demo
         PekanRenderer::clear();
 
         shader.bind();
-        glBindVertexArray(vao);
+        vertexArray.bind();
         PekanRenderer::draw(vertices.size() / 6);
-        glBindVertexArray(0);
+        vertexArray.unbind();
         shader.unbind();
 	}
 
 	void Demo01_Scene::exit()
 	{
-        glDeleteVertexArrays(1, &vao);
-        glDeleteBuffers(1, &vbo);
+        vertexBuffer.destroy();
+        vertexArray.destroy();
         shader.destroy();
 	}
 
@@ -114,9 +110,11 @@ namespace Demo
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
 
-        // Generate a vertex array object, and a vertex buffer object
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
+        // Create a vertex array
+        vertexArray.create();
+        // Create an empty vertex buffer, with layout specified, and add it to vertex array
+        vertexBuffer.create({ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
+        vertexArray.addVertexBuffer(vertexBuffer);
 
         return true;
 	}

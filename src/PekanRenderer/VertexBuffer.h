@@ -10,6 +10,20 @@ namespace Pekan
 namespace Renderer
 {
 
+	// Enum for different types of usage of a vertex buffer
+	enum class VertexBufferDataUsage
+	{
+		StreamDraw = 0,
+		StreamRead = 1,
+		StreamCopy = 2,
+		StaticDraw = 3,
+		StaticRead = 4,
+		StaticCopy = 5,
+		DynamicDraw = 6,
+		DynamicRead = 7,
+		DynamicCopy = 8
+	};
+
 	// An element from a layout of a vertex buffer.
 	// Usually corresponds to a vertex attribute inside a shader.
 	struct VertexBufferElement
@@ -81,13 +95,22 @@ namespace Renderer
 
 		~VertexBuffer();
 
-		// Creates the underlying vertex buffer object,
-		// initializes it with given data and binds it.
+		// Creates the underlying vertex buffer object and binds it
+		void create(const VertexBufferLayout& layout);
+		// Creates the underlying vertex buffer object, fills it with given data, and binds it
 		// @param data - raw data to be filled to the vertex buffer
 		// @param size - size of data, in bytes
-		void create(const void* data, long long size, const VertexBufferLayout& layout);
+		void create(
+			const VertexBufferLayout& layout,
+			const void* data,
+			long long size,
+			VertexBufferDataUsage dataUsage = VertexBufferDataUsage::StaticDraw
+		);
 		// Deletes the vertex buffer and unbinds it.
 		void destroy();
+
+		// Fills vertex buffer with given data. Any previous data is removed.
+		void setData(const void* data, long long size, VertexBufferDataUsage dataUsage = VertexBufferDataUsage::StaticDraw);
 
 		// Checks if vertex buffer is valid, meaning that it has been successfully created and not yet destroyed
 		inline bool isValid() const { return id != 0; }
@@ -97,13 +120,19 @@ namespace Renderer
 		void bind() const;
 		void unbind() const;
 
-	private:
+	private: /* functions */
+
+		// Returns the OpenGL enum value corresponding to the given data usage
+		static unsigned getDataUsageOpenGLEnum(VertexBufferDataUsage dataUsage);
+
+	private: /* variables */
 
 		// ID of the vertex buffer object
 		unsigned id = 0;
 
-		// Layout of vertex buffer
 		VertexBufferLayout layout;
+
+		VertexBufferDataUsage dataUsage = VertexBufferDataUsage::StaticDraw;
 	};
 
 } // namespace Renderer
