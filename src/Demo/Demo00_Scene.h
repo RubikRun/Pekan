@@ -6,12 +6,12 @@
 #include "VertexArray.h"
 #include "Shader.h"
 
-#include "DemoGUIWindow.h"
+#include "Demo00_GUIWindow.h"
 
 namespace Demo
 {
 
-	class DemoScene : public Pekan::PekanScene
+	class Demo00_Scene : public Pekan::PekanScene
 	{
 	public:
 
@@ -22,7 +22,7 @@ namespace Demo
 		void exit() override;
 		
 		// Attaches a GUI window for controlling background's color
-		void attachGUIWindow(const DemoGUIWindow* guiWindow) { this->guiWindow = guiWindow; }
+		void attachGUIWindow(const Demo00_GUIWindow* guiWindow) { this->guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -39,7 +39,7 @@ namespace Demo
 		Pekan::Renderer::Shader shader;
 
 		// GUI window for controlling background's color
-		const DemoGUIWindow* guiWindow = nullptr;
+		const Demo00_GUIWindow* guiWindow = nullptr;
 	};
 
 } // namespace Demo

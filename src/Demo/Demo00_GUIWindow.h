@@ -8,7 +8,7 @@ using Pekan::PekanGUIWindow;
 namespace Demo
 {
 
-	class DemoGUIWindow : public PekanGUIWindow
+	class Demo00_GUIWindow : public PekanGUIWindow
 	{
 	public:
 

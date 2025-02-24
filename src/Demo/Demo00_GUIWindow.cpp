@@ -1,4 +1,4 @@
-#include "DemoGUIWindow.h"
+#include "Demo00_GUIWindow.h"
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -6,7 +6,7 @@
 namespace Demo
 {
 
-	void DemoGUIWindow::_render()
+	void Demo00_GUIWindow::_render()
 	{
 		ImGui::SetNextWindowSize(ImVec2(200, 110));
 		ImGui::Begin("Pekan");
@@ -20,7 +20,7 @@ namespace Demo
 		ImGui::End();
 	}
 
-	bool DemoGUIWindow::_init()
+	bool Demo00_GUIWindow::_init()
 	{
 		return true;
 	}

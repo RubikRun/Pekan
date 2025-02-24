@@ -692,3 +692,38 @@ There were some tiny problems, glad.h was included in some PekanRenderer headers
 but I replaced GLenum with unsigned and moved the glad.h include into the source files.
 It works now.
 }
+
+{
+Now may be a good time to integrate the squares demo from playground branch
+into our current v0.1 branch, and see if our OpenGL wrappers work well under more complicated circumstances.
+We'll also see if we need any more OpenGL wrappers that might just not be required by our current DemoScene.
+
+There are way more OpenGL wrappers that we will need in the future,
+but the purpose now for v0.1 is to create a minimal working set of features,
+and the condition that I set for myself in the beginning of v0.1 was
+to be able to make the squares demo easily, without raw OpenGL calls.
+(Also without raw ImGui calls but this will be the work for the next couple of days. Now let's finish OpenGL first)
+
+I don't want to loose the current demo, I want to keep it around, so I'll rename its files to
+    Demo00_Application.h
+    Demo00_Application.cpp
+    Demo00_Scene.h
+    Demo00_Scene.cpp
+    Demo00_GUIWindow.h
+    Demo00_GUIWindow.cpp
+and the new demo's files will be called
+    Demo01_Application.h
+    Demo01_Application.cpp
+    Demo01_Scene.h
+    Demo01_Scene.cpp
+    Demo01_GUIWindow.h
+    Demo01_GUIWindow.cpp
+
+Okay, I integrated the squares demo as Demo01, it works now,
+but I couldn't really use most of PekanRenderer's API.
+In places where PekanRenderer's API doesn't support what needs to be done I used raw OpenGL calls,
+so I brought back the glm dependency of Demo project.
+
+There are a couple of problems, and it's good that in Demo01 I can see clearly what they are.
+It's almost obvious how we need to extend the API.
+}

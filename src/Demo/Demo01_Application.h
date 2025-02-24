@@ -6,7 +6,7 @@ using Pekan::PekanApplication;
 namespace Demo
 {
 
-	class DemoApplication : public PekanApplication
+	class Demo01_Application : public PekanApplication
 	{
 		bool _init() override;
 	};

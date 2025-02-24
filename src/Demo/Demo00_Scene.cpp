@@ -1,4 +1,4 @@
-#include "DemoScene.h"
+#include "Demo00_Scene.h"
 #define PK_FILENAME "DemoScene.cpp"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
@@ -11,13 +11,13 @@ using Pekan::Renderer::DrawMode;
 
 #include <GLFW/glfw3.h>
 
-static const char* vertexShaderFilePath = "resources/vertex_shader.glsl";
-static const char* fragmentShaderFilePath = "resources/fragment_shader.glsl";
+static const char* vertexShaderFilePath = "resources/00_vertex_shader.glsl";
+static const char* fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
 
 namespace Demo
 {
 
-	void DemoScene::update()
+	void Demo00_Scene::update()
 	{
         shader.bind();
         const ImVec2& position = guiWindow->getPosition();
@@ -25,7 +25,7 @@ namespace Demo
         shader.unbind();
 	}
 
-	void DemoScene::render()
+	void Demo00_Scene::render()
 	{
         // Clear background color
         if (guiWindow != nullptr)
@@ -47,7 +47,7 @@ namespace Demo
         shader.unbind();
 	}
 
-	void DemoScene::exit()
+	void Demo00_Scene::exit()
 	{
         vertexBuffer.destroy();
         indexBuffer.destroy();
@@ -55,7 +55,7 @@ namespace Demo
         shader.destroy();
 	}
 
-	bool DemoScene::_init()
+	bool Demo00_Scene::_init()
 	{
         shader.create(
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
