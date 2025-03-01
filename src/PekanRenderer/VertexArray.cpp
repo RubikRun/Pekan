@@ -36,13 +36,12 @@ namespace Renderer
 		glBindVertexArray(0);
 	}
 
-	void VertexArray::addVertexBuffer(const VertexBuffer& vertexBuffer) {
+	void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout) {
 		if (!vertexBuffer.isValid())
 		{
 			PK_LOG_ERRORF("Trying to add an invalid vertex buffer to a vertex array. It will not be added.");
 			return;
 		}
-		const VertexBufferLayout& layout = vertexBuffer.getLayout();
 		if (layout.getElements().empty())
 		{
 			PK_LOG_ERRORF("Trying to add a vertex buffer with an empty layout to a vertex array. It will not be added.");
@@ -67,8 +66,8 @@ namespace Renderer
 				reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
 			);
 		}
-		// Push the vertex buffer to the vector of vertex buffers inside the vertex array
-		vertexBuffers.push_back(vertexBuffer);
+		// Add vertex buffer, together with its layout, to vertex array
+		vertexBuffers.push_back(VertexBufferBinding(vertexBuffer, layout));
 	}
 
 

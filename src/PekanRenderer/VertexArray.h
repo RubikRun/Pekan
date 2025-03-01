@@ -27,12 +27,12 @@ namespace Renderer
 		void unbind() const;
 
 		// Adds a vertex buffer to the vertex array
-		void addVertexBuffer(const VertexBuffer& vertexBuffer);
+		void addVertexBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout);
 
 	private:
 
-		// List of vertex buffers associated with the vertex array
-		std::vector<VertexBuffer> vertexBuffers;
+		// List of vertex buffer bindings associated with the vertex array
+		std::vector<VertexBufferBinding> vertexBuffers;
 		
 		// ID of the vertex array object
 		unsigned id = 0;

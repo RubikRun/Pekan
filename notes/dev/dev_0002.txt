@@ -743,10 +743,14 @@ and the old function
     draw()
 will do the new call to
     glDrawArrays()
+}
 
+{
 Let's do TODO 0005.
 Done.
+}
 
+{
 Let's address probably the biggest problem in Demo01 for our API.
 Currently VertexBuffer's create() function does 2 things
 - creates the vertex buffer object
@@ -787,5 +791,51 @@ Because VertexBuffer's layout is actually handled when we add the vertex buffer 
 which is a bit weird, but it kinda makes sense, because VertexArray is what ties a vertex buffer to its layout.
 Let's use VertexArray as well in Demo01, and it should work.
 Yep, works now.
+}
 
+----------
+28.02.2025
+----------
+
+{
+Now thinking about it,
+it's weird that VertexBuffer "has" a layout, but what actually "creates" the OpenGL layout is VertexArray when you add a VertexBuffer to it.
+I spent some time thinking about this and I tried a few different options:
+- Enforcing clients to create VertexBuffers only through a VertexArray, by making VertexBuffer's constructor private and making VertexArray be a friend class.
+- Taking a pointer to a VertexArray as a parameter in VertexBuffer's create() function and adding the VertexBuffer to the VertexArray in that function
+I got quite confused with both of these approaches and I don't like them.
+
+----------
+01.03.2025
+----------
+Thinking again about this API design problem. Had a discussion with ChatGPT about it.
+I think the best approach is to simply NOT keep the layout as part of VertexBuffer.
+Currently VertexBuffer "has" a layout, which is simply not true in OpenGL,
+(
+    A vertex buffer only contains the data, it doesn't have a notion of the data's layout.
+    A vertex buffer could be used without a layout for some purposes, like compute shaders.
+    A vertex buffer could be used with 2 different layouts for some reason.
+)
+so it makes sense that our API is flawed.
+Let's make our API more closely mirror how OpenGL works,
+by making VertexArray hold a list of VertexBuffer's AND their layouts,
+and making VertexBuffer NOT hold a layout.
+
+A question now is how to name a struct that holds
+    VertexBuffer
+    VertexBufferLayout
+and then VertexArray will hold a list of that struct.
+I could also do it with std::pair<VertexBuffer, VertexBufferLayout> but that's what satan would do.
+Thought about different names for a while. Best one so far is
+    VertexBufferBinding
+so let's go with that.
+
+So, in conclusion,
+I'm getting rid of layout in VertexBuffer,
+and making VertexArray hold a list of VertexBufferBinding's.
+Then VertexArray's addVertexBuffer() function needs to take another parameter, which is the layout,
+and add both vertexBuffer and layout tied together in a VertexBufferBinding to the list.
+That's it.
+See if it works in the 2 demos.
+Yep, it works, and I'm 90% satisfied with the API, so good enough.
 }

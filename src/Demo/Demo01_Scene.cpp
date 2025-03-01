@@ -113,8 +113,8 @@ namespace Demo
         // Create a vertex array
         vertexArray.create();
         // Create an empty vertex buffer, with layout specified, and add it to vertex array
-        vertexBuffer.create({ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
-        vertexArray.addVertexBuffer(vertexBuffer);
+        vertexBuffer.create();
+        vertexArray.addVertexBuffer(vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
 
         return true;
 	}

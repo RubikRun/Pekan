@@ -79,7 +79,6 @@ namespace Demo
 
         // Create a vertex buffer with vertices data
         vertexBuffer.create(
-            { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
             vertices,
             sizeof(vertices)
         );
@@ -87,7 +86,7 @@ namespace Demo
         indexBuffer.create(indices, sizeof(indices));
 
         // Add vertex buffer to vertex array
-        vertexArray.addVertexBuffer(vertexBuffer);
+        vertexArray.addVertexBuffer(vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
 
         return true;
 	}
