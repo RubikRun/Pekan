@@ -839,3 +839,47 @@ That's it.
 See if it works in the 2 demos.
 Yep, it works, and I'm 90% satisfied with the API, so good enough.
 }
+
+{
+It looks like the only 2 OpenGL calls left in Demo01 are
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+and they belong together because they enable and configure blending.
+For them I will create 2 corresponding static functions in PekanRenderer
+    static void enableBlending();
+    static void setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor);
+together with this new enum for the different values of a blending factor
+    enum class BlendFactor
+    {
+        Zero,
+        One,
+        SrcColor,
+        OneMinusSrcColor,
+        DstColor,
+        OneMinusDstColor,
+        SrcAlpha,
+        OneMinusSrcAlpha,
+        DstAlpha,
+        OneMinusDstAlpha,
+        ConstantColor,
+        OneMinusConstantColor,
+        ConstantAlpha,
+        OneMinusConstantAlpha
+    };
+corresponding to the OpenGL values
+    GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+    GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA
+We will establish that correspondance in this new private static function in PekanRenderer
+    static unsigned getBlendFactorOpenGLEnum(BlendFactor blendFactor);
+(Same logic as the DrawMode enum)
+
+Now let's replace the 2 OpenGL calls in Demo02 with calls to our new functions.
+Done.
+It works.
+
+These were actually the last 2 OpenGL calls in Demo02.
+Confirm by removing glad dependecny from Demo project in CMake. Yep, it works.
+
+So, OpenGL wrappers are officially functionally complete!
+(meaning that they cover the functionality needed by Demo00 and Demo01, so that these 2 demos don't need raw OpenGL)
+}

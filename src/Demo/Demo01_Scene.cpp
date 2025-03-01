@@ -3,16 +3,13 @@
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
 
-#include <glad/glad.h>
-
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::VertexBufferElement;
 using Pekan::Renderer::VertexBufferLayout;
 using Pekan::Renderer::VertexBufferDataUsage;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
-
-#include <GLFW/glfw3.h>
+using Pekan::Renderer::BlendFactor;
 
 #define PI 3.14159265359f
 
@@ -101,9 +98,9 @@ namespace Demo
 
 	bool Demo01_Scene::_init()
 	{
-        // Enable blending
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // Enable and configure blending
+        PekanRenderer::enableBlending();
+        PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
         shader.create(
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),

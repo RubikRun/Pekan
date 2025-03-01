@@ -29,6 +29,36 @@ namespace Renderer
 		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
 	}
 
+	void PekanRenderer::enableBlending()
+	{
+		glEnable(GL_BLEND);
+	}
+
+	void PekanRenderer::setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor)
+	{
+		glBlendFunc(getBlendFactorOpenGLEnum(sourceFactor), getBlendFactorOpenGLEnum(destinationFactor));
+	}
+
+	GLenum PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
+	{
+		switch (type)
+		{
+		case ShaderDataType::Float:     return GL_FLOAT;
+		case ShaderDataType::Float2:    return GL_FLOAT;
+		case ShaderDataType::Float3:    return GL_FLOAT;
+		case ShaderDataType::Float4:    return GL_FLOAT;
+		case ShaderDataType::Mat3:      return GL_FLOAT;
+		case ShaderDataType::Mat4:      return GL_FLOAT;
+		case ShaderDataType::Int:       return GL_INT;
+		case ShaderDataType::Int2:      return GL_INT;
+		case ShaderDataType::Int3:      return GL_INT;
+		case ShaderDataType::Int4:      return GL_INT;
+		case ShaderDataType::Bool:      return GL_BOOL;
+		}
+		PK_LOG_ERRORF("Unknown ShaderDataType, cannot determine OpenGL base type.");
+		return 0;
+	}
+
 	unsigned PekanRenderer::getDrawModeOpenGLEnum(DrawMode drawMode)
 	{
 		switch (drawMode)
@@ -50,23 +80,26 @@ namespace Renderer
 		return 0;
 	}
 
-	GLenum PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
+	unsigned PekanRenderer::getBlendFactorOpenGLEnum(BlendFactor blendFactor)
 	{
-		switch (type)
+		switch (blendFactor)
 		{
-			case ShaderDataType::Float:     return GL_FLOAT;
-			case ShaderDataType::Float2:    return GL_FLOAT;
-			case ShaderDataType::Float3:    return GL_FLOAT;
-			case ShaderDataType::Float4:    return GL_FLOAT;
-			case ShaderDataType::Mat3:      return GL_FLOAT;
-			case ShaderDataType::Mat4:      return GL_FLOAT;
-			case ShaderDataType::Int:       return GL_INT;
-			case ShaderDataType::Int2:      return GL_INT;
-			case ShaderDataType::Int3:      return GL_INT;
-			case ShaderDataType::Int4:      return GL_INT;
-			case ShaderDataType::Bool:      return GL_BOOL;
+		case BlendFactor::Zero:                     return GL_ZERO;
+		case BlendFactor::One:                      return GL_ONE;
+		case BlendFactor::SrcColor:                 return GL_SRC_COLOR;
+		case BlendFactor::OneMinusSrcColor:         return GL_ONE_MINUS_SRC_COLOR;
+		case BlendFactor::DstColor:                 return GL_DST_COLOR;
+		case BlendFactor::OneMinusDstColor:         return GL_ONE_MINUS_DST_COLOR;
+		case BlendFactor::SrcAlpha:                 return GL_SRC_ALPHA;
+		case BlendFactor::OneMinusSrcAlpha:         return GL_ONE_MINUS_SRC_ALPHA;
+		case BlendFactor::DstAlpha:                 return GL_DST_ALPHA;
+		case BlendFactor::OneMinusDstAlpha:         return GL_ONE_MINUS_DST_ALPHA;
+		case BlendFactor::ConstantColor:            return GL_CONSTANT_COLOR;
+		case BlendFactor::OneMinusConstantColor:    return GL_ONE_MINUS_CONSTANT_COLOR;
+		case BlendFactor::ConstantAlpha:            return GL_CONSTANT_ALPHA;
+		case BlendFactor::OneMinusConstantAlpha:    return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
-		PK_LOG_ERRORF("Unknown ShaderDataType, cannot determine OpenGL base type.");
+		PK_LOG_ERRORF("Unknown BlendFactor, cannot determine OpenGL enum.");
 		return 0;
 	}
 

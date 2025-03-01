@@ -9,8 +9,6 @@ using Pekan::Renderer::VertexBufferLayout;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 
-#include <GLFW/glfw3.h>
-
 static const char* vertexShaderFilePath = "resources/00_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
 

@@ -31,6 +31,25 @@ namespace Renderer
 		Patches = 11
 	};
 
+	// Enum for different types of blending factors
+	enum class BlendFactor
+	{
+		Zero,
+		One,
+		SrcColor,
+		OneMinusSrcColor,
+		DstColor,
+		OneMinusDstColor,
+		SrcAlpha,
+		OneMinusSrcAlpha,
+		DstAlpha,
+		OneMinusDstAlpha,
+		ConstantColor,
+		OneMinusConstantColor,
+		ConstantAlpha,
+		OneMinusConstantAlpha
+	};
+
 	class PekanRenderer
 	{
 	public:
@@ -48,15 +67,27 @@ namespace Renderer
 		// Sets background's color, used to clear window
 		static void setBackgroundColor(const glm::vec4& backgroundColor);
 
-	private: /* functions */
+		// Enables blending capability
+		static void enableBlending();
 
-		// Returns the OpenGL enum value corresponding to the given draw mode
-		static unsigned getDrawModeOpenGLEnum(DrawMode drawMode);
+		// Sets the function used for blending.
+		// This function is used to blend the incoming (source) RGBA values
+		// with the RGBA values that are already in the frame buffer (destination).
+		// NOTE: You need to enable blending with enableBlending() before using this function
+		static void setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor);
+
+	private: /* functions */
 
 		// Returns the OpenGL base data type corresponding to the given shader data type.
 		// Here "base type" means that the given shader data type can be multi-component
 		// and the function will return the type of a single component of that type.
 		static unsigned getShaderDataTypeOpenGLBaseType(ShaderDataType type);
+
+		// Returns the OpenGL enum value corresponding to the given draw mode
+		static unsigned getDrawModeOpenGLEnum(DrawMode drawMode);
+
+		// Returns the OpenGL enum value corresponding to the given blend factor
+		static unsigned getBlendFactorOpenGLEnum(BlendFactor blendFactor);
 
 		// Returns size in bytes of a given shader data type
 		static unsigned getShaderDataTypeSize(ShaderDataType type);

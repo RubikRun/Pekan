@@ -23,7 +23,6 @@ target_link_libraries(Demo PRIVATE
     PekanCore
     PekanRenderer
     glm
-    glad
     imgui # TODO: This should be removed once Pekan provides ImGui wrappers
 )
 
