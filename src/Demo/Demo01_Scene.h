@@ -31,14 +31,14 @@ namespace Demo
 
 		void exit() override;
 		
-		inline int getWidth() const { return width; }
-		inline int getHeight() const { return height; }
+		inline int getWidth() const { return m_width; }
+		inline int getHeight() const { return m_height; }
 
 		void addSquare();
 
 		// Returns a (const) reference to the list of squares
-		const std::vector<Rectangle>& getSquares() const { return squares; }
-		std::vector<Rectangle>& getSquares() { return squares; }
+		const std::vector<Rectangle>& getSquares() const { return m_squares; }
+		std::vector<Rectangle>& getSquares() { return m_squares; }
 
 	private: /* functions */
 
@@ -47,15 +47,15 @@ namespace Demo
 	private: /* variables */
 
 		// List holding currently existing squares
-		std::vector<Rectangle> squares;
+		std::vector<Rectangle> m_squares;
 		// Array of vertex data of currently existing squares
-		std::vector<float> vertices;
+		std::vector<float> m_vertices;
 
-		Pekan::Renderer::VertexBuffer vertexBuffer;
+		Pekan::Renderer::VertexBuffer m_vertexBuffer;
 
-		Pekan::Renderer::VertexArray vertexArray;
+		Pekan::Renderer::VertexArray m_vertexArray;
 
-		Pekan::Renderer::Shader shader;
+		Pekan::Renderer::Shader m_shader;
 	};
 
 } // namespace Demo

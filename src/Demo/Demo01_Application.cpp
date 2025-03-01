@@ -18,8 +18,8 @@ namespace Demo
 
 		// Set base scene pointer and base GUI window pointer
 		// to point to demo scene and demo GUI window
-		scene = std::unique_ptr<PekanScene>(demoScene);
-		guiWindow = std::unique_ptr<PekanGUIWindow>(demoGuiWindow);
+		m_scene = std::unique_ptr<PekanScene>(demoScene);
+		m_guiWindow = std::unique_ptr<PekanGUIWindow>(demoGuiWindow);
 
 		return true;
 	}

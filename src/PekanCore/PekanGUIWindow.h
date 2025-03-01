@@ -14,7 +14,7 @@ namespace Pekan
 
 		bool init(GLFWwindow* window)
 		{
-			this->window = window;
+			m_window = window;
 			return _init();
 		}
 
@@ -29,7 +29,7 @@ namespace Pekan
 	private: /* variables */
 
 		// Graphics window where the GUI window is rendered
-		GLFWwindow* window = nullptr;
+		GLFWwindow* m_window = nullptr;
 	};
 
 } // namespace Pekan

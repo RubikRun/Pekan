@@ -33,17 +33,17 @@ namespace Pekan
 
 	protected: /* variables */
 
-		std::unique_ptr<PekanScene> scene;
+		std::unique_ptr<PekanScene> m_scene;
 
-		std::unique_ptr<PekanGUIWindow> guiWindow;
+		std::unique_ptr<PekanGUIWindow> m_guiWindow;
 
 		// A graphics window where application is rendered
-		GLFWwindow* window = nullptr;
+		GLFWwindow* m_window = nullptr;
 
 		// Width of application, in pixels
-		int width = -1;
+		int m_width = -1;
 		// Height of application, in pixels
-		int height = -1;
+		int m_height = -1;
 	};
 
 } // namespace Pekan

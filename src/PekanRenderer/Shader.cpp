@@ -20,16 +20,16 @@ namespace Renderer {
 		const GLuint vertexShaderID = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
 		const GLuint fragmentShaderID = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 		// Create program, attach shaders to it, and link it
-		id = glCreateProgram();
-		glAttachShader(id, vertexShaderID);
-		glAttachShader(id, fragmentShaderID);
-		glLinkProgram(id);
+		m_id = glCreateProgram();
+		glAttachShader(m_id, vertexShaderID);
+		glAttachShader(m_id, fragmentShaderID);
+		glLinkProgram(m_id);
 		// Check if program linked successfully
 		GLint success;
-		glGetProgramiv(id, GL_LINK_STATUS, &success);
+		glGetProgramiv(m_id, GL_LINK_STATUS, &success);
 		if (!success) {
 			char infoLog[512];
-			glGetProgramInfoLog(id, 512, nullptr, infoLog);
+			glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
 			PK_LOG_ERRORF("Shader program linking failed: " << infoLog);
 		}
 		// Delete the individual shaders, as the shader program has them now
@@ -41,16 +41,16 @@ namespace Renderer {
 		if (isValid())
 		{
 			unbind();
-			glDeleteProgram(id);
-			id = 0;
+			glDeleteProgram(m_id);
+			m_id = 0;
 			// Clear the cache of uniform locations
 			// since they apply specifically to the shader being destroyed here.
-			uniformLocationCache.clear();
+			m_uniformLocationCache.clear();
 		}
 	}
 
 	void Shader::bind() const {
-		glUseProgram(id);
+		glUseProgram(m_id);
 	}
 
 	void Shader::unbind() const {
@@ -95,17 +95,17 @@ namespace Renderer {
 
 	GLint Shader::getUniformLocation(const std::string& uniformName) const {
 		// If we have the location of this uniform cached, retrieve it from cache
-		const auto cacheIt = uniformLocationCache.find(uniformName);
-		if (cacheIt != uniformLocationCache.end()) {
+		const auto cacheIt = m_uniformLocationCache.find(uniformName);
+		if (cacheIt != m_uniformLocationCache.end()) {
 			return cacheIt->second;
 		}
 		// Otherwise retrieve it by asking OpenGL for the location
-		const GLint location = glGetUniformLocation(id, uniformName.c_str());
+		const GLint location = glGetUniformLocation(m_id, uniformName.c_str());
 		if (location < 0) {
 			PK_LOG_ERRORF("Trying to set value for uniform \"" << uniformName << "\" inside a shader, but such uniform doesn't exist.");
 		}
 		// Cache the location so that it can be reused in next calls to this function
-		uniformLocationCache[uniformName] = location;
+		m_uniformLocationCache[uniformName] = location;
 		return location;
 	}
 

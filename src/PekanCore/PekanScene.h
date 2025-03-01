@@ -12,8 +12,8 @@ namespace Pekan
 
 		bool init(int width, int height)
 		{
-			this->width = width;
-			this->height = height;
+			m_width = width;
+			m_height = height;
 			return _init();
 		}
 
@@ -30,9 +30,9 @@ namespace Pekan
 	protected: /* variables */
 
 		// Width of scene, in pixels
-		int width = -1;
+		int m_width = -1;
 		// Height of scene, in pixels
-		int height = -1;
+		int m_height = -1;
 	};
 
 } // namespace Pekan

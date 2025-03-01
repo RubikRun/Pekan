@@ -12,8 +12,8 @@ namespace Renderer
 	VertexBufferElement::VertexBufferElement(ShaderDataType type, const std::string& name, bool normalized)
 		: name(name)
 		, type(type)
-		, size(PekanRenderer::getShaderDataTypeSize(type))
-		, offset(0)
+		, m_size(PekanRenderer::getShaderDataTypeSize(type))
+		, m_offset(0)
 		, normalized(normalized)
 	{}
 
@@ -23,7 +23,7 @@ namespace Renderer
 	}
 
 	VertexBufferLayout::VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements)
-		: elements(elements)
+		: m_elements(elements)
 	{
 		calculateOffsetsAndStride();
 	}
@@ -32,20 +32,20 @@ namespace Renderer
 	{
 		unsigned offset = 0;
 		// Loop over layout's elements and calculate each element's offset
-		for (auto& element : elements)
+		for (auto& element : m_elements)
 		{
 			// The offset of each element should be equal to the summed size, in bytes, of all previous elements
-			element.offset = offset;
-			offset += element.size;
+			element.m_offset = offset;
+			offset += element.m_size;
 		}
 		// In the end we have a sum of the sizes of all elements
 		// so this is equal to the size of the whole vertex which is equal to the stride.
-		stride = offset;
+		m_stride = offset;
 	}
 
 	VertexBuffer::~VertexBuffer()
 	{
-		if (id != 0)
+		if (m_id != 0)
 		{
 			destroy();
 		}
@@ -53,7 +53,7 @@ namespace Renderer
 
 	void VertexBuffer::create()
 	{
-		glGenBuffers(1, &id);
+		glGenBuffers(1, &m_id);
 		bind();
 	}
 
@@ -70,8 +70,8 @@ namespace Renderer
 	void VertexBuffer::destroy()
 	{
 		unbind();
-		glDeleteBuffers(1, &id);
-		id = 0;
+		glDeleteBuffers(1, &m_id);
+		m_id = 0;
 	}
 
 	void VertexBuffer::setData(const void* data, long long size, VertexBufferDataUsage dataUsage)
@@ -82,7 +82,7 @@ namespace Renderer
 
 	void VertexBuffer::bind() const
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, id);
+		glBindBuffer(GL_ARRAY_BUFFER, m_id);
 	}
 
 	void VertexBuffer::unbind() const

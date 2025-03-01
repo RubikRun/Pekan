@@ -20,7 +20,7 @@ namespace Pekan
 
     const char* DEFAULT_WINDOW_TITLE = "Pekan v0.0";
 
-    GLFWwindow* PekanEngine::window = nullptr;
+    GLFWwindow* PekanEngine::s_window = nullptr;
 
     bool PekanEngine::init()
     {
@@ -41,7 +41,7 @@ namespace Pekan
 
     void PekanEngine::exit()
     {
-        if (window == nullptr)
+        if (s_window == nullptr)
         {
             PK_LOG_ERRORF("Trying to exit engine but engine is not yet initialized.");
             return;
@@ -74,15 +74,15 @@ namespace Pekan
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // Create a GLFW window
-        window = glfwCreateWindow(width, height, DEFAULT_WINDOW_TITLE, nullptr, nullptr);
-        if (window == nullptr)
+        s_window = glfwCreateWindow(width, height, DEFAULT_WINDOW_TITLE, nullptr, nullptr);
+        if (s_window == nullptr)
         {
             PK_LOG_ERRORF("Failed to create a window with GLFW.");
             glfwTerminate();
             return false;
         }
         // Make the window's context current
-        glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(s_window);
         // Enalbe VSync
         glfwSwapInterval(1);
 
@@ -91,9 +91,9 @@ namespace Pekan
 
     void PekanEngine::destroyWindow()
     {
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(s_window);
         glfwTerminate();
-        window = nullptr;
+        s_window = nullptr;
     }
 
     bool PekanEngine::loadOpenGL()
@@ -115,7 +115,7 @@ namespace Pekan
 
     bool PekanEngine::initImGui()
     {
-        if (window == nullptr)
+        if (s_window == nullptr)
         {
             PK_LOG_ERRORF("Trying to initialize ImGui but engine is not yet initialized.");
             return false;
@@ -140,7 +140,7 @@ namespace Pekan
         }
 
         // Setup Platform/Renderer backends
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplGlfw_InitForOpenGL(s_window, true);
         ImGui_ImplOpenGL3_Init(DEFAULT_GLSL_VERSION);
 
         return true;

@@ -14,7 +14,7 @@ namespace Demo
 	{
 	public:
 
-		inline void attachScene(Demo01_Scene* scene) { this->scene = scene; }
+		inline void attachScene(Demo01_Scene* scene) { m_scene = scene; }
 
 	private: /* functions */
 
@@ -24,7 +24,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Demo01_Scene* scene = nullptr;
+		Demo01_Scene* m_scene = nullptr;
 	};
 
 } // namespace Demo

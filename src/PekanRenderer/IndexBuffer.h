@@ -27,7 +27,7 @@ namespace Renderer
 		void destroy();
 
 		// Checks if index buffer is valid, meaning that it has been successfully created and not yet destroyed
-		inline bool isValid() const { return id != 0; }
+		inline bool isValid() const { return m_id != 0; }
 
 		void bind() const;
 		void unbind() const;
@@ -35,7 +35,7 @@ namespace Renderer
 	private:
 
 		// ID of the index buffer object
-		unsigned id = 0;
+		unsigned m_id = 0;
 	};
 
 } // namespace Renderer

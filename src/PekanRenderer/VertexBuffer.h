@@ -39,8 +39,8 @@ namespace Renderer
 		// Returns number of components of the buffer element
 		unsigned getComponentsCount() const;
 
-		inline unsigned getSize() const { return size; }
-		inline unsigned getOffset() const { return offset; }
+		inline unsigned getSize() const { return m_size; }
+		inline unsigned getOffset() const { return m_offset; }
 
 		// Name of buffer element, usually corresponding to the name of the vertex attribute
 		std::string name;
@@ -51,9 +51,9 @@ namespace Renderer
 
 	private:
 		// Size, in bytes, of buffer element
-		unsigned size = 0;
+		unsigned m_size = 0;
 		// Offset, in bytes, of buffer element relative to the beginning of a vertex
-		unsigned offset = 0;
+		unsigned m_offset = 0;
 	};
 
 	// Layout of a vertex buffer
@@ -64,14 +64,14 @@ namespace Renderer
 		VertexBufferLayout() = default;
 		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements);
 
-		inline unsigned getStride() const { return stride; }
-		inline const std::vector<VertexBufferElement>& getElements() const { return elements; }
+		inline unsigned getStride() const { return m_stride; }
+		inline const std::vector<VertexBufferElement>& getElements() const { return m_elements; }
 
 		// Iterators for beginning and end of layout's elements. Useful for range-based for loop.
-		std::vector<VertexBufferElement>::iterator begin() { return elements.begin(); }
-		std::vector<VertexBufferElement>::iterator end() { return elements.end(); }
-		std::vector<VertexBufferElement>::const_iterator begin() const { return elements.begin(); }
-		std::vector<VertexBufferElement>::const_iterator end() const { return elements.end(); }
+		std::vector<VertexBufferElement>::iterator begin() { return m_elements.begin(); }
+		std::vector<VertexBufferElement>::iterator end() { return m_elements.end(); }
+		std::vector<VertexBufferElement>::const_iterator begin() const { return m_elements.begin(); }
+		std::vector<VertexBufferElement>::const_iterator end() const { return m_elements.end(); }
 
 	private: /* functions */
 
@@ -82,9 +82,9 @@ namespace Renderer
 	private: /* variables */
 
 		// Vector of layout's elements
-		std::vector<VertexBufferElement> elements;
+		std::vector<VertexBufferElement> m_elements;
 		// Stride, in bytes, between two consecutive vertices in the buffer, equal to the size of a single vertex.
-		unsigned stride = 0;
+		unsigned m_stride = 0;
 	};
 
 	// A class representing a vertex buffer in Pekan's renderer.
@@ -112,7 +112,7 @@ namespace Renderer
 		void setData(const void* data, long long size, VertexBufferDataUsage dataUsage = VertexBufferDataUsage::StaticDraw);
 
 		// Checks if vertex buffer is valid, meaning that it has been successfully created and not yet destroyed
-		inline bool isValid() const { return id != 0; }
+		inline bool isValid() const { return m_id != 0; }
 
 		void bind() const;
 		void unbind() const;
@@ -125,9 +125,9 @@ namespace Renderer
 	private: /* variables */
 
 		// ID of the vertex buffer object
-		unsigned id = 0;
+		unsigned m_id = 0;
 
-		VertexBufferDataUsage dataUsage = VertexBufferDataUsage::StaticDraw;
+		VertexBufferDataUsage m_dataUsage = VertexBufferDataUsage::StaticDraw;
 	};
 
 	// A binding between a vertex buffer and a layout

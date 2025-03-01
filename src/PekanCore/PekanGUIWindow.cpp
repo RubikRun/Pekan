@@ -12,7 +12,7 @@ namespace Pekan
 
 	void PekanGUIWindow::render()
 	{
-        if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
+        if (glfwGetWindowAttrib(m_window, GLFW_ICONIFIED) != 0)
         {
             ImGui_ImplGlfw_Sleep(10);
             return;

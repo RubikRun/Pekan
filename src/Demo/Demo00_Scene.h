@@ -22,7 +22,7 @@ namespace Demo
 		void exit() override;
 		
 		// Attaches a GUI window for controlling background's color
-		void attachGUIWindow(const Demo00_GUIWindow* guiWindow) { this->guiWindow = guiWindow; }
+		void attachGUIWindow(const Demo00_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -30,16 +30,16 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::VertexBuffer vertexBuffer;
+		Pekan::Renderer::VertexBuffer m_vertexBuffer;
 
-		Pekan::Renderer::IndexBuffer indexBuffer;
+		Pekan::Renderer::IndexBuffer m_indexBuffer;
 
-		Pekan::Renderer::VertexArray vertexArray;
+		Pekan::Renderer::VertexArray m_vertexArray;
 
-		Pekan::Renderer::Shader shader;
+		Pekan::Renderer::Shader m_shader;
 
 		// GUI window for controlling background's color
-		const Demo00_GUIWindow* guiWindow = nullptr;
+		const Demo00_GUIWindow* m_guiWindow = nullptr;
 	};
 
 } // namespace Demo

@@ -21,7 +21,7 @@ namespace Renderer {
 		void destroy();
 
 		// Checks if shader is valid, meaning that it has been successfully created and not yet destroyed
-		inline bool isValid() { return id != 0; }
+		inline bool isValid() { return m_id != 0; }
 
 		void bind() const;
 		void unbind() const;
@@ -54,10 +54,10 @@ namespace Renderer {
 		// we will cache it inside this map
 		// and next times when we need it we can just read it from the cache.
 		// It maps uniform names to uniform locations.
-		mutable std::unordered_map<std::string, int> uniformLocationCache;
+		mutable std::unordered_map<std::string, int> m_uniformLocationCache;
 
 		// ID of the shader program object
-		unsigned id = 0;
+		unsigned m_id = 0;
 	};
 
 } // namespace Pekan

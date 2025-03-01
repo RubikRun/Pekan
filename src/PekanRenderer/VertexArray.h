@@ -21,7 +21,7 @@ namespace Renderer
 		void destroy();
 
 		// Checks if vertex array is valid, meaning that it has been successfully created and not yet destroyed
-		inline bool isValid() { return id != 0; }
+		inline bool isValid() { return m_id != 0; }
 
 		void bind() const;
 		void unbind() const;
@@ -32,10 +32,10 @@ namespace Renderer
 	private:
 
 		// List of vertex buffer bindings associated with the vertex array
-		std::vector<VertexBufferBinding> vertexBuffers;
+		std::vector<VertexBufferBinding> m_vertexBuffers;
 		
 		// ID of the vertex array object
-		unsigned id = 0;
+		unsigned m_id = 0;
 	};
 
 } // namespace Renderer

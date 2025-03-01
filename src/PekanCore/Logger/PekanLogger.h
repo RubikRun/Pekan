@@ -71,8 +71,8 @@ if you are planning to use PK_LOG_ERRORF, PK_LOG_WARNINGF, PK_LOG_DEBUGF, PK_LOG
 
 namespace Pekan
 {
-	namespace Logger
-	{
+namespace Logger
+{
 
 #if PK_LOGGER_CONSOLE_SUPPORT
 	#if PK_LOGGER_ERROR_SUPPORT
@@ -112,7 +112,7 @@ namespace Pekan
 	#endif
 #endif
 
-	} // namespace Logger
+} // namespace Logger
 } // namespace Pekan
 
 // PK_LOG_ERROR logs an error message to the console and/or syslog file

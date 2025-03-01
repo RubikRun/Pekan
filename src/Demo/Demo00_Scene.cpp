@@ -17,18 +17,18 @@ namespace Demo
 
 	void Demo00_Scene::update()
 	{
-        shader.bind();
-        const ImVec2& position = guiWindow->getPosition();
-        shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
-        shader.unbind();
+        m_shader.bind();
+        const ImVec2& position = m_guiWindow->getPosition();
+        m_shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+        m_shader.unbind();
 	}
 
 	void Demo00_Scene::render()
 	{
         // Clear background color
-        if (guiWindow != nullptr)
+        if (m_guiWindow != nullptr)
         {
-            const ImVec4& clearColor = guiWindow->getClearColor();
+            const ImVec4& clearColor = m_guiWindow->getClearColor();
             PekanRenderer::setBackgroundColor(glm::vec4(clearColor.x, clearColor.y, clearColor.z, clearColor.w));
             PekanRenderer::clear();
         }
@@ -38,24 +38,24 @@ namespace Demo
             PekanRenderer::clear();
         }
 
-        shader.bind();
-        vertexArray.bind();
+        m_shader.bind();
+        m_vertexArray.bind();
         PekanRenderer::drawIndexed(6, DrawMode::Triangles);
-        vertexArray.unbind();
-        shader.unbind();
+        m_vertexArray.unbind();
+        m_shader.unbind();
 	}
 
 	void Demo00_Scene::exit()
 	{
-        vertexBuffer.destroy();
-        indexBuffer.destroy();
-        vertexArray.destroy();
-        shader.destroy();
+        m_vertexBuffer.destroy();
+        m_indexBuffer.destroy();
+        m_vertexArray.destroy();
+        m_shader.destroy();
 	}
 
 	bool Demo00_Scene::_init()
 	{
-        shader.create(
+        m_shader.create(
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
@@ -73,18 +73,18 @@ namespace Demo
         };
 
         // Create a vertex array
-        vertexArray.create();
+        m_vertexArray.create();
 
         // Create a vertex buffer with vertices data
-        vertexBuffer.create(
+        m_vertexBuffer.create(
             vertices,
             sizeof(vertices)
         );
         // Create an index buffer with indices data
-        indexBuffer.create(indices, sizeof(indices));
+        m_indexBuffer.create(indices, sizeof(indices));
 
         // Add vertex buffer to vertex array
-        vertexArray.addVertexBuffer(vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
+        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
 
         return true;
 	}

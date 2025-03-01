@@ -58,7 +58,7 @@ namespace Demo
 
 	void Demo01_GUIWindow::_render()
 	{
-        if (scene == nullptr)
+        if (m_scene == nullptr)
         {
             PK_LOG_ERRORF("Cannot render GUI window because there is no scene attached.");
             return;
@@ -69,18 +69,18 @@ namespace Demo
 
         if (ImGui::Button("+"))
         {
-            scene->addSquare();
+            m_scene->addSquare();
         }
 
-        std::vector<Rectangle>& squares = scene->getSquares();
+        std::vector<Rectangle>& squares = m_scene->getSquares();
         for (Rectangle& square : squares)
         {
             ImGui::PushID(square.id);
 
             ImGui::Text("Square %d", square.id + 1);
-            renderSliderX(square, scene->getWidth());
-            renderSliderY(square, scene->getHeight());
-            renderSliderSize(square, scene->getWidth(), scene->getHeight());
+            renderSliderX(square, m_scene->getWidth());
+            renderSliderY(square, m_scene->getHeight());
+            renderSliderSize(square, m_scene->getWidth(), m_scene->getHeight());
             renderSliderRotation(square);
             renderEditColor(square);
             ImGui::Separator();

@@ -883,3 +883,8 @@ Confirm by removing glad dependecny from Demo project in CMake. Yep, it works.
 So, OpenGL wrappers are officially functionally complete!
 (meaning that they cover the functionality needed by Demo00 and Demo01, so that these 2 demos don't need raw OpenGL)
 }
+
+{
+Let's do TODO 0000.
+Done.
+}

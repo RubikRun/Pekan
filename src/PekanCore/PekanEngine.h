@@ -26,7 +26,7 @@ namespace Pekan
 		static void exit();
 
 		// TEMP
-		static GLFWwindow* getWindow() { return window; }
+		static GLFWwindow* getWindow() { return s_window; }
 
 		// TEMP
 		static int getWindowWidth();
@@ -54,7 +54,7 @@ namespace Pekan
 	private: /* variables */
 
 		// Window for rendering graphics
-		static GLFWwindow* window;
+		static GLFWwindow* s_window;
 	};
 
 } // namespace Pekan

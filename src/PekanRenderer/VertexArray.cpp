@@ -17,19 +17,19 @@ namespace Renderer
 
 	void VertexArray::create()
 	{
-		glGenVertexArrays(1, &id);
+		glGenVertexArrays(1, &m_id);
 		bind();
 	}
 
 	void VertexArray::destroy() {
 		unbind();
-		glDeleteVertexArrays(1, &id);
-		id = 0;
-		vertexBuffers.clear();
+		glDeleteVertexArrays(1, &m_id);
+		m_id = 0;
+		m_vertexBuffers.clear();
 	}
 
 	void VertexArray::bind() const {
-		glBindVertexArray(id);
+		glBindVertexArray(m_id);
 	}
 
 	void VertexArray::unbind() const {
@@ -67,7 +67,7 @@ namespace Renderer
 			);
 		}
 		// Add vertex buffer, together with its layout, to vertex array
-		vertexBuffers.push_back(VertexBufferBinding(vertexBuffer, layout));
+		m_vertexBuffers.push_back(VertexBufferBinding(vertexBuffer, layout));
 	}
 
 

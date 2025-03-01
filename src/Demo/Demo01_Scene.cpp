@@ -21,8 +21,8 @@ namespace Demo
 
 	void Demo01_Scene::update()
 	{
-        vertices.clear();
-        for (const Rectangle& square : squares)
+        m_vertices.clear();
+        for (const Rectangle& square : m_squares)
         {
             const float x = float(square.x);
             const float y = float(square.y);
@@ -34,36 +34,36 @@ namespace Demo
             const float squareVertices[] =
             {
                 // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // bottom right
-                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
+                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top left
-                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
+                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
             };
 
-            vertices.insert(vertices.end(), std::begin(squareVertices), std::end(squareVertices));
+            m_vertices.insert(m_vertices.end(), std::begin(squareVertices), std::end(squareVertices));
         }
 
-        vertexArray.bind();
-        vertexBuffer.setData(vertices.data(), vertices.size() * sizeof(float), VertexBufferDataUsage::DynamicDraw);
+        m_vertexArray.bind();
+        m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), VertexBufferDataUsage::DynamicDraw);
 	}
 
 	void Demo01_Scene::render()
@@ -71,18 +71,18 @@ namespace Demo
         // If there is no GUI window attached, just clear background with default color
         PekanRenderer::clear();
 
-        shader.bind();
-        vertexArray.bind();
-        PekanRenderer::draw(vertices.size() / 6);
-        vertexArray.unbind();
-        shader.unbind();
+        m_shader.bind();
+        m_vertexArray.bind();
+        PekanRenderer::draw(m_vertices.size() / 6);
+        m_vertexArray.unbind();
+        m_shader.unbind();
 	}
 
 	void Demo01_Scene::exit()
 	{
-        vertexBuffer.destroy();
-        vertexArray.destroy();
-        shader.destroy();
+        m_vertexBuffer.destroy();
+        m_vertexArray.destroy();
+        m_shader.destroy();
 	}
 
     void Demo01_Scene::addSquare()
@@ -90,10 +90,10 @@ namespace Demo
         Rectangle newSquare;
         newSquare.width = 60;
         newSquare.height = 60;
-        newSquare.x = width / 2;
-        newSquare.y = height / 2;
-        newSquare.id = squares.size();
-        squares.push_back(newSquare);
+        newSquare.x = m_width / 2;
+        newSquare.y = m_height / 2;
+        newSquare.id = m_squares.size();
+        m_squares.push_back(newSquare);
     }
 
 	bool Demo01_Scene::_init()
@@ -102,16 +102,16 @@ namespace Demo
         PekanRenderer::enableBlending();
         PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
-        shader.create(
+        m_shader.create(
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
 
         // Create a vertex array
-        vertexArray.create();
+        m_vertexArray.create();
         // Create an empty vertex buffer, with layout specified, and add it to vertex array
-        vertexBuffer.create();
-        vertexArray.addVertexBuffer(vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
+        m_vertexBuffer.create();
+        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
 
         return true;
 	}
