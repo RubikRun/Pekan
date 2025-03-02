@@ -2,6 +2,7 @@
 #define PK_FILENAME "DemoScene.cpp"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
+#include "PekanEngine.h"
 
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::VertexBufferElement;
@@ -10,6 +11,7 @@ using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BlendFactor;
+using Pekan::PekanEngine;
 
 #define PI 3.14159265359f
 
@@ -19,8 +21,31 @@ static const char* fragmentShaderFilePath = "resources/01_fragment_shader.glsl";
 namespace Demo
 {
 
+    bool Demo01_Scene::init()
+	{
+        // Enable and configure blending
+        PekanRenderer::enableBlending();
+        PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
+
+        m_shader.create(
+            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
+            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
+        );
+
+        // Create a vertex array
+        m_vertexArray.create();
+        // Create an empty vertex buffer, with layout specified, and add it to vertex array
+        m_vertexBuffer.create();
+        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
+
+        return true;
+	}
+
 	void Demo01_Scene::update()
 	{
+        const int width = PekanEngine::getWindowWidth();
+        const int height = PekanEngine::getWindowHeight();
+
         m_vertices.clear();
         for (const Rectangle& square : m_squares)
         {
@@ -34,28 +59,28 @@ namespace Demo
             const float squareVertices[] =
             {
                 // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // bottom right
-                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
-                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
+                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
+                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top left
-                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_width) - 1.0f,
-                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_height) - 1.0f,
+                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
+                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
             };
 
@@ -90,30 +115,10 @@ namespace Demo
         Rectangle newSquare;
         newSquare.width = 60;
         newSquare.height = 60;
-        newSquare.x = m_width / 2;
-        newSquare.y = m_height / 2;
+        newSquare.x = PekanEngine::getWindowWidth() / 2;
+        newSquare.y = PekanEngine::getWindowHeight() / 2;
         newSquare.id = m_squares.size();
         m_squares.push_back(newSquare);
     }
-
-	bool Demo01_Scene::_init()
-	{
-        // Enable and configure blending
-        PekanRenderer::enableBlending();
-        PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
-
-        m_shader.create(
-            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
-        );
-
-        // Create a vertex array
-        m_vertexArray.create();
-        // Create an empty vertex buffer, with layout specified, and add it to vertex array
-        m_vertexBuffer.create();
-        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
-
-        return true;
-	}
 
 } // namespace Demo

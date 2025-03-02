@@ -1,7 +1,6 @@
 #include "PekanApplication.h"
 #define PK_FILENAME "PekanApplication.cpp"
 #include "Logger/PekanLogger.h"
-
 #include "PekanEngine.h"
 #include "PekanScene.h"
 #include "PekanGUIWindow.h"
@@ -19,10 +18,6 @@ namespace Pekan
             return false;
         }
 
-        this->m_window = PekanEngine::getWindow();
-        this->m_width = PekanEngine::getWindowWidth();
-        this->m_height = PekanEngine::getWindowHeight();
-
         if (!_init())
         {
             return false;
@@ -39,11 +34,11 @@ namespace Pekan
             return false;
         }
 
-        if (!m_scene->init(this->m_width, this->m_height))
+        if (!m_scene->init())
         {
             return false;
         }
-        if (!m_guiWindow->init(this->m_window))
+        if (!m_guiWindow->init())
         {
             return false;
         }
@@ -53,11 +48,6 @@ namespace Pekan
 
     void PekanApplication::run()
 	{
-        if (m_window == nullptr)
-        {
-            PK_LOG_ERRORF("Trying to run application but window is NULL.");
-            return;
-        }
         if (m_scene == nullptr)
         {
             PK_LOG_ERRORF("Trying to run application but scene is NULL.");
@@ -69,13 +59,14 @@ namespace Pekan
             return;
         }
 
-        while (!glfwWindowShouldClose(m_window))
+        GLFWwindow* window = PekanEngine::getWindow();
+        while (!glfwWindowShouldClose(window))
         {
             glfwPollEvents();
 
             // Handle window resizing
             int windowWidth, windowHeight;
-            glfwGetFramebufferSize(m_window, &windowWidth, &windowHeight);
+            glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
             glViewport(0, 0, windowWidth, windowHeight);
 
             // Update scene
@@ -85,7 +76,7 @@ namespace Pekan
             m_scene->render();
             m_guiWindow->render();
 
-            glfwSwapBuffers(m_window);
+            glfwSwapBuffers(window);
         }
 	}
 

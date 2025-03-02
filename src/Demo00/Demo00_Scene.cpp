@@ -15,6 +15,42 @@ static const char* fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
 namespace Demo
 {
 
+    bool Demo00_Scene::init()
+	{
+        m_shader.create(
+            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
+            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
+        );
+
+        // Set up vertex data and configure vertex attributes
+        float vertices[] = {
+             0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
+             0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
+            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
+        };
+        unsigned indices[] = {
+            0, 1, 3,  // first triangle
+            1, 2, 3   // second triangle
+        };
+
+        // Create a vertex array
+        m_vertexArray.create();
+
+        // Create a vertex buffer with vertices data
+        m_vertexBuffer.create(
+            vertices,
+            sizeof(vertices)
+        );
+        // Create an index buffer with indices data
+        m_indexBuffer.create(indices, sizeof(indices));
+
+        // Add vertex buffer to vertex array
+        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
+
+        return true;
+	}
+
 	void Demo00_Scene::update()
 	{
         m_shader.bind();
@@ -51,42 +87,6 @@ namespace Demo
         m_indexBuffer.destroy();
         m_vertexArray.destroy();
         m_shader.destroy();
-	}
-
-	bool Demo00_Scene::_init()
-	{
-        m_shader.create(
-            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
-        );
-
-        // Set up vertex data and configure vertex attributes
-        float vertices[] = {
-             0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
-            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
-        };
-        unsigned indices[] = {
-            0, 1, 3,  // first triangle
-            1, 2, 3   // second triangle
-        };
-
-        // Create a vertex array
-        m_vertexArray.create();
-
-        // Create a vertex buffer with vertices data
-        m_vertexBuffer.create(
-            vertices,
-            sizeof(vertices)
-        );
-        // Create an index buffer with indices data
-        m_indexBuffer.create(indices, sizeof(indices));
-
-        // Add vertex buffer to vertex array
-        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
-
-        return true;
 	}
 
 } // namespace Demo

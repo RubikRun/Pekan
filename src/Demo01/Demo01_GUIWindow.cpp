@@ -2,9 +2,12 @@
 #define PK_FILENAME "Demo01_GUIWindow.cpp"
 #include "Logger/PekanLogger.h"
 #include "Demo01_Scene.h"
+#include "PekanEngine.h"
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+
+using Pekan::PekanEngine;
 
 namespace Demo
 {
@@ -72,15 +75,18 @@ namespace Demo
             m_scene->addSquare();
         }
 
+        const int width = PekanEngine::getWindowWidth();
+        const int height = PekanEngine::getWindowHeight();
+
         std::vector<Rectangle>& squares = m_scene->getSquares();
         for (Rectangle& square : squares)
         {
             ImGui::PushID(square.id);
 
             ImGui::Text("Square %d", square.id + 1);
-            renderSliderX(square, m_scene->getWidth());
-            renderSliderY(square, m_scene->getHeight());
-            renderSliderSize(square, m_scene->getWidth(), m_scene->getHeight());
+            renderSliderX(square, width);
+            renderSliderY(square, height);
+            renderSliderSize(square, width, height);
             renderSliderRotation(square);
             renderEditColor(square);
             ImGui::Separator();
@@ -91,7 +97,7 @@ namespace Demo
         ImGui::End();
 	}
 
-	bool Demo01_GUIWindow::_init()
+	bool Demo01_GUIWindow::init()
 	{
 		return true;
 	}

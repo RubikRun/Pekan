@@ -25,24 +25,19 @@ namespace Demo
 	{
 	public:
 
+		bool init() override;
+
 		void update() override;
 
 		void render() override;
 
 		void exit() override;
-		
-		inline int getWidth() const { return m_width; }
-		inline int getHeight() const { return m_height; }
 
 		void addSquare();
 
 		// Returns a (const) reference to the list of squares
 		const std::vector<Rectangle>& getSquares() const { return m_squares; }
 		std::vector<Rectangle>& getSquares() { return m_squares; }
-
-	private: /* functions */
-
-		bool _init() override;
 
 	private: /* variables */
 

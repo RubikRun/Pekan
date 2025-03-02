@@ -36,14 +36,6 @@ namespace Pekan
 		std::unique_ptr<PekanScene> m_scene;
 
 		std::unique_ptr<PekanGUIWindow> m_guiWindow;
-
-		// A graphics window where application is rendered
-		GLFWwindow* m_window = nullptr;
-
-		// Width of application, in pixels
-		int m_width = -1;
-		// Height of application, in pixels
-		int m_height = -1;
 	};
 
 } // namespace Pekan

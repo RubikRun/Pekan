@@ -1,4 +1,5 @@
 #include "PekanGUIWindow.h"
+#include "PekanEngine.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -12,7 +13,7 @@ namespace Pekan
 
 	void PekanGUIWindow::render()
 	{
-        if (glfwGetWindowAttrib(m_window, GLFW_ICONIFIED) != 0)
+        if (glfwGetWindowAttrib(PekanEngine::getWindow(), GLFW_ICONIFIED) != 0)
         {
             ImGui_ImplGlfw_Sleep(10);
             return;

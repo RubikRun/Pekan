@@ -15,6 +15,8 @@ namespace Demo
 	{
 	public:
 
+		bool init() override;
+
 		void update() override;
 
 		void render() override;
@@ -23,10 +25,6 @@ namespace Demo
 		
 		// Attaches a GUI window for controlling background's color
 		void attachGUIWindow(const Demo00_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
-
-	private: /* functions */
-
-		bool _init() override;
 
 	private: /* variables */
 

@@ -20,7 +20,7 @@ namespace Demo
 		ImGui::End();
 	}
 
-	bool Demo00_GUIWindow::_init()
+	bool Demo00_GUIWindow::init()
 	{
 		return true;
 	}

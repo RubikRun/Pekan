@@ -20,7 +20,7 @@ namespace Demo
 
 		void _render() override;
 
-		bool _init() override;
+		bool init() override;
 
 	private: /* variables */
 

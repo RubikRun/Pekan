@@ -9,4 +9,4 @@
 0005 24.02.2025 (DONE): In class PekanRenderer make all non-client functions be private, and allow usage for internal classes with "friend" keyword.
 0006 24.02.2025 (TODO): Do some error-checking in most functions in OpenGL wrapper classes. Mostly check isValid() and bind().
                         Think about whether we want to do these checks in every function (secure, but may cost performance)
-0007 01.03.2025 (TODO): Do we need to keep m_window as member of PekanGUIWindow when we already have a static s_window in PekanEngine?
+0007 01.03.2025 (DONE): Do we need to keep m_window as member of PekanGUIWindow when we already have a static s_window in PekanEngine?

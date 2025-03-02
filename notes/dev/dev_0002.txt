@@ -927,3 +927,16 @@ and create a CMake option for disabling all demos, that can be used for release 
 
 So let's do that now.
 }
+
+{
+Let's do TODO 0007.
+Indeed, we don't need m_window kept as member in PekanGUIWindow and in other places.
+We also don't need m_width and m_height.
+These 3 pieces of data should belong to PekanEngine,
+and all other places should ask PekanEngine for this data.
+
+So let's do that now.
+That changes quite a few things, but they all seem clearer now.
+Done.
+Both demos work.
+}
