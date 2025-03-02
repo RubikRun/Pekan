@@ -6,7 +6,7 @@
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::VertexBufferElement;
 using Pekan::Renderer::VertexBufferLayout;
-using Pekan::Renderer::VertexBufferDataUsage;
+using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BlendFactor;
@@ -63,7 +63,7 @@ namespace Demo
         }
 
         m_vertexArray.bind();
-        m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), VertexBufferDataUsage::DynamicDraw);
+        m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
 	}
 
 	void Demo01_Scene::render()

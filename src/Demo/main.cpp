@@ -1,12 +1,12 @@
 #define PK_FILENAME "main.cpp"
 #include "Logger/PekanLogger.h"
 
-#include "Demo01_Application.h"
-using Demo::Demo01_Application;
+#include "Demo00_Application.h"
+using Demo::Demo00_Application;
 
 int main(void)
 {
-    Demo01_Application application;
+    Demo00_Application application;
     if (!application.init())
     {
         PK_LOG_ERRORF("Application failed to initialize.");

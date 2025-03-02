@@ -50,6 +50,20 @@ namespace Renderer
 		OneMinusConstantAlpha
 	};
 
+	// Enum for different types of usage of a buffer
+	enum class BufferDataUsage
+	{
+		StreamDraw = 0,
+		StreamRead = 1,
+		StreamCopy = 2,
+		StaticDraw = 3,
+		StaticRead = 4,
+		StaticCopy = 5,
+		DynamicDraw = 6,
+		DynamicRead = 7,
+		DynamicCopy = 8
+	};
+
 	// This is a singleton/static class containing common rendering functionality,
 	// not specific to any graphics object, but just for the general rendering context.
 	class PekanRenderer
@@ -91,6 +105,9 @@ namespace Renderer
 		// Returns the OpenGL enum value corresponding to the given blend factor
 		static unsigned getBlendFactorOpenGLEnum(BlendFactor blendFactor);
 
+		// Returns the OpenGL enum value corresponding to the given buffer data usage
+		static unsigned getBufferDataUsageOpenGLEnum(BufferDataUsage dataUsage);
+
 		// Returns size in bytes of a given shader data type
 		static unsigned getShaderDataTypeSize(ShaderDataType type);
 
@@ -99,6 +116,8 @@ namespace Renderer
 
 		friend class VertexArray;
 		friend class VertexBufferElement;
+		friend class VertexBuffer;
+		friend class IndexBuffer;
 	};
 
 } // namespace Renderer

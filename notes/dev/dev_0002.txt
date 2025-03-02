@@ -771,7 +771,7 @@ Now I see that this final parameter of glBufferData() is also important
 It's the "usage" of this data. In Demo00 it's GL_STATIC_DRAW, but here in Demo01 it has to be GL_DYNAMIC_DRAW,
 so let's provide support for this parameter in our setData() function.
 For that, we'll need to have an enum for all possible usages, similar to the DrawMode enum. So our new enum will be
-    enum class VertexBufferDataUsage
+    enum class BufferDataUsage
     {
         StreamDraw = 0,
         StreamRead = 1,
@@ -897,4 +897,19 @@ Done.
 {
 Let's do TODO 0001.
 Done.
+}
+
+{
+Let's do TODO 0003
+We already added an optional parameter to VertexBuffer's create() function for the draw mode, that's fine,
+but now we have to add it to IndexBuffer as well, just for consistency.
+Also let's separate creation from setting of data in IndexBuffer, same as we did in VertexBuffer,
+so that we have
+- create() without parameters
+- create(data, size, dataUsage)
+- setData(data, size, dataUsage)
+I had to move the VertexBufferDataUsage into PekanRenderer so that it can be accessed both by VertexBuffer and IndexBuffer,
+and I renamed it to BufferDataUsage. Of course, also moved the function that converts BufferDataUsage to OpenGL enum into PekanRenderer as well.
+Done.
+It works in Demo00, and Demo01 doesn't use IndexBuffer's.
 }

@@ -103,6 +103,24 @@ namespace Renderer
 		return 0;
 	}
 
+	unsigned PekanRenderer::getBufferDataUsageOpenGLEnum(BufferDataUsage dataUsage)
+	{
+		switch (dataUsage)
+		{
+			case BufferDataUsage::StreamDraw:     return GL_STREAM_DRAW;
+			case BufferDataUsage::StreamRead:     return GL_STREAM_READ;
+			case BufferDataUsage::StreamCopy:     return GL_STREAM_COPY;
+			case BufferDataUsage::StaticDraw:     return GL_STATIC_DRAW;
+			case BufferDataUsage::StaticRead:     return GL_STATIC_READ;
+			case BufferDataUsage::StaticCopy:     return GL_STATIC_COPY;
+			case BufferDataUsage::DynamicDraw:    return GL_DYNAMIC_DRAW;
+			case BufferDataUsage::DynamicRead:    return GL_DYNAMIC_READ;
+			case BufferDataUsage::DynamicCopy:    return GL_DYNAMIC_COPY;
+		}
+		PK_LOG_ERRORF("Unknown BufferDataUsage, cannot determine OpenGL enum.");
+		return 0;
+	}
+
 	unsigned PekanRenderer::getShaderDataTypeSize(ShaderDataType type)
 	{
 		switch (type)

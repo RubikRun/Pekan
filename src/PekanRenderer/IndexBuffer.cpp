@@ -15,11 +15,16 @@ namespace Renderer
 		}
 	}
 
-	void IndexBuffer::create(const void* data, long long size)
+	void IndexBuffer::create()
 	{
 		glGenBuffers(1, &m_id);
 		bind();
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+	}
+
+	void IndexBuffer::create(const void* data, long long size, BufferDataUsage dataUsage)
+	{
+		create();
+		setData(data, size);
 	}
 
 	void IndexBuffer::destroy()
@@ -27,6 +32,12 @@ namespace Renderer
 		unbind();
 		glDeleteBuffers(1, &m_id);
 		m_id = 0;
+	}
+
+	void IndexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
+	{
+		bind();
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage));
 	}
 
 	void IndexBuffer::bind() const

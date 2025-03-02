@@ -60,7 +60,7 @@ namespace Renderer
 	void VertexBuffer::create(
 		const void* data,
 		long long size,
-		VertexBufferDataUsage dataUsage
+		BufferDataUsage dataUsage
 	)
 	{
 		create();
@@ -74,10 +74,10 @@ namespace Renderer
 		m_id = 0;
 	}
 
-	void VertexBuffer::setData(const void* data, long long size, VertexBufferDataUsage dataUsage)
+	void VertexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
 		bind();
-		glBufferData(GL_ARRAY_BUFFER, size, data, getDataUsageOpenGLEnum(dataUsage));
+		glBufferData(GL_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage));
 	}
 
 	void VertexBuffer::bind() const
@@ -88,24 +88,6 @@ namespace Renderer
 	void VertexBuffer::unbind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
-	unsigned VertexBuffer::getDataUsageOpenGLEnum(VertexBufferDataUsage dataUsage)
-	{
-		switch (dataUsage)
-		{
-			case VertexBufferDataUsage::StreamDraw:     return GL_STREAM_DRAW;
-			case VertexBufferDataUsage::StreamRead:     return GL_STREAM_READ;
-			case VertexBufferDataUsage::StreamCopy:     return GL_STREAM_COPY;
-			case VertexBufferDataUsage::StaticDraw:     return GL_STATIC_DRAW;
-			case VertexBufferDataUsage::StaticRead:     return GL_STATIC_READ;
-			case VertexBufferDataUsage::StaticCopy:     return GL_STATIC_COPY;
-			case VertexBufferDataUsage::DynamicDraw:    return GL_DYNAMIC_DRAW;
-			case VertexBufferDataUsage::DynamicRead:    return GL_DYNAMIC_READ;
-			case VertexBufferDataUsage::DynamicCopy:    return GL_DYNAMIC_COPY;
-		}
-		PK_LOG_ERRORF("Unknown VertexBufferDataUsage, cannot determine OpenGL enum.");
-		return 0;
 	}
 
 } // namespace Renderer
