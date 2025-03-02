@@ -84,3 +84,20 @@ Since we're in 2D a rotation can be represented with a single number, so a singl
 Today I want to add control for each square's color.
 Done.
 }
+
+----------
+02.03.2025
+----------
+
+{
+Everything I did here I did under a branch called
+    playground
+After that I created a branch called
+    v0.1
+but I created it from master, so from v0.0, NOT from playground.
+While implementing v0.1 I looked at this playground branch as reference,
+but now I don't need it anymore as a separate branch,
+so I'll revert all changes done in this branch (except the notes here)
+and I'll rebase v0.1 on playground, so that playground's commits appear before starting v0.1.
+Bye bye to this playground branch.
+}

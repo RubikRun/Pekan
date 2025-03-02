@@ -19,15 +19,7 @@ add_subdirectory(dep/glad)
 add_subdirectory(dep/imgui)
 
 # Make project Pekan compile following source file into an executable
-add_executable(Pekan
-    src/Pekan/main.cpp
-    src/Pekan/SquaresScene.h
-    src/Pekan/SquaresScene.cpp
-    src/Pekan/SquaresGui.h
-    src/Pekan/SquaresGui.cpp
-    src/Pekan/PekanEngine.h
-    src/Pekan/PekanEngine.cpp
-)
+add_executable(Pekan src/Pekan/main.cpp)
 
 # Set link libraries for project Pekan
 target_link_libraries(Pekan PRIVATE imgui glad glfw opengl32.lib)
