@@ -1,5 +1,5 @@
 0000 18.02.2025 (DONE): Add "m_" prefix to all private member variables
-0001 18.02.2025 (TODO): Add comments on class PekanEngine and class PekanRenderer
+0001 18.02.2025 (DONE): Add comments on class PekanEngine and class PekanRenderer
 0002 23.02.2025 (TODO): Create a base class RenderingComponent with common functions and variables
                         between different OpenGL objects, for example Shader, VertexBuffer, VertexArray, etc.
                         All of them need to have create(), destroy(), bind(), unbind(), isValid(), id, etc.

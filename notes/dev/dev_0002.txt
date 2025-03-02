@@ -808,6 +808,7 @@ I got quite confused with both of these approaches and I don't like them.
 ----------
 01.03.2025
 ----------
+
 Thinking again about this API design problem. Had a discussion with ChatGPT about it.
 I think the best approach is to simply NOT keep the layout as part of VertexBuffer.
 Currently VertexBuffer "has" a layout, which is simply not true in OpenGL,
@@ -886,5 +887,14 @@ So, OpenGL wrappers are officially functionally complete!
 
 {
 Let's do TODO 0000.
+Done.
+}
+
+----------
+02.03.2025
+----------
+
+{
+Let's do TODO 0001.
 Done.
 }

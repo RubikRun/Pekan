@@ -5,6 +5,9 @@ struct GLFWwindow;
 namespace Pekan
 {
 
+	// Pekan Engine itself.
+	// This is a singleton/static class responsible for initializing and exiting the engine,
+	// managing the lifetime of a graphics window, and handling all external libraries.
 	class PekanEngine
 	{
 	public:
@@ -25,10 +28,8 @@ namespace Pekan
 		// To be called once, at the end, after finished using the engine.
 		static void exit();
 
-		// TEMP
 		static GLFWwindow* getWindow() { return s_window; }
 
-		// TEMP
 		static int getWindowWidth();
 		static int getWindowHeight();
 
