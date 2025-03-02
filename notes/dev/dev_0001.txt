@@ -7,7 +7,7 @@ Before actually implementing Pekan Playground,
 I will start immediately playing around with OpenGL and ImGui
 directly inside of project Pekan.
 
-TODO: After implementing the Playground refactor and move whatever I've done in project Pekan into the Playground
+DONE: After implementing the Playground refactor and move whatever I've done in project Pekan into the Playground
 }
 
 {

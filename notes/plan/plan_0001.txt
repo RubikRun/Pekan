@@ -12,3 +12,13 @@ and having them all within Pekan Playground.
 
 We should be able to easily disable Pekan Playground in CMake
 and have it enabled only in dev builds.
+
+----------
+02.03.2025
+----------
+
+It's me from the future.
+Decided to not have a "playground" exactly but just Demo projects.
+They will be grouped together in a virtual folder called Demos,
+and you'd be able to disable them from CMake,
+so that Demo projects are not generated for a release build, for example.

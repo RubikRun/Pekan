@@ -913,3 +913,17 @@ and I renamed it to BufferDataUsage. Of course, also moved the function that con
 Done.
 It works in Demo00, and Demo01 doesn't use IndexBuffer's.
 }
+
+{
+I rebased this v0.1 branch on the playground branch,
+so that we have the playground commits and notes.
+}
+
+{
+Instead of a "playground" I decided to just have Demo projects.
+Almost the same as now, but it'd be better to have a separate project for each demo,
+and group them together under a virtual folder called Demos,
+and create a CMake option for disabling all demos, that can be used for release builds, for example.
+
+So let's do that now.
+}

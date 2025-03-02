@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.6...3.31)
 
+option(WITH_DEMO_PROJECTS "When this option is enabled, demo projects are included together with Pekan." ON)
+
 # Require C++ 17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,8 +11,11 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 # Create project Pekan
 project(Pekan)
 
-# Add Demo subdirectory
-add_subdirectory(src/Demo)
+if(WITH_DEMO_PROJECTS)
+    # Add Demos subdirectories
+    add_subdirectory(src/Demo00)
+    add_subdirectory(src/Demo01)
+endif()
 # Add PekanRenderer subdirectory
 add_subdirectory(src/PekanRenderer)
 
@@ -30,6 +35,12 @@ set_target_properties(glfw PROPERTIES FOLDER "dep")
 set_target_properties(glad PROPERTIES FOLDER "dep")
 set_target_properties(imgui PROPERTIES FOLDER "dep")
 set_target_properties(glm PROPERTIES FOLDER "dep")
+
+if(WITH_DEMO_PROJECTS)
+    # Add all demo projects into a folder called "Demos"
+    set_target_properties(Demo00 PROPERTIES FOLDER "Demos")
+    set_target_properties(Demo01 PROPERTIES FOLDER "Demos")
+endif()
 
 # Add a static library PekanCore, compiling the following source files
 add_library(PekanCore STATIC
@@ -65,5 +76,7 @@ target_link_libraries(PekanCore PRIVATE
 # Set include directories for PekanCore
 target_include_directories(PekanCore PUBLIC src/PekanCore)
 
-# Set Demo to be the startup project by default
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo)
+if(WITH_DEMO_PROJECTS)
+    # Set Demo01 to be the startup project by default
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo01)
+endif()
