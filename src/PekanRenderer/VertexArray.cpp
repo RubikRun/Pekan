@@ -1,5 +1,4 @@
 #include "VertexArray.h"
-#define PK_FILENAME "VertexArray.cpp"
 #include "Logger/PekanLogger.h"
 #include "PekanRenderer.h"
 
@@ -39,12 +38,12 @@ namespace Renderer
 	void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout) {
 		if (!vertexBuffer.isValid())
 		{
-			PK_LOG_ERRORF("Trying to add an invalid vertex buffer to a vertex array. It will not be added.");
+			PK_LOG_ERROR("Trying to add an invalid vertex buffer to a vertex array. It will not be added.");
 			return;
 		}
 		if (layout.getElements().empty())
 		{
-			PK_LOG_ERRORF("Trying to add a vertex buffer with an empty layout to a vertex array. It will not be added.");
+			PK_LOG_ERROR("Trying to add a vertex buffer with an empty layout to a vertex array. It will not be added.");
 			return;
 		}
 

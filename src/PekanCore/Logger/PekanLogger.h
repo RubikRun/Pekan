@@ -1,11 +1,14 @@
 #pragma once
 
-/*
-Before including this file you must define PK_FILENAME to be the name of your file (e.g. #define PK_FILENAME "main.cpp")
-if you are planning to use PK_LOG_ERRORF, PK_LOG_WARNINGF, PK_LOG_DEBUGF, PK_LOG_INFOF.
-*/
-
 #include <sstream>
+#include <string_view>
+
+// Toggle this macro on/off to log filepaths/filenames of source files.
+// e.g. when on:
+//     [ERROR in C:/dev/Pekan/src/PekanRenderer/Shader.cpp]: sth
+// when off:
+//     [ERROR in Shader.cpp]: sth
+#define PK_LOGGER_USE_FILEPATH_FOR_SOURCE_FILE 0
 
 // Toggle these macros on/off to enable/disable support of different types of log messages
 // or enable/disable support for logging to the console and logging to a file.
@@ -69,6 +72,14 @@ if you are planning to use PK_LOG_ERRORF, PK_LOG_WARNINGF, PK_LOG_DEBUGF, PK_LOG
 #define DEFAULT_PEKAN_LOGGER_CONSOLE_ENABLED 1
 #define DEFAULT_PEKAN_LOGGER_FILE_ENABLED 0
 
+// Toggle these macros on/off to include/exclude source file's name from different types of log messages.
+#define PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE 1
+#define PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE 1
+#define PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE 0
+#define PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE 1
+
+#define PK_LOGGER_SUPPORT ((PK_LOGGER_ERROR_SUPPORT || PK_LOGGER_WARNING_SUPPORT || PK_LOGGER_INFO_SUPPORT || PK_LOGGER_DEBUG_SUPPORT) && (PK_LOGGER_CONSOLE_SUPPORT || PK_LOGGER_FILE_SUPPORT))
+
 namespace Pekan
 {
 namespace Logger
@@ -76,173 +87,192 @@ namespace Logger
 
 #if PK_LOGGER_CONSOLE_SUPPORT
 	#if PK_LOGGER_ERROR_SUPPORT
-		void _logErrorToConsole(const char* msg);
-		void _logErrorfToConsole(const char* msg, const char* filename);
+		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
+			void _logErrorToConsole(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logErrorToConsole(const char* msg);
+		#endif
 	#endif
 	#if PK_LOGGER_WARNING_SUPPORT
-		void _logWarningToConsole(const char* msg);
-		void _logWarningfToConsole(const char* msg, const char* filename);
+		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
+			void _logWarningToConsole(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logWarningToConsole(const char* msg);
+		#endif
 	#endif
 	#if PK_LOGGER_INFO_SUPPORT
-		void _logInfoToConsole(const char* msg);
-		void _logInfofToConsole(const char* msg, const char* filename);
+		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
+			void _logInfoToConsole(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logInfoToConsole(const char* msg);
+		#endif
 	#endif
 	#if PK_LOGGER_DEBUG_SUPPORT
-		void _logDebugToConsole(const char* msg);
-		void _logDebugfToConsole(const char* msg, const char* filename);
+		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
+			void _logDebugToConsole(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logDebugToConsole(const char* msg);
+		#endif
 	#endif
 #endif
 
 #if PK_LOGGER_FILE_SUPPORT
 	#if PK_LOGGER_ERROR_SUPPORT
-		void _logErrorToFile(const char* msg);
-		void _logErrorfToFile(const char* msg, const char* filename);
+		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
+			void _logErrorToFile(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logErrorToFile(const char* msg);
+		#endif
 	#endif
 	#if PK_LOGGER_WARNING_SUPPORT
-		void _logWarningToFile(const char* msg);
-		void _logWarningfToFile(const char* msg, const char* filename);
+		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
+			void _logWarningToFile(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logWarningToFile(const char* msg);
+		#endif
 	#endif
 	#if PK_LOGGER_INFO_SUPPORT
-		void _logInfoToFile(const char* msg);
-		void _logInfofToFile(const char* msg, const char* filename);
+		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
+			void _logInfoToFile(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logInfoToFile(const char* msg);
+		#endif
 	#endif
 	#if PK_LOGGER_DEBUG_SUPPORT
-		void _logDebugToFile(const char* msg);
-		void _logDebugfToFile(const char* msg, const char* filename);
+		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
+			void _logDebugToFile(const char* msg, std::string_view sourceFileName);
+		#else
+			void _logDebugToFile(const char* msg);
+		#endif
+	#endif
+#endif
+
+#if PK_LOGGER_SUPPORT
+	#if PK_LOGGER_USE_FILEPATH_FOR_SOURCE_FILE
+		// Filepath of current source file where logger is used
+		#define PK_SOURCE_FILE __FILE__
+	#else
+		// Extracts a filename from given filepath,
+		// e.g. "C:/dev/Pekan/src/PekanRenderer/Shader.cpp" -> "Shader.cpp".
+		constexpr std::string_view _getFileNameFromFilePath(std::string_view filePath)
+		{
+			const size_t pos = filePath.find_last_of("/\\");
+			return (pos == std::string_view::npos) ? filePath : filePath.substr(pos + 1);
+		}
+		// Filename of current source file where logger is used
+		#define PK_SOURCE_FILE Pekan::Logger::_getFileNameFromFilePath(__FILE__)
 	#endif
 #endif
 
 } // namespace Logger
 } // namespace Pekan
 
-// PK_LOG_ERROR logs an error message to the console and/or syslog file
-// PK_LOG_ERRORF logs an error message to the console and/or syslog file together with the filename of the source file where it's called from
-#if PK_LOGGER_ERROR_SUPPORT
+#define PK_STR(MSG) std::ostringstream oss; oss << MSG; const std::string s = oss.str();
 
+// PK_LOG_ERROR logs an error message to the console and/or syslog file
+#if PK_LOGGER_ERROR_SUPPORT
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_ERROR(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logErrorToConsole(s.c_str()); Pekan::Logger::_logErrorToFile(s.c_str()); }
+		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logErrorToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str()); Pekan::Logger::_logErrorToFile(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
-		#define PK_LOG_ERROR(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logErrorToConsole(s.c_str()); }
+		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_ERROR(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logErrorToFile(s.c_str()); }
+		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToFile(s.c_str()); }
+		#endif
 	#else
 		#define PK_LOG_ERROR(MSG)
 	#endif
-
-	#ifdef PK_FILENAME
-		#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_ERRORF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logErrorfToConsole(s.c_str(), PK_FILENAME); Pekan::Logger::_logErrorfToFile(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_CONSOLE_SUPPORT
-			#define PK_LOG_ERRORF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logErrorfToConsole(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_ERRORF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logErrorfToFile(s.c_str(), PK_FILENAME); }
-		#else
-			#define PK_LOG_ERRORF(MSG)
-		#endif
-	#else
-		#define PK_LOG_ERRORF(MSG) ERROR You must define PK_FILENAME to be the name of your file (e.g. {hashtag}define PK_FILENAME "main.cpp")
-	#endif
-
 #else
 	#define PK_LOG_ERROR(MSG)
-	#define PK_LOG_ERRORF(MSG)
 #endif
 
 // PK_LOG_WARNING logs a warning message to the console and/or syslog file
-// PK_LOG_WARNINGF logs a warning message to the console and/or syslog file together with the filename of the source file where it's called from
 #if PK_LOGGER_WARNING_SUPPORT
-
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_WARNING(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logWarningToConsole(s.c_str()); Pekan::Logger::_logWarningToFile(s.c_str()); }
+		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logWarningToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str()); Pekan::Logger::_logWarningToFile(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
-		#define PK_LOG_WARNING(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logWarningToConsole(s.c_str()); }
+		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_WARNING(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logWarningToFile(s.c_str()); }
+		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToFile(s.c_str()); }
+		#endif
 	#else
 		#define PK_LOG_WARNING(MSG)
 	#endif
-
-	#ifdef PK_FILENAME
-		#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_WARNINGF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logWarningfToConsole(s.c_str(), PK_FILENAME); Pekan::Logger::_logWarningfToFile(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_CONSOLE_SUPPORT
-			#define PK_LOG_WARNINGF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logWarningfToConsole(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_WARNINGF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logWarningfToFile(s.c_str(), PK_FILENAME); }
-		#else
-			#define PK_LOG_WARNINGF(MSG)
-		#endif
-	#else
-		#define PK_LOG_WARNINGF(MSG) ERROR You must define PK_FILENAME to be the name of your file (e.g. {hashtag}define PK_FILENAME "main.cpp")
-	#endif
-
 #else
 	#define PK_LOG_WARNING(MSG)
-	#define PK_LOG_WARNINGF(MSG)
 #endif
 
 // PK_LOG_INFO logs an info message to the console and/or syslog file
-// PK_LOG_INFOF logs an info message to the console and/or syslog file together with the filename of the source file where it's called from
 #if PK_LOGGER_INFO_SUPPORT
-
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_INFO(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logInfoToConsole(s.c_str()); Pekan::Logger::_logInfoToFile(s.c_str()); }
+		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logInfoToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str()); Pekan::Logger::_logInfoToFile(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
-		#define PK_LOG_INFO(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logInfoToConsole(s.c_str()); }
+		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_INFO(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logInfoToFile(s.c_str()); }
+		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToFile(s.c_str()); }
+		#endif
 	#else
 		#define PK_LOG_INFO(MSG)
 	#endif
-
-	#ifdef PK_FILENAME
-		#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_INFOF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logInfofToConsole(s.c_str(), PK_FILENAME); Pekan::Logger::_logInfofToFile(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_CONSOLE_SUPPORT
-			#define PK_LOG_INFOF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logInfofToConsole(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_INFOF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logInfofToFile(s.c_str(), PK_FILENAME); }
-		#else
-			#define PK_LOG_INFOF(MSG)
-		#endif
-	#else
-		#define PK_LOG_INFOF(MSG) ERROR You must define PK_FILENAME to be the name of your file (e.g. {hashtag}define PK_FILENAME "main.cpp")
-	#endif
-
 #else
 	#define PK_LOG_INFO(MSG)
-	#define PK_LOG_INFOF(MSG)
 #endif
 
 // PK_LOG_DEBUG logs a debug message to the console and/or syslog file
-// PK_LOG_DEBUGF logs a debug message to the console and/or syslog file together with the filename of the source file where it's called from
 #if PK_LOGGER_DEBUG_SUPPORT
-
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_DEBUG(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logDebugToConsole(s.c_str()); Pekan::Logger::_logDebugToFile(s.c_str()); }
+		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logDebugToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str()); Pekan::Logger::_logDebugToFile(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
-		#define PK_LOG_DEBUG(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logDebugToConsole(s.c_str()); }
+		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str()); }
+		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
-		#define PK_LOG_DEBUG(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logDebugToFile(s.c_str()); }
+		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
+			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToFile(s.c_str(), PK_SOURCE_FILE); }
+		#else
+			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToFile(s.c_str()); }
+		#endif
 	#else
 		#define PK_LOG_DEBUG(MSG)
 	#endif
-
-	#ifdef PK_FILENAME
-		#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_DEBUGF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logDebugfToConsole(s.c_str(), PK_FILENAME); Pekan::Logger::_logDebugfToFile(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_CONSOLE_SUPPORT
-			#define PK_LOG_DEBUGF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logDebugfToConsole(s.c_str(), PK_FILENAME); }
-		#elif PK_LOGGER_FILE_SUPPORT
-			#define PK_LOG_DEBUGF(MSG) { std::ostringstream oss; oss << MSG; const std::string s = oss.str(); Pekan::Logger::_logDebugfToFile(s.c_str(), PK_FILENAME); }
-		#else
-			#define PK_LOG_DEBUGF(MSG)
-		#endif
-	#else
-		#define PK_LOG_DEBUGF(MSG) ERROR You must define PK_FILENAME to be the name of your file (e.g. {hashtag}define PK_FILENAME "main.cpp")
-	#endif
-
 #else
 	#define PK_LOG_DEBUG(MSG)
-	#define PK_LOG_DEBUGF(MSG)
 #endif

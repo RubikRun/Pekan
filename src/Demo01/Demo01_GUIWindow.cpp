@@ -1,5 +1,4 @@
 #include "Demo01_GUIWindow.h"
-#define PK_FILENAME "Demo01_GUIWindow.cpp"
 #include "Logger/PekanLogger.h"
 #include "Demo01_Scene.h"
 #include "PekanEngine.h"
@@ -63,7 +62,7 @@ namespace Demo
 	{
         if (m_scene == nullptr)
         {
-            PK_LOG_ERRORF("Cannot render GUI window because there is no scene attached.");
+            PK_LOG_ERROR("Cannot render GUI window because there is no scene attached.");
             return;
         }
 

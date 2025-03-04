@@ -940,3 +940,71 @@ That changes quite a few things, but they all seem clearer now.
 Done.
 Both demos work.
 }
+
+----------
+03.03.2025
+----------
+
+{
+I want to do TODO 0004 - wrapping OpenGL calls in GLCall() macro
+so that OpenGL errors are automatically handled and logged with PekanLogger.
+
+In order to do that, I would need to extend PekanLogger a bit,
+and change some stuff, some of which is not even related to TODO 0004, just in general.
+
+So today's work will be on PekanLogger, and after that we can proceed with TODO 0004.
+
+First of all, it's really annoying having to define PK_FILENAME in every source file like that:
+    #define PK_FILENAME "Shader.cpp"
+and it's also annoying that we have 2 versions of the macro for each type of log message
+    PK_LOG_ERROR()
+    PK_LOG_ERRORF()
+Not great.
+Instead, let's use this predefined macro
+    __FILE__
+which is always defined to be the filepath to current source file.
+There's one problem with that, and I'll solve it now.
+The problem is __FILE__ is the full filepath to source file,
+and more often I want just the filename, so __FILE__ would be for example
+    C:/dev/Pekan/src/PekanRenderer/Shader.cpp
+and I want to log just
+    Shader.cpp
+This can be easily solved with a function that just extracts the filename from a given filepath,
+but the essential part here is that I want this to happen at compile time.
+I don't want this function to be executed each time when a message is logged.
+I want it to execute at compile time, once for each source file where logger is used.
+This can be done in modern C++ with constexpr like that
+    constexpr std::string_view _getFileNameFromFilePath(std::string_view filePath)
+    {
+        const size_t pos = filePath.find_last_of("/\\");
+        return (pos == std::string_view::npos) ? filePath : filePath.substr(pos + 1);
+    }
+The problem is we want to use this constexpr as an argument to a function
+    _logErrorToConsole(...)
+    _logWarningToFile(...)
+    etc.
+and I'm not sure if it will actually be evaluated at compile time.
+When running in debug mode and putting a breakpoint inside of the constexpr function, it gets hit.
+But when I run in release mode it doesn't get hit, so it seems like it's able to optimize it away?
+Not 100% sure but good for now.
+Some time in the future when we have more logging going on, and maybe a profiler, we'll think about it again.
+
+One more thing, I added this new macro
+    PK_LOGGER_USE_FILEPATH_FOR_SOURCE_FILE
+for choosing whether we want to log full filepaths or just filenames.
+Also these 4 new macros
+    #define PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE 1
+    #define PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE 1
+    #define PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE 0
+    #define PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE 1
+that tell us which types of log messages should include source file's name/path and which shouldn't.
+Previously this was left as an option for users of PekanLogger - they could call either
+    PK_LOG_ERROR()
+    PK_LOG_ERRORF()
+but I think that's unnecessary. It's much simpler to have this control in 1 centralized place,
+unless in the future we really need some info messages to contain source file and others to not,
+or some error messages to contain source file and others to not, etc.
+
+Okay, it seems to work with those new features. Tested it extensively.
+
+}

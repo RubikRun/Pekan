@@ -1,5 +1,4 @@
 #include "Shader.h"
-#define PK_FILENAME "Shader.cpp"
 #include "Logger/PekanLogger.h"
 
 #include <glad/glad.h>
@@ -30,7 +29,7 @@ namespace Renderer {
 		if (!success) {
 			char infoLog[512];
 			glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
-			PK_LOG_ERRORF("Shader program linking failed: " << infoLog);
+			PK_LOG_ERROR("Shader program linking failed: " << infoLog);
 		}
 		// Delete the individual shaders, as the shader program has them now
 		glDeleteShader(vertexShaderID);
@@ -88,7 +87,7 @@ namespace Renderer {
 		if (!success) {
 			char infoLog[512];
 			glGetShaderInfoLog(shaderID, 512, nullptr, infoLog);
-			PK_LOG_ERRORF("Shader compilation failed: " << infoLog);
+			PK_LOG_ERROR("Shader compilation failed: " << infoLog);
 		}
 		return shaderID;
 	}
@@ -102,7 +101,7 @@ namespace Renderer {
 		// Otherwise retrieve it by asking OpenGL for the location
 		const GLint location = glGetUniformLocation(m_id, uniformName.c_str());
 		if (location < 0) {
-			PK_LOG_ERRORF("Trying to set value for uniform \"" << uniformName << "\" inside a shader, but such uniform doesn't exist.");
+			PK_LOG_ERROR("Trying to set value for uniform \"" << uniformName << "\" inside a shader, but such uniform doesn't exist.");
 		}
 		// Cache the location so that it can be reused in next calls to this function
 		m_uniformLocationCache[uniformName] = location;

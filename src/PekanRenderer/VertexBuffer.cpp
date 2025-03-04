@@ -1,5 +1,4 @@
 #include "VertexBuffer.h"
-#define PK_FILENAME "VertexBuffer.cpp"
 #include "Logger/PekanLogger.h"
 
 #include <glad/glad.h>

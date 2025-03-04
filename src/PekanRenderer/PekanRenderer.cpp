@@ -1,5 +1,4 @@
 #include "PekanRenderer.h"
-#define PK_FILENAME "PekanRenderer.cpp"
 #include "Logger/PekanLogger.h"
 
 #include <glad/glad.h>
@@ -55,7 +54,7 @@ namespace Renderer
 		case ShaderDataType::Int4:      return GL_INT;
 		case ShaderDataType::Bool:      return GL_BOOL;
 		}
-		PK_LOG_ERRORF("Unknown ShaderDataType, cannot determine OpenGL base type.");
+		PK_LOG_ERROR("Unknown ShaderDataType, cannot determine OpenGL base type.");
 		return 0;
 	}
 
@@ -76,7 +75,7 @@ namespace Renderer
 			case DrawMode::TrianglesAdjacency:        return GL_TRIANGLES_ADJACENCY;
 			case DrawMode::Patches:                   return GL_PATCHES;
 		}
-		PK_LOG_ERRORF("Unknown DrawMode, cannot determine OpenGL enum.");
+		PK_LOG_ERROR("Unknown DrawMode, cannot determine OpenGL enum.");
 		return 0;
 	}
 
@@ -99,7 +98,7 @@ namespace Renderer
 		case BlendFactor::ConstantAlpha:            return GL_CONSTANT_ALPHA;
 		case BlendFactor::OneMinusConstantAlpha:    return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
-		PK_LOG_ERRORF("Unknown BlendFactor, cannot determine OpenGL enum.");
+		PK_LOG_ERROR("Unknown BlendFactor, cannot determine OpenGL enum.");
 		return 0;
 	}
 
@@ -117,7 +116,7 @@ namespace Renderer
 			case BufferDataUsage::DynamicRead:    return GL_DYNAMIC_READ;
 			case BufferDataUsage::DynamicCopy:    return GL_DYNAMIC_COPY;
 		}
-		PK_LOG_ERRORF("Unknown BufferDataUsage, cannot determine OpenGL enum.");
+		PK_LOG_ERROR("Unknown BufferDataUsage, cannot determine OpenGL enum.");
 		return 0;
 	}
 
@@ -137,7 +136,7 @@ namespace Renderer
 			case ShaderDataType::Int4:      return 4 * 4;
 			case ShaderDataType::Bool:      return 1;
 		}
-		PK_LOG_ERRORF("Unknown ShaderDataType, cannot determine its size.");
+		PK_LOG_ERROR("Unknown ShaderDataType, cannot determine its size.");
 		return 0;
 	}
 
@@ -157,7 +156,7 @@ namespace Renderer
 			case ShaderDataType::Int4:      return 4;
 			case ShaderDataType::Bool:      return 1;
 		}
-		PK_LOG_ERRORF("Unknown ShaderDataType, cannot determine its components count.");
+		PK_LOG_ERROR("Unknown ShaderDataType, cannot determine its components count.");
 		return 0;
 	}
 

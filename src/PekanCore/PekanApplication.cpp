@@ -1,5 +1,4 @@
 #include "PekanApplication.h"
-#define PK_FILENAME "PekanApplication.cpp"
 #include "Logger/PekanLogger.h"
 #include "PekanEngine.h"
 #include "PekanScene.h"
@@ -14,7 +13,7 @@ namespace Pekan
     {
         if (!PekanEngine::init())
         {
-            PK_LOG_ERRORF("Engine failed to initialize.");
+            PK_LOG_ERROR("Engine failed to initialize.");
             return false;
         }
 
@@ -25,12 +24,12 @@ namespace Pekan
 
         if (m_scene == nullptr)
         {
-            PK_LOG_ERRORF("Trying to initialize application but scene is NULL.");
+            PK_LOG_ERROR("Trying to initialize application but scene is NULL.");
             return false;
         }
         if (m_guiWindow == nullptr)
         {
-            PK_LOG_ERRORF("Trying to initialize application but GUI window is NULL.");
+            PK_LOG_ERROR("Trying to initialize application but GUI window is NULL.");
             return false;
         }
 
@@ -50,12 +49,12 @@ namespace Pekan
 	{
         if (m_scene == nullptr)
         {
-            PK_LOG_ERRORF("Trying to run application but scene is NULL.");
+            PK_LOG_ERROR("Trying to run application but scene is NULL.");
             return;
         }
         if (m_guiWindow == nullptr)
         {
-            PK_LOG_ERRORF("Trying to run application but GUI window is NULL.");
+            PK_LOG_ERROR("Trying to run application but GUI window is NULL.");
             return;
         }
 

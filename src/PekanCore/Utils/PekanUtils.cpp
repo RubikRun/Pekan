@@ -1,5 +1,4 @@
 #include "Utils/PekanUtils.h"
-#define PK_FILENAME "PekanUtils.cpp"
 #include "Logger/PekanLogger.h"
 
 #include <fstream>
@@ -14,7 +13,7 @@ namespace Utils
     {
         std::ifstream file(filePath);
         if (!file.is_open()) {
-            PK_LOG_ERRORF("Failed to open file: " << filePath);
+            PK_LOG_ERROR("Failed to open file: " << filePath);
             return std::string();
         }
 
@@ -24,7 +23,7 @@ namespace Utils
         file.close();
         if (file.is_open())
         {
-            PK_LOG_ERRORF("Failed to close file: " << filePath);
+            PK_LOG_ERROR("Failed to close file: " << filePath);
         }
 
         return buffer.str();

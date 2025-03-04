@@ -1,5 +1,4 @@
 #include "Demo01_Scene.h"
-#define PK_FILENAME "DemoScene.cpp"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "PekanEngine.h"
