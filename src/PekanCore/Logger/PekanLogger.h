@@ -88,30 +88,30 @@ namespace Logger
 #if PK_LOGGER_CONSOLE_SUPPORT
 	#if PK_LOGGER_ERROR_SUPPORT
 		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
-			void _logErrorToConsole(const char* msg, std::string_view sourceFileName);
+			void _logErrorToConsole(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logErrorToConsole(const char* msg);
+			void _logErrorToConsole(const char* msg, const char* sender);
 		#endif
 	#endif
 	#if PK_LOGGER_WARNING_SUPPORT
 		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
-			void _logWarningToConsole(const char* msg, std::string_view sourceFileName);
+			void _logWarningToConsole(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logWarningToConsole(const char* msg);
+			void _logWarningToConsole(const char* msg, const char* sender);
 		#endif
 	#endif
 	#if PK_LOGGER_INFO_SUPPORT
 		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
-			void _logInfoToConsole(const char* msg, std::string_view sourceFileName);
+			void _logInfoToConsole(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logInfoToConsole(const char* msg);
+			void _logInfoToConsole(const char* msg, const char* sender);
 		#endif
 	#endif
 	#if PK_LOGGER_DEBUG_SUPPORT
 		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
-			void _logDebugToConsole(const char* msg, std::string_view sourceFileName);
+			void _logDebugToConsole(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logDebugToConsole(const char* msg);
+			void _logDebugToConsole(const char* msg, const char* sender);
 		#endif
 	#endif
 #endif
@@ -119,30 +119,30 @@ namespace Logger
 #if PK_LOGGER_FILE_SUPPORT
 	#if PK_LOGGER_ERROR_SUPPORT
 		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
-			void _logErrorToFile(const char* msg, std::string_view sourceFileName);
+			void _logErrorToFile(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logErrorToFile(const char* msg);
+			void _logErrorToFile(const char* msg, const char* sender);
 		#endif
 	#endif
 	#if PK_LOGGER_WARNING_SUPPORT
 		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
-			void _logWarningToFile(const char* msg, std::string_view sourceFileName);
+			void _logWarningToFile(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logWarningToFile(const char* msg);
+			void _logWarningToFile(const char* msg, const char* sender);
 		#endif
 	#endif
 	#if PK_LOGGER_INFO_SUPPORT
 		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
-			void _logInfoToFile(const char* msg, std::string_view sourceFileName);
+			void _logInfoToFile(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logInfoToFile(const char* msg);
+			void _logInfoToFile(const char* msg, const char* sender);
 		#endif
 	#endif
 	#if PK_LOGGER_DEBUG_SUPPORT
 		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
-			void _logDebugToFile(const char* msg, std::string_view sourceFileName);
+			void _logDebugToFile(const char* msg, const char* sender, std::string_view sourceFileName);
 		#else
-			void _logDebugToFile(const char* msg);
+			void _logDebugToFile(const char* msg, const char* sender);
 		#endif
 	#endif
 #endif
@@ -167,112 +167,112 @@ namespace Logger
 } // namespace Logger
 } // namespace Pekan
 
-#define PK_STR(MSG) std::ostringstream oss; oss << MSG; const std::string s = oss.str();
+#define PK_STR(MSG) std::ostringstream mOss; mOss << MSG; const std::string m = mOss.str();
 
 // PK_LOG_ERROR logs an error message to the console and/or syslog file
 #if PK_LOGGER_ERROR_SUPPORT
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logErrorToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_ERROR(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(m.c_str(), SND, PK_SOURCE_FILE); Pekan::Logger::_logErrorToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str()); Pekan::Logger::_logErrorToFile(s.c_str()); }
+			#define PK_LOG_ERROR(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(m.c_str(), SND); Pekan::Logger::_logErrorToFile(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
 		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_ERROR(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(s.c_str()); }
+			#define PK_LOG_ERROR(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logErrorToConsole(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_ERRORS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_ERROR(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logErrorToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_ERROR(MSG) { PK_STR(MSG); Pekan::Logger::_logErrorToFile(s.c_str()); }
+			#define PK_LOG_ERROR(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logErrorToFile(m.c_str(), SND); }
 		#endif
 	#else
-		#define PK_LOG_ERROR(MSG)
+		#define PK_LOG_ERROR(MSG, SND)
 	#endif
 #else
-	#define PK_LOG_ERROR(MSG)
+	#define PK_LOG_ERROR(MSG, SND)
 #endif
 
 // PK_LOG_WARNING logs a warning message to the console and/or syslog file
 #if PK_LOGGER_WARNING_SUPPORT
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logWarningToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_WARNING(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(m.c_str(), SND, PK_SOURCE_FILE); Pekan::Logger::_logWarningToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str()); Pekan::Logger::_logWarningToFile(s.c_str()); }
+			#define PK_LOG_WARNING(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(m.c_str(), SND); Pekan::Logger::_logWarningToFile(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
 		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_WARNING(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(s.c_str()); }
+			#define PK_LOG_WARNING(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logWarningToConsole(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_WARNINGS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_WARNING(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logWarningToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_WARNING(MSG) { PK_STR(MSG); Pekan::Logger::_logWarningToFile(s.c_str()); }
+			#define PK_LOG_WARNING(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logWarningToFile(m.c_str(), SND); }
 		#endif
 	#else
-		#define PK_LOG_WARNING(MSG)
+		#define PK_LOG_WARNING(MSG, SND)
 	#endif
 #else
-	#define PK_LOG_WARNING(MSG)
+	#define PK_LOG_WARNING(MSG, SND)
 #endif
 
 // PK_LOG_INFO logs an info message to the console and/or syslog file
 #if PK_LOGGER_INFO_SUPPORT
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logInfoToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_INFO(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(m.c_str(), SND, PK_SOURCE_FILE); Pekan::Logger::_logInfoToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str()); Pekan::Logger::_logInfoToFile(s.c_str()); }
+			#define PK_LOG_INFO(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(m.c_str(), SND); Pekan::Logger::_logInfoToFile(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
 		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_INFO(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(s.c_str()); }
+			#define PK_LOG_INFO(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logInfoToConsole(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_INFOS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_INFO(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logInfoToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_INFO(MSG) { PK_STR(MSG); Pekan::Logger::_logInfoToFile(s.c_str()); }
+			#define PK_LOG_INFO(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logInfoToFile(m.c_str(), SND); }
 		#endif
 	#else
-		#define PK_LOG_INFO(MSG)
+		#define PK_LOG_INFO(MSG, SND)
 	#endif
 #else
-	#define PK_LOG_INFO(MSG)
+	#define PK_LOG_INFO(MSG, SND)
 #endif
 
 // PK_LOG_DEBUG logs a debug message to the console and/or syslog file
 #if PK_LOGGER_DEBUG_SUPPORT
 	#if PK_LOGGER_CONSOLE_SUPPORT && PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str(), PK_SOURCE_FILE); Pekan::Logger::_logDebugToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_DEBUG(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(m.c_str(), SND, PK_SOURCE_FILE); Pekan::Logger::_logDebugToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str()); Pekan::Logger::_logDebugToFile(s.c_str()); }
+			#define PK_LOG_DEBUG(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(m.c_str(), SND); Pekan::Logger::_logDebugToFile(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_CONSOLE_SUPPORT
 		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_DEBUG(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(s.c_str()); }
+			#define PK_LOG_DEBUG(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logDebugToConsole(m.c_str(), SND); }
 		#endif
 	#elif PK_LOGGER_FILE_SUPPORT
 		#if PK_LOGGER_DEBUGS_INCLUDE_SOURCE_FILE
-			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToFile(s.c_str(), PK_SOURCE_FILE); }
+			#define PK_LOG_DEBUG(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logDebugToFile(m.c_str(), SND, PK_SOURCE_FILE); }
 		#else
-			#define PK_LOG_DEBUG(MSG) { PK_STR(MSG); Pekan::Logger::_logDebugToFile(s.c_str()); }
+			#define PK_LOG_DEBUG(MSG, SND) { PK_STR(MSG); Pekan::Logger::_logDebugToFile(m.c_str(), SND); }
 		#endif
 	#else
-		#define PK_LOG_DEBUG(MSG)
+		#define PK_LOG_DEBUG(MSG, SND)
 	#endif
 #else
-	#define PK_LOG_DEBUG(MSG)
+	#define PK_LOG_DEBUG(MSG, SND)
 #endif

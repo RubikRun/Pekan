@@ -13,7 +13,7 @@ namespace Pekan
     {
         if (!PekanEngine::init())
         {
-            PK_LOG_ERROR("Engine failed to initialize.");
+            PK_LOG_ERROR("Engine failed to initialize.", "Pekan");
             return false;
         }
 
@@ -24,12 +24,12 @@ namespace Pekan
 
         if (m_scene == nullptr)
         {
-            PK_LOG_ERROR("Trying to initialize application but scene is NULL.");
+            PK_LOG_ERROR("Trying to initialize application but scene is NULL.", "Pekan");
             return false;
         }
         if (m_guiWindow == nullptr)
         {
-            PK_LOG_ERROR("Trying to initialize application but GUI window is NULL.");
+            PK_LOG_ERROR("Trying to initialize application but GUI window is NULL.", "Pekan");
             return false;
         }
 
@@ -49,12 +49,12 @@ namespace Pekan
 	{
         if (m_scene == nullptr)
         {
-            PK_LOG_ERROR("Trying to run application but scene is NULL.");
+            PK_LOG_ERROR("Trying to run application but scene is NULL.", "Pekan");
             return;
         }
         if (m_guiWindow == nullptr)
         {
-            PK_LOG_ERROR("Trying to run application but GUI window is NULL.");
+            PK_LOG_ERROR("Trying to run application but GUI window is NULL.", "Pekan");
             return;
         }
 

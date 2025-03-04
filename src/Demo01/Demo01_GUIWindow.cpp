@@ -62,7 +62,7 @@ namespace Demo
 	{
         if (m_scene == nullptr)
         {
-            PK_LOG_ERROR("Cannot render GUI window because there is no scene attached.");
+            PK_LOG_ERROR("Cannot render GUI window because there is no scene attached.", "Pekan");
             return;
         }
 

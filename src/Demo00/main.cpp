@@ -8,7 +8,7 @@ int main(void)
     Demo00_Application application;
     if (!application.init())
     {
-        PK_LOG_ERROR("Application failed to initialize.");
+        PK_LOG_ERROR("Application failed to initialize.", "Pekan");
         return -1;
     }
     application.run();

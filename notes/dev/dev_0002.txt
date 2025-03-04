@@ -1007,4 +1007,27 @@ or some error messages to contain source file and others to not, etc.
 
 Okay, it seems to work with those new features. Tested it extensively.
 
+----------
+04.03.2025
+----------
+
+What we need now, even more essential than __FILE__,
+is to allow users of PekanLogger to specify a "sender" of a log message.
+This is specifically needed for OpenGL errors because I want the logger to display them as "OpenGL errors" and not just "errors".
+For example, currently a logged OpenGL error would look like
+    [ERROR in Shader.cpp]: Invalid enum
+But I want it to look like
+    [ERROR in Shader.cpp](OpenGL): Invalid enum
+So that we can differentiate between errors sent by different components/levels of our engine.
+
+I'm not sure if I want to always have a sender in a log message,
+but for now I'll do it always, and callers can choose to put an empty string "" as a sender, and it'd look like
+    [ERROR in PekanUtils.cpp](): Cannot get current time
+Ideally it's good to always have a sender. If it's a general error message from Pekan we should just put "Pekan" as sender
+    [ERROR in PekanUtils.cpp](Pekan): Cannot get current time
+So yeah, let's just add a sender to current logger.
+
+Alright, that was fairly easy. Done.
+Tested it, not a lot, but should be fine.
+
 }

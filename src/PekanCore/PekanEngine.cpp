@@ -42,7 +42,7 @@ namespace Pekan
     {
         if (s_window == nullptr)
         {
-            PK_LOG_ERROR("Trying to exit engine but engine is not yet initialized.");
+            PK_LOG_ERROR("Trying to exit engine but engine is not yet initialized.", "Pekan");
             return;
         }
         exitImGui();
@@ -63,7 +63,7 @@ namespace Pekan
     {
         if (!glfwInit())
         {
-            PK_LOG_ERROR("Failed to initialize GLFW.");
+            PK_LOG_ERROR("Failed to initialize GLFW.", "Pekan");
             return false;
         }
 
@@ -76,7 +76,7 @@ namespace Pekan
         s_window = glfwCreateWindow(width, height, DEFAULT_WINDOW_TITLE, nullptr, nullptr);
         if (s_window == nullptr)
         {
-            PK_LOG_ERROR("Failed to create a window with GLFW.");
+            PK_LOG_ERROR("Failed to create a window with GLFW.", "Pekan");
             glfwTerminate();
             return false;
         }
@@ -100,14 +100,14 @@ namespace Pekan
         // Load OpenGL function pointers with GLAD
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            PK_LOG_ERROR("Failed to load OpenGL function pointers with GLAD");
+            PK_LOG_ERROR("Failed to load OpenGL function pointers with GLAD", "Pekan");
             return false;
         }
         // Set OpenGL viewport's resolution to be the same as window's resolution
         glViewport(0, 0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
         // Log OpenGL version
-        PK_LOG_INFO("Successfully loaded OpenGL " << glGetString(GL_VERSION));
+        PK_LOG_INFO("Successfully loaded OpenGL " << glGetString(GL_VERSION), "Pekan");
 
         return true;
     }
@@ -116,7 +116,7 @@ namespace Pekan
     {
         if (s_window == nullptr)
         {
-            PK_LOG_ERROR("Trying to initialize ImGui but engine is not yet initialized.");
+            PK_LOG_ERROR("Trying to initialize ImGui but engine is not yet initialized.", "Pekan");
             return false;
         }
         // Setup ImGui context

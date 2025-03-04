@@ -38,12 +38,12 @@ namespace Renderer
 	void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout) {
 		if (!vertexBuffer.isValid())
 		{
-			PK_LOG_ERROR("Trying to add an invalid vertex buffer to a vertex array. It will not be added.");
+			PK_LOG_ERROR("Trying to add an invalid vertex buffer to a vertex array. It will not be added.", "Pekan");
 			return;
 		}
 		if (layout.getElements().empty())
 		{
-			PK_LOG_ERROR("Trying to add a vertex buffer with an empty layout to a vertex array. It will not be added.");
+			PK_LOG_ERROR("Trying to add a vertex buffer with an empty layout to a vertex array. It will not be added.", "Pekan");
 			return;
 		}
 

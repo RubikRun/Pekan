@@ -13,7 +13,7 @@ namespace Utils
     {
         std::ifstream file(filePath);
         if (!file.is_open()) {
-            PK_LOG_ERROR("Failed to open file: " << filePath);
+            PK_LOG_ERROR("Failed to open file: " << filePath, "Pekan");
             return std::string();
         }
 
@@ -23,7 +23,7 @@ namespace Utils
         file.close();
         if (file.is_open())
         {
-            PK_LOG_ERROR("Failed to close file: " << filePath);
+            PK_LOG_ERROR("Failed to close file: " << filePath, "Pekan");
         }
 
         return buffer.str();
