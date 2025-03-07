@@ -2,8 +2,32 @@
 
 struct GLFWwindow;
 
+#define PK_OPENGL_VERSION_MAJOR 4
+#define PK_OPENGL_VERSION_MINOR 3
+#define PK_GLSL_VERSION "#version 330 core"
+
 namespace Pekan
 {
+
+#if PK_OPENGL_VERSION_MAJOR >= 4 && PK_OPENGL_VERSION_MINOR >= 3
+// In modern OpenGL (>= 4.3) we don't need to manually do error-checking.
+// Instead we enable OpenGL's debug output and bind a callback function
+// that will be called with error (and other) messages.
+//
+// So we don't need the GLCall() macro
+#define GLCall(x) x
+#else
+// In older OpenGL (< 4.3) we need to manually do error-checking.
+// This macro here does that.
+// Should be used to wrap every OpenGL call.
+// What it does is it clears all OpenGL errors from the error queue, then does the OpenGL call,
+// and then loops over all new errors in the error queue and logs them using PekanLogger.
+#define GLCall(x) _clearGLErrors(); x; _logGLErrors();
+	// Clears the queue of OpenGL errors
+	void _clearGLErrors();
+	// Logs errors from queue of OpenGL errors
+	void _logGLErrors();
+#endif
 
 	// Pekan Engine itself.
 	// This is a singleton/static class responsible for initializing and exiting the engine,

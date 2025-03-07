@@ -1030,4 +1030,50 @@ So yeah, let's just add a sender to current logger.
 Alright, that was fairly easy. Done.
 Tested it, not a lot, but should be fine.
 
+----------
+07.03.2025
+----------
+
+Now we can finally implement TODO 0004 - wrapping OpenGL calls in GLCall() macro.
+We needed those changes in PekanLogger so that we can log OpenGL errors with sender "OpenGL".
+
+I'll do it separately for OpenGL version >= 4.3 and OpenGL version < 4.3,
+because in 4.3 and above there is an option to set a function callback for errors,
+and below 4.3 there is no such option - you have to use glGetError() after every OpenGL call.
+
+First I'll do it for older OpenGL.
+I'll create a macro
+    GLCall()
+that will be used to wrap an OpenGL call,
+and it will clear all errors before making the call, then make the call, and then check for errors.
+I created these 2 helper functions
+    void _clearGLErrors();
+    void _logGLErrors();
+Obviously they will exist only if OpenGL version is < 4.3.
+Okay done, it works with < 4.3
+
+Now let's implement it for OpenGL >= 4.3.
+We need a callback function that will be called every time when OpenGL has a message.
+I'll make it be a static function inside PekanEngine.cpp
+    static void APIENTRY openGLDebugCallback(
+        unsigned source,
+        unsigned type,
+        unsigned id,
+        unsigned severity,
+        int length,
+        const char* message,
+        const void* userParam
+    )
+And I'll create this other function, again static in PekanEngine.cpp, that will enable OpenGL's debug output and bind the callback function
+    static void enableOpenGLDebugOutput()
+Then we just need to call this function in loadOpenGL() right after initializing OpenGL, before any OpenGL calls.
+All of this is done, of course, only if OpenGL version is >= 4.3.
+
+In the callback function openGLDebugCallback() we can do a lot of things with these parameters,
+but let's keep it simple and just log the message,
+and log it as error/warning/info/debug based on the severity parameter.
+
+Okay done.
+Tested it a bit, seems to work.
+
 }

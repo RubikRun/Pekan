@@ -17,7 +17,7 @@ namespace Renderer
 
 	void IndexBuffer::create()
 	{
-		glGenBuffers(1, &m_id);
+		GLCall(glGenBuffers(1, &m_id));
 		bind();
 	}
 
@@ -30,24 +30,24 @@ namespace Renderer
 	void IndexBuffer::destroy()
 	{
 		unbind();
-		glDeleteBuffers(1, &m_id);
+		GLCall(glDeleteBuffers(1, &m_id));
 		m_id = 0;
 	}
 
 	void IndexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
 		bind();
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage));
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage)));
 	}
 
 	void IndexBuffer::bind() const
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id));
 	}
 
 	void IndexBuffer::unbind() const
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	}
 
 } // namespace Renderer

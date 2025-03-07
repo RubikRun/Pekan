@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include "Logger/PekanLogger.h"
+#include "PekanRenderer.h"
 
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -19,28 +20,28 @@ namespace Renderer {
 		const GLuint vertexShaderID = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
 		const GLuint fragmentShaderID = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 		// Create program, attach shaders to it, and link it
-		m_id = glCreateProgram();
-		glAttachShader(m_id, vertexShaderID);
-		glAttachShader(m_id, fragmentShaderID);
-		glLinkProgram(m_id);
+		GLCall(m_id = glCreateProgram());
+		GLCall(glAttachShader(m_id, vertexShaderID));
+		GLCall(glAttachShader(m_id, fragmentShaderID));
+		GLCall(glLinkProgram(m_id));
 		// Check if program linked successfully
-		GLint success;
-		glGetProgramiv(m_id, GL_LINK_STATUS, &success);
+		int success;
+		GLCall(glGetProgramiv(m_id, GL_LINK_STATUS, &success));
 		if (!success) {
 			char infoLog[512];
-			glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
+			GLCall(glGetProgramInfoLog(m_id, 512, nullptr, infoLog));
 			PK_LOG_ERROR("Shader program linking failed: " << infoLog, "Pekan");
 		}
 		// Delete the individual shaders, as the shader program has them now
-		glDeleteShader(vertexShaderID);
-		glDeleteShader(fragmentShaderID);
+		GLCall(glDeleteShader(vertexShaderID));
+		GLCall(glDeleteShader(fragmentShaderID));
 	}
 
 	void Shader::destroy() {
 		if (isValid())
 		{
 			unbind();
-			glDeleteProgram(m_id);
+			GLCall(glDeleteProgram(m_id));
 			m_id = 0;
 			// Clear the cache of uniform locations
 			// since they apply specifically to the shader being destroyed here.
@@ -49,57 +50,57 @@ namespace Renderer {
 	}
 
 	void Shader::bind() const {
-		glUseProgram(m_id);
+		GLCall(glUseProgram(m_id));
 	}
 
 	void Shader::unbind() const {
-		glUseProgram(0);
+		GLCall(glUseProgram(0));
 	}
 
 	void Shader::setUniform1f(const char* uniformName, float value) {
-		const GLint location = getUniformLocation(uniformName);
-		glUniform1f(location, value);
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform1f(location, value));
 	}
 
 	void Shader::setUniform2fv(const char* uniformName, const glm::vec2& value)
 	{
-		const GLint location = getUniformLocation(uniformName);
-		glUniform2fv(location, 1, glm::value_ptr(value));
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform2fv(location, 1, glm::value_ptr(value)));
 	}
 
 	void Shader::setUniform3fv(const char* uniformName, const glm::vec3& value) {
-		const GLint location = getUniformLocation(uniformName);
-		glUniform3fv(location, 1, glm::value_ptr(value));
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform3fv(location, 1, glm::value_ptr(value)));
 	}
 
 	void Shader::setUniformMatrix4fv(const char* uniformName, const glm::mat4& value) {
-		const GLint location = getUniformLocation(uniformName);
-		glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]));
 	}
 
 	unsigned Shader::compileShader(unsigned shaderType, const char* sourceCode) {
-		const GLuint shaderID = glCreateShader(shaderType);
-		glShaderSource(shaderID, 1, &sourceCode, nullptr);
-		glCompileShader(shaderID);
+		GLCall(const GLuint shaderID = glCreateShader(shaderType));
+		GLCall(glShaderSource(shaderID, 1, &sourceCode, nullptr));
+		GLCall(glCompileShader(shaderID));
 
-		GLint success;
-		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
+		int success;
+		GLCall(glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success));
 		if (!success) {
 			char infoLog[512];
-			glGetShaderInfoLog(shaderID, 512, nullptr, infoLog);
+			GLCall(glGetShaderInfoLog(shaderID, 512, nullptr, infoLog));
 			PK_LOG_ERROR("Shader compilation failed: " << infoLog, "Pekan");
 		}
 		return shaderID;
 	}
 
-	GLint Shader::getUniformLocation(const std::string& uniformName) const {
+	int Shader::getUniformLocation(const std::string& uniformName) const {
 		// If we have the location of this uniform cached, retrieve it from cache
 		const auto cacheIt = m_uniformLocationCache.find(uniformName);
 		if (cacheIt != m_uniformLocationCache.end()) {
 			return cacheIt->second;
 		}
 		// Otherwise retrieve it by asking OpenGL for the location
-		const GLint location = glGetUniformLocation(m_id, uniformName.c_str());
+		GLCall(const int location = glGetUniformLocation(m_id, uniformName.c_str()));
 		if (location < 0) {
 			PK_LOG_ERROR("Trying to set value for uniform \"" << uniformName << "\" inside a shader, but such uniform doesn't exist.", "Pekan");
 		}

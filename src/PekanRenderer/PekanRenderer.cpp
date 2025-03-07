@@ -10,35 +10,35 @@ namespace Renderer
 
 	void PekanRenderer::draw(unsigned elementsCount, DrawMode mode)
 	{
-		glDrawArrays(getDrawModeOpenGLEnum(mode), 0, elementsCount);
+		GLCall(glDrawArrays(getDrawModeOpenGLEnum(mode), 0, elementsCount));
 	}
 
 	void PekanRenderer::drawIndexed(unsigned elementsCount, DrawMode mode)
 	{
-		glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0);
+		GLCall(glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0));
 	}
 
 	void PekanRenderer::clear()
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 	}
 
 	void PekanRenderer::setBackgroundColor(const glm::vec4& backgroundColor)
 	{
-		glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
+		GLCall(glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w));
 	}
 
 	void PekanRenderer::enableBlending()
 	{
-		glEnable(GL_BLEND);
+		GLCall(glEnable(GL_BLEND));
 	}
 
 	void PekanRenderer::setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor)
 	{
-		glBlendFunc(getBlendFactorOpenGLEnum(sourceFactor), getBlendFactorOpenGLEnum(destinationFactor));
+		GLCall(glBlendFunc(getBlendFactorOpenGLEnum(sourceFactor), getBlendFactorOpenGLEnum(destinationFactor)));
 	}
 
-	GLenum PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
+	unsigned PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)
 		{

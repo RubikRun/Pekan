@@ -52,7 +52,7 @@ namespace Renderer
 
 	void VertexBuffer::create()
 	{
-		glGenBuffers(1, &m_id);
+		GLCall(glGenBuffers(1, &m_id));
 		bind();
 	}
 
@@ -69,24 +69,24 @@ namespace Renderer
 	void VertexBuffer::destroy()
 	{
 		unbind();
-		glDeleteBuffers(1, &m_id);
+		GLCall(glDeleteBuffers(1, &m_id));
 		m_id = 0;
 	}
 
 	void VertexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
 		bind();
-		glBufferData(GL_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage)));
 	}
 
 	void VertexBuffer::bind() const
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_id);
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_id));
 	}
 
 	void VertexBuffer::unbind() const
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
 
 } // namespace Renderer

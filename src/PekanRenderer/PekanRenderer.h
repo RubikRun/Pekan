@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "PekanEngine.h"
+
 namespace Pekan
 {
 namespace Renderer
