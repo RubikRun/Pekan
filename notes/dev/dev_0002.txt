@@ -1075,5 +1075,18 @@ and log it as error/warning/info/debug based on the severity parameter.
 
 Okay done.
 Tested it a bit, seems to work.
+}
 
+----------
+09.03.2025
+----------
+
+{
+Let's do TODO 0008 - Add support for line numbers in log messages in PekanLogger.
+I just added this parameter
+    int sourceFileLine
+to all functions in PekanLogger.h
+Then I made all macros pass this as the value for the new parameter
+    __LINE__
+It works.
 }

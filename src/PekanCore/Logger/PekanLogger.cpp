@@ -220,11 +220,11 @@ namespace Logger
         }
     }
 
-    void _logErrorToConsole(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logErrorToConsole(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isConsoleEnabled && isErrorEnabled)
         {
-            std::cout << "[ERROR in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            std::cout << "[ERROR in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
         }
     }
 #endif // PK_LOGGER_ERROR_SUPPORT
@@ -237,11 +237,11 @@ namespace Logger
         }
     }
 
-    void _logWarningToConsole(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logWarningToConsole(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isConsoleEnabled && isWarningEnabled)
         {
-            std::cout << "[WARNING in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            std::cout << "[WARNING in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
         }
     }
 #endif // PK_LOGGER_WARNING_SUPPORT
@@ -254,11 +254,11 @@ namespace Logger
         }
     }
 
-    void _logInfoToConsole(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logInfoToConsole(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isConsoleEnabled && isInfoEnabled)
         {
-            std::cout << "[INFO in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            std::cout << "[INFO in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
         }
     }
 #endif // PK_LOGGER_INFO_SUPPORT
@@ -271,11 +271,11 @@ namespace Logger
         }
     }
 
-    void _logDebugToConsole(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logDebugToConsole(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isConsoleEnabled && isDebugEnabled)
         {
-            std::cout << "[DEBUG in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            std::cout << "[DEBUG in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
         }
     }
 #endif // PK_LOGGER_DEBUG_SUPPORT
@@ -306,23 +306,23 @@ namespace Logger
         }
     }
 
-    void _logErrorToFile(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logErrorToFile(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isFileEnabled && isErrorEnabled)
         {
             std::ofstream logFile(logFilePath, std::ios_base::app);
             if (!logFile.is_open())
             {
-                std::cout << "[ERROR in " << sourceFileName << "]: [Failed to write this message to log file](" << sender << "): " << msg << std::endl;
+                std::cout << "[ERROR in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to write this message to log file]: " << msg << std::endl;
                 return;
             }
 
-            logFile << "[ERROR in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            logFile << "[ERROR in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
 
             logFile.close();
             if (logFile.is_open())
             {
-                std::cout << "[ERROR in " << sourceFileName << "]: [Failed to close log file after writing message](" << sender << "): " << msg << std::endl;
+                std::cout << "[ERROR in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to close log file after writing message]: " << msg << std::endl;
             }
         }
     }
@@ -349,23 +349,23 @@ namespace Logger
         }
     }
 
-    void _logWarningToFile(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logWarningToFile(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isFileEnabled && isWarningEnabled)
         {
             std::ofstream logFile(logFilePath, std::ios_base::app);
             if (!logFile.is_open())
             {
-                std::cout << "[WARNING in " << sourceFileName << "]: [Failed to write this message to log file](" << sender << "): " << msg << std::endl;
+                std::cout << "[WARNING in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to write this message to log file]: " << msg << std::endl;
                 return;
             }
 
-            logFile << "[WARNING in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            logFile << "[WARNING in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
 
             logFile.close();
             if (logFile.is_open())
             {
-                std::cout << "[WARNING in " << sourceFileName << "]: [Failed to close log file after writing message](" << sender << "): " << msg << std::endl;
+                std::cout << "[WARNING in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to close log file after writing message]: " << msg << std::endl;
             }
         }
     }
@@ -392,23 +392,23 @@ namespace Logger
         }
     }
 
-    void _logInfoToFile(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logInfoToFile(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isFileEnabled && isInfoEnabled)
         {
             std::ofstream logFile(logFilePath, std::ios_base::app);
             if (!logFile.is_open())
             {
-                std::cout << "[INFO in " << sourceFileName << "]: [Failed to write this message to log file](" << sender << "): " << msg << std::endl;
+                std::cout << "[INFO in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to write this message to log file]: " << msg << std::endl;
                 return;
             }
 
-            logFile << "[INFO in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            logFile << "[INFO in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
 
             logFile.close();
             if (logFile.is_open())
             {
-                std::cout << "[INFO in " << sourceFileName << "]: [Failed to close log file after writing message](" << sender << "): " << msg << std::endl;
+                std::cout << "[INFO in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to close log file after writing message]: " << msg << std::endl;
             }
         }
     }
@@ -435,23 +435,23 @@ namespace Logger
         }
     }
 
-    void _logDebugToFile(const char* msg, const char* sender, std::string_view sourceFileName)
+    void _logDebugToFile(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isFileEnabled && isDebugEnabled)
         {
             std::ofstream logFile(logFilePath, std::ios_base::app);
             if (!logFile.is_open())
             {
-                std::cout << "[DEBUG in " << sourceFileName << "]: [Failed to write this message to log file](" << sender << "): " << msg << std::endl;
+                std::cout << "[DEBUG in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to write this message to log file]: " << msg << std::endl;
                 return;
             }
 
-            logFile << "[DEBUG in " << sourceFileName << "](" << sender << "): " << msg << std::endl;
+            logFile << "[DEBUG in " << sourceFileName << ":" << sourceFileLine << "](" << sender << "): " << msg << std::endl;
 
             logFile.close();
             if (logFile.is_open())
             {
-                std::cout << "[DEBUG in " << sourceFileName << "]: [Failed to close log file after writing message](" << sender << "): " << msg << std::endl;
+                std::cout << "[DEBUG in " << sourceFileName << ":" << sourceFileLine << "](" << sender << ")[Failed to close log file after writing message]: " << msg << std::endl;
             }
         }
     }
