@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Logger/PekanLogger.h"
+
+#include <string>
+
 struct GLFWwindow;
 
 #define PK_OPENGL_VERSION_MAJOR 4
@@ -8,26 +12,15 @@ struct GLFWwindow;
 
 namespace Pekan
 {
+	// Returns a user-friendly string from fiven OpenGL error code
+	std::string _getGLErrorMessage(unsigned error);
 
-#if PK_OPENGL_VERSION_MAJOR >= 4 && PK_OPENGL_VERSION_MINOR >= 3
-// In modern OpenGL (>= 4.3) we don't need to manually do error-checking.
-// Instead we enable OpenGL's debug output and bind a callback function
-// that will be called with error (and other) messages.
-//
-// So we don't need the GLCall() macro
-#define GLCall(x) x
-#else
-// In older OpenGL (< 4.3) we need to manually do error-checking.
-// This macro here does that.
-// Should be used to wrap every OpenGL call.
+#define _CLEAR_GL_ERRORS while (glGetError() != GL_NO_ERROR);
+#define _LOG_GL_ERRORS { unsigned _error; while ((_error = glGetError()) != GL_NO_ERROR) { PK_LOG_ERROR(_getGLErrorMessage(_error), "OpenGL"); } }
+// An error-checking macro for wrapping OpenGL calls.
 // What it does is it clears all OpenGL errors from the error queue, then does the OpenGL call,
 // and then loops over all new errors in the error queue and logs them using PekanLogger.
-#define GLCall(x) _clearGLErrors(); x; _logGLErrors();
-	// Clears the queue of OpenGL errors
-	void _clearGLErrors();
-	// Logs errors from queue of OpenGL errors
-	void _logGLErrors();
-#endif
+#define GLCall(x) _CLEAR_GL_ERRORS; x; _LOG_GL_ERRORS;
 
 	// Pekan Engine itself.
 	// This is a singleton/static class responsible for initializing and exiting the engine,

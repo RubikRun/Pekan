@@ -1090,3 +1090,40 @@ Then I made all macros pass this as the value for the new parameter
     __LINE__
 It works.
 }
+
+{
+The source file and line number in PekanLogger work fine in normal log messages,
+but I don't like how OpenGL log messages are logged.
+In OpenGL log messages, instead of seeing the source file and line number
+where the OpenGL call was made (the one that produced the error),
+we see the source file and line number where the OpenGL log message was HANDLED, which is always
+    PekanEngine.cpp:35    (that's where openGLDebugCallback() calls PK_LOG_ERROR())
+
+It seems like this problem really cannot be solved in the callback,
+because this callback is not called together with the OpenGL call,
+instead it's called by some internal mechanisms of OpenGL,
+that unfortunatelly don't give us info for source file and line number.
+
+It can, however, be solved in the GLCall() macro, which we currently use only for older OpenGL,
+but it's not a problem at all to start using it in modern OpenGL as well, if it provides us with additional value.
+I think in modern OpenGL we can use both the callback and GLCall().
+The callback will give us more descriptive messages, and GLCall() will give us the exact source file and line number
+where the OpenGL call that produced the error was made.
+
+So let's see how to make GLCall() show the correct source file and line number.
+Currently it shows the source file and line number of the call to
+    PK_LOG_ERROR()
+inside
+    _logGLErrors()
+in
+    PekanEngine.cpp
+so it always shows
+    PekanEngine.cpp:80
+We can solve this by making this _logGLErrors() function be a macro instead
+    #define _LOG_GL_ERRORS ...
+For consistency let's make _clearGLErrors() function be a macro as well
+    #define _CLEAR_GL_ERRORS
+
+Okay, done.
+Now OpenGL errors are logged together with the source file and line number where the OpenGL call was made.
+}

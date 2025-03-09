@@ -18,4 +18,4 @@
 
 0007 01.03.2025 (DONE): Do we need to keep m_window as member of PekanGUIWindow when we already have a static s_window in PekanEngine?
 
-0008 04.03.2025 (TODO): Add support for line numbers in log messages in PekanLogger
+0008 04.03.2025 (DONE): Add support for line numbers in log messages in PekanLogger
