@@ -1127,3 +1127,82 @@ For consistency let's make _clearGLErrors() function be a macro as well
 Okay, done.
 Now OpenGL errors are logged together with the source file and line number where the OpenGL call was made.
 }
+
+{
+Now let's do TODO 0002 - Create a base class RenderComponent with common functions and variables between different OpenGL wrapper classes.
+Okay, created the base class RenderComponent.
+It has these 2 public functions
+    create()
+    destroy()
+which do some error-checking, validity, etc., and call their corresponding virtual functions
+    _create()
+    _destroy()
+that should be implemented by derived classes with specific functionality.
+
+Then we have these 2 public virtual functions
+    bind()
+    undbind()
+that should directly be implemented by derived classes,
+there is no common logic to do in RenderComponent.
+
+We also have this public function
+    isValid()
+that is common to all render comnponents.
+
+And, of course, we have this protected member variable
+    m_id
+which is the ID of the underlying GPU object and is common to all render components.
+
+At first I implemented the create() function to call bind() after creating the GPU object,
+but then it turned out that Shader, for example, needs to NOT bind immediately after creating.
+It gives an error if you bind an empty uncompiled shader.
+So I added this parameter
+    bool doBind = true
+to the create() function so that drived classes can chose not to bind immediately after creating,
+and then they can call bind() themselves later.
+That's exactly what I did in Shader's create() function
+    void Shader::create(const char* vertexShaderSource, const char* fragmentShaderSource) {
+        RenderComponent::create(false);
+        setSource(vertexShaderSource, fragmentShaderSource);
+        bind();
+    }
+
+Another thing that was a bit tricky is the destructor of RenderComponent.
+Initially I wanted it to call _destroy()
+but it turns out we cannot call virtual functions from base class' destructor,
+because the vtable is already freed or sth like that.
+So instead in RenderComponent's destructor I just check if render component is valid with isValid(),
+and if it is, then we log an error message, telling us that it should be destroyed by calling destroy()
+before this RenderComponent destructor is reached.
+Not the cleanest solution but at least we'll see what's up if something goes wrong.
+In conclusion, we always require RenderComponent instances to be destroyed by manually calling destroy().
+If some code forgets to call destroy(), an error message will be shown to let them know.
+
+We could implement destructors of the derived classes of RenderComponent,
+and make them call destroy(), but then this has another problem.
+The moment at which this destructor is called, we have already closed the window in PekanEngine,
+and there is no valid OpenGL context, so the OpenGL call in destroy() would not work.
+It actually leads to an infinite loop after you close the window.
+}
+
+{
+Now let's look at TODO 0006 - Do some error-checking in most functions in OpenGL wrapper classes.
+Actually, the base class RenderComponent that I just added is doing exactly that.
+It's doing the error-checking of isValid() in all necessary moments,
+and it's calling destroy() whenever it's needed.
+
+The only thing that I can see that could be error-checked is
+    bind()
+Inside every bind() function we can check if the render component is valid before binding it,
+but I actually don't think this is necessary.
+It will cost some performance to do this check every single time
+(Every frame we bind and unbind many render components)
+and if there is an error with binding we will see it in an OpenGL error in any case.
+So yeah, let's leave it as it is. Looks good error-wise.
+}
+
+{
+At this point we're kinda done with OpenGL.
+We have wrappers for every basic OpenGL object and functionality. They are fairly stable.
+And we use them succesfully and cleanly in the 2 demos.
+}

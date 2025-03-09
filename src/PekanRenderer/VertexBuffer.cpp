@@ -42,35 +42,14 @@ namespace Renderer
 		m_stride = offset;
 	}
 
-	VertexBuffer::~VertexBuffer()
-	{
-		if (m_id != 0)
-		{
-			destroy();
-		}
-	}
-
-	void VertexBuffer::create()
-	{
-		GLCall(glGenBuffers(1, &m_id));
-		bind();
-	}
-
 	void VertexBuffer::create(
 		const void* data,
 		long long size,
 		BufferDataUsage dataUsage
 	)
 	{
-		create();
+		RenderComponent::create();
 		setData(data, size, dataUsage);
-	}
-
-	void VertexBuffer::destroy()
-	{
-		unbind();
-		GLCall(glDeleteBuffers(1, &m_id));
-		m_id = 0;
 	}
 
 	void VertexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
@@ -87,6 +66,16 @@ namespace Renderer
 	void VertexBuffer::unbind() const
 	{
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	}
+
+	void VertexBuffer::_create()
+	{
+		GLCall(glGenBuffers(1, &m_id));
+	}
+
+	void VertexBuffer::_destroy()
+	{
+		GLCall(glDeleteBuffers(1, &m_id));
 	}
 
 } // namespace Renderer

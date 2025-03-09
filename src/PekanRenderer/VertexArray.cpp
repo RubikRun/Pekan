@@ -9,24 +9,6 @@ namespace Pekan
 namespace Renderer
 {
 
-	VertexArray::~VertexArray()
-	{
-		destroy();
-	}
-
-	void VertexArray::create()
-	{
-		GLCall(glGenVertexArrays(1, &m_id));
-		bind();
-	}
-
-	void VertexArray::destroy() {
-		unbind();
-		GLCall(glDeleteVertexArrays(1, &m_id));
-		m_id = 0;
-		m_vertexBuffers.clear();
-	}
-
 	void VertexArray::bind() const {
 		GLCall(glBindVertexArray(m_id));
 	}
@@ -35,7 +17,8 @@ namespace Renderer
 		GLCall(glBindVertexArray(0));
 	}
 
-	void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout) {
+	void VertexArray::addVertexBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout)
+	{
 		if (!vertexBuffer.isValid())
 		{
 			PK_LOG_ERROR("Trying to add an invalid vertex buffer to a vertex array. It will not be added.", "Pekan");
@@ -52,7 +35,8 @@ namespace Renderer
 		bind();
 		vertexBuffer.bind();
 		// Traverse layout's elements
-		for (int i = 0; i < layoutElements.size(); ++i) {
+		for (int i = 0; i < layoutElements.size(); ++i)
+		{
 			const VertexBufferElement& element = layoutElements[i];
 			// For each element, enable and configure a vertex attribute
 			GLCall(glEnableVertexAttribArray(i));
@@ -67,6 +51,17 @@ namespace Renderer
 		}
 		// Add vertex buffer, together with its layout, to vertex array
 		m_vertexBuffers.push_back(VertexBufferBinding(vertexBuffer, layout));
+	}
+
+	void VertexArray::_create()
+	{
+		GLCall(glGenVertexArrays(1, &m_id));
+	}
+
+	void VertexArray::_destroy()
+	{
+		GLCall(glDeleteVertexArrays(1, &m_id));
+		m_vertexBuffers.clear();
 	}
 
 

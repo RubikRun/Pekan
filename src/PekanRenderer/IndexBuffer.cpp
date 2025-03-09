@@ -7,31 +7,10 @@ namespace Pekan
 namespace Renderer
 {
 
-	IndexBuffer::~IndexBuffer()
-	{
-		if (m_id != 0)
-		{
-			destroy();
-		}
-	}
-
-	void IndexBuffer::create()
-	{
-		GLCall(glGenBuffers(1, &m_id));
-		bind();
-	}
-
 	void IndexBuffer::create(const void* data, long long size, BufferDataUsage dataUsage)
 	{
-		create();
+		RenderComponent::create();
 		setData(data, size);
-	}
-
-	void IndexBuffer::destroy()
-	{
-		unbind();
-		GLCall(glDeleteBuffers(1, &m_id));
-		m_id = 0;
 	}
 
 	void IndexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
@@ -48,6 +27,16 @@ namespace Renderer
 	void IndexBuffer::unbind() const
 	{
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+	}
+
+	void IndexBuffer::_create()
+	{
+		GLCall(glGenBuffers(1, &m_id));
+	}
+
+	void IndexBuffer::_destroy()
+	{
+		GLCall(glDeleteBuffers(1, &m_id));
 	}
 
 } // namespace Renderer

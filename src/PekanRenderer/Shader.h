@@ -1,5 +1,7 @@
 #pragma once
 
+#include "RenderComponent.h"
+
 #include "glm/glm.hpp"
 
 #include <string>
@@ -9,22 +11,20 @@ namespace Pekan {
 namespace Renderer {
 
 	// A class representing a shader program in Pekan's renderer
-	class Shader
+	class Shader : public RenderComponent
 	{
 	public:
 
-		~Shader();
-
+		// Make base class RenderComponent's version of create() be visible in this derived class
+		using RenderComponent::create;
 		// Creates the underlying shader program object with given source code for vertex shader and fragment shader
 		void create(const char* vertexShaderSource, const char* fragmentShaderSource);
-		// Deletes the shader program and unbinds it
-		void destroy();
 
-		// Checks if shader is valid, meaning that it has been successfully created and not yet destroyed
-		inline bool isValid() { return m_id != 0; }
+		// Sets source code of vertex shader and fragment shader to be used for this shader program
+		void setSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 
-		void bind() const;
-		void unbind() const;
+		void bind() const override;
+		void unbind() const override;
 
 		// Functions for setting the value of a uniform inside the shader
 		void setUniform1f(const char* uniformName, float value);
@@ -33,6 +33,9 @@ namespace Renderer {
 		void setUniformMatrix4fv(const char* uniformName, const glm::mat4& value);
 
 	private: /* functions */
+
+		void _create() override;
+		void _destroy() override;
 
 		// Compiles given shader's source code.
 		// "Shader" here means a single shader type, for example a vertex shader.
@@ -55,9 +58,6 @@ namespace Renderer {
 		// and next times when we need it we can just read it from the cache.
 		// It maps uniform names to uniform locations.
 		mutable std::unordered_map<std::string, int> m_uniformLocationCache;
-
-		// ID of the shader program object
-		unsigned m_id = 0;
 	};
 
 } // namespace Pekan
