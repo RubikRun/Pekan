@@ -95,10 +95,6 @@ namespace Renderer
 
 		void _create() override;
 		void _destroy() override;
-
-	private: /* variables */
-
-		BufferDataUsage m_dataUsage = BufferDataUsage::StaticDraw;
 	};
 
 	// A binding between a vertex buffer and a layout
