@@ -1206,3 +1206,13 @@ At this point we're kinda done with OpenGL.
 We have wrappers for every basic OpenGL object and functionality. They are fairly stable.
 And we use them succesfully and cleanly in the 2 demos.
 }
+
+----------
+11.03.2025
+----------
+
+{
+Went over the whole code.
+Drew a diagram of current architecture - of PekanCore and PekanRenderer.
+Seems good.
+}
