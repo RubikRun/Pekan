@@ -1216,3 +1216,34 @@ Went over the whole code.
 Drew a diagram of current architecture - of PekanCore and PekanRenderer.
 Seems good.
 }
+
+----------
+15.03.2025
+----------
+
+{
+Let's start creating GUI wrappers.
+For that, I will create a new project
+    PekanGUI
+similar to
+    PekanRenderer
+that will contain all GUI stuff.
+The goal is to use wrappers from PekanGUI inside of the 2 demos, instead of raw ImGui.
+}
+
+----------
+19.03.2025
+----------
+
+{
+Now we kinda need to separate PekanGUIWindow into 2 classes,
+one that will be part of PekanCore so that it can be used in PekanApplication and other core places,
+and one that will be part of PekanGUI so that it can be used to actually build a specific user-defined GUI.
+
+As a first step, I will rename the current PekanGUIWindow class into IPekanGUIWindow
+(
+I know it's not exactly an "interface" class in the pure sense of the word, because it has some base functionality, not all functions are pure virtual.
+More accurately it's an "abstract" class, but naming it IPekanGUIWindow seems to make sense if we then have PekanGUIWindow derive from it in PekanGUI.
+)
+
+}

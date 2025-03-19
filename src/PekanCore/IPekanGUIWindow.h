@@ -6,11 +6,11 @@ namespace Pekan
 {
 
 	// A base class for all Pekan GUI windows
-	class PekanGUIWindow
+	class IPekanGUIWindow
 	{
 	public:
 
-		virtual ~PekanGUIWindow() = default;
+		virtual ~IPekanGUIWindow() = default;
 
 		virtual bool init() = 0;
 
