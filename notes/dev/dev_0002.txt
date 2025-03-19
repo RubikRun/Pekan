@@ -1246,4 +1246,9 @@ I know it's not exactly an "interface" class in the pure sense of the word, beca
 More accurately it's an "abstract" class, but naming it IPekanGUIWindow seems to make sense if we then have PekanGUIWindow derive from it in PekanGUI.
 )
 
+--begin SIDE QUEST
+Created 2 scripts for easier project generation
+    gen.bat          (Generates projects in build directory)
+    gen_clean.bat    (Deletes old build directory; Generates projects in new build directory)
+--end SIDE QUEST
 }
