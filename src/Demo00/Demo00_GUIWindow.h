@@ -1,14 +1,14 @@
 #pragma once
 
-#include "IPekanGUIWindow.h"
-using Pekan::IPekanGUIWindow;
+#include "PekanGUIWindow.h"
+using Pekan::PekanGUIWindow;
 
 #include "imgui.h"
 
 namespace Demo
 {
 
-	class Demo00_GUIWindow : public IPekanGUIWindow
+	class Demo00_GUIWindow : public PekanGUIWindow
 	{
 	public:
 

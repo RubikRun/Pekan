@@ -1251,4 +1251,13 @@ Created 2 scripts for easier project generation
     gen.bat          (Generates projects in build directory)
     gen_clean.bat    (Deletes old build directory; Generates projects in new build directory)
 --end SIDE QUEST
+
+Next step would be to create a class PekanGUIWindow inside project PekanGUI derived from IPekanGUIWindow.
+This class will contain functionality for actually building a specific user-defined GUI.
+
+Thinking about what would go into this class and how it'd be used I reached the conclusion
+that it'd be super hard to make it work properly,
+and it'd make it only like 20% more convenient,
+and somewhat slower.
+So it's not worth it, at least at this point.
 }

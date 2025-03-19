@@ -1,4 +1,4 @@
-#include "IPekanGUIWindow.h"
+#include "PekanGUIWindow.h"
 #include "PekanEngine.h"
 
 #include "imgui.h"
@@ -11,7 +11,7 @@
 namespace Pekan
 {
 
-	void IPekanGUIWindow::render()
+	void PekanGUIWindow::render()
 	{
         if (glfwGetWindowAttrib(PekanEngine::getWindow(), GLFW_ICONIFIED) != 0)
         {

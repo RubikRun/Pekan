@@ -2,7 +2,7 @@
 #include "Logger/PekanLogger.h"
 #include "PekanEngine.h"
 #include "PekanScene.h"
-#include "IPekanGUIWindow.h"
+#include "PekanGUIWindow.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

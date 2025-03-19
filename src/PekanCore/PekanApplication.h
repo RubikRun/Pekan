@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PekanScene.h"
-#include "IPekanGUIWindow.h"
+#include "PekanGUIWindow.h"
 
 #include <memory>
 
@@ -35,7 +35,7 @@ namespace Pekan
 
 		std::unique_ptr<PekanScene> m_scene;
 
-		std::unique_ptr<IPekanGUIWindow> m_guiWindow;
+		std::unique_ptr<PekanGUIWindow> m_guiWindow;
 	};
 
 } // namespace Pekan

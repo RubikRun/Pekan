@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IPekanGUIWindow.h"
-using Pekan::IPekanGUIWindow;
+#include "PekanGUIWindow.h"
+using Pekan::PekanGUIWindow;
 
 #include "imgui.h"
 
@@ -10,7 +10,7 @@ namespace Demo
 
 	class Demo01_Scene;
 
-	class Demo01_GUIWindow : public IPekanGUIWindow
+	class Demo01_GUIWindow : public PekanGUIWindow
 	{
 	public:
 
