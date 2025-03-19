@@ -3,8 +3,6 @@
 #include "PekanGUIWindow.h"
 using Pekan::PekanGUIWindow;
 
-#include "imgui.h"
-
 namespace Demo
 {
 

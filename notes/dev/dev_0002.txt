@@ -746,7 +746,7 @@ will do the new call to
 }
 
 {
-Let's do TODO 0005.
+Let's do TO-DO 0005.
 Done.
 }
 
@@ -886,7 +886,7 @@ So, OpenGL wrappers are officially functionally complete!
 }
 
 {
-Let's do TODO 0000.
+Let's do TO-DO 0000.
 Done.
 }
 
@@ -895,12 +895,12 @@ Done.
 ----------
 
 {
-Let's do TODO 0001.
+Let's do TO-DO 0001.
 Done.
 }
 
 {
-Let's do TODO 0003
+Let's do TO-DO 0003
 We already added an optional parameter to VertexBuffer's create() function for the draw mode, that's fine,
 but now we have to add it to IndexBuffer as well, just for consistency.
 Also let's separate creation from setting of data in IndexBuffer, same as we did in VertexBuffer,
@@ -929,7 +929,7 @@ So let's do that now.
 }
 
 {
-Let's do TODO 0007.
+Let's do TO-DO 0007.
 Indeed, we don't need m_window kept as member in PekanGUIWindow and in other places.
 We also don't need m_width and m_height.
 These 3 pieces of data should belong to PekanEngine,
@@ -946,13 +946,13 @@ Both demos work.
 ----------
 
 {
-I want to do TODO 0004 - wrapping OpenGL calls in GLCall() macro
+I want to do TO-DO 0004 - wrapping OpenGL calls in GLCall() macro
 so that OpenGL errors are automatically handled and logged with PekanLogger.
 
 In order to do that, I would need to extend PekanLogger a bit,
-and change some stuff, some of which is not even related to TODO 0004, just in general.
+and change some stuff, some of which is not even related to TO-DO 0004, just in general.
 
-So today's work will be on PekanLogger, and after that we can proceed with TODO 0004.
+So today's work will be on PekanLogger, and after that we can proceed with TO-DO 0004.
 
 First of all, it's really annoying having to define PK_FILENAME in every source file like that:
     #define PK_FILENAME "Shader.cpp"
@@ -1034,7 +1034,7 @@ Tested it, not a lot, but should be fine.
 07.03.2025
 ----------
 
-Now we can finally implement TODO 0004 - wrapping OpenGL calls in GLCall() macro.
+Now we can finally implement TO-DO 0004 - wrapping OpenGL calls in GLCall() macro.
 We needed those changes in PekanLogger so that we can log OpenGL errors with sender "OpenGL".
 
 I'll do it separately for OpenGL version >= 4.3 and OpenGL version < 4.3,
@@ -1082,7 +1082,7 @@ Tested it a bit, seems to work.
 ----------
 
 {
-Let's do TODO 0008 - Add support for line numbers in log messages in PekanLogger.
+Let's do TO-DO 0008 - Add support for line numbers in log messages in PekanLogger.
 I just added this parameter
     int sourceFileLine
 to all functions in PekanLogger.h
@@ -1129,7 +1129,7 @@ Now OpenGL errors are logged together with the source file and line number where
 }
 
 {
-Now let's do TODO 0002 - Create a base class RenderComponent with common functions and variables between different OpenGL wrapper classes.
+Now let's do TO-DO 0002 - Create a base class RenderComponent with common functions and variables between different OpenGL wrapper classes.
 Okay, created the base class RenderComponent.
 It has these 2 public functions
     create()
@@ -1186,7 +1186,7 @@ It actually leads to an infinite loop after you close the window.
 }
 
 {
-Now let's look at TODO 0006 - Do some error-checking in most functions in OpenGL wrapper classes.
+Now let's look at TO-DO 0006 - Do some error-checking in most functions in OpenGL wrapper classes.
 Actually, the base class RenderComponent that I just added is doing exactly that.
 It's doing the error-checking of isValid() in all necessary moments,
 and it's calling destroy() whenever it's needed.

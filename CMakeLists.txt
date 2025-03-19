@@ -15,6 +15,7 @@ if(WITH_DEMO_PROJECTS)
     # Add Demos subdirectories
     add_subdirectory(src/Demo00)
     add_subdirectory(src/Demo01)
+    add_subdirectory(src/Demo02)
 endif()
 # Add PekanRenderer subdirectory
 add_subdirectory(src/PekanRenderer)
@@ -40,6 +41,7 @@ if(WITH_DEMO_PROJECTS)
     # Add all demo projects into a folder called "Demos"
     set_target_properties(Demo00 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo01 PROPERTIES FOLDER "Demos")
+    set_target_properties(Demo02 PROPERTIES FOLDER "Demos")
 endif()
 
 # Add a static library PekanCore, compiling the following source files
@@ -69,14 +71,14 @@ target_link_libraries(PekanCore PRIVATE
     imgui
     glfw
     glm
-    glad # TODO: This will probably NOT be need once we create OpenGL wrappers in PekanRenderer
-    opengl32.lib # TODO: This will probably NOT be need once we create OpenGL wrappers in PekanRenderer
+    glad
+    opengl32.lib
 )
 
 # Set include directories for PekanCore
 target_include_directories(PekanCore PUBLIC src/PekanCore)
 
 if(WITH_DEMO_PROJECTS)
-    # Set Demo01 to be the startup project by default
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo01)
+    # Set Demo02 to be the startup project by default
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo02)
 endif()

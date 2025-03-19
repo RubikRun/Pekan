@@ -17,7 +17,7 @@ target_link_libraries(Demo01 PRIVATE
     PekanCore
     PekanRenderer
     glm
-    imgui # TODO: This should be removed once Pekan provides ImGui wrappers
+    imgui
 )
 
 # Set Demo01's working directory to be Demo01's source directory

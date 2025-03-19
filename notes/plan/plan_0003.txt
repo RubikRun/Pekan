@@ -1,0 +1,8 @@
+----------
+19.03.2025
+----------
+
+Pekan v0.1 is ready now.
+Before deciding what to do for v0.2 let's create some more demos
+using the features of v0.1.
+That way we'll solidify v0.1 and see more clearly what we need for v0.2.
