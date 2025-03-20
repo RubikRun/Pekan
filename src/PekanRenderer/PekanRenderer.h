@@ -79,8 +79,9 @@ namespace Renderer
 		// Uses currently bound index buffer to determine which elements to draw and in what order.
 		static void drawIndexed(unsigned elementsCount, DrawMode mode = DrawMode::Triangles);
 
-		// Clears everything rendered on window
-		static void clear();
+		// Clears everything rendered on window.
+		// @param[in] clearDepthBuffer - Optional parameter to clear depth buffer as well
+		static void clear(bool clearDepthBuffer = false);
 
 		// Sets background's color, used to clear window
 		static void setBackgroundColor(const glm::vec4& backgroundColor);
@@ -93,6 +94,10 @@ namespace Renderer
 		// with the RGBA values that are already in the frame buffer (destination).
 		// NOTE: You need to enable blending with enableBlending() before using this function
 		static void setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor);
+
+		// Enables depth testing, so that overlapping primitives can be drawn correctly,
+		// meaning that the ones in front will be rendered and the ones behind will be hidden.
+		static void enableDepthTest();
 
 	private: /* functions */
 

@@ -18,9 +18,16 @@ namespace Renderer
 		GLCall(glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0));
 	}
 
-	void PekanRenderer::clear()
+	void PekanRenderer::clear(bool clearDepthBuffer)
 	{
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		if (clearDepthBuffer)
+		{
+			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT))
+		}
+		else
+		{
+			GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		}
 	}
 
 	void PekanRenderer::setBackgroundColor(const glm::vec4& backgroundColor)
@@ -36,6 +43,11 @@ namespace Renderer
 	void PekanRenderer::setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor)
 	{
 		GLCall(glBlendFunc(getBlendFactorOpenGLEnum(sourceFactor), getBlendFactorOpenGLEnum(destinationFactor)));
+	}
+
+	void PekanRenderer::enableDepthTest()
+	{
+		GLCall(glEnable(GL_DEPTH_TEST));
 	}
 
 	unsigned PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
