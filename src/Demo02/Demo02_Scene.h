@@ -36,6 +36,10 @@ namespace Demo
 		inline float getRotation() const { return m_rotation; }
 		inline float& getRotation() { return m_rotation; }
 
+		// Returns (a reference to) camera's FOV
+		inline float getFOV() const { return m_fov; }
+		inline float& getFOV() { return m_fov; }
+
 	private: /* variables */
 
 		Pekan::Renderer::VertexBuffer m_vertexBuffer;
@@ -53,6 +57,9 @@ namespace Demo
 
 		// Current rotation of the cube, in degrees
 		float m_rotation = 0.0f;
+
+		// Field of view (vertical), in degrees
+		float m_fov = 45.0f;
 
 		// Transform matrices
 		glm::mat4 m_modelMatrix;

@@ -28,7 +28,16 @@ namespace Demo
 		ImGui::PushItemWidth(0.75f * ImGui::GetContentRegionAvail().x);
 		ImGui::Text("Rotation");
 		ImGui::SameLine();
-		ImGui::SliderFloat("##Rotation", &rotation, 0, 360);
+		ImGui::SliderFloat("##Rotation", &rotation, 0.0f, 360.0f);
+		ImGui::PopItemWidth();
+	}
+
+	static void renderSliderFov(float& fov)
+	{
+		ImGui::PushItemWidth(0.63f * ImGui::GetContentRegionAvail().x);
+		ImGui::Text("Field Of View");
+		ImGui::SameLine();
+		ImGui::SliderFloat("##FOV", &fov, 10.0f, 100.0f);
 		ImGui::PopItemWidth();
 	}
 
@@ -53,6 +62,7 @@ namespace Demo
 		ImGui::Separator();
 
 		renderSliderRotation(m_scene->getRotation());
+		renderSliderFov(m_scene->getFOV());
 
 		ImGui::End();
 	}

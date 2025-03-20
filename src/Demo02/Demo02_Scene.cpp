@@ -107,10 +107,10 @@ namespace Demo
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
 
-        // Set transform matrices
-        m_modelMatrix = glm::mat4(1.0f);
+        // Set default transform matrices
+        m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation * PI / 180.0f, glm::vec3(0.5f, 1.0f, 0.0f));
         m_viewMatrix = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        m_projMatrix = glm::perspective(glm::radians(45.0f), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.1f, 10.0f);
+        m_projMatrix = glm::perspective(glm::radians(m_fov), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.1f, 10.0f);
 
         m_rotation = 0.0f;
 
@@ -119,8 +119,10 @@ namespace Demo
 
 	void Demo02_Scene::update()
 	{
-        // Transform cube with its current rotation
+        // Set model, view, and projection matrices with current properties
         m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation * PI / 180.0f, glm::vec3(0.5f, 1.0f, 0.0f));
+        m_viewMatrix = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        m_projMatrix = glm::perspective(glm::radians(m_fov), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.1f, 10.0f);
 
         for (int i = 0; i < m_colors.size(); i++)
         {
