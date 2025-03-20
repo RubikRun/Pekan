@@ -9,8 +9,12 @@ using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::PekanEngine;
 
+#define PI 3.14159265359f
+
 static const char* vertexShaderFilePath = "resources/02_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/02_fragment_shader.glsl";
+
+static const float COLOR_DULLNESS = 0.9f;
 
 namespace Demo
 {
@@ -30,12 +34,12 @@ namespace Demo
         // Set default colors of cube's sides
         m_colors =
         {
-            {1.0f, 0.0f, 0.0f},
-            {0.0f, 1.0f, 0.0f},
-            {0.0f, 0.0f, 1.0f},
-            {1.0f, 1.0f, 0.0f},
-            {1.0f, 0.0f, 1.0f},
-            {0.0f, 1.0f, 1.0f}
+            {COLOR_DULLNESS, 0.0f, 0.0f},
+            {0.0f, COLOR_DULLNESS, 0.0f},
+            {0.0f, 0.0f, COLOR_DULLNESS},
+            {COLOR_DULLNESS, COLOR_DULLNESS, 0.0f},
+            {COLOR_DULLNESS, 0.0f, COLOR_DULLNESS},
+            {0.0f, COLOR_DULLNESS, COLOR_DULLNESS}
         };
 
         // Initialize vertices of cube
@@ -115,9 +119,8 @@ namespace Demo
 
 	void Demo02_Scene::update()
 	{
-        // Rotate cube
-        m_rotation += 0.01f;
-        m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation, glm::vec3(0.5f, 1.0f, 0.0f));
+        // Transform cube with its current rotation
+        m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation * PI / 180.0f, glm::vec3(0.5f, 1.0f, 0.0f));
 
         for (int i = 0; i < m_colors.size(); i++)
         {

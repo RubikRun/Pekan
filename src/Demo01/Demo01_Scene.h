@@ -35,8 +35,8 @@ namespace Demo
 		void addSquare();
 
 		// Returns a (const) reference to the list of squares
-		const std::vector<Rectangle>& getSquares() const { return m_squares; }
-		std::vector<Rectangle>& getSquares() { return m_squares; }
+		inline const std::vector<Rectangle>& getSquares() const { return m_squares; }
+		inline std::vector<Rectangle>& getSquares() { return m_squares; }
 
 	private: /* variables */
 

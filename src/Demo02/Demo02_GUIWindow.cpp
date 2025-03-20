@@ -23,6 +23,15 @@ namespace Demo
 		ImGui::PopItemWidth();
 	}
 
+	static void renderSliderRotation(float& rotation)
+	{
+		ImGui::PushItemWidth(0.75f * ImGui::GetContentRegionAvail().x);
+		ImGui::Text("Rotation");
+		ImGui::SameLine();
+		ImGui::SliderFloat("##Rotation", &rotation, 0, 360);
+		ImGui::PopItemWidth();
+	}
+
 	void Demo02_GUIWindow::_render()
 	{
 		if (m_scene == nullptr)
@@ -41,6 +50,9 @@ namespace Demo
 			renderEditColor(colors[i], i);
 			ImGui::PopID();
 		}
+		ImGui::Separator();
+
+		renderSliderRotation(m_scene->getRotation());
 
 		ImGui::End();
 	}

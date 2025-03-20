@@ -29,8 +29,12 @@ namespace Demo
 		void exit() override;
 
 		// Returns a (const) reference to the list of colors
-		const std::vector<glm::vec3>& getColors() const { return m_colors; }
-		std::vector<glm::vec3>& getColors() { return m_colors; }
+		inline const std::vector<glm::vec3>& getColors() const { return m_colors; }
+		inline std::vector<glm::vec3>& getColors() { return m_colors; }
+
+		// Returns (a reference to) cube's rotation
+		inline float getRotation() const { return m_rotation; }
+		inline float& getRotation() { return m_rotation; }
 
 	private: /* variables */
 
@@ -47,7 +51,7 @@ namespace Demo
 		// Cube's vertices
 		std::vector<Vertex> m_vertices;
 
-		// Current rotation of the cube, in radians
+		// Current rotation of the cube, in degrees
 		float m_rotation = 0.0f;
 
 		// Transform matrices

@@ -10,4 +10,5 @@ Now I made it so that the 6 colors of the 6 sides can be controlled with 6 color
 Also changed GUI's scale because everything felt a bit small.
 I scaled up font size and widgets size.
 
+Added a slider for cube's rotation, instead of animating the rotation over time.
 }
