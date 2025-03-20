@@ -23,4 +23,6 @@ It will not have any GUI, and I want it to be full-screen.
 Currently we don't support applications without GUI, which is stupid tbh, let's change it.
 In PekanApplication we should allow both applications without GUI and applications without a scene.
 
+Now let's start with Demo03 by creating a skeleton without GUI, only a scene.
+
 }
