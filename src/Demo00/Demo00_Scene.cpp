@@ -3,8 +3,6 @@
 #include "Utils/PekanUtils.h"
 
 using Pekan::Renderer::PekanRenderer;
-using Pekan::Renderer::VertexBufferElement;
-using Pekan::Renderer::VertexBufferLayout;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 
@@ -16,19 +14,22 @@ namespace Demo
 
     bool Demo00_Scene::init()
 	{
-        m_shader.create(
+        m_shader.create
+        (
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
 
         // Set up vertex data and configure vertex attributes
-        float vertices[] = {
+        const float vertices[] =
+        {
              0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
              0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
             -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
         };
-        unsigned indices[] = {
+        const unsigned indices[] =
+        {
             0, 1, 3,  // first triangle
             1, 2, 3   // second triangle
         };
@@ -37,7 +38,8 @@ namespace Demo
         m_vertexArray.create();
 
         // Create a vertex buffer with vertices data
-        m_vertexBuffer.create(
+        m_vertexBuffer.create
+        (
             vertices,
             sizeof(vertices)
         );

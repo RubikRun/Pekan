@@ -4,8 +4,6 @@
 #include "PekanEngine.h"
 
 using Pekan::Renderer::PekanRenderer;
-using Pekan::Renderer::VertexBufferElement;
-using Pekan::Renderer::VertexBufferLayout;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
@@ -92,7 +90,6 @@ namespace Demo
 
 	void Demo01_Scene::render()
 	{
-        // If there is no GUI window attached, just clear background with default color
         PekanRenderer::clear();
 
         m_shader.bind();

@@ -1,23 +1,148 @@
 #include "Demo02_Scene.h"
+#include "Utils/PekanUtils.h"
+
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+// TODO: remove some of these if not needed
+using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::ShaderDataType;
+using Pekan::PekanEngine;
+
+static const char* vertexShaderFilePath = "resources/02_vertex_shader.glsl";
+static const char* fragmentShaderFilePath = "resources/02_fragment_shader.glsl";
 
 namespace Demo
 {
 
+    struct Vertex
+    {
+        glm::vec3 position;
+        glm::vec3 color;
+    };
+
+    // Vertices of cube
+    const Vertex vertices[] =
+    {
+        // Back face (Red)
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{ 0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{ 0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{-0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+
+        // Front face (Green)
+        {{-0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{ 0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{ 0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
+
+        // Left face (Blue)
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f,  0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
+
+        // Right face (Yellow)
+        {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 0.0f}},
+        {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 0.0f}},
+        {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 0.0f}},
+        {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 0.0f}},
+
+        // Top face (Magenta)
+        {{-0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 1.0f}},
+        {{ 0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 1.0f}},
+        {{ 0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f}},
+        {{-0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f}},
+
+        // Bottom face (Cyan)
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 1.0f}},
+        {{ 0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 1.0f}},
+        {{ 0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 1.0f}},
+        {{-0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 1.0f}},
+    };
+
+    const unsigned indices[] =
+    {
+        0, 1, 2, 2, 3, 0, // Back
+        4, 5, 6, 6, 7, 4, // Front
+        8, 9, 10, 10, 11, 8, // Left
+        12, 13, 14, 14, 15, 12, // Right
+        16, 17, 18, 18, 19, 16, // Top
+        20, 21, 22, 22, 23, 20  // Bottom
+    };
+
     bool Demo02_Scene::init()
 	{
+        PekanRenderer::enableDepthTest();
+
+        // Create a vertex array
+        m_vertexArray.create();
+
+        // Create a vertex buffer with vertices data
+        m_vertexBuffer.create
+        (
+            vertices,
+            sizeof(vertices)
+        );
+
+        // Add vertex buffer to vertex array
+        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "color" } });
+
+        // Create an index buffer with indices data
+        m_indexBuffer.create(indices, sizeof(indices));
+
+        // Create a shader by compiling source code of vertex shader and fragment shader
+        m_shader.create
+        (
+            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
+            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
+        );
+
+        // Set transform matrices
+        m_modelMatrix = glm::mat4(1.0f);
+        m_viewMatrix = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        m_projMatrix = glm::perspective(glm::radians(45.0f), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.1f, 10.0f);
+
+        m_rotation = 0.0f;
+
         return true;
 	}
 
 	void Demo02_Scene::update()
 	{
+        // Rotate cube
+        m_rotation += 0.01f;
+        m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation, glm::vec3(0.5f, 1.0f, 0.0f));
 	}
 
 	void Demo02_Scene::render()
 	{
+        PekanRenderer::clear(true);
+
+        m_vertexBuffer.bind();
+        m_vertexArray.bind();
+        m_indexBuffer.bind();
+        m_shader.bind();
+
+        // Set uniform of model-view-projection matrix
+        glm::mat4 mvpMatrix = m_projMatrix * m_viewMatrix * m_modelMatrix;
+        m_shader.setUniformMatrix4fv("u_MVP", mvpMatrix);
+
+        // Draw cube
+        PekanRenderer::drawIndexed(36);
+
+        m_vertexBuffer.unbind();
+        m_vertexArray.unbind();
+        m_indexBuffer.unbind();
+        m_shader.unbind();
 	}
 
 	void Demo02_Scene::exit()
 	{
+        m_vertexBuffer.destroy();
+        m_vertexArray.destroy();
+        m_indexBuffer.destroy();
+        m_shader.destroy();
 	}
 
 } // namespace Demo

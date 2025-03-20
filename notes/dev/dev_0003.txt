@@ -1,0 +1,8 @@
+----------
+20.03.2025
+----------
+
+{
+Today in Demo02 I implemented a basic 3D scene with a rotating cube.
+
+}
