@@ -4,5 +4,10 @@
 
 {
 Today in Demo02 I implemented a basic 3D scene with a rotating cube.
+Initially every side of the cube was a different fixed size.
+Now I made it so that the 6 colors of the 6 sides can be controlled with 6 colors controls in GUI.
+
+Also changed GUI's scale because everything felt a bit small.
+I scaled up font size and widgets size.
 
 }

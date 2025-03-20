@@ -15,52 +15,6 @@ static const char* fragmentShaderFilePath = "resources/02_fragment_shader.glsl";
 namespace Demo
 {
 
-    struct Vertex
-    {
-        glm::vec3 position;
-        glm::vec3 color;
-    };
-
-    // Vertices of cube
-    const Vertex vertices[] =
-    {
-        // Back face (Red)
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{ 0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{ 0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{-0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-
-        // Front face (Green)
-        {{-0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{ 0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{ 0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
-
-        // Left face (Blue)
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f,  0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
-
-        // Right face (Yellow)
-        {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 0.0f}},
-        {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 0.0f}},
-        {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 0.0f}},
-        {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 0.0f}},
-
-        // Top face (Magenta)
-        {{-0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 1.0f}},
-        {{ 0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 1.0f}},
-        {{ 0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f}},
-        {{-0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f}},
-
-        // Bottom face (Cyan)
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 1.0f}},
-        {{ 0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 1.0f}},
-        {{ 0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 1.0f}},
-        {{-0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 1.0f}},
-    };
-
     const unsigned indices[] =
     {
         0, 1, 2, 2, 3, 0, // Back
@@ -73,6 +27,57 @@ namespace Demo
 
     bool Demo02_Scene::init()
 	{
+        // Set default colors of cube's sides
+        m_colors =
+        {
+            {1.0f, 0.0f, 0.0f},
+            {0.0f, 1.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f},
+            {1.0f, 1.0f, 0.0f},
+            {1.0f, 0.0f, 1.0f},
+            {0.0f, 1.0f, 1.0f}
+        };
+
+        // Initialize vertices of cube
+        m_vertices =
+        {
+            // Back face (Red)
+            {{-0.5f, -0.5f, -0.5f}, m_colors[0]},
+            {{ 0.5f, -0.5f, -0.5f}, m_colors[0]},
+            {{ 0.5f,  0.5f, -0.5f}, m_colors[0]},
+            {{-0.5f,  0.5f, -0.5f}, m_colors[0]},
+
+            // Front face (Green)
+            {{-0.5f, -0.5f,  0.5f}, m_colors[1]},
+            {{ 0.5f, -0.5f,  0.5f}, m_colors[1]},
+            {{ 0.5f,  0.5f,  0.5f}, m_colors[1]},
+            {{-0.5f,  0.5f,  0.5f}, m_colors[1]},
+
+            // Left face (Blue)
+            {{-0.5f, -0.5f, -0.5f}, m_colors[2]},
+            {{-0.5f,  0.5f, -0.5f}, m_colors[2]},
+            {{-0.5f,  0.5f,  0.5f}, m_colors[2]},
+            {{-0.5f, -0.5f,  0.5f}, m_colors[2]},
+
+            // Right face (Yellow)
+            {{ 0.5f, -0.5f, -0.5f}, m_colors[3]},
+            {{ 0.5f,  0.5f, -0.5f}, m_colors[3]},
+            {{ 0.5f,  0.5f,  0.5f}, m_colors[3]},
+            {{ 0.5f, -0.5f,  0.5f}, m_colors[3]},
+
+            // Top face (Magenta)
+            {{-0.5f,  0.5f, -0.5f}, m_colors[4]},
+            {{ 0.5f,  0.5f, -0.5f}, m_colors[4]},
+            {{ 0.5f,  0.5f,  0.5f}, m_colors[4]},
+            {{-0.5f,  0.5f,  0.5f}, m_colors[4]},
+
+            // Bottom face (Cyan)
+            {{-0.5f, -0.5f, -0.5f}, m_colors[5]},
+            {{ 0.5f, -0.5f, -0.5f}, m_colors[5]},
+            {{ 0.5f, -0.5f,  0.5f}, m_colors[5]},
+            {{-0.5f, -0.5f,  0.5f}, m_colors[5]}
+        };
+
         PekanRenderer::enableDepthTest();
 
         // Create a vertex array
@@ -81,8 +86,8 @@ namespace Demo
         // Create a vertex buffer with vertices data
         m_vertexBuffer.create
         (
-            vertices,
-            sizeof(vertices)
+            m_vertices.data(),
+            m_vertices.size() * sizeof(Vertex)
         );
 
         // Add vertex buffer to vertex array
@@ -113,6 +118,22 @@ namespace Demo
         // Rotate cube
         m_rotation += 0.01f;
         m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation, glm::vec3(0.5f, 1.0f, 0.0f));
+
+        for (int i = 0; i < m_colors.size(); i++)
+        {
+            m_vertices[i * 4 + 0].color = m_colors[i];
+            m_vertices[i * 4 + 1].color = m_colors[i];
+            m_vertices[i * 4 + 2].color = m_colors[i];
+            m_vertices[i * 4 + 3].color = m_colors[i];
+        }
+
+        m_vertexArray.bind();
+        m_vertexBuffer.bind();
+        m_vertexBuffer.setData
+        (
+            m_vertices.data(),
+            m_vertices.size() * sizeof(Vertex)
+        );
 	}
 
 	void Demo02_Scene::render()

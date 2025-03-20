@@ -193,6 +193,10 @@ namespace Pekan
         ImGui_ImplGlfw_InitForOpenGL(s_window, true);
         ImGui_ImplOpenGL3_Init(PK_GLSL_VERSION);
 
+        // Scale up widgets and font by a factor of 2
+        style.ScaleAllSizes(1.3f);
+        io.FontGlobalScale = 1.05f;
+
         return true;
     }
 

@@ -8,7 +8,7 @@ namespace Demo
 
 	void Demo00_GUIWindow::_render()
 	{
-		ImGui::SetNextWindowSize(ImVec2(200, 110));
+		ImGui::SetNextWindowSize(ImVec2(200, 120));
 		ImGui::Begin("Pekan");
 
 		ImGui::Text("Background Color");

@@ -5,14 +5,23 @@ using Pekan::PekanGUIWindow;
 
 namespace Demo
 {
+	class Demo02_Scene;
 
 	class Demo02_GUIWindow : public PekanGUIWindow
 	{
+	public:
+
+		inline void attachScene(Demo02_Scene* scene) { m_scene = scene; }
+
 	private: /* functions */
 
 		void _render() override;
 
 		bool init() override;
+
+	private: /* variables */
+
+		Demo02_Scene* m_scene = nullptr;
 	};
 
 } // namespace Demo

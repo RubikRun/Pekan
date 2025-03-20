@@ -66,7 +66,7 @@ namespace Demo
             return;
         }
 
-        ImGui::SetNextWindowSize(ImVec2(300, 720));
+        ImGui::SetNextWindowSize(ImVec2(320, PekanEngine::getWindowHeight()));
         ImGui::Begin("Squares");
 
         if (ImGui::Button("+"))

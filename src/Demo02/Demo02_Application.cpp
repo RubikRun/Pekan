@@ -13,6 +13,8 @@ namespace Demo
 		// Create demo scene and demo GUI window
 		Demo02_Scene* demoScene = new Demo02_Scene();
 		Demo02_GUIWindow* demoGuiWindow = new Demo02_GUIWindow();
+		// Attach demo scene to demo GUI window
+		demoGuiWindow->attachScene(demoScene);
 
 		// Set base scene pointer and base GUI window pointer
 		// to point to demo scene and demo GUI window
