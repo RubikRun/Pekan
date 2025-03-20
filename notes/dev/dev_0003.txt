@@ -13,4 +13,14 @@ I scaled up font size and widgets size.
 Added a slider for cube's rotation, instead of animating the rotation over time.
 Added a slider for camera's FOV (field of view) angle.
 Added a slider for camera's distance to center.
+
+Demo02 is done.
+}
+
+{
+For Demo03 I want to create the classic snake game.
+It will not have any GUI, and I want it to be full-screen.
+Currently we don't support applications without GUI, which is stupid tbh, let's change it.
+In PekanApplication we should allow both applications without GUI and applications without a scene.
+
 }

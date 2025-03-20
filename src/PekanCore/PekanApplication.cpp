@@ -22,22 +22,11 @@ namespace Pekan
             return false;
         }
 
-        if (m_scene == nullptr)
-        {
-            PK_LOG_ERROR("Trying to initialize application but scene is NULL.", "Pekan");
-            return false;
-        }
-        if (m_guiWindow == nullptr)
-        {
-            PK_LOG_ERROR("Trying to initialize application but GUI window is NULL.", "Pekan");
-            return false;
-        }
-
-        if (!m_scene->init())
+        if (m_scene != nullptr && !m_scene->init())
         {
             return false;
         }
-        if (!m_guiWindow->init())
+        if (m_guiWindow != nullptr && !m_guiWindow->init())
         {
             return false;
         }
@@ -47,17 +36,6 @@ namespace Pekan
 
     void PekanApplication::run()
 	{
-        if (m_scene == nullptr)
-        {
-            PK_LOG_ERROR("Trying to run application but scene is NULL.", "Pekan");
-            return;
-        }
-        if (m_guiWindow == nullptr)
-        {
-            PK_LOG_ERROR("Trying to run application but GUI window is NULL.", "Pekan");
-            return;
-        }
-
         GLFWwindow* window = PekanEngine::getWindow();
         while (!glfwWindowShouldClose(window))
         {
@@ -68,12 +46,17 @@ namespace Pekan
             glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
             glViewport(0, 0, windowWidth, windowHeight);
 
-            // Update scene
-            m_scene->update();
-
-            // Render scene and GUI
-            m_scene->render();
-            m_guiWindow->render();
+            // Update and render scene
+            if (m_scene != nullptr)
+            {
+                m_scene->update();
+                m_scene->render();
+            }
+            // Render GUI window
+            if (m_guiWindow != nullptr)
+            {
+                m_guiWindow->render();
+            }
 
             glfwSwapBuffers(window);
         }
