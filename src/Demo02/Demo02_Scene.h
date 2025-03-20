@@ -40,6 +40,10 @@ namespace Demo
 		inline float getFOV() const { return m_fov; }
 		inline float& getFOV() { return m_fov; }
 
+		// Returns (a reference to) camera's distance to scene's center
+		inline float getCameraDist() const { return m_cameraDist; }
+		inline float& getCameraDist() { return m_cameraDist; }
+
 	private: /* variables */
 
 		Pekan::Renderer::VertexBuffer m_vertexBuffer;
@@ -59,7 +63,10 @@ namespace Demo
 		float m_rotation = 0.0f;
 
 		// Field of view (vertical), in degrees
-		float m_fov = 45.0f;
+		float m_fov = 30.0f;
+
+		// Distance from camera to scene's center
+		float m_cameraDist = 2.5f;
 
 		// Transform matrices
 		glm::mat4 m_modelMatrix;

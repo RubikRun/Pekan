@@ -109,8 +109,8 @@ namespace Demo
 
         // Set default transform matrices
         m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation * PI / 180.0f, glm::vec3(0.5f, 1.0f, 0.0f));
-        m_viewMatrix = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        m_projMatrix = glm::perspective(glm::radians(m_fov), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.1f, 10.0f);
+        m_viewMatrix = glm::lookAt(glm::vec3(m_cameraDist, m_cameraDist, m_cameraDist), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        m_projMatrix = glm::perspective(glm::radians(m_fov), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.01f, 100.0f);
 
         m_rotation = 0.0f;
 
@@ -121,8 +121,8 @@ namespace Demo
 	{
         // Set model, view, and projection matrices with current properties
         m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation * PI / 180.0f, glm::vec3(0.5f, 1.0f, 0.0f));
-        m_viewMatrix = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        m_projMatrix = glm::perspective(glm::radians(m_fov), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.1f, 10.0f);
+        m_viewMatrix = glm::lookAt(glm::vec3(m_cameraDist, m_cameraDist, m_cameraDist), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        m_projMatrix = glm::perspective(glm::radians(m_fov), float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight()), 0.01f, 100.0f);
 
         for (int i = 0; i < m_colors.size(); i++)
         {

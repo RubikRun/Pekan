@@ -41,6 +41,15 @@ namespace Demo
 		ImGui::PopItemWidth();
 	}
 
+	static void renderSliderCameraDist(float& cameraDist)
+	{
+		ImGui::PushItemWidth(0.60f * ImGui::GetContentRegionAvail().x);
+		ImGui::Text("Camera Distance");
+		ImGui::SameLine();
+		ImGui::SliderFloat("##CameraDist", &cameraDist, 0.5f, 10.0f);
+		ImGui::PopItemWidth();
+	}
+
 	void Demo02_GUIWindow::_render()
 	{
 		if (m_scene == nullptr)
@@ -63,6 +72,7 @@ namespace Demo
 
 		renderSliderRotation(m_scene->getRotation());
 		renderSliderFov(m_scene->getFOV());
+		renderSliderCameraDist(m_scene->getCameraDist());
 
 		ImGui::End();
 	}
