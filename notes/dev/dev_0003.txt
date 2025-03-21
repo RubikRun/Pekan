@@ -66,4 +66,14 @@ This is how to do it inside of PekanApplication's run loop
     }
 Done.
 
+Now let's begin with the actual snake game.
+The main object in the game will be, well, the snake.
+What is the snake? It's N squares that move in a particular way.
+When the snake eats an apple the squares become N+1.
+To render N squares we need the usual setup of a VertexBuffer, VertexArray, IndexBuffer and Shader.
+Let's create a class Snake that will hold these 4 RenderComponent's and handle the logic of moving and growing the snake.
+As a first step, let's make it be 4 squares next to each other that don't move.
+Done.
+
+
 }

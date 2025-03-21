@@ -6,6 +6,8 @@
 #include "VertexArray.h"
 #include "Shader.h"
 
+#include "Snake.h"
+
 namespace Demo
 {
 
@@ -20,6 +22,10 @@ namespace Demo
 		void render() override;
 
 		void exit() override;
+
+	private: /* variables */
+
+		Snake m_snake;
 	};
 
 } // namespace Demo

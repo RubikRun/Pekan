@@ -8,6 +8,8 @@ add_executable(Demo03
     Demo03_Application.cpp
     Demo03_Scene.h
     Demo03_Scene.cpp
+    Snake.h
+    Snake.cpp
 )
 
 # Set link libraries for Demo03
