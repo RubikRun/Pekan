@@ -55,4 +55,15 @@ and we have this member of PekanApplication
     bool m_shouldHideCursor = false;
 Done.
 
+Next thing is that I want the application to close when user presses the escape key.
+We don't yet have an event system or anything like that so it'd be hard to do this properly at the moment.
+I'll just make it so that all PekanApplication's close like that, with the escape key.
+In the future we will have an event system and a way for each application to specify its way of closure.
+This is how to do it inside of PekanApplication's run loop
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
+Done.
+
 }

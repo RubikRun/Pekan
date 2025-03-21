@@ -41,6 +41,12 @@ namespace Pekan
         {
             glfwPollEvents();
 
+            // Close window if escape key is pressed
+            if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            {
+                glfwSetWindowShouldClose(window, true);
+            }
+
             // Handle window resizing
             int windowWidth, windowHeight;
             glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
