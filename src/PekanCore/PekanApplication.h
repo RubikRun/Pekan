@@ -36,6 +36,10 @@ namespace Pekan
 		std::unique_ptr<PekanScene> m_scene;
 
 		std::unique_ptr<PekanGUIWindow> m_guiWindow;
+
+		// Flag indicating whether application should be rendered at full screen.
+		// To be set by derived classes inside of the _init() function.
+		bool m_isFullScreen = false;
 	};
 
 } // namespace Pekan

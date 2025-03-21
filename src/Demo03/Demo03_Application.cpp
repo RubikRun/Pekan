@@ -14,6 +14,8 @@ namespace Demo
 		// Set base scene pointer to point to demo scene
 		m_scene = std::unique_ptr<PekanScene>(demoScene);
 
+		m_isFullScreen = true;
+
 		return true;
 	}
 

@@ -11,14 +11,14 @@ namespace Pekan
 {
     bool PekanApplication::init()
     {
-        if (!PekanEngine::init())
+        if (!_init())
         {
-            PK_LOG_ERROR("Engine failed to initialize.", "Pekan");
             return false;
         }
 
-        if (!_init())
+        if (!PekanEngine::init(m_isFullScreen))
         {
+            PK_LOG_ERROR("Engine failed to initialize.", "Pekan");
             return false;
         }
 

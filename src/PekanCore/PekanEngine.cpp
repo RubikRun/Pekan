@@ -67,9 +67,9 @@ namespace Pekan
 
 #endif
 
-    bool PekanEngine::init()
+    bool PekanEngine::init(bool fullScreen)
     {
-        if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT))
+        if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, fullScreen))
         {
             return false;
         }
@@ -105,7 +105,7 @@ namespace Pekan
         return DEFAULT_WINDOW_HEIGHT;
     }
 
-    bool PekanEngine::createWindow(int width, int height)
+    bool PekanEngine::createWindow(int width, int height, bool fullScreen)
     {
         if (!glfwInit())
         {
@@ -120,7 +120,17 @@ namespace Pekan
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
         // Create a GLFW window
-        s_window = glfwCreateWindow(width, height, DEFAULT_WINDOW_TITLE, nullptr, nullptr);
+        if (fullScreen)
+        {
+            GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+
+            s_window = glfwCreateWindow(mode->width, mode->height, "Fullscreen Window", primaryMonitor, nullptr);
+        }
+        else
+        {
+            s_window = glfwCreateWindow(width, height, DEFAULT_WINDOW_TITLE, nullptr, nullptr);
+        }
         if (s_window == nullptr)
         {
             PK_LOG_ERROR("Failed to create a window with GLFW.", "Pekan");

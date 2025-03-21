@@ -35,7 +35,7 @@ namespace Pekan
 		// - initializing all libraries
 		// 
 		// To be called once, at the beginning, before using the engine.
-		static bool init();
+		static bool init(bool fullScreen = false);
 
 		// Exits the engine
 		// - destroying graphics window
@@ -54,7 +54,7 @@ namespace Pekan
 
 		// Creates the graphics window,
 		// and configures it for rendering.
-		static bool createWindow(int width, int height);
+		static bool createWindow(int width, int height, bool fullScreen);
 		// Destroys the graphics window.
 		static void destroyWindow();
 

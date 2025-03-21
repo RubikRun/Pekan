@@ -19,10 +19,33 @@ Demo02 is done.
 
 {
 For Demo03 I want to create the classic snake game.
-It will not have any GUI, and I want it to be full-screen.
+It will not have any GUI, and I want it to be full screen.
 Currently we don't support applications without GUI, which is stupid tbh, let's change it.
 In PekanApplication we should allow both applications without GUI and applications without a scene.
 
 Now let's start with Demo03 by creating a skeleton without GUI, only a scene.
+
+Let's see how we can make it full screen.
+
+----------
+21.03.2025
+----------
+
+First of all, the full-screen-ness will be a property of an application,
+so we can add this protected member variable to PekanApplication
+    bool m_isFullScreen = false;
+The idea is that derived classes can set this variable in their _init() function,
+and then PekanApplication will handle it.
+How will it handle it?
+Well, creating the window is PekanEngine's job so when PekanApplication calls PekanEngine::init()
+it will have to provide the m_isFullScreen value as a parameter.
+So let's add a parameter to PekanEngine::init()
+    static bool init(bool fullScreen = false);
+If the parameter is false we want PekanEngine to create the window normally, as before.
+If the parameter is true we want to create a full screen "window" like that
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+    s_window = glfwCreateWindow(mode->width, mode->height, "Fullscreen Window", primaryMonitor, nullptr);
+Okay, it works.
 
 }
