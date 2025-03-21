@@ -40,6 +40,10 @@ namespace Pekan
 		// Flag indicating whether application should be rendered at full screen.
 		// To be set by derived classes inside of the _init() function.
 		bool m_isFullScreen = false;
+
+		// Flag indicating whether mouse's cursor should be hidden.
+		// To be set by derived classes inside of the _init() function.
+		bool m_shouldHideCursor = false;
 	};
 
 } // namespace Pekan

@@ -16,7 +16,7 @@ namespace Pekan
             return false;
         }
 
-        if (!PekanEngine::init(m_isFullScreen))
+        if (!PekanEngine::init(m_isFullScreen, m_shouldHideCursor))
         {
             PK_LOG_ERROR("Engine failed to initialize.", "Pekan");
             return false;

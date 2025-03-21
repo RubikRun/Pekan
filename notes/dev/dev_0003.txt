@@ -48,4 +48,11 @@ If the parameter is true we want to create a full screen "window" like that
     s_window = glfwCreateWindow(mode->width, mode->height, "Fullscreen Window", primaryMonitor, nullptr);
 Okay, it works.
 
+Now let's see how we can hide the cursor.
+Same story as full screen. This time this is the line that actually hides the cursor
+    glfwSetInputMode(s_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+and we have this member of PekanApplication
+    bool m_shouldHideCursor = false;
+Done.
+
 }

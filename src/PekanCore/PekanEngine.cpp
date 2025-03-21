@@ -67,9 +67,9 @@ namespace Pekan
 
 #endif
 
-    bool PekanEngine::init(bool fullScreen)
+    bool PekanEngine::init(bool fullScreen, bool hideCursor)
     {
-        if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, fullScreen))
+        if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, fullScreen, hideCursor))
         {
             return false;
         }
@@ -105,7 +105,7 @@ namespace Pekan
         return DEFAULT_WINDOW_HEIGHT;
     }
 
-    bool PekanEngine::createWindow(int width, int height, bool fullScreen)
+    bool PekanEngine::createWindow(int width, int height, bool fullScreen, bool hideCursor)
     {
         if (!glfwInit())
         {
@@ -141,6 +141,12 @@ namespace Pekan
         glfwMakeContextCurrent(s_window);
         // Enalbe VSync
         glfwSwapInterval(1);
+
+        // Hide cursor if needed
+        if (hideCursor)
+        {
+            glfwSetInputMode(s_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        }
 
         return true;
     }
