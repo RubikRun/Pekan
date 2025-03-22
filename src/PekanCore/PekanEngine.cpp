@@ -105,6 +105,26 @@ namespace Pekan
         return DEFAULT_WINDOW_HEIGHT;
     }
 
+    bool PekanEngine::isKeyPressed_W()
+    {
+        return (glfwGetKey(s_window, GLFW_KEY_W) == GLFW_PRESS);
+    }
+
+    bool PekanEngine::isKeyPressed_A()
+    {
+        return (glfwGetKey(s_window, GLFW_KEY_A) == GLFW_PRESS);
+    }
+
+    bool PekanEngine::isKeyPressed_S()
+    {
+        return (glfwGetKey(s_window, GLFW_KEY_S) == GLFW_PRESS);
+    }
+
+    bool PekanEngine::isKeyPressed_D()
+    {
+        return (glfwGetKey(s_window, GLFW_KEY_D) == GLFW_PRESS);
+    }
+
     bool PekanEngine::createWindow(int width, int height, bool fullScreen, bool hideCursor)
     {
         if (!glfwInit())

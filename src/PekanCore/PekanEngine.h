@@ -50,6 +50,14 @@ namespace Pekan
 		static int getWindowWidth();
 		static int getWindowHeight();
 
+	// TODO: Remove the following functions after creating an event system
+	public: /* TEMPORARY */
+		static bool isKeyPressed_W();
+		static bool isKeyPressed_A();
+		static bool isKeyPressed_S();
+		static bool isKeyPressed_D();
+
+
 	private: /* functions */
 
 		// Creates the graphics window,

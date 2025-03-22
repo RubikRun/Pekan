@@ -97,4 +97,16 @@ After changing the coordinates we need to update the vertex buffer with this new
 That's it. The snake now moves left.
 Done.
 
+Next step is to allow user to control the snake's movement with WASD keys.
+Since we don't have an event system yet, we cannot do this properly.
+I'll do it in a temporary way by just adding these 4 functions to PekanEngine
+    static bool isKeyPressed_W();
+    static bool isKeyPressed_A();
+    static bool isKeyPressed_S();
+    static bool isKeyPressed_D();
+Then in Snake::update() we need to check these 4 functions and set m_direction accordingly.
+Now the snake moves and user can control it with WASD,
+but it moves in a funny way, not how a snake is supposed to move.
+The 4 squares remain horizontally next to each other and the whole snake moves up when user presses W.
+
 }

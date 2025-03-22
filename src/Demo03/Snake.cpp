@@ -4,6 +4,7 @@
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
+using Pekan::PekanEngine;
 
 static const char* vertexShaderFilePath = "resources/03_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_fragment_shader.glsl";
@@ -79,6 +80,24 @@ namespace Demo
     void Snake::update()
     {
         m_frames++;
+
+        if (PekanEngine::isKeyPressed_W())
+        {
+            m_direction = { 0, 1 };
+        }
+        else if (PekanEngine::isKeyPressed_A())
+        {
+            m_direction = { -1, 0 };
+        }
+        else if (PekanEngine::isKeyPressed_S())
+        {
+            m_direction = { 0, -1 };
+        }
+        else if (PekanEngine::isKeyPressed_D())
+        {
+            m_direction = { 1, 0 };
+        }
+
         if (m_frames % MOVE_FRAMES == 0)
         {
             move();
