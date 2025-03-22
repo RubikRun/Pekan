@@ -3,6 +3,7 @@
 
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
+using Pekan::Renderer::BufferDataUsage;
 
 static const char* vertexShaderFilePath = "resources/03_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_fragment_shader.glsl";
@@ -13,9 +14,13 @@ namespace Demo
     static const float THICKNESS = 0.1f;
     static const float INITIAL_POSITION_X = 0.0f;
     static const float INITIAL_POSITION_Y = 0.0f;
+    // The snake will move by 1 square every MOVE_FRAMES frames
+    static const int MOVE_FRAMES = 20;
 
 	bool Snake::init()
 	{
+        m_squaresCount = 4;
+
         // Initialize vertices of cube
         m_vertices =
         {
@@ -53,11 +58,7 @@ namespace Demo
         m_vertexArray.create();
 
         // Create a vertex buffer with vertices data
-        m_vertexBuffer.create
-        (
-            m_vertices.data(),
-            m_vertices.size() * sizeof(float)
-        );
+        m_vertexBuffer.create(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
 
         // Add vertex buffer to vertex array
         m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" } });
@@ -77,6 +78,11 @@ namespace Demo
 
     void Snake::update()
     {
+        m_frames++;
+        if (m_frames % MOVE_FRAMES == 0)
+        {
+            move();
+        }
     }
 
     void Snake::render()
@@ -99,6 +105,32 @@ namespace Demo
         m_indexBuffer.destroy();
         m_vertexBuffer.destroy();
         m_vertexArray.destroy();
+    }
+
+    void Snake::move()
+    {
+        for (int i = 0; i < m_squaresCount; i++)
+        {
+            moveSquare(i);
+        }
+
+        m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
+    }
+
+    void Snake::moveSquare(int idx)
+    {
+        const int first = idx * 8;
+        for (int i = 0; i < 8; i++)
+        {
+            if (i % 2 == 0)
+            {
+                m_vertices[first + i] += float(m_direction.x) * THICKNESS;
+            }
+            else
+            {
+                m_vertices[first + i] += float(m_direction.y) * THICKNESS;
+            }
+        }
     }
 
 } // namespace Demo

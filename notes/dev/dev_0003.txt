@@ -75,5 +75,26 @@ Let's create a class Snake that will hold these 4 RenderComponent's and handle t
 As a first step, let's make it be 4 squares next to each other that don't move.
 Done.
 
+Now let's make the snake move.
+Introducing this member variable in class Snake
+    glm::ivec2 m_direction = { -1, 0 };
+and using it in Snake::update() to move the snake.
+However, the snake should not move every frame, instead it should move every F frames by 1 square.
+We need chopped movement, not smooth.
+For that, we'll add this member variable
+    int m_frames = 0;
+that keeps track of how many frames have been rendered so far.
+
+----------
+22.03.2025
+----------
+
+Then inside of Snake::update() we'll check if m_frames is divisible by 20. Instead of 20 let's add this new constant
+    static const int MOVE_FRAMES = 20;
+If it's divisible we'll move the snake by just changing the coordinates inside of m_vertices.
+After changing the coordinates we need to update the vertex buffer with this new data, like that:
+    m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
+That's it. The snake now moves left.
+Done.
 
 }
