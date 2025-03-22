@@ -109,4 +109,28 @@ Now the snake moves and user can control it with WASD,
 but it moves in a funny way, not how a snake is supposed to move.
 The 4 squares remain horizontally next to each other and the whole snake moves up when user presses W.
 
+Now to do the snake's movement correctly there are 2 options.
+Let squares be the list of squares and N be the number of squares.
+1. Set
+        squares[N-1] = squares[N-2]
+        squares[N-2] = squares[N-3]
+        squares[N-3] = squares[N-4]
+        ...
+        squares[1] = squares[0]
+        squares[0] += direction
+2. Keep track of head's index and tail's index - headIdx, tailIdx
+In the beginning headIdx = 0 and tailIdx = N-1.
+Each time we move the snake we'll do this:
+    squares[tailIdx] = squares[headIdx] + direction
+    tailIdx = tailIdx - 1
+    if tailIdx < 0:
+        tailIdx = N-1
+
+Oviously the second algorithm is more effecient, so I'll use that one.
+Done.
+
+Snake looks weird now because our window is rectangular, not square, so the squares of the snake are rectangles with the same aspect ratio.
+Let's make the window square just to verify, and then I'll address this issue so that it works on every resolution.
+Okay, yes, it works with a square window.
+
 }

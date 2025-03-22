@@ -21,6 +21,8 @@ namespace Demo
 	bool Snake::init()
 	{
         m_squaresCount = 4;
+        m_headIdx = 0;
+        m_tailIdx = 3;
 
         // Initialize vertices of cube
         m_vertices =
@@ -83,19 +85,19 @@ namespace Demo
 
         if (PekanEngine::isKeyPressed_W())
         {
-            m_direction = { 0, 1 };
+            m_direction = { 0.0f, 1.0f };
         }
         else if (PekanEngine::isKeyPressed_A())
         {
-            m_direction = { -1, 0 };
+            m_direction = { -1.0f, 0.0f };
         }
         else if (PekanEngine::isKeyPressed_S())
         {
-            m_direction = { 0, -1 };
+            m_direction = { 0.0f, -1.0f };
         }
         else if (PekanEngine::isKeyPressed_D())
         {
-            m_direction = { 1, 0 };
+            m_direction = { 1.0f, 0.0f };
         }
 
         if (m_frames % MOVE_FRAMES == 0)
@@ -128,28 +130,32 @@ namespace Demo
 
     void Snake::move()
     {
-        for (int i = 0; i < m_squaresCount; i++)
+        setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * THICKNESS);
+        m_headIdx = m_tailIdx;
+        m_tailIdx -= 1;
+        if (m_tailIdx < 0)
         {
-            moveSquare(i);
+            m_tailIdx = m_squaresCount - 1;
         }
 
         m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
     }
 
-    void Snake::moveSquare(int idx)
+    void Snake::setSquarePosition(int idx, glm::vec2 pos)
     {
-        const int first = idx * 8;
-        for (int i = 0; i < 8; i++)
-        {
-            if (i % 2 == 0)
-            {
-                m_vertices[first + i] += float(m_direction.x) * THICKNESS;
-            }
-            else
-            {
-                m_vertices[first + i] += float(m_direction.y) * THICKNESS;
-            }
-        }
+        m_vertices[idx * 8 + 0] = pos.x;
+        m_vertices[idx * 8 + 1] = pos.y;
+        m_vertices[idx * 8 + 2] = pos.x;
+        m_vertices[idx * 8 + 3] = pos.y - THICKNESS;
+        m_vertices[idx * 8 + 4] = pos.x + THICKNESS;
+        m_vertices[idx * 8 + 5] = pos.y - THICKNESS;
+        m_vertices[idx * 8 + 6] = pos.x + THICKNESS;
+        m_vertices[idx * 8 + 7] = pos.y;
+    }
+
+    glm::vec2 Snake::getSquarePosition(int idx)
+    {
+        return { m_vertices[idx * 8], m_vertices[idx * 8 + 1] };
     }
 
 } // namespace Demo
