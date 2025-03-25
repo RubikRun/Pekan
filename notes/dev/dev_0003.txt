@@ -146,4 +146,12 @@ and then everytime we set/get a Y coordinate we will multiply/divide it by that 
 Done.
 Now it works with any resolution.
 
+Next thing to implement in the snake game would be to generate an apple on a random position.
+For that we'll first need a random number generator.
+I'll add these 2 functions in PekanUtils.h/cpp
+    int getRandomInt(int min, int max);
+    float getRandomFloat(float min, float max);
+Tested them, seem to work.
+Done.
+
 }

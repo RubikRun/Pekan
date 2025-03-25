@@ -9,6 +9,14 @@ namespace Pekan
 namespace Utils
 {
 
+    // Returns the random number generator.
+    // If called for the first time it will also seed the random number generator.
+    static inline std::mt19937& getRandomNumberGenerator()
+    {
+        static std::mt19937 randomNumberGenerator(std::chrono::steady_clock::now().time_since_epoch().count());
+        return randomNumberGenerator;
+    }
+
     std::string readFileToString(const char* filePath)
     {
         std::ifstream file(filePath);
@@ -27,6 +35,18 @@ namespace Utils
         }
 
         return buffer.str();
+    }
+
+    int getRandomInt(int min, int max)
+    {
+        std::uniform_int_distribution<int> distribution(min, max);
+        return distribution(getRandomNumberGenerator());
+    }
+
+    float getRandomFloat(float min, float max)
+    {
+        std::uniform_real_distribution<float> distribution(min, max);
+        return distribution(getRandomNumberGenerator());
     }
 
 } // namespace Utils
