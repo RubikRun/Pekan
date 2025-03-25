@@ -173,4 +173,7 @@ We need to create the following functions in RenderObject to make it usable
 where the parameters to create() and setVertexData() are exactly what's needed and what's currently done in class Snake, just refactored.
 Done.
 
+Now we can use this new class RenderObject to create an apple (a red square).
+Done.
+
 }

@@ -3,6 +3,7 @@
 #include "PekanScene.h"
 
 #include "Snake.h"
+#include "RenderObject.h"
 
 namespace Demo
 {
@@ -22,6 +23,12 @@ namespace Demo
 	private: /* variables */
 
 		Snake m_snake;
+
+		RenderObject m_apple;
+
+		glm::vec2 m_applePosition = { 0.0f, 0.0f };
+
+		float m_aspectRatio = 0.0f;
 	};
 
 } // namespace Demo

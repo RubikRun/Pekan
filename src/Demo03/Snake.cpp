@@ -6,17 +6,16 @@ using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::PekanEngine;
 
-static const char* vertexShaderFilePath = "resources/03_vertex_shader.glsl";
-static const char* fragmentShaderFilePath = "resources/03_fragment_shader.glsl";
+static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
+static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
+static const float THICKNESS = 0.07f;
+static const float INITIAL_POSITION_X = 0.0f;
+static const float INITIAL_POSITION_Y = 0.0f;
+// The snake will move by 1 square every MOVE_FRAMES frames
+static const int MOVE_FRAMES = 20;
 
 namespace Demo
 {
-
-    static const float THICKNESS = 0.07f;
-    static const float INITIAL_POSITION_X = 0.0f;
-    static const float INITIAL_POSITION_Y = 0.0f;
-    // The snake will move by 1 square every MOVE_FRAMES frames
-    static const int MOVE_FRAMES = 20;
 
 	bool Snake::init()
 	{
@@ -58,7 +57,8 @@ namespace Demo
             12, 13, 14, 14, 15, 12
         };
 
-        m_renderObject.create(
+        m_renderObject.create
+        (
             m_vertices.data(),
             m_vertices.size() * sizeof(float),
             BufferDataUsage::DynamicDraw,
@@ -102,8 +102,6 @@ namespace Demo
 
     void Snake::render()
     {
-        PekanRenderer::clear();
-
         m_renderObject.bind();
 
         // Draw snake
