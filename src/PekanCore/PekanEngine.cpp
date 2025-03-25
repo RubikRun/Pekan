@@ -10,8 +10,8 @@
 
 namespace Pekan
 {
-    const int DEFAULT_WINDOW_WIDTH = 900;
-    const int DEFAULT_WINDOW_HEIGHT = 900;
+    const int DEFAULT_WINDOW_WIDTH = 1280;
+    const int DEFAULT_WINDOW_HEIGHT = 720;
 
     const char* DEFAULT_WINDOW_TITLE = "Pekan v0.1";
 

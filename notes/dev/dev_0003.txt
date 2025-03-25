@@ -133,4 +133,17 @@ Snake looks weird now because our window is rectangular, not square, so the squa
 Let's make the window square just to verify, and then I'll address this issue so that it works on every resolution.
 Okay, yes, it works with a square window.
 
+----------
+25.03.2025
+----------
+
+Now let's make the squares be squares no matter the window's resolution.
+For that, I'll add this new member variable in class Snake
+    float m_aspectRatio = 0.0f;
+that will be initialized like this
+    m_aspectRatio = float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight());
+and then everytime we set/get a Y coordinate we will multiply/divide it by that aspect ratio.
+Done.
+Now it works with any resolution.
+
 }

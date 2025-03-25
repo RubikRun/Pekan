@@ -55,6 +55,8 @@ namespace Demo
 
 		// Number of frames rendered so far
 		int m_frames = 0;
+
+		float m_aspectRatio = 0.0f;
 	};
 
 } // namespace Demo
