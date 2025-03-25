@@ -58,21 +58,14 @@ namespace Demo
             12, 13, 14, 14, 15, 12
         };
 
-        // Create a vertex array
-        m_vertexArray.create();
-
-        // Create a vertex buffer with vertices data
-        m_vertexBuffer.create(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
-
-        // Add vertex buffer to vertex array
-        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" } });
-
-        // Create an index buffer with indices data
-        m_indexBuffer.create(m_indices.data(), m_indices.size() * sizeof(int));
-
-        // Create a shader by compiling source code of vertex shader and fragment shader
-        m_shader.create
-        (
+        m_renderObject.create(
+            m_vertices.data(),
+            m_vertices.size() * sizeof(float),
+            BufferDataUsage::DynamicDraw,
+            { { ShaderDataType::Float2, "position" } },
+            m_indices.data(),
+            m_indices.size() * sizeof(int),
+            BufferDataUsage::StaticDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
@@ -111,22 +104,17 @@ namespace Demo
     {
         PekanRenderer::clear();
 
-        m_vertexArray.bind();
-        m_shader.bind();
+        m_renderObject.bind();
 
         // Draw snake
         PekanRenderer::drawIndexed(m_indices.size());
 
-        m_shader.unbind();
-        m_vertexArray.unbind();
+        m_renderObject.unbind();
     }
 
     void Snake::exit()
     {
-        m_shader.destroy();
-        m_indexBuffer.destroy();
-        m_vertexBuffer.destroy();
-        m_vertexArray.destroy();
+        m_renderObject.destroy();
     }
 
     void Snake::move()
@@ -139,7 +127,7 @@ namespace Demo
             m_tailIdx = m_squaresCount - 1;
         }
 
-        m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
+        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
     }
 
     void Snake::setSquarePosition(int idx, glm::vec2 pos)

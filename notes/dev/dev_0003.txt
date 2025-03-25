@@ -154,4 +154,23 @@ I'll add these 2 functions in PekanUtils.h/cpp
 Tested them, seem to work.
 Done.
 
+Now for rendering an apple I'd need another set of vertex array, vertex buffer, index buffer, and a shader.
+It'd be better to create a class that holds together these 4 basic render components, call it RenderObject for example,
+and then we can have 1 RenderObject for the snake and 1 RenderObject for the apple.
+I will do this RenderObject properly in the future, but for now I'll do it inside of Demo03, at the user level.
+It'll be like a PoC for the proper RenderObject.
+
+So let's first create a class RenderObject that just holds these 4 render components together and let them be public
+and accessed directly in class Snake and used same way as now.
+Done.
+Now to finish RenderObject let's make all members private and see where they're used.
+We need to create the following functions in RenderObject to make it usable
+    void create(...);
+    void destroy();
+    void bind();
+    void unbind();
+    void setVertexData(...);
+where the parameters to create() and setVertexData() are exactly what's needed and what's currently done in class Snake, just refactored.
+Done.
+
 }

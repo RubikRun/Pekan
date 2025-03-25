@@ -10,6 +10,8 @@ add_executable(Demo03
     Demo03_Scene.cpp
     Snake.h
     Snake.cpp
+    RenderObject.h
+    RenderObject.cpp
 )
 
 # Set link libraries for Demo03

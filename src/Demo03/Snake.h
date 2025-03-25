@@ -1,9 +1,6 @@
 #pragma once
 
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
+#include "RenderObject.h"
 
 namespace Demo
 {
@@ -30,13 +27,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::VertexArray m_vertexArray;
-
-		Pekan::Renderer::VertexBuffer m_vertexBuffer;
-
-		Pekan::Renderer::IndexBuffer m_indexBuffer;
-
-		Pekan::Renderer::Shader m_shader;
+		RenderObject m_renderObject;
 
 		int m_squaresCount = -1;
 
