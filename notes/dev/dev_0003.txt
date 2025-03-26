@@ -186,4 +186,48 @@ Or actually, the indices don't need to be members of Apple because they are NOT 
 In class Snake indices will change when the snake grows, that's why it needs to have indices as a member.
 Done, apple is now refactored into a class Apple.
 
+Next step is to detect when the snake has eaten the apple, so when the snake's head has overlapped with the apple.
+I started doing this but it's annoying that both Snake and Apple have their own internal coordinate systems, because of the aspect ratio.
+It'd be better to just use pixel coordinates.
+
+----------
+29.03.2025
+----------
+
+Last time I kinda did the convertion to pixel coordinates, but it didn't work,
+and I found out why. It was because configuring int vertex attributes is done with a special OpenGL function
+    glVertexAttribIPointer
+instead of
+    glVertexAttribPointer
+So now let's fix this.
+In VertexArray.cpp we need to call glVertexAttribIPointer() when the layout element is an integer or a vector of integers,
+and glVertexAttribPointer() in all other cases
+    if (PekanRenderer::isShaderDataTypeInt(layoutElements[i].type))
+    {
+        GLCall(glVertexAttribIPointer(
+            i,
+            element.getComponentsCount(),
+            PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+            layout.getStride(),
+            reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
+        ));
+    }
+    else
+    {
+        GLCall(glVertexAttribPointer(
+            i,
+            element.getComponentsCount(),
+            PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+            element.normalized ? GL_TRUE : GL_FALSE,
+            layout.getStride(),
+            reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
+        ));
+    }
+For that we'll need this new function in PekanRenderer
+    static bool isShaderDataTypeInt(ShaderDataType type);
+Okay done. It works.
+
+Now we can do the same for apple's coordinates.
+Done. Now both snake and apple have pixel coordinates.
+
 }

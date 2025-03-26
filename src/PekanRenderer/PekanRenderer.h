@@ -121,6 +121,9 @@ namespace Renderer
 		// Returns number of components of a given shader data type
 		static unsigned getShaderDataTypeComponentsCount(ShaderDataType type);
 
+		// Checks if a shader data type's base type is int
+		static bool isShaderDataTypeInt(ShaderDataType type);
+
 		friend class VertexArray;
 		friend class VertexBufferElement;
 		friend class VertexBuffer;

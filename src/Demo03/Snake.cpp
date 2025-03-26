@@ -9,8 +9,8 @@ using Pekan::PekanEngine;
 static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
 static const float THICKNESS = 0.07f;
-static const float INITIAL_POSITION_X = 0.0f;
-static const float INITIAL_POSITION_Y = 0.0f;
+static const float INITIAL_POSITION_X = 0.5f;
+static const float INITIAL_POSITION_Y = 0.5f;
 // The snake will move by 1 square every MOVE_FRAMES frames
 static const int MOVE_FRAMES = 20;
 
@@ -19,34 +19,39 @@ namespace Demo
 
 	bool Snake::create()
 	{
-        m_aspectRatio = float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight());
         m_squaresCount = 4;
         m_headIdx = 0;
         m_tailIdx = 3;
 
-        // Initialize vertices of cube
+        const int windowWidth = PekanEngine::getWindowWidth();
+        const int windowHeight = PekanEngine::getWindowHeight();
+        m_thickness = THICKNESS * windowHeight;
+        const int posX = int(INITIAL_POSITION_X * windowWidth);
+        const int posY = int(INITIAL_POSITION_Y * windowHeight);
+
+        // Initialize vertices of snake
         m_vertices =
         {
             // square 0
-            INITIAL_POSITION_X, INITIAL_POSITION_Y * m_aspectRatio, // top left
-            INITIAL_POSITION_X, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom left
-            INITIAL_POSITION_X + THICKNESS, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom right
-            INITIAL_POSITION_X + THICKNESS, INITIAL_POSITION_Y * m_aspectRatio, // top right
+            posX, posY, // top left
+            posX, posY + m_thickness, // bottom left
+            posX + m_thickness, posY + m_thickness, // bottom right
+            posX + m_thickness, posY, // top right
             // square 1
-            INITIAL_POSITION_X + THICKNESS, INITIAL_POSITION_Y * m_aspectRatio, // top left
-            INITIAL_POSITION_X + THICKNESS, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom left
-            INITIAL_POSITION_X + 2 * THICKNESS, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom right
-            INITIAL_POSITION_X + 2 * THICKNESS, (INITIAL_POSITION_Y) * m_aspectRatio, // top right
+            posX + m_thickness, posY, // top left
+            posX + m_thickness, posY + m_thickness, // bottom left
+            posX + 2 * m_thickness, posY + m_thickness, // bottom right
+            posX + 2 * m_thickness, (posY), // top right
             // square 2
-            INITIAL_POSITION_X + 2 * THICKNESS, INITIAL_POSITION_Y * m_aspectRatio, // top left
-            INITIAL_POSITION_X + 2 * THICKNESS, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom left
-            INITIAL_POSITION_X + 3 * THICKNESS, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom right
-            INITIAL_POSITION_X + 3 * THICKNESS, INITIAL_POSITION_Y * m_aspectRatio, // top right
+            posX + 2 * m_thickness, posY, // top left
+            posX + 2 * m_thickness, posY + m_thickness, // bottom left
+            posX + 3 * m_thickness, posY + m_thickness, // bottom right
+            posX + 3 * m_thickness, posY, // top right
             // square 3
-            INITIAL_POSITION_X + 3 * THICKNESS, INITIAL_POSITION_Y * m_aspectRatio, // top left
-            INITIAL_POSITION_X + 3 * THICKNESS, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom left
-            INITIAL_POSITION_X + 4 * THICKNESS, (INITIAL_POSITION_Y - THICKNESS) * m_aspectRatio, // bottom right
-            INITIAL_POSITION_X + 4 * THICKNESS, INITIAL_POSITION_Y * m_aspectRatio, // top right
+            posX + 3 * m_thickness, posY, // top left
+            posX + 3 * m_thickness, posY + m_thickness, // bottom left
+            posX + 4 * m_thickness, posY + m_thickness, // bottom right
+            posX + 4 * m_thickness, posY, // top right
         };
 
         m_indices =
@@ -60,15 +65,17 @@ namespace Demo
         m_renderObject.create
         (
             m_vertices.data(),
-            m_vertices.size() * sizeof(float),
+            m_vertices.size() * sizeof(int),
             BufferDataUsage::DynamicDraw,
-            { { ShaderDataType::Float2, "position" } },
+            { { ShaderDataType::Int2, "position" } },
             m_indices.data(),
             m_indices.size() * sizeof(int),
             BufferDataUsage::StaticDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
+
+        m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(windowWidth), float(windowHeight)));
 
         return true;
 	}
@@ -79,19 +86,19 @@ namespace Demo
 
         if (PekanEngine::isKeyPressed_W())
         {
-            m_direction = { 0.0f, 1.0f };
+            m_direction = { 0, -1 };
         }
         else if (PekanEngine::isKeyPressed_A())
         {
-            m_direction = { -1.0f, 0.0f };
+            m_direction = { -1, 0 };
         }
         else if (PekanEngine::isKeyPressed_S())
         {
-            m_direction = { 0.0f, -1.0f };
+            m_direction = { 0, 1 };
         }
         else if (PekanEngine::isKeyPressed_D())
         {
-            m_direction = { 1.0f, 0.0f };
+            m_direction = { 1, 0 };
         }
 
         if (m_frames % MOVE_FRAMES == 0)
@@ -117,7 +124,7 @@ namespace Demo
 
     void Snake::move()
     {
-        setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * THICKNESS);
+        setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * m_thickness);
         m_headIdx = m_tailIdx;
         m_tailIdx -= 1;
         if (m_tailIdx < 0)
@@ -125,24 +132,24 @@ namespace Demo
             m_tailIdx = m_squaresCount - 1;
         }
 
-        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
+        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
     }
 
-    void Snake::setSquarePosition(int idx, glm::vec2 pos)
+    void Snake::setSquarePosition(int idx, glm::ivec2 pos)
     {
         m_vertices[idx * 8 + 0] = pos.x;
-        m_vertices[idx * 8 + 1] = pos.y * m_aspectRatio;
+        m_vertices[idx * 8 + 1] = pos.y;
         m_vertices[idx * 8 + 2] = pos.x;
-        m_vertices[idx * 8 + 3] = (pos.y - THICKNESS) * m_aspectRatio;
-        m_vertices[idx * 8 + 4] = pos.x + THICKNESS;
-        m_vertices[idx * 8 + 5] = (pos.y - THICKNESS) * m_aspectRatio;
-        m_vertices[idx * 8 + 6] = pos.x + THICKNESS;
-        m_vertices[idx * 8 + 7] = pos.y * m_aspectRatio;
+        m_vertices[idx * 8 + 3] = pos.y + m_thickness;
+        m_vertices[idx * 8 + 4] = pos.x + m_thickness;
+        m_vertices[idx * 8 + 5] = pos.y + m_thickness;
+        m_vertices[idx * 8 + 6] = pos.x + m_thickness;
+        m_vertices[idx * 8 + 7] = pos.y;
     }
 
-    glm::vec2 Snake::getSquarePosition(int idx)
+    glm::ivec2 Snake::getSquarePosition(int idx)
     {
-        return { m_vertices[idx * 8], m_vertices[idx * 8 + 1] / m_aspectRatio };
+        return { m_vertices[idx * 8], m_vertices[idx * 8 + 1] };
     }
 
 } // namespace Demo

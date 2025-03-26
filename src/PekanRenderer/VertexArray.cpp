@@ -40,14 +40,27 @@ namespace Renderer
 			const VertexBufferElement& element = layoutElements[i];
 			// For each element, enable and configure a vertex attribute
 			GLCall(glEnableVertexAttribArray(i));
-			GLCall(glVertexAttribPointer(
-				i,
-				element.getComponentsCount(),
-				PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
-				element.normalized ? GL_TRUE : GL_FALSE,
-				layout.getStride(),
-				reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
-			));
+			if (PekanRenderer::isShaderDataTypeInt(layoutElements[i].type))
+			{
+				GLCall(glVertexAttribIPointer(
+					i,
+					element.getComponentsCount(),
+					PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+					layout.getStride(),
+					reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
+				));
+			}
+			else
+			{
+				GLCall(glVertexAttribPointer(
+					i,
+					element.getComponentsCount(),
+					PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+					element.normalized ? GL_TRUE : GL_FALSE,
+					layout.getStride(),
+					reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
+				));
+			}
 		}
 		// Add vertex buffer, together with its layout, to vertex array
 		m_vertexBuffers.push_back(VertexBufferBinding(vertexBuffer, layout));

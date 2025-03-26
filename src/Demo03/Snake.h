@@ -21,9 +21,9 @@ namespace Demo
 
 		void move();
 
-		void setSquarePosition(int idx, glm::vec2 pos);
+		void setSquarePosition(int idx, glm::ivec2 pos);
 
-		glm::vec2 getSquarePosition(int idx);
+		glm::ivec2 getSquarePosition(int idx);
 
 	private: /* variables */
 
@@ -36,18 +36,18 @@ namespace Demo
 		int m_tailIdx = -1;
 
 		// Vertices of squares that make up snake's body
-		std::vector<float> m_vertices;
+		std::vector<int> m_vertices;
 
 		// Indices of vertices determining the order of drawing
 		std::vector<int> m_indices;
 
 		// Direction to which the snake is moving currently
-		glm::vec2 m_direction = { -1.0f, 0.0f };
+		glm::ivec2 m_direction = { -1, 0 };
 
 		// Number of frames rendered so far
 		int m_frames = 0;
 
-		float m_aspectRatio = 0.0f;
+		int m_thickness = 0;
 	};
 
 } // namespace Demo

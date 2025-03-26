@@ -34,6 +34,9 @@ namespace Demo
 			Pekan::Renderer::BufferDataUsage dataUsage
 		);
 
+		Pekan::Renderer::Shader& getShader() { return m_shader; }
+		const Pekan::Renderer::Shader& getShader() const { return m_shader; }
+
 	private:
 
 		Pekan::Renderer::VertexArray m_vertexArray;

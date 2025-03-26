@@ -172,5 +172,16 @@ namespace Renderer
 		return 0;
 	}
 
+	bool PekanRenderer::isShaderDataTypeInt(ShaderDataType type)
+	{
+		return
+		(
+			type == ShaderDataType::Int ||
+			type == ShaderDataType::Int2 ||
+			type == ShaderDataType::Int3 ||
+			type == ShaderDataType::Int4
+		);
+	}
+
 } // namespace Renderer
 } // namespace Pekan

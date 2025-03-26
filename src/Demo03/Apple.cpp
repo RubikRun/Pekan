@@ -5,7 +5,7 @@ using Pekan::PekanEngine;
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
-using Pekan::Utils::getRandomFloat;
+using Pekan::Utils::getRandomInt;
 
 static const char* vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
@@ -16,20 +16,22 @@ namespace Demo
 
     bool Apple::create()
     {
-        m_aspectRatio = float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight());
+        const int windowWidth = PekanEngine::getWindowWidth();
+        const int windowHeight = PekanEngine::getWindowHeight();
 
+        const int appleSize = int(APPLE_SIZE * float(windowHeight));
         m_position =
         {
-            getRandomFloat(-1.0f, 1.0f - APPLE_SIZE),
-            getRandomFloat(-1.0f, 1.0f - APPLE_SIZE)
+            getRandomInt(0, windowWidth - appleSize),
+            getRandomInt(0, windowHeight - appleSize)
         };
 
         m_vertices =
         {
             m_position.x, m_position.y,
-            m_position.x, m_position.y + APPLE_SIZE * m_aspectRatio,
-            m_position.x + APPLE_SIZE, m_position.y + APPLE_SIZE * m_aspectRatio,
-            m_position.x + APPLE_SIZE, m_position.y
+            m_position.x, m_position.y + appleSize,
+            m_position.x + appleSize, m_position.y + appleSize,
+            m_position.x + appleSize, m_position.y
         };
 
         const int indices[] =
@@ -41,15 +43,17 @@ namespace Demo
         m_renderObject.create
         (
             m_vertices.data(),
-            8 * sizeof(float),
+            8 * sizeof(int),
             BufferDataUsage::DynamicDraw,
-            { { ShaderDataType::Float2, "position" } },
+            { { ShaderDataType::Int2, "position" } },
             indices,
             6 * sizeof(int),
             BufferDataUsage::StaticDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
+
+        m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(windowWidth), float(windowHeight)));
 
         return true;
     }

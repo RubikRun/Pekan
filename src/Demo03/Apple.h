@@ -22,11 +22,9 @@ namespace Demo
 		RenderObject m_renderObject;
 
 		// Vertices of apple's square
-		std::vector<float> m_vertices;
+		std::vector<int> m_vertices;
 
-		glm::vec2 m_position = { 0.0f, 0.0f };
-
-		float m_aspectRatio = 0.0f;
+		glm::ivec2 m_position = { -1, -1 };
 	};
 
 } // namespace Demo
