@@ -9,13 +9,13 @@ namespace Demo
 	{
 	public:
 
-		bool init();
+		bool create();
 
 		void update();
 
 		void render();
 
-		void exit();
+		void destroy();
 
 	private: /* functions */
 
@@ -38,7 +38,7 @@ namespace Demo
 		// Vertices of squares that make up snake's body
 		std::vector<float> m_vertices;
 
-		// Indices of vertices determined the order of drawing
+		// Indices of vertices determining the order of drawing
 		std::vector<int> m_indices;
 
 		// Direction to which the snake is moving currently

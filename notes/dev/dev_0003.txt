@@ -176,4 +176,14 @@ Done.
 Now we can use this new class RenderObject to create an apple (a red square).
 Done.
 
+----------
+26.03.2025
+----------
+
+It would make sense to create a class Apple that holds together the RenderObject of the apple,
+together with vectors of vertices and indices, same as class Snake.
+Or actually, the indices don't need to be members of Apple because they are NOT going to change.
+In class Snake indices will change when the snake grows, that's why it needs to have indices as a member.
+Done, apple is now refactored into a class Apple.
+
 }

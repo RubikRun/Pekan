@@ -10,6 +10,8 @@ add_executable(Demo03
     Demo03_Scene.cpp
     Snake.h
     Snake.cpp
+    Apple.h
+    Apple.cpp
     RenderObject.h
     RenderObject.cpp
 )

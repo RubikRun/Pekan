@@ -17,7 +17,7 @@ static const int MOVE_FRAMES = 20;
 namespace Demo
 {
 
-	bool Snake::init()
+	bool Snake::create()
 	{
         m_aspectRatio = float(PekanEngine::getWindowWidth()) / float(PekanEngine::getWindowHeight());
         m_squaresCount = 4;
@@ -110,7 +110,7 @@ namespace Demo
         m_renderObject.unbind();
     }
 
-    void Snake::exit()
+    void Snake::destroy()
     {
         m_renderObject.destroy();
     }
