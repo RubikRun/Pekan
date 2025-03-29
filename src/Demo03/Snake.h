@@ -38,6 +38,9 @@ namespace Demo
 
 		glm::ivec4 getRectangle(int idx) const;
 
+		void moveGrowing();
+		void moveNormally();
+
 	private: /* variables */
 
 		RenderObject m_renderObject;
@@ -65,6 +68,8 @@ namespace Demo
 		// Flag used internally to mark the snake for growth,
 		// so that it grows the next time when moved.
 		bool m_shouldGrow = false;
+
+		int m_speedIdx = 0;
 	};
 
 } // namespace Demo

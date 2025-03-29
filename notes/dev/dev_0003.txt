@@ -244,4 +244,14 @@ That was a little tricky because of the way we keep snake's squares unordered wi
 but at the end I made it. It works fine.
 Done.
 
+Next thing is to make snake increase its speed when eating an apple.
+That was easy, but I don't quite like it.
+You see, currently we're moving the snake every N frames
+and the way I increased the speed was to decrease this number N.
+However, after eating like 10 apples it becomes way too fast,
+and after eating 20 it's stupidly fast - 1 move per frame,
+and there isn't any faster that it could go.
+A better idea would be to use some custom function/map to determine how to increase the speed.
+Done.
+
 }

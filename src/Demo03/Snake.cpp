@@ -11,8 +11,14 @@ static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.g
 static const float THICKNESS = 0.07f;
 static const float INITIAL_POSITION_X = 0.5f;
 static const float INITIAL_POSITION_Y = 0.5f;
-// The snake will move by 1 square every MOVE_FRAMES frames
-static const int MOVE_FRAMES = 20;
+static const int INITIAL_SPEED = 20;
+
+static const int SPEED_MAP[] =
+{
+    20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 11, 10, 10, 9, 9, 9, 8, 8, 8, 7, 7, 7,
+    6, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+};
 
 namespace Demo
 {
@@ -23,6 +29,8 @@ namespace Demo
 
 	bool Snake::create()
 	{
+        m_speedIdx = 0;
+
         m_squaresCount = 4;
         m_headIdx = 0;
         m_tailIdx = 3;
@@ -105,7 +113,7 @@ namespace Demo
             m_direction = { 1, 0 };
         }
 
-        if (m_frames % MOVE_FRAMES == 0)
+        if (m_frames % (m_speedIdx < 77 ? SPEED_MAP[m_speedIdx] : 1) == 0)
         {
             move();
         }
@@ -156,47 +164,13 @@ namespace Demo
     {
         if (m_shouldGrow)
         {
-            // Add an invalid square at the end
-            m_squaresCount++;
-            for (int i = 0; i < 8; i++) { m_vertices.push_back(-1); };
-            // Move squares [m_headIdx, ... , m_squaresCount - 2] to [m_headIdx + 1, ... , m_squaresCount - 1]
-            // This opens up a free square at m_headIdx
-            for (int i = m_squaresCount - 1; i > m_headIdx; i--)
-            {
-                setSquarePosition(i, getSquarePosition(i - 1));
-            }
-            // where we can put the new square which is the result of moving the old head
-            setSquarePosition(m_headIdx, getSquarePosition(m_headIdx + 1) + m_direction * m_thickness);
-            // In the special case where m_headIdx is 0 then we had m_tailIdx being the last element,
-            // and now after insterting a new last element we need to change m_tailIdx to point to that new last element
-            if (m_headIdx == 0)
-            {
-                m_tailIdx = m_squaresCount - 1;
-            }
-
-            m_indices.push_back((m_squaresCount - 1) * 4 + 0);
-            m_indices.push_back((m_squaresCount - 1) * 4 + 1);
-            m_indices.push_back((m_squaresCount - 1) * 4 + 2);
-            m_indices.push_back((m_squaresCount - 1) * 4 + 2);
-            m_indices.push_back((m_squaresCount - 1) * 4 + 3);
-            m_indices.push_back((m_squaresCount - 1) * 4 + 0);
-
-            m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
-
+            moveGrowing();
             m_shouldGrow = false;
         }
         else
         {
-            setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * m_thickness);
-            m_headIdx = m_tailIdx;
-            m_tailIdx -= 1;
-            if (m_tailIdx < 0)
-            {
-                m_tailIdx = m_squaresCount - 1;
-            }
+            moveNormally();
         }
-
-        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
     }
 
     void Snake::setSquarePosition(int idx, glm::ivec2 pos)
@@ -219,6 +193,51 @@ namespace Demo
     glm::ivec4 Snake::getRectangle(int idx) const
     {
         return glm::ivec4(m_vertices[idx * 8], m_vertices[idx * 8 + 1], m_thickness, m_thickness);
+    }
+
+    void Snake::moveGrowing()
+    {
+        // Add an invalid square at the end
+        m_squaresCount++;
+        for (int i = 0; i < 8; i++) { m_vertices.push_back(-1); };
+        // Move squares [m_headIdx, ... , m_squaresCount - 2] to [m_headIdx + 1, ... , m_squaresCount - 1]
+        // This opens up a free square at m_headIdx
+        for (int i = m_squaresCount - 1; i > m_headIdx; i--)
+        {
+            setSquarePosition(i, getSquarePosition(i - 1));
+        }
+        // where we can put the new square which is the result of moving the old head
+        setSquarePosition(m_headIdx, getSquarePosition(m_headIdx + 1) + m_direction * m_thickness);
+        // In the special case where m_headIdx is 0 then we had m_tailIdx being the last element,
+        // and now after insterting a new last element we need to change m_tailIdx to point to that new last element
+        if (m_headIdx == 0)
+        {
+            m_tailIdx = m_squaresCount - 1;
+        }
+
+        m_indices.push_back((m_squaresCount - 1) * 4 + 0);
+        m_indices.push_back((m_squaresCount - 1) * 4 + 1);
+        m_indices.push_back((m_squaresCount - 1) * 4 + 2);
+        m_indices.push_back((m_squaresCount - 1) * 4 + 2);
+        m_indices.push_back((m_squaresCount - 1) * 4 + 3);
+        m_indices.push_back((m_squaresCount - 1) * 4 + 0);
+
+        m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
+        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
+
+        m_speedIdx++;
+    }
+
+    void Snake::moveNormally()
+    {
+        setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * m_thickness);
+        m_headIdx = m_tailIdx;
+        m_tailIdx -= 1;
+        if (m_tailIdx < 0)
+        {
+            m_tailIdx = m_squaresCount - 1;
+        }
+        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
     }
 
 } // namespace Demo
