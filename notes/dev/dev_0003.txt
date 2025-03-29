@@ -239,4 +239,9 @@ And not just any position, but a position that is not inside of the snake.
 Now that I said this, it'd be good to do the same when generating the apple in the beginning - check if it's not inside the snake's body.
 Done. Now apple regenerates each time when eaten at a new random position that is guaranteed to be outside of the snake's body.
 
+Next thing to do is to make snake grow by 1 square each time that it eats an apple.
+That was a little tricky because of the way we keep snake's squares unordered with the m_headIdx and m_tailIdx,
+but at the end I made it. It works fine.
+Done.
+
 }

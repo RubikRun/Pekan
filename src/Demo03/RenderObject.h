@@ -12,7 +12,8 @@ namespace Demo
 	{
 	public:
 
-		void create(
+		void create
+		(
 			const void* vertexData,
 			long long vertexDatasSize,
 			Pekan::Renderer::BufferDataUsage vertexDataUsage,
@@ -28,7 +29,15 @@ namespace Demo
 		void bind();
 		void unbind();
 
-		void setVertexData(
+		void setVertexData
+		(
+			const void* data,
+			long long size,
+			Pekan::Renderer::BufferDataUsage dataUsage
+		);
+
+		void setIndexData
+		(
 			const void* data,
 			long long size,
 			Pekan::Renderer::BufferDataUsage dataUsage

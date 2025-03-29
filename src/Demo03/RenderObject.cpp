@@ -44,4 +44,8 @@ namespace Demo
 	{
 		m_vertexBuffer.setData(data, size, dataUsage);
 	}
+	void RenderObject::setIndexData(const void* data, long long size, Pekan::Renderer::BufferDataUsage dataUsage)
+	{
+		m_indexBuffer.setData(data, size, dataUsage);
+	}
 } // namespace Demo

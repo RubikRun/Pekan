@@ -30,3 +30,5 @@
 
 0013 25.03.2025 (TODO): In Demo03 see what happens if window is resized during gameplay. My guess is snake's squares will not remain square.
                         Make them respond dynamically to window's resolution.
+
+0014 29.03.2025 (TODO): Create an ASSERT() mechanism

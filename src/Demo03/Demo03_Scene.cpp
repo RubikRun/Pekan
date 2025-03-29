@@ -23,6 +23,7 @@ namespace Demo
 		if (m_snake.checkHeadOverlapsApple(m_apple))
 		{
 			m_apple.regenerate(m_snake);
+			m_snake.grow();
 		}
 	}
 

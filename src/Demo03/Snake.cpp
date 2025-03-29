@@ -74,7 +74,7 @@ namespace Demo
             { { ShaderDataType::Int2, "position" } },
             m_indices.data(),
             m_indices.size() * sizeof(int),
-            BufferDataUsage::StaticDraw,
+            BufferDataUsage::DynamicDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
@@ -147,14 +147,53 @@ namespace Demo
         return false;
     }
 
+    void Snake::grow()
+    {
+        m_shouldGrow = true;
+    }
+
     void Snake::move()
     {
-        setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * m_thickness);
-        m_headIdx = m_tailIdx;
-        m_tailIdx -= 1;
-        if (m_tailIdx < 0)
+        if (m_shouldGrow)
         {
-            m_tailIdx = m_squaresCount - 1;
+            // Add an invalid square at the end
+            m_squaresCount++;
+            for (int i = 0; i < 8; i++) { m_vertices.push_back(-1); };
+            // Move squares [m_headIdx, ... , m_squaresCount - 2] to [m_headIdx + 1, ... , m_squaresCount - 1]
+            // This opens up a free square at m_headIdx
+            for (int i = m_squaresCount - 1; i > m_headIdx; i--)
+            {
+                setSquarePosition(i, getSquarePosition(i - 1));
+            }
+            // where we can put the new square which is the result of moving the old head
+            setSquarePosition(m_headIdx, getSquarePosition(m_headIdx + 1) + m_direction * m_thickness);
+            // In the special case where m_headIdx is 0 then we had m_tailIdx being the last element,
+            // and now after insterting a new last element we need to change m_tailIdx to point to that new last element
+            if (m_headIdx == 0)
+            {
+                m_tailIdx = m_squaresCount - 1;
+            }
+
+            m_indices.push_back((m_squaresCount - 1) * 4 + 0);
+            m_indices.push_back((m_squaresCount - 1) * 4 + 1);
+            m_indices.push_back((m_squaresCount - 1) * 4 + 2);
+            m_indices.push_back((m_squaresCount - 1) * 4 + 2);
+            m_indices.push_back((m_squaresCount - 1) * 4 + 3);
+            m_indices.push_back((m_squaresCount - 1) * 4 + 0);
+
+            m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
+
+            m_shouldGrow = false;
+        }
+        else
+        {
+            setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * m_thickness);
+            m_headIdx = m_tailIdx;
+            m_tailIdx -= 1;
+            if (m_tailIdx < 0)
+            {
+                m_tailIdx = m_squaresCount - 1;
+            }
         }
 
         m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
