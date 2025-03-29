@@ -8,7 +8,7 @@ using Pekan::PekanEngine;
 
 static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
-static const float THICKNESS = 0.07f;
+static const float THICKNESS = 0.05f;
 static const float INITIAL_POSITION_X = 0.5f;
 static const float INITIAL_POSITION_Y = 0.5f;
 static const int INITIAL_SPEED = 20;
@@ -25,6 +25,11 @@ namespace Demo
     static bool checkOverlapRectangles(const glm::vec4 r1, const glm::vec4 r2)
     {
         return (!(r2.x + r2.z < r1.x || r2.x > r1.x + r1.z || r2.y + r2.w < r1.y || r2.y > r1.y + r1.w));
+    }
+
+    static bool isRectangleInsideOfWindow(const glm::vec4 r1)
+    {
+        return (r1.x >= 0 && r1.y >= 0 && r1.x + r1.z - 1 < PekanEngine::getWindowWidth() && r1.y + r1.w - 1 < PekanEngine::getWindowHeight());
     }
 
 	bool Snake::create()
@@ -94,28 +99,31 @@ namespace Demo
 
     void Snake::update()
     {
-        m_frames++;
+        if (m_running)
+        {
+            m_frames++;
 
-        if (PekanEngine::isKeyPressed_W())
-        {
-            m_direction = { 0, -1 };
-        }
-        else if (PekanEngine::isKeyPressed_A())
-        {
-            m_direction = { -1, 0 };
-        }
-        else if (PekanEngine::isKeyPressed_S())
-        {
-            m_direction = { 0, 1 };
-        }
-        else if (PekanEngine::isKeyPressed_D())
-        {
-            m_direction = { 1, 0 };
-        }
+            if (PekanEngine::isKeyPressed_W())
+            {
+                m_direction = { 0, -1 };
+            }
+            else if (PekanEngine::isKeyPressed_A())
+            {
+                m_direction = { -1, 0 };
+            }
+            else if (PekanEngine::isKeyPressed_S())
+            {
+                m_direction = { 0, 1 };
+            }
+            else if (PekanEngine::isKeyPressed_D())
+            {
+                m_direction = { 1, 0 };
+            }
 
-        if (m_frames % (m_speedIdx < 77 ? SPEED_MAP[m_speedIdx] : 1) == 0)
-        {
-            move();
+            if (m_frames % (m_speedIdx < 77 ? SPEED_MAP[m_speedIdx] : 1) == 0)
+            {
+                move();
+            }
         }
     }
 
@@ -185,7 +193,7 @@ namespace Demo
         m_vertices[idx * 8 + 7] = pos.y;
     }
 
-    glm::ivec2 Snake::getSquarePosition(int idx)
+    glm::ivec2 Snake::getSquarePosition(int idx) const
     {
         return { m_vertices[idx * 8], m_vertices[idx * 8 + 1] };
     }
@@ -238,6 +246,31 @@ namespace Demo
             m_tailIdx = m_squaresCount - 1;
         }
         m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
+
+        if (!isRectangleInsideOfWindow(getRectangle(m_headIdx)) || isBitingItself())
+        {
+            m_running = false;
+        }
+    }
+
+    bool Snake::isBitingItself() const
+    {
+        const glm::ivec2 headPos = getSquarePosition(m_headIdx);
+        for (int i = 0; i < m_squaresCount; i++)
+        {
+            if (i == m_headIdx)
+            {
+                continue;
+            }
+            // We don't need to check if head's square overlaps with body's square,
+            // because if they overlap they will defeinitely be on the same position,
+            // because of the way snake moves.
+            if (getSquarePosition(i) == headPos)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 } // namespace Demo

@@ -28,7 +28,8 @@
 
 0012 21.03.2025 (TODO): Provide a way for applications ot specify their way of closing
 
-0013 25.03.2025 (TODO): In Demo03 see what happens if window is resized during gameplay. My guess is snake's squares will not remain square.
+0013 25.03.2025 (DONE): In Demo03 see what happens if window is resized during gameplay. My guess is snake's squares will not remain square.
                         Make them respond dynamically to window's resolution.
+                        NOTE FROM FUTURE: Decided not to do that because Demo03 is full screen anyway, so resolution will not be changing.
 
 0014 29.03.2025 (TODO): Create an ASSERT() mechanism

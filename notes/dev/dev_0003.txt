@@ -254,4 +254,30 @@ and there isn't any faster that it could go.
 A better idea would be to use some custom function/map to determine how to increase the speed.
 Done.
 
+Final thing to do is to detect when snake bites itself or when it hits window's borders,
+and make the game end there.
+Did it, but noticed a weird edge case bug - there is a possibility that an apple will be generated so close to a border
+so that the snake cannot eat it. Because the snake's squares might not be whole number multiples of both the width and height of window.
+To solve this I changed the range of accepted coordinates when generating an apple
+    m_position =
+    {
+        getRandomInt(snake.getThickness(), windowWidth - snake.getThickness()),
+        getRandomInt(snake.getThickness(), windowHeight - snake.getThickness())
+    };
+to be a distance at least snake's thickness to each border.
+Now this edge case should never happen, and snake should always be able to eat the apple
+without hitting the border.
+Done.
+
+Okay, I think that's all of the Snake game.
+Calling it done.
+}
+
+{
+This phase of development is now finished.
+I created 2 demos using Pekan v0.1.
+While creating them I wrote down some TODO items in
+    todo.txt
+and I created some temporary functions in PekanEngine and PekanRenderer
+that obviously have to be replaced by stable features that I will implement in Pekan v0.2.
 }

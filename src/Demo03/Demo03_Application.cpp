@@ -14,9 +14,8 @@ namespace Demo
 		// Set base scene pointer to point to demo scene
 		m_scene = std::unique_ptr<PekanScene>(demoScene);
 
-		// TODO: enable these after development is finished
-		//m_isFullScreen = true;
-		//m_shouldHideCursor = true;
+		m_isFullScreen = true;
+		m_shouldHideCursor = true;
 
 		return true;
 	}

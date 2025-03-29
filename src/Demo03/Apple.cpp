@@ -25,8 +25,8 @@ namespace Demo
         {
             m_position =
             {
-                getRandomInt(0, windowWidth - m_size),
-                getRandomInt(0, windowHeight - m_size)
+                getRandomInt(snake.getThickness(), windowWidth - snake.getThickness()),
+                getRandomInt(snake.getThickness(), windowHeight - snake.getThickness())
             };
         } while (snake.checkBodyOverlapsApple(*this));
 
@@ -95,8 +95,8 @@ namespace Demo
         {
             m_position =
             {
-                getRandomInt(0, windowWidth - m_size),
-                getRandomInt(0, windowHeight - m_size)
+                getRandomInt(snake.getThickness(), windowWidth - snake.getThickness()),
+                getRandomInt(snake.getThickness(), windowHeight - snake.getThickness())
             };
         } while (snake.checkBodyOverlapsApple(*this));
 

@@ -28,18 +28,22 @@ namespace Demo
 		// Grows the snake by 1 square. Should be called whenever the snake eats an apple.
 		void grow();
 
+		inline int getThickness() const { return m_thickness; }
+
 	private: /* functions */
 
 		void move();
 
 		void setSquarePosition(int idx, glm::ivec2 pos);
 
-		glm::ivec2 getSquarePosition(int idx);
+		glm::ivec2 getSquarePosition(int idx) const;
 
 		glm::ivec4 getRectangle(int idx) const;
 
 		void moveGrowing();
 		void moveNormally();
+
+		bool isBitingItself() const;
 
 	private: /* variables */
 
@@ -70,6 +74,11 @@ namespace Demo
 		bool m_shouldGrow = false;
 
 		int m_speedIdx = 0;
+
+		// Flag indicating if game is still running.
+		// When snake bites itself or hits the window's borders
+		// the game will end and this flag will be set to false.
+		bool m_running = true;
 	};
 
 } // namespace Demo
