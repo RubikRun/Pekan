@@ -16,6 +16,10 @@ static const int MOVE_FRAMES = 20;
 
 namespace Demo
 {
+    static bool checkOverlapRectangles(const glm::vec4 r1, const glm::vec4 r2)
+    {
+        return (!(r2.x + r2.z < r1.x || r2.x > r1.x + r1.z || r2.y + r2.w < r1.y || r2.y > r1.y + r1.w));
+    }
 
 	bool Snake::create()
 	{
@@ -122,6 +126,27 @@ namespace Demo
         m_renderObject.destroy();
     }
 
+    bool Snake::checkHeadOverlapsApple(const Apple& apple) const
+    {
+        const glm::ivec4 appleRect = apple.getRectangle();
+        const glm::ivec4 headRect = getRectangle(m_headIdx);
+        return checkOverlapRectangles(appleRect, headRect);
+    }
+
+    bool Snake::checkBodyOverlapsApple(const Apple& apple) const
+    {
+        const glm::ivec4 appleRect = apple.getRectangle();
+        for (int i = 0; i < m_squaresCount; i++)
+        {
+            const glm::ivec4 bodyRect = getRectangle(i);
+            if (checkOverlapRectangles(appleRect, bodyRect))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void Snake::move()
     {
         setSquarePosition(m_tailIdx, getSquarePosition(m_headIdx) + m_direction * m_thickness);
@@ -150,6 +175,11 @@ namespace Demo
     glm::ivec2 Snake::getSquarePosition(int idx)
     {
         return { m_vertices[idx * 8], m_vertices[idx * 8 + 1] };
+    }
+
+    glm::ivec4 Snake::getRectangle(int idx) const
+    {
+        return glm::ivec4(m_vertices[idx * 8], m_vertices[idx * 8 + 1], m_thickness, m_thickness);
     }
 
 } // namespace Demo

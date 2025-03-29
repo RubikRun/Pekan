@@ -2,6 +2,8 @@
 
 #include "RenderObject.h"
 
+#include "Apple.h"
+
 namespace Demo
 {
 
@@ -17,6 +19,12 @@ namespace Demo
 
 		void destroy();
 
+		// Checks if snake's head is currently overlapping with the given apple
+		bool checkHeadOverlapsApple(const Apple& apple) const;
+
+		// Checks if snake's body (including head) is currently overlapping with the given apple
+		bool checkBodyOverlapsApple(const Apple& apple) const;
+
 	private: /* functions */
 
 		void move();
@@ -24,6 +32,8 @@ namespace Demo
 		void setSquarePosition(int idx, glm::ivec2 pos);
 
 		glm::ivec2 getSquarePosition(int idx);
+
+		glm::ivec4 getRectangle(int idx) const;
 
 	private: /* variables */
 

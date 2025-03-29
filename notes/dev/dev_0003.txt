@@ -230,4 +230,13 @@ Okay done. It works.
 Now we can do the same for apple's coordinates.
 Done. Now both snake and apple have pixel coordinates.
 
+So now we can finally detect collisions between snake's head and the apple.
+Done, fairly easy. Works fine.
+
+Now what do we do when there's a collision?
+We need to generate a new position for the apple.
+And not just any position, but a position that is not inside of the snake.
+Now that I said this, it'd be good to do the same when generating the apple in the beginning - check if it's not inside the snake's body.
+Done. Now apple regenerates each time when eaten at a new random position that is guaranteed to be outside of the snake's body.
+
 }

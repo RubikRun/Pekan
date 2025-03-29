@@ -10,7 +10,7 @@ namespace Demo
 	bool Demo03_Scene::init()
 	{
 		m_snake.create();
-		m_apple.create();
+		m_apple.create(m_snake);
 
         return true;
 	}
@@ -19,6 +19,11 @@ namespace Demo
 	{
 		m_snake.update();
 		m_apple.update();
+
+		if (m_snake.checkHeadOverlapsApple(m_apple))
+		{
+			m_apple.regenerate(m_snake);
+		}
 	}
 
 	void Demo03_Scene::render()
