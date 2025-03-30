@@ -1,0 +1,41 @@
+----------
+30.03.2025
+----------
+
+Finished the 2 demos:
+- Demo02 - a scene with a 3D cube, together with GUI controls for rotation, colors, etc.
+- Demo03 - snake game
+Meanwhile I fixed some minor bugs in Pekan.
+
+Now I have a better idea of what Pekan needs for v0.2.
+Here's a list of features to start working on:
+1. Event system
+    - A way for applications to ask Pekan
+        "Is this key pressed at the moment?"
+        "Is this mouse button pressed at the moment?"
+        "How much is mouse scrolling at the moment?"
+        "What is the mouse position at the moment?"
+        "What is the current window resolution?"
+    - A way for applications to attach a callback function for
+        when a key is pressed
+        when a mouse button is pressed
+        when mouse scroll is used
+        when mouse changes position
+        when window is resized
+2. Layering system
+    Scenes and GUIWindows should be "layers".
+    Applications should be able to compose multiple layers, determining which ones are drawn on top.
+    Applications should be able to determine which events should be catched by which layers,
+    so for example clicking on a GUI layer shouldn't propagate to the scene layer behind.
+3. Batch Rendering
+4. Limit FPS
+    Create a way for applications to specify a limiting framerate
+5. Control window's title
+    Create a way for applications to specify the window's title
+6. RenderObject wrapper
+    Create a wrapper of vertex buffer, index buffer, vertex array, and shader.
+    Similar to the one done in Demo03
+7. Wrappers for 2D shapes
+    Triangle, Rectangle, Square, Line, Circle
+8. Textures
+    Add support for textures in PekanRenderer
