@@ -12,6 +12,7 @@ struct GLFWwindow;
 
 namespace Pekan
 {
+
 	// Returns a user-friendly string from fiven OpenGL error code
 	std::string _getGLErrorMessage(unsigned error);
 
@@ -65,6 +66,9 @@ namespace Pekan
 		static bool createWindow(int width, int height, bool fullScreen, bool hideCursor);
 		// Destroys the graphics window.
 		static void destroyWindow();
+
+		// Connects Pekan's EventHandler to the events received from window
+		static void setupEventHandler();
 
 		// Loads OpenGL function pointers
 		static bool loadOpenGL();

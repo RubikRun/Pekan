@@ -8,6 +8,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/WindowEvent.h"
+
 namespace Pekan
 {
     const int DEFAULT_WINDOW_WIDTH = 1280;
@@ -168,6 +172,8 @@ namespace Pekan
             glfwSetInputMode(s_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         }
 
+        setupEventHandler();
+
         return true;
     }
 
@@ -176,6 +182,16 @@ namespace Pekan
         glfwDestroyWindow(s_window);
         glfwTerminate();
         s_window = nullptr;
+    }
+
+    void PekanEngine::setupEventHandler()
+    {
+        glfwSetKeyCallback(s_window, EventHandler::handleKeyEvent);
+        glfwSetCursorPosCallback(s_window, EventHandler::handleMouseMovedEvent);
+        glfwSetScrollCallback(s_window, EventHandler::handleMouseScrolledEvent);
+        glfwSetMouseButtonCallback(s_window, EventHandler::handleMouseButtonEvent);
+        glfwSetWindowSizeCallback(s_window, EventHandler::handleWindowResizedEvent);
+        glfwSetWindowCloseCallback(s_window, EventHandler::handleWindowClosedEvent);
     }
 
     bool PekanEngine::loadOpenGL()

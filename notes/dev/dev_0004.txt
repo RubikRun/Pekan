@@ -1,5 +1,5 @@
 ----------
-04.03.2025
+03.04.2025
 ----------
 
 Officially starting work on v0.2.
@@ -30,4 +30,168 @@ Now I will copy code from the corresponding files in this Hazel commit
 and integrate it into Pekan.
 Done.
 
+Now we have all relevant event types as classes.
+Let's implement the actual event system using those classes.
+The bottomline is we need to call these GLFW functions in PekanEngine
+    glfwSetKeyCallback(s_window, ...);
+    glfwSetCursorPosCallback(s_window, ...);
+    glfwSetScrollCallback(s_window, ...);
+    glfwSetMouseButtonCallback(s_window, ...);
+    glfwSetWindowSizeCallback(s_window, ...);
+    glfwSetWindowCloseCallback(s_window, ...);
+and pass some appropriate functions as second parameters.
+The functions that we will pass there will be called whenever an event of the given type occurs.
+
+Let's create a new class
+    EventHandler
+in
+    Event.h
+and create static functions that we will use to pass as seconds parameters to the GLFW functions
+    static void handleKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void handleMouseMovedEvent(GLFWwindow* window, double xPos, double yPos);
+    static void handleMouseScrolledEvent(GLFWwindow* window, double xOffset, double yOffset);
+    static void handleMouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
+    static void handleWindowResizedEvent(GLFWwindow* window, int width, int height);
+    static void handleWindowClosedEvent(GLFWwindow* window);
+Then we can do this in PekanEngine.cpp
+    glfwSetKeyCallback(s_window, EventHandler::handleKeyEvent);
+    glfwSetCursorPosCallback(s_window, EventHandler::handleMouseMovedEvent);
+    glfwSetScrollCallback(s_window, EventHandler::handleMouseScrolledEvent);
+    glfwSetMouseButtonCallback(s_window, EventHandler::handleMouseButtonEvent);
+    glfwSetWindowSizeCallback(s_window, EventHandler::handleWindowResizedEvent);
+    glfwSetWindowCloseCallback(s_window, EventHandler::handleWindowClosedEvent);
+
+Okay, then what? These 6 functions will be called whenever an event of their specific type occurs.
+What should these functions do?
+What should happen when a key is pressed, for example?
+Well, we need a way for client applications to say what happens when a key is pressed.
+Client applications need to be able to register a custom callback function to be called whenever a key is pressed.
+Furthermore, we have more event types than just these 6 functions. We may have a couple of event types for each of these 6 functions.
+For example, when ANY key event occurs this function
+    handleKeyEvent()
+will be called, but this may correspond either to a KeyPressedEvent or a KeyReleasedEvent.
+So, client applications need to be able to register a custom callback function for each of OUR event types (8 in total).
+For example, they need to be able to register a callback for when a key is pressed and another callback for when a key is released.
+Let's add these 8 functions
+    static inline void registerKeyPressedCallback(const KeyPressedCallback& callback) { s_keyPressedCallbacks.push_back(callback); }
+    static inline void registerKeyReleasedCallback(const KeyReleasedCallback& callback) { s_keyReleasedCallbacks.push_back(callback); }
+    static inline void registerMouseMovedCallback(const MouseMovedCallback& callback) { s_mouseMovedCallbacks.push_back(callback); }
+    static inline void registerMouseScrolledCallback(const MouseScrolledCallback& callback) { s_mouseScrolledCallbacks.push_back(callback); }
+    static inline void registerMouseButtonPressedCallback(const MouseButtonPressedCallback& callback) { s_mouseButtonPressedCallbacks.push_back(callback); }
+    static inline void registerMouseButtonReleasedCallback(const MouseButtonReleasedCallback& callback) { s_mouseButtonReleasedCallbacks.push_back(callback); }
+    static inline void registerWindowResizedCallback(const WindowResizedCallback& callback) { s_windowResizedCallbacks.push_back(callback); }
+    static inline void registerWindowClosedCallback(const WindowClosedCallback& callback) { s_windowClosedCallbacks.push_back(callback); }
+where
+    typedef std::function<bool(KeyPressedEvent&)> KeyPressedCallback;
+    typedef std::function<bool(KeyReleasedEvent&)> KeyReleasedCallback;
+    typedef std::function<bool(MouseMovedEvent&)> MouseMovedCallback;
+    typedef std::function<bool(MouseScrolledEvent&)> MouseScrolledCallback;
+    typedef std::function<bool(MouseButtonPressedEvent&)> MouseButtonPressedCallback;
+    typedef std::function<bool(MouseButtonReleasedEvent&)> MouseButtonReleasedCallback;
+    typedef std::function<bool(WindowResizedEvent&)> WindowResizedCallback;
+    typedef std::function<bool(WindowClosedEvent&)> WindowClosedCallback;
+And what will these 8 functions do?
+They will just add the given callback to a list of callbacks corresponding to the specific event type.
+So we need 8 lists of callbacks, as members in EventHandler
+    static std::vector<KeyPressedCallback> s_keyPressedCallbacks;
+    static std::vector<KeyReleasedCallback> s_keyReleasedCallbacks;
+    static std::vector<MouseMovedCallback> s_mouseMovedCallbacks;
+    static std::vector<MouseScrolledCallback> s_mouseScrolledCallbacks;
+    static std::vector<MouseButtonPressedCallback> s_mouseButtonPressedCallbacks;
+    static std::vector<MouseButtonReleasedCallback> s_mouseButtonReleasedCallbacks;
+    static std::vector<WindowResizedCallback> s_windowResizedCallbacks;
+    static std::vector<WindowClosedCallback> s_windowClosedCallbacks;
+and each of the register*() functions will just add the callback to the corresponding list, as shown above.
+Then, once we have a list of callbacks, we can think about what the handle*() functions should do.
+Well, they should call the callbacks.
+But to do that, they need to first create an event.
+For example, the handleMouseMovedEvent() function needs to construct a MouseMovedEvent, like that
+    MouseMovedEvent event = { float(xPos), float(yPos) };
+and then it can call the callbacks registered for MouseMovedEvents (the callbacks in s_mouseMovedCallbacks) like that
+    for (const MouseMovedCallback& callback : s_mouseMovedCallbacks)
+    {
+        if (callback(event))
+        {
+            event.m_handled = true;
+            break;
+        }
+    }
+(The logic behind the if statement and setting m_handled is explained below, for now only notice that we're calling callback(event))
+Constructing the event of the specific type will be different in the different handle*() functions,
+but the for-loop for calling the callbacks will be exactly the same,
+so we can create a template function for that
+    template <typename EventT, typename CallbackT>
+    static void handleEvent(EventT& event, const std::vector<CallbackT>& callbacks)
+    {
+        for (const CallbackT& callback : callbacks)
+        {
+            if (callback(event))
+            {
+                event.m_handled = true;
+                break;
+            }
+        }
+    }
+Now the implementation of handleMouseMovedEvent() boils down to just this
+    void EventHandler::handleMouseMovedEvent(GLFWwindow* window, double xPos, double yPos)
+    {
+        MouseMovedEvent event = { float(xPos), float(yPos) };
+        handleEvent(event, s_mouseMovedCallbacks);
+    }
+Neat!
+It's a bit more complicated in the handle*() functions that need to differentiate between multiple different event types.
+For example handleKeyEvent() may construct either a KeyPressedEvent or a KeyReleasedEvent() depending on the value of the "action" parameter.
+Those details are not important, and quite straightforward, so leaving it at that.
+
+One final thing to explain here is why don't we just call
+    callback(event)
+in the handleEvent() template function.
+Why do we do
+    if (callback(event))
+    {
+        event.m_handled = true;
+        break;
+    }
+All callbacks here return a bool which means whether the event was handled, or just skipped.
+This might make more sense especially when considering multiple layers.
+For example if we have a game where clicking the mouse makes the player jump,
+this game world will be on one layer, but on top of that we may have another layer with GUI,
+where clicking the mouse has another meaning.
+So in that case we would have 2 callbacks registered in s_keyPressedCallbacks
+and if one of them handles the event we want to NOT call the callback of the other layer.
+
+That's about it. That's the event system.
+
+Let's test it in Demo03.
+Let's create callback functions for each event type, in Snake.cpp
+    bool onKeyPressed(Pekan::KeyPressedEvent& event);
+    bool onKeyReleased(Pekan::KeyReleasedEvent& event);
+    bool onMouseMoved(Pekan::MouseMovedEvent& event);
+    bool onMouseScrolled(Pekan::MouseScrolledEvent& event);
+    bool onMouseButtonPressed(Pekan::MouseButtonPressedEvent& event);
+    bool onMouseButtonReleased(Pekan::MouseButtonReleasedEvent& event);
+    bool onWindowResized(Pekan::WindowResizedEvent& event);
+    bool onWindowClosed(Pekan::WindowClosedEvent& event);
+and let's implement them to just log the event using PekanLogger
+    bool Snake::onKeyPressed(KeyPressedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+    ...
+We need to register these callbacks using the EventHandler. We can do that in Snake's create() function, like that
+    EventHandler::registerKeyPressedCallback(std::bind(&Snake::onKeyPressed, this, std::placeholders::_1));
+    EventHandler::registerKeyReleasedCallback(std::bind(&Snake::onKeyReleased, this, std::placeholders::_1));
+    EventHandler::registerMouseMovedCallback(std::bind(&Snake::onMouseMoved, this, std::placeholders::_1));
+    EventHandler::registerMouseScrolledCallback(std::bind(&Snake::onMouseScrolled, this, std::placeholders::_1));
+    EventHandler::registerMouseButtonPressedCallback(std::bind(&Snake::onMouseButtonPressed, this, std::placeholders::_1));
+    EventHandler::registerMouseButtonReleasedCallback(std::bind(&Snake::onMouseButtonReleased, this, std::placeholders::_1));
+    EventHandler::registerWindowResizedCallback(std::bind(&Snake::onWindowResized, this, std::placeholders::_1));
+    EventHandler::registerWindowClosedCallback(std::bind(&Snake::onWindowClosed, this, std::placeholders::_1));
+Okay, it works!
+Pretty nice.
+
+Final note, I copied only the event classes from Hazel Engine, the EventHandler was my own creation.
+
+Event system done.
 }

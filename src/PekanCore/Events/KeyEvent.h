@@ -24,22 +24,22 @@ namespace Pekan
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keyCode, int repeatCount)
-			: KeyEvent(keyCode), m_repeatCount(repeatCount)
+		KeyPressedEvent(int keyCode, bool isRepeating)
+			: KeyEvent(keyCode), m_isRepeating(isRepeating)
 		{}
 
-		inline int getRepeatCount() const { return m_repeatCount; }
+		inline bool isRepeating() const { return m_isRepeating; }
 
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent { keyCode: " << m_keyCode << ", repeatCount: " << m_repeatCount << " }";
+			ss << "KeyPressedEvent { keyCode: " << m_keyCode << ", isRepeating: " << m_isRepeating << " }";
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		int m_repeatCount;
+		bool m_isRepeating;
 	};
 
 	class KeyReleasedEvent : public KeyEvent
@@ -52,7 +52,7 @@ namespace Pekan
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleasedEvent { keyCode: " << m_keyCode;
+			ss << "KeyReleasedEvent { keyCode: " << m_keyCode << " }";
 			return ss.str();
 		}
 

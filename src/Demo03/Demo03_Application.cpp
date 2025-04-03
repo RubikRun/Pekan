@@ -14,8 +14,9 @@ namespace Demo
 		// Set base scene pointer to point to demo scene
 		m_scene = std::unique_ptr<PekanScene>(demoScene);
 
-		m_isFullScreen = true;
-		m_shouldHideCursor = true;
+		// BORIS TEMP
+		//m_isFullScreen = true;
+		//m_shouldHideCursor = true;
 
 		return true;
 	}

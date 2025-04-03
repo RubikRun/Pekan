@@ -1,10 +1,19 @@
 #include "Snake.h"
 #include "Utils/PekanUtils.h"
 
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/WindowEvent.h"
+
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::PekanEngine;
+using Pekan::EventHandler;
+
+using Pekan::KeyPressedEvent; using Pekan::KeyReleasedEvent;
+using Pekan::MouseMovedEvent; using Pekan::MouseScrolledEvent; using Pekan::MouseButtonPressedEvent; using Pekan::MouseButtonReleasedEvent;
+using Pekan::WindowResizedEvent; using Pekan::WindowClosedEvent;
 
 static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
@@ -93,6 +102,15 @@ namespace Demo
         );
 
         m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(windowWidth), float(windowHeight)));
+
+        EventHandler::registerKeyPressedCallback(std::bind(&Snake::onKeyPressed, this, std::placeholders::_1));
+        EventHandler::registerKeyReleasedCallback(std::bind(&Snake::onKeyReleased, this, std::placeholders::_1));
+        EventHandler::registerMouseMovedCallback(std::bind(&Snake::onMouseMoved, this, std::placeholders::_1));
+        EventHandler::registerMouseScrolledCallback(std::bind(&Snake::onMouseScrolled, this, std::placeholders::_1));
+        EventHandler::registerMouseButtonPressedCallback(std::bind(&Snake::onMouseButtonPressed, this, std::placeholders::_1));
+        EventHandler::registerMouseButtonReleasedCallback(std::bind(&Snake::onMouseButtonReleased, this, std::placeholders::_1));
+        EventHandler::registerWindowResizedCallback(std::bind(&Snake::onWindowResized, this, std::placeholders::_1));
+        EventHandler::registerWindowClosedCallback(std::bind(&Snake::onWindowClosed, this, std::placeholders::_1));
 
         return true;
 	}
@@ -271,6 +289,54 @@ namespace Demo
             }
         }
         return false;
+    }
+
+    bool Snake::onKeyPressed(KeyPressedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+
+    bool Snake::onKeyReleased(Pekan::KeyReleasedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+
+    bool Snake::onMouseMoved(Pekan::MouseMovedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+
+    bool Snake::onMouseScrolled(Pekan::MouseScrolledEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+
+    bool Snake::onMouseButtonPressed(Pekan::MouseButtonPressedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+
+    bool Snake::onMouseButtonReleased(Pekan::MouseButtonReleasedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+
+    bool Snake::onWindowResized(Pekan::WindowResizedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
+    }
+
+    bool Snake::onWindowClosed(Pekan::WindowClosedEvent& event)
+    {
+        PK_LOG_INFO(event, "Boris");
+        return true;
     }
 
 } // namespace Demo

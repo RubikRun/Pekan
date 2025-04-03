@@ -60,6 +60,7 @@ add_library(PekanCore STATIC
     src/PekanCore/Utils/PekanUtils.h
     src/PekanCore/Utils/PekanUtils.cpp
     src/PekanCore/Events/Event.h
+    src/PekanCore/Events/Event.cpp
     src/PekanCore/Events/WindowEvent.h
     src/PekanCore/Events/KeyEvent.h
     src/PekanCore/Events/MouseEvent.h
