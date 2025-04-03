@@ -33,3 +33,5 @@
                         NOTE FROM FUTURE: Decided not to do that because Demo03 is full screen anyway, so resolution will not be changing.
 
 0014 29.03.2025 (TODO): Create an ASSERT() mechanism
+
+0015 04.03.2025 (TODO): Create an event queue so that events can be handled together at once, at a specific stage of the main loop.

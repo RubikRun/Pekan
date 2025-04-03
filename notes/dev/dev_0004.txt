@@ -1,0 +1,33 @@
+----------
+04.03.2025
+----------
+
+Officially starting work on v0.2.
+Let's follow the list of features in
+    plan_0004.txt
+
+{
+Let's tart with the event system. That's a big one.
+I will use the following commits from Hazel Engine as reference.
+    https://github.com/TheCherno/Hazel/commit/34df41651fe88041540f20df845a70642359dc17
+    https://github.com/TheCherno/Hazel/commit/30516ad7109b016213eb732f14e1c7061c1db603
+
+As a first step I will copy most of it, and just integrate it into Pekan,
+to see how it works and to see if I like it.
+
+Let's create a new directory
+    Events
+under
+    src/PekanCore
+Inside of it create the following header files
+    WindowEvent.h
+    Event.h
+    KeyEvent.h
+    MouseEvent.h
+Add them to project PekanCore in the root CMake file.
+Now I will copy code from the corresponding files in this Hazel commit
+    https://github.com/TheCherno/Hazel/commit/34df41651fe88041540f20df845a70642359dc17
+and integrate it into Pekan.
+Done.
+
+}

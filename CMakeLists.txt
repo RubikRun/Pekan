@@ -59,6 +59,10 @@ add_library(PekanCore STATIC
     src/PekanCore/PekanGUIWindow.cpp
     src/PekanCore/Utils/PekanUtils.h
     src/PekanCore/Utils/PekanUtils.cpp
+    src/PekanCore/Events/Event.h
+    src/PekanCore/Events/WindowEvent.h
+    src/PekanCore/Events/KeyEvent.h
+    src/PekanCore/Events/MouseEvent.h
 )
 
 # Group Logger files under a virtual folder called "Logger"
@@ -67,6 +71,8 @@ SOURCE_GROUP("Header Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.h)
 # Group Utils files under a virtual folder called "Utils"
 SOURCE_GROUP("Source Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.cpp)
 SOURCE_GROUP("Header Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.h)
+# Group Events files under a virtual folder called "Events"
+SOURCE_GROUP("Header Files\\Events" FILES src/PekanCore/Events/Event.h src/PekanCore/Events/WindowEvent.h src/PekanCore/Events/KeyEvent.h src/PekanCore/Events/MouseEvent.h)
 
 # Set link libraries for PekanCore
 target_link_libraries(PekanCore PRIVATE

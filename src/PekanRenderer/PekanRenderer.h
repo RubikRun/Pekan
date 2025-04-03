@@ -70,6 +70,11 @@ namespace Renderer
 	// not specific to any graphics object, but just for the general rendering context.
 	class PekanRenderer
 	{
+		friend class VertexArray;
+		friend class VertexBufferElement;
+		friend class VertexBuffer;
+		friend class IndexBuffer;
+
 	public:
 
 		// Draws elements from currently bound vertex buffer in the order that they appear
@@ -123,11 +128,6 @@ namespace Renderer
 
 		// Checks if a shader data type's base type is int
 		static bool isShaderDataTypeInt(ShaderDataType type);
-
-		friend class VertexArray;
-		friend class VertexBufferElement;
-		friend class VertexBuffer;
-		friend class IndexBuffer;
 	};
 
 } // namespace Renderer
