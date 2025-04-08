@@ -20,6 +20,8 @@ namespace Demo
 
     bool Demo01_Scene::init()
 	{
+        m_resolution = PekanEngine::getWindowResolution();
+
         // Enable and configure blending
         PekanRenderer::enableBlending();
         PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
@@ -40,9 +42,6 @@ namespace Demo
 
 	void Demo01_Scene::update()
 	{
-        const int width = PekanEngine::getWindowWidth();
-        const int height = PekanEngine::getWindowHeight();
-
         m_vertices.clear();
         for (const Rectangle& square : m_squares)
         {
@@ -56,28 +55,28 @@ namespace Demo
             const float squareVertices[] =
             {
                 // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // bottom right
-                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
+                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
+                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
+                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
                 // top left
-                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(width) - 1.0f,
-                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(height) - 1.0f,
+                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
+                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
                 square.color.x, square.color.y, square.color.z, square.color.w,
             };
 
@@ -111,8 +110,8 @@ namespace Demo
         Rectangle newSquare;
         newSquare.width = 60;
         newSquare.height = 60;
-        newSquare.x = PekanEngine::getWindowWidth() / 2;
-        newSquare.y = PekanEngine::getWindowHeight() / 2;
+        newSquare.x = m_resolution.x / 2;
+        newSquare.y = m_resolution.y / 2;
         newSquare.id = m_squares.size();
         m_squares.push_back(newSquare);
     }

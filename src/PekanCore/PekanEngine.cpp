@@ -99,34 +99,44 @@ namespace Pekan
         destroyWindow();
     }
 
-    int PekanEngine::getWindowWidth()
+    bool PekanEngine::isKeyPressed(int key)
     {
-        return DEFAULT_WINDOW_WIDTH;
+        return (glfwGetKey(s_window, key) == GLFW_PRESS || glfwGetKey(s_window, key) == GLFW_REPEAT);
     }
 
-    int PekanEngine::getWindowHeight()
+    bool PekanEngine::isKeyReleased(int key)
     {
-        return DEFAULT_WINDOW_HEIGHT;
+        return (glfwGetKey(s_window, key) == GLFW_RELEASE);
     }
 
-    bool PekanEngine::isKeyPressed_W()
+    bool PekanEngine::isKeyRepeating(int key)
     {
-        return (glfwGetKey(s_window, GLFW_KEY_W) == GLFW_PRESS);
+        return (glfwGetKey(s_window, key) == GLFW_REPEAT);
     }
 
-    bool PekanEngine::isKeyPressed_A()
+    glm::vec2 PekanEngine::getMousePosition()
     {
-        return (glfwGetKey(s_window, GLFW_KEY_A) == GLFW_PRESS);
+        double xMouse = 0.0;
+        double yMouse = 0.0;
+        glfwGetCursorPos(s_window, &xMouse, &yMouse);
+        return { float(xMouse), float(yMouse) };
     }
 
-    bool PekanEngine::isKeyPressed_S()
+    bool PekanEngine::isMouseButtonPressed(bool leftOrRight)
     {
-        return (glfwGetKey(s_window, GLFW_KEY_S) == GLFW_PRESS);
+        return glfwGetMouseButton(s_window, leftOrRight ? 0 : 1) == GLFW_PRESS;
     }
 
-    bool PekanEngine::isKeyPressed_D()
+    bool PekanEngine::isMouseButtonReleased(bool leftOrRight)
     {
-        return (glfwGetKey(s_window, GLFW_KEY_D) == GLFW_PRESS);
+        return glfwGetMouseButton(s_window, leftOrRight ? 0 : 1) == GLFW_RELEASE;
+    }
+
+    glm::ivec2 PekanEngine::getWindowResolution()
+    {
+        int width, height;
+        glfwGetWindowSize(s_window, &width, &height);
+        return { width, height };
     }
 
     bool PekanEngine::createWindow(int width, int height, bool fullScreen, bool hideCursor)

@@ -3,6 +3,7 @@
 #include "Logger/PekanLogger.h"
 
 #include <string>
+#include <glm/glm.hpp>
 
 struct GLFWwindow;
 
@@ -13,7 +14,7 @@ struct GLFWwindow;
 namespace Pekan
 {
 
-	// Returns a user-friendly string from fiven OpenGL error code
+	// Returns a user-friendly string from given OpenGL error code
 	std::string _getGLErrorMessage(unsigned error);
 
 #define _CLEAR_GL_ERRORS while (glGetError() != GL_NO_ERROR);
@@ -48,16 +49,21 @@ namespace Pekan
 
 		static GLFWwindow* getWindow() { return s_window; }
 
-		static int getWindowWidth();
-		static int getWindowHeight();
+		// Checks if a given key from the keyboard is currently pressed or released,
+		// or repeating which means that it had been pressed and held down for a bit, like half a second.
+		static bool isKeyPressed(int key);
+		static bool isKeyReleased(int key);
+		static bool isKeyRepeating(int key);
 
-	// TODO: Remove the following functions after creating an event system
-	public: /* TEMPORARY */
-		static bool isKeyPressed_W();
-		static bool isKeyPressed_A();
-		static bool isKeyPressed_S();
-		static bool isKeyPressed_D();
+		// Returns current mouse position, in pixels, relative to window's top-left corner
+		static glm::vec2 getMousePosition();
+		// Checks if mouse button is currently pressed/released.
+		// If leftOrRight is true then left button is checked, otherwise right button is checked.
+		static bool isMouseButtonPressed(bool leftOrRight);
+		static bool isMouseButtonReleased(bool leftOrRight);
 
+		// Returns window's current resolution
+		static glm::ivec2 getWindowResolution();
 
 	private: /* functions */
 

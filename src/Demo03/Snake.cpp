@@ -5,15 +5,13 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 
+// TODO: remove this after we have Pekan enum for key codes
+#include <GLFW/glfw3.h>
+
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::PekanEngine;
-using Pekan::EventHandler;
-
-using Pekan::KeyPressedEvent; using Pekan::KeyReleasedEvent;
-using Pekan::MouseMovedEvent; using Pekan::MouseScrolledEvent; using Pekan::MouseButtonPressedEvent; using Pekan::MouseButtonReleasedEvent;
-using Pekan::WindowResizedEvent; using Pekan::WindowClosedEvent;
 
 static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
@@ -31,29 +29,29 @@ static const int SPEED_MAP[] =
 
 namespace Demo
 {
-    static bool checkOverlapRectangles(const glm::vec4 r1, const glm::vec4 r2)
+    static bool checkOverlapRectangles(glm::vec4 r1, glm::vec4 r2)
     {
         return (!(r2.x + r2.z < r1.x || r2.x > r1.x + r1.z || r2.y + r2.w < r1.y || r2.y > r1.y + r1.w));
     }
 
-    static bool isRectangleInsideOfWindow(const glm::vec4 r1)
+    static bool isRectangleInsideOfWindow(glm::vec4 r1, glm::ivec2 resolution)
     {
-        return (r1.x >= 0 && r1.y >= 0 && r1.x + r1.z - 1 < PekanEngine::getWindowWidth() && r1.y + r1.w - 1 < PekanEngine::getWindowHeight());
+        return (r1.x >= 0 && r1.y >= 0 && r1.x + r1.z - 1 < resolution.x && r1.y + r1.w - 1 < resolution.y);
     }
 
 	bool Snake::create()
 	{
+        m_resolution = PekanEngine::getWindowResolution();
+
         m_speedIdx = 0;
 
         m_squaresCount = 4;
         m_headIdx = 0;
         m_tailIdx = 3;
 
-        const int windowWidth = PekanEngine::getWindowWidth();
-        const int windowHeight = PekanEngine::getWindowHeight();
-        m_thickness = THICKNESS * windowHeight;
-        const int posX = int(INITIAL_POSITION_X * windowWidth);
-        const int posY = int(INITIAL_POSITION_Y * windowHeight);
+        m_thickness = THICKNESS * m_resolution.y;
+        const int posX = int(INITIAL_POSITION_X * m_resolution.x);
+        const int posY = int(INITIAL_POSITION_Y * m_resolution.y);
 
         // Initialize vertices of snake
         m_vertices =
@@ -101,39 +99,49 @@ namespace Demo
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
 
-        m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(windowWidth), float(windowHeight)));
-
-        EventHandler::registerKeyPressedCallback(std::bind(&Snake::onKeyPressed, this, std::placeholders::_1));
-        EventHandler::registerKeyReleasedCallback(std::bind(&Snake::onKeyReleased, this, std::placeholders::_1));
-        EventHandler::registerMouseMovedCallback(std::bind(&Snake::onMouseMoved, this, std::placeholders::_1));
-        EventHandler::registerMouseScrolledCallback(std::bind(&Snake::onMouseScrolled, this, std::placeholders::_1));
-        EventHandler::registerMouseButtonPressedCallback(std::bind(&Snake::onMouseButtonPressed, this, std::placeholders::_1));
-        EventHandler::registerMouseButtonReleasedCallback(std::bind(&Snake::onMouseButtonReleased, this, std::placeholders::_1));
-        EventHandler::registerWindowResizedCallback(std::bind(&Snake::onWindowResized, this, std::placeholders::_1));
-        EventHandler::registerWindowClosedCallback(std::bind(&Snake::onWindowClosed, this, std::placeholders::_1));
+        m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
 
         return true;
 	}
 
     void Snake::update()
     {
+        {
+            const glm::vec2 mousePos = PekanEngine::getMousePosition();
+            PK_LOG_INFO("Mouse position: " << mousePos.x << ", " << mousePos.y, "Boris");
+        }
+
+        {
+            PK_LOG_INFO("Is left mouse button pressed? " << PekanEngine::isMouseButtonPressed(true), "Boris");
+            PK_LOG_INFO("Is left mouse button released? " << PekanEngine::isMouseButtonReleased(true), "Boris");
+            PK_LOG_INFO("Is right mouse button pressed? " << PekanEngine::isMouseButtonPressed(false), "Boris");
+            PK_LOG_INFO("Is right mouse button released? " << PekanEngine::isMouseButtonReleased(false), "Boris");
+        }
+
+        {
+            const glm::ivec2 resolution = PekanEngine::getWindowResolution();
+            PK_LOG_INFO("Window resolution: " << resolution.x << ", " << resolution.y, "Boris");
+        }
+
+        PK_LOG_INFO("-----------------------------------------------", "Boris");
+
         if (m_running)
         {
             m_frames++;
 
-            if (PekanEngine::isKeyPressed_W())
+            if (PekanEngine::isKeyPressed(GLFW_KEY_W))
             {
                 m_direction = { 0, -1 };
             }
-            else if (PekanEngine::isKeyPressed_A())
+            else if (PekanEngine::isKeyPressed(GLFW_KEY_A))
             {
                 m_direction = { -1, 0 };
             }
-            else if (PekanEngine::isKeyPressed_S())
+            else if (PekanEngine::isKeyPressed(GLFW_KEY_S))
             {
                 m_direction = { 0, 1 };
             }
-            else if (PekanEngine::isKeyPressed_D())
+            else if (PekanEngine::isKeyPressed(GLFW_KEY_D))
             {
                 m_direction = { 1, 0 };
             }
@@ -265,7 +273,7 @@ namespace Demo
         }
         m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
 
-        if (!isRectangleInsideOfWindow(getRectangle(m_headIdx)) || isBitingItself())
+        if (!isRectangleInsideOfWindow(getRectangle(m_headIdx), m_resolution) || isBitingItself())
         {
             m_running = false;
         }
@@ -289,54 +297,6 @@ namespace Demo
             }
         }
         return false;
-    }
-
-    bool Snake::onKeyPressed(KeyPressedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Snake::onKeyReleased(Pekan::KeyReleasedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Snake::onMouseMoved(Pekan::MouseMovedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Snake::onMouseScrolled(Pekan::MouseScrolledEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Snake::onMouseButtonPressed(Pekan::MouseButtonPressedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Snake::onMouseButtonReleased(Pekan::MouseButtonReleasedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Snake::onWindowResized(Pekan::WindowResizedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Snake::onWindowClosed(Pekan::WindowClosedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
     }
 
 } // namespace Demo

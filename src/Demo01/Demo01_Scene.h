@@ -50,6 +50,8 @@ namespace Demo
 		Pekan::Renderer::VertexArray m_vertexArray;
 
 		Pekan::Renderer::Shader m_shader;
+
+		glm::ivec2 m_resolution;
 	};
 
 } // namespace Demo

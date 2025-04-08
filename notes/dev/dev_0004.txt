@@ -195,3 +195,35 @@ Final note, I copied only the event classes from Hazel Engine, the EventHandler 
 
 Event system done.
 }
+
+{
+Now that we have the event system, it'd be good to also allow applications to ask for the current state of things,
+for example where the mouse is currently, or what the resolution is currently, or is a given key pressed at the moment.
+I wouldn't call this a "part" of the event system, but it's definitely related, and more like a complementary feature.
+
+So what we need basically, is something similar to these 4 temporary functions that we have right now in PekanEngine
+    static bool isKeyPressed_W();
+    static bool isKeyPressed_A();
+    static bool isKeyPressed_S();
+    static bool isKeyPressed_D();
+I made those functions to allow the snake game (Demo03) to work before having the event system.
+We need similar functions now, but done better, and covering everything that the event system covers.
+
+Let's start with key events - KeyPressedEvent and KeyReleasedEvent.
+We can cover those with 3 functions
+    static bool isKeyPressed(int key);
+    static bool isKeyReleased(int key);
+    static bool isKeyRepeating(int key);
+Next type of event to cover is MouseMovedEvent.
+We can cover that with 1 function
+    static glm::vec2 getMousePosition();
+Next is MouseScrolledEvent - we will not cover that because it makes no sense to ask for the current mouse scroll
+(and because GLFW doesn't support it)
+Next is MouseButtonPressed and MouseButtonReleased. We need 2 functions
+    static bool isMouseButtonPressed(bool leftOrRight);
+    static bool isMouseButtonReleased(bool leftOrRight);
+And I think the final one is WindowResizedEvent. We need 1 function
+    static glm::ivec2 getWindowResolution();
+That's it.
+Done.
+}

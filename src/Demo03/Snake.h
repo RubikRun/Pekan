@@ -4,13 +4,6 @@
 
 #include "Apple.h"
 
-namespace Pekan
-{
-	class KeyPressedEvent; class KeyReleasedEvent;
-	class MouseMovedEvent; class MouseScrolledEvent; class MouseButtonPressedEvent; class MouseButtonReleasedEvent;
-	class WindowResizedEvent; class WindowClosedEvent;
-}
-
 namespace Demo
 {
 
@@ -52,15 +45,6 @@ namespace Demo
 
 		bool isBitingItself() const;
 
-		bool onKeyPressed(Pekan::KeyPressedEvent& event);
-		bool onKeyReleased(Pekan::KeyReleasedEvent& event);
-		bool onMouseMoved(Pekan::MouseMovedEvent& event);
-		bool onMouseScrolled(Pekan::MouseScrolledEvent& event);
-		bool onMouseButtonPressed(Pekan::MouseButtonPressedEvent& event);
-		bool onMouseButtonReleased(Pekan::MouseButtonReleasedEvent& event);
-		bool onWindowResized(Pekan::WindowResizedEvent& event);
-		bool onWindowClosed(Pekan::WindowClosedEvent& event);
-
 	private: /* variables */
 
 		RenderObject m_renderObject;
@@ -95,6 +79,8 @@ namespace Demo
 		// When snake bites itself or hits the window's borders
 		// the game will end and this flag will be set to false.
 		bool m_running = true;
+
+		glm::ivec2 m_resolution;
 	};
 
 } // namespace Demo

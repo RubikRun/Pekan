@@ -72,6 +72,8 @@ namespace Demo
 		glm::mat4 m_modelMatrix;
 		glm::mat4 m_viewMatrix;
 		glm::mat4 m_projMatrix;
+
+		glm::ivec2 m_resolution;
 	};
 
 } // namespace Demo

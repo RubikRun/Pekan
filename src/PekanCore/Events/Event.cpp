@@ -4,6 +4,8 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Pekan
 {
 

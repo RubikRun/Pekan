@@ -58,7 +58,7 @@ namespace Demo
 			return;
 		}
 
-		ImGui::SetNextWindowSize(ImVec2(320, PekanEngine::getWindowHeight()));
+		ImGui::SetNextWindowSize(ImVec2(320, m_resolution.y));
 		ImGui::Begin("Cube");
 
 		std::vector<glm::vec3>& colors = m_scene->getColors();
@@ -79,6 +79,7 @@ namespace Demo
 
 	bool Demo02_GUIWindow::init()
 	{
+		m_resolution = PekanEngine::getWindowResolution();
 		return true;
 	}
 

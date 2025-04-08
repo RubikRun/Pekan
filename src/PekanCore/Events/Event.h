@@ -1,9 +1,9 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
-
 #include <string>
 #include <functional>
+
+struct GLFWwindow;
 
 namespace Pekan
 {

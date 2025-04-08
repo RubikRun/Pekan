@@ -33,6 +33,8 @@ namespace Demo
 
 		glm::ivec2 m_position = { -1, -1 };
 		int m_size = -1;
+
+		glm::ivec2 m_resolution;
 	};
 
 } // namespace Demo

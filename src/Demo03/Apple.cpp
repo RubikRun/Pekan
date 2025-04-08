@@ -17,16 +17,15 @@ namespace Demo
 
     bool Apple::create(const Snake& snake)
     {
-        const int windowWidth = PekanEngine::getWindowWidth();
-        const int windowHeight = PekanEngine::getWindowHeight();
+        m_resolution = PekanEngine::getWindowResolution();
 
-        m_size = int(APPLE_SIZE * float(windowHeight));
+        m_size = int(APPLE_SIZE * float(m_resolution.y));
         do
         {
             m_position =
             {
-                getRandomInt(snake.getThickness(), windowWidth - snake.getThickness()),
-                getRandomInt(snake.getThickness(), windowHeight - snake.getThickness())
+                getRandomInt(snake.getThickness(), m_resolution.x - snake.getThickness()),
+                getRandomInt(snake.getThickness(), m_resolution.y - snake.getThickness())
             };
         } while (snake.checkBodyOverlapsApple(*this));
 
@@ -57,7 +56,7 @@ namespace Demo
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
 
-        m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(windowWidth), float(windowHeight)));
+        m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
 
         return true;
     }
@@ -88,15 +87,12 @@ namespace Demo
 
     void Apple::regenerate(const Snake& snake)
     {
-        const int windowWidth = PekanEngine::getWindowWidth();
-        const int windowHeight = PekanEngine::getWindowHeight();
-
         do
         {
             m_position =
             {
-                getRandomInt(snake.getThickness(), windowWidth - snake.getThickness()),
-                getRandomInt(snake.getThickness(), windowHeight - snake.getThickness())
+                getRandomInt(snake.getThickness(), m_resolution.x - snake.getThickness()),
+                getRandomInt(snake.getThickness(), m_resolution.y - snake.getThickness())
             };
         } while (snake.checkBodyOverlapsApple(*this));
 

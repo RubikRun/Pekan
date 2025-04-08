@@ -30,12 +30,12 @@ namespace Demo
         ImGui::PopItemWidth();
     }
 
-    static void renderSliderSize(Rectangle& square, int windowWidth, int windowHeight)
+    static void renderSliderSize(Rectangle& square, glm::vec2 resolution)
     {
         ImGui::PushItemWidth(0.85f * ImGui::GetContentRegionAvail().x);
         ImGui::Text("Size");
         ImGui::SameLine();
-        ImGui::SliderInt("##Size", &square.width, 0, std::max(windowWidth, windowHeight));
+        ImGui::SliderInt("##Size", &square.width, 0, std::max(resolution.x, resolution.y));
         square.height = square.width;
         ImGui::PopItemWidth();
     }
@@ -66,7 +66,7 @@ namespace Demo
             return;
         }
 
-        ImGui::SetNextWindowSize(ImVec2(320, PekanEngine::getWindowHeight()));
+        ImGui::SetNextWindowSize(ImVec2(320, m_resolution.y));
         ImGui::Begin("Squares");
 
         if (ImGui::Button("+"))
@@ -74,18 +74,15 @@ namespace Demo
             m_scene->addSquare();
         }
 
-        const int width = PekanEngine::getWindowWidth();
-        const int height = PekanEngine::getWindowHeight();
-
         std::vector<Rectangle>& squares = m_scene->getSquares();
         for (Rectangle& square : squares)
         {
             ImGui::PushID(square.id);
 
             ImGui::Text("Square %d", square.id + 1);
-            renderSliderX(square, width);
-            renderSliderY(square, height);
-            renderSliderSize(square, width, height);
+            renderSliderX(square, m_resolution.x);
+            renderSliderY(square, m_resolution.y);
+            renderSliderSize(square, m_resolution);
             renderSliderRotation(square);
             renderEditColor(square);
             ImGui::Separator();
@@ -98,7 +95,8 @@ namespace Demo
 
 	bool Demo01_GUIWindow::init()
 	{
-		return true;
+        m_resolution = PekanEngine::getWindowResolution();
+        return true;
 	}
 
 } // namespace Demo

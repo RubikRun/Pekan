@@ -3,6 +3,8 @@
 #include "PekanGUIWindow.h"
 using Pekan::PekanGUIWindow;
 
+#include <glm/glm.hpp>
+
 namespace Demo
 {
 
@@ -23,6 +25,8 @@ namespace Demo
 	private: /* variables */
 
 		Demo01_Scene* m_scene = nullptr;
+
+		glm::ivec2 m_resolution;
 	};
 
 } // namespace Demo
