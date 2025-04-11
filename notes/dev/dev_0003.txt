@@ -276,7 +276,7 @@ Calling it done.
 {
 This phase of development is now finished.
 I created 2 demos using Pekan v0.1.
-While creating them I wrote down some TODO items in
+While creating them I wrote down some TO-DO items in
     todo.txt
 and I created some temporary functions in PekanEngine and PekanRenderer
 that obviously have to be replaced by stable features that I will implement in Pekan v0.2.

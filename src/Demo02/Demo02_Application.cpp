@@ -3,8 +3,6 @@
 #include "Demo02_Scene.h"
 #include "Demo02_GUIWindow.h"
 
-using Pekan::PekanScene;
-
 namespace Demo
 {
 
@@ -16,10 +14,9 @@ namespace Demo
 		// Attach demo scene to demo GUI window
 		demoGuiWindow->attachScene(demoScene);
 
-		// Set base scene pointer and base GUI window pointer
-		// to point to demo scene and demo GUI window
-		m_scene = std::unique_ptr<PekanScene>(demoScene);
-		m_guiWindow = std::unique_ptr<PekanGUIWindow>(demoGuiWindow);
+		// Add scene and GUI window to application's layers
+		m_layerStack.pushLayer(demoScene);
+		m_layerStack.pushLayer(demoGuiWindow);
 
 		return true;
 	}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PekanScene.h"
+#include "Layer.h"
 #include "VertexBuffer.h"
 #include "VertexArray.h"
 #include "IndexBuffer.h"
@@ -16,9 +16,11 @@ namespace Demo
 		glm::vec3 color;
 	};
 
-	class Demo02_Scene : public Pekan::PekanScene
+	class Demo02_Scene : public Pekan::Layer
 	{
 	public:
+
+		Demo02_Scene() : Layer("scene_layer") {}
 
 		bool init() override;
 

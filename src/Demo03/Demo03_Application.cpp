@@ -2,8 +2,6 @@
 
 #include "Demo03_Scene.h"
 
-using Pekan::PekanScene;
-
 namespace Demo
 {
 
@@ -11,8 +9,8 @@ namespace Demo
 	{
 		// Create demo scene
 		Demo03_Scene* demoScene = new Demo03_Scene();
-		// Set base scene pointer to point to demo scene
-		m_scene = std::unique_ptr<PekanScene>(demoScene);
+		// Add scene to application's layers
+		m_layerStack.pushLayer(demoScene);
 
 		// BORIS TEMP
 		//m_isFullScreen = true;

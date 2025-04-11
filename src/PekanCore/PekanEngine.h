@@ -14,6 +14,8 @@ struct GLFWwindow;
 namespace Pekan
 {
 
+	class PekanApplication;
+
 	// Returns a user-friendly string from given OpenGL error code
 	std::string _getGLErrorMessage(unsigned error);
 
@@ -47,6 +49,10 @@ namespace Pekan
 		// To be called once, at the end, after finished using the engine.
 		static void exit();
 
+		// Registers an application with Pekan Engine.
+		// Each application has to be registered using this function before it could be run.
+		static void registerApplication(PekanApplication* application);
+
 		static GLFWwindow* getWindow() { return s_window; }
 
 		// Checks if a given key from the keyboard is currently pressed or released,
@@ -73,8 +79,19 @@ namespace Pekan
 		// Destroys the graphics window.
 		static void destroyWindow();
 
-		// Connects Pekan's EventHandler to the events received from window
-		static void setupEventHandler();
+		// Connects event callbacks with the window, so that they are actually called when an event occurs.
+		static void setEventCallbacks();
+
+		// Event callbacks.
+		// Functions that are called when an event occurs.
+		// Each of these functions handles a specific type of event
+		// by just sending it to Pekan's currently registered application.
+		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void mouseMovedCallback(GLFWwindow* window, double xPos, double yPos);
+		static void mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset);
+		static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+		static void windowResizedCallback(GLFWwindow* window, int width, int height);
+		static void windowClosedCallback(GLFWwindow* window);
 
 		// Loads OpenGL function pointers
 		static bool loadOpenGL();
@@ -91,6 +108,9 @@ namespace Pekan
 
 		// Window for rendering graphics
 		static GLFWwindow* s_window;
+
+		// Application currently registered with Pekan
+		static PekanApplication* s_application;
 	};
 
 } // namespace Pekan

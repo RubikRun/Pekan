@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PekanScene.h"
+#include "Layer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
@@ -11,9 +11,11 @@
 namespace Demo
 {
 
-	class Demo00_Scene : public Pekan::PekanScene
+	class Demo00_Scene : public Pekan::Layer
 	{
 	public:
+
+		Demo00_Scene() : Layer("scene_layer") {}
 
 		bool init() override;
 

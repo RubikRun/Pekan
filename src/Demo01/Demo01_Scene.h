@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PekanScene.h"
+#include "Layer.h"
 #include "VertexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
@@ -20,9 +20,11 @@ namespace Demo
 		int id = -1;
 	};
 
-	class Demo01_Scene : public Pekan::PekanScene
+	class Demo01_Scene : public Pekan::Layer
 	{
 	public:
+
+		Demo01_Scene() : Layer("scene_layer") {}
 
 		bool init() override;
 

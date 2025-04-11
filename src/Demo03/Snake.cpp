@@ -1,10 +1,6 @@
 #include "Snake.h"
 #include "Utils/PekanUtils.h"
 
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Events/WindowEvent.h"
-
 // TODO: remove this after we have Pekan enum for key codes
 #include <GLFW/glfw3.h>
 
@@ -106,25 +102,6 @@ namespace Demo
 
     void Snake::update()
     {
-        {
-            const glm::vec2 mousePos = PekanEngine::getMousePosition();
-            PK_LOG_INFO("Mouse position: " << mousePos.x << ", " << mousePos.y, "Boris");
-        }
-
-        {
-            PK_LOG_INFO("Is left mouse button pressed? " << PekanEngine::isMouseButtonPressed(true), "Boris");
-            PK_LOG_INFO("Is left mouse button released? " << PekanEngine::isMouseButtonReleased(true), "Boris");
-            PK_LOG_INFO("Is right mouse button pressed? " << PekanEngine::isMouseButtonPressed(false), "Boris");
-            PK_LOG_INFO("Is right mouse button released? " << PekanEngine::isMouseButtonReleased(false), "Boris");
-        }
-
-        {
-            const glm::ivec2 resolution = PekanEngine::getWindowResolution();
-            PK_LOG_INFO("Window resolution: " << resolution.x << ", " << resolution.y, "Boris");
-        }
-
-        PK_LOG_INFO("-----------------------------------------------", "Boris");
-
         if (m_running)
         {
             m_frames++;

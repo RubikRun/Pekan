@@ -1,18 +1,16 @@
 #pragma once
 
-#include "PekanScene.h"
-#include "PekanGUIWindow.h"
-
-#include <memory>
-
-struct GLFWwindow;
+#include <LayerStack.h>
 
 namespace Pekan
 {
+	class PekanEngine;
 
 	// A base class for all Pekan applications
 	class PekanApplication
 	{
+		friend class PekanEngine;
+
 	public:
 
 		virtual ~PekanApplication() { exit(); }
@@ -28,14 +26,25 @@ namespace Pekan
 		// Initializes the application.
 		// 
 		// To be implemented by derived classes
-		// to set up the scene and guiWindow pointers.
+		// to set up application's layer stack
 		virtual bool _init() = 0;
+
+		// Functions that are called when an event occurs.
+		// Each of these functions handles a specific type of event
+		// by sending it to each layer of the application, one by one, until a layer succesfully handles the event.
+		// The order of layers receiving the event is the opposite of the order of rendering,
+		// meaning that layers drawn last (on top) receive events first.
+		void handleKeyEvent(int key, int scancode, int action, int mods);
+		void handleMouseMovedEvent(double xPos, double yPos);
+		void handleMouseScrolledEvent(double xOffset, double yOffset);
+		void handleMouseButtonEvent(int button, int action, int mods);
+		void handleWindowResizedEvent(int width, int height);
+		void handleWindowClosedEvent();
 
 	protected: /* variables */
 
-		std::unique_ptr<PekanScene> m_scene;
-
-		std::unique_ptr<PekanGUIWindow> m_guiWindow;
+		// Stack of layers making up the application
+		LayerStack m_layerStack;
 
 		// Flag indicating whether application should be rendered at full screen.
 		// To be set by derived classes inside of the _init() function.

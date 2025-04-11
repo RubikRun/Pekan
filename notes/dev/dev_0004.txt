@@ -196,6 +196,10 @@ Final note, I copied only the event classes from Hazel Engine, the EventHandler 
 Event system done.
 }
 
+----------
+07.04.2025
+----------
+
 {
 Now that we have the event system, it'd be good to also allow applications to ask for the current state of things,
 for example where the mouse is currently, or what the resolution is currently, or is a given key pressed at the moment.
@@ -226,4 +230,189 @@ And I think the final one is WindowResizedEvent. We need 1 function
     static glm::ivec2 getWindowResolution();
 That's it.
 Done.
+}
+
+----------
+11.04.2025
+----------
+
+{
+Next feature to implement is layers.
+I will use as reference this commit from Hazel Engine
+    https://github.com/TheCherno/Hazel/commit/5bd809312a266c23d13d84dcd08a833a526aa264
+
+Ended up not using much, I only copied and changed Layer and LayerStack,
+everything else I had to do on my own.
+
+I did the whole thing at once, without taking notes, so here's a sum up:
+I'll divide it into 3 parts - layers, init/exit/update/render layers, events in layers.
+
+1. First of all, a layer fundamentally is just something that can be initialized, exited, updated and rendered
+    virtual bool init() { return true; }
+    virtual void exit() {}
+    virtual void update() {}
+    virtual void render() {}
+It also has a name but that's not important
+    std::string m_name;
+Then we have a LayerStack which is just a wrapper over a list of layers
+    std::vector<Layer*> m_layers;
+and it provides iterators for traversing the layer stack forwards and backwards
+    std::vector<Layer*>::iterator begin() { return m_layers.begin(); }
+    std::vector<Layer*>::iterator end() { return m_layers.end(); }
+    std::vector<Layer*>::reverse_iterator rbegin() { return m_layers.rbegin(); }
+    std::vector<Layer*>::reverse_iterator rend() { return m_layers.rend(); }
+Nothing interesting there.
+So how are we going to use layers in Pekan?
+Well, scenes and GUI windows will be layers.
+We actually don't need the class
+    PekanScene
+at all, because it's literally just a Layer without any extra functionality.
+We still need the class
+    PekanGUIWindow
+because it has some ImGui-specific functionality in render(), but other than that we'll make it derive from Layer
+    class PekanGUIWindow : public Layer
+
+2. Okay, so scenes and GUI windows are layers.
+Now what?
+Well, currently in PekanApplication we have 2 members for a scene and a GUI window.
+We don't want that. We want clients to be able to compose scenes and GUI windows as they wish,
+maybe they want multiple scenes on top of each other, or they don't want a GUI window, or they want multiple GUI windows, etc.
+So instead of having 2 members for a scene and a GUI window let's have a single LayerStack member
+    LayerStack m_layerStack;
+and then client applications can configure this stack as they wish in the _init() function, for example like that
+    m_layerStack.pushLayer(demoScene);
+    m_layerStack.pushLayer(demoGuiWindow);
+(Notice that the order of adding the layers is important. Layers added first will be rendered first)
+Then the only thing left to do is make PekanApplication work with this layer stack instead of a scene and a GUI window,
+so in PekanApplication.cpp in all places where we previously did something with m_scene or m_guiWindow, (init/exit/update/render)
+now we need to do it with all layers in the layer stack, like that for example:
+    // Update all layers
+    for (Layer* layer : m_layerStack)
+    {
+        if (layer)
+        {
+            layer->update();
+        }
+    }
+    // Render all layers
+    for (Layer* layer : m_layerStack)
+    {
+        if (layer)
+        {
+            layer->render();
+        }
+    }
+And finally, we need to update our demos a bit, to configure the layer stack in their _init() functions.
+That's it.
+Now everything works same as before, but demos can configure layers freely.
+
+3. Trickies part here is making events work with layers.
+Currently we have a static class EventHandler and any code can register a callback for any type of event,
+which is ok, but it gives too much freedom to clients.
+We want to enforce the behavior of events being propagated through layers
+in the opposite order of rendering, so that layers drawn last receive events first, because they are on top.
+What we want is a way for each layer to specify its own way of handling a given type of event,
+and then Pekan will automatically send events to layers in the correct order
+and stop sending once a layer has successfully handled an event.
+How can we do that?
+Well, first we can have virtual functions for each type of event inside of class Layer
+    virtual bool onKeyPressed(KeyPressedEvent& event) { return false; }
+    virtual bool onKeyReleased(KeyReleasedEvent& event) { return false; }
+    virtual bool onMouseMoved(MouseMovedEvent& event) { return false; }
+    virtual bool onMouseScrolled(MouseScrolledEvent& event) { return false; }
+    virtual bool onMouseButtonPressed(MouseButtonPressedEvent& event) { return false; }
+    virtual bool onMouseButtonReleased(MouseButtonReleasedEvent& event) { return false; }
+    virtual bool onWindowResized(WindowResizedEvent& event) { return false; }
+    virtual bool onWindowClosed(WindowClosedEvent& event) { return false; }
+so that derived classes can choose to override some of these functions if they want to react to a specific event.
+Then we have to actually call those functions on each layer of the layer stack when an event occurs,
+and we have to pass an Event object of the corresponding subtype.
+How can we do that?
+Well, we already have these 6 static functgions in EventHandler
+    static void handleKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void handleMouseMovedEvent(GLFWwindow* window, double xPos, double yPos);
+    static void handleMouseScrolledEvent(GLFWwindow* window, double xOffset, double yOffset);
+    static void handleMouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
+    static void handleWindowResizedEvent(GLFWwindow* window, int width, int height);
+    static void handleWindowClosedEvent(GLFWwindow* window);
+They are directly linked to GLFW by PekanEngine like that:
+    glfwSetKeyCallback(s_window, EventHandler::handleKeyEvent);
+    glfwSetCursorPosCallback(s_window, EventHandler::handleMouseMovedEvent);
+    glfwSetScrollCallback(s_window, EventHandler::handleMouseScrolledEvent);
+    glfwSetMouseButtonCallback(s_window, EventHandler::handleMouseButtonEvent);
+    glfwSetWindowSizeCallback(s_window, EventHandler::handleWindowResizedEvent);
+    glfwSetWindowCloseCallback(s_window, EventHandler::handleWindowClosedEvent);
+They construct an Event object of a specific type and call the registered callbacks passing that Event object.
+Now we still need to construct the Event objects in the exact same way,
+but instead of calling the registered callbacks,
+we will call the on*() functions on each layer of the layer stack.
+Problem is we don't have access to the layer stack because this EventHandler is all static,
+and the layer stack is part of an instance of PekanApplication,
+so we'll need to move these handle*() functions to be member functions of PekanApplication
+    void handleKeyEvent(int key, int scancode, int action, int mods);
+    void handleMouseMovedEvent(double xPos, double yPos);
+    void handleMouseScrolledEvent(double xOffset, double yOffset);
+    void handleMouseButtonEvent(int button, int action, int mods);
+    void handleWindowResizedEvent(int width, int height);
+    void handleWindowClosedEvent();
+removing the GLFWwindow pointer (we'll see why in a minute)
+To implement them in PekanApplication we'll construct the Event objects in the exact same way,
+but then instead of calling EventHandler's template function handleEvent()
+which works with the registered callbacks,
+we'll create a new template function
+    static void _dispatchEvent(EventT& event, LayerStack& layerStack, bool (Layer::*onEventFunc)(EventT&))
+that calls the on*() functions of each layer of the layer stack until the event is handled.
+Then we just call that function with the constructed Event object and give it our application's layer stack
+and a pointer to the specific on*() function that it needs to call on the layers. For example, like that:
+    MouseMovedEvent event = { float(xPos), float(yPos) };
+    _dispatchEvent(event, m_layerStack, &Layer::onMouseMoved);
+That's it, that's what the handle*() functions do.
+Now the only thing left to do is to connect those handle*() functions to GLFW
+and actually make it so that they are called when an event occurs.
+We cannot directly connect them to GLFW with the glfwSet*Callback() functions
+because they require a callback which is a global/static function
+(our handle*() functions are member functions of PekanApplication and so they contain an extra implicit "this" parameter)
+What we can do is create yet another set of functions, but this time static in PekanEngine
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void mouseMovedCallback(GLFWwindow* window, double xPos, double yPos);
+    static void mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset);
+    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    static void windowResizedCallback(GLFWwindow* window, int width, int height);
+    static void windowClosedCallback(GLFWwindow* window);
+Now these functions have the exact signature required by the glfwSet*Callback() functions
+so we can directly register them to GLFW, like that
+    glfwSetKeyCallback(s_window, keyCallback);
+    glfwSetCursorPosCallback(s_window, mouseMovedCallback);
+    glfwSetScrollCallback(s_window, mouseScrolledCallback);
+    glfwSetMouseButtonCallback(s_window, mouseButtonCallback);
+    glfwSetWindowSizeCallback(s_window, windowResizedCallback);
+    glfwSetWindowCloseCallback(s_window, windowClosedCallback);
+And now we reach the root of our problem.
+How can we make these static functions call PekanApplication's handle*() functions that are very much non-static,
+they are member functions and require a specific instance of a PekanApplication.
+Well, we need a static instance of PekanApplication.
+We need a mechanism in PekanEngine for a PekanApplication to be "registered"
+and kept under a static member variable
+    static PekanApplication* s_application;
+For that we'll add this new function
+    static void registerApplication(PekanApplication* application);
+that every PekanApplication will need to call to "register" itself in PekanEngine
+before it could be run.
+And finally, having this static s_application, we can implement the callbacks as follows:
+    void PekanEngine::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        if (s_application)
+        {
+            s_application->handleKeyEvent(key, scancode, action, mods);
+        }
+    }
+    ...
+That's it.
+To sum up, for example looking at a mouse moved event:
+Mouse moves -> GLFW calls PekanEngine::mouseMovedCallback()
+-> it calls PekanApplication::handleMouseMovedEvent()
+-> it constructs a MouseMovedEvent object and calls _dispatchEvent() with it
+-> it calls Layer::onMouseMoved() on each layer of the layer stack until the event is handled
+-> Layer::onMouseMoved() can be implemented by client to do whatever they want and return true if event is handled
+   If not implemented, it will not do anything and just return false, meaning continue to next layer
 }

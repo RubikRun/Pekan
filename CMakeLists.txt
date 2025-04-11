@@ -54,13 +54,14 @@ add_library(PekanCore STATIC
     src/PekanCore/PekanEngine.cpp
     src/PekanCore/PekanApplication.h
     src/PekanCore/PekanApplication.cpp
-    src/PekanCore/PekanScene.h
     src/PekanCore/PekanGUIWindow.h
     src/PekanCore/PekanGUIWindow.cpp
+    src/PekanCore/Layer.h
+    src/PekanCore/LayerStack.h
+    src/PekanCore/LayerStack.cpp
     src/PekanCore/Utils/PekanUtils.h
     src/PekanCore/Utils/PekanUtils.cpp
     src/PekanCore/Events/Event.h
-    src/PekanCore/Events/Event.cpp
     src/PekanCore/Events/WindowEvent.h
     src/PekanCore/Events/KeyEvent.h
     src/PekanCore/Events/MouseEvent.h

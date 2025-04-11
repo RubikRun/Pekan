@@ -1,20 +1,20 @@
 #pragma once
 
-struct GLFWwindow;
+#include "Layer.h"
 
 namespace Pekan
 {
 
 	// A base class for all Pekan GUI windows
-	class PekanGUIWindow
+	class PekanGUIWindow : public Layer
 	{
 	public:
+		PekanGUIWindow() : Layer("gui_layer") {}
+		PekanGUIWindow(const std::string& layerName) : Layer(layerName) {}
 
 		virtual ~PekanGUIWindow() = default;
 
-		virtual bool init() = 0;
-
-		void render();
+		void render() override final;
 
 	private: /* functions*/
 

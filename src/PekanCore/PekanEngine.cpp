@@ -1,4 +1,5 @@
 #include "PekanEngine.h"
+#include "PekanApplication.h"
 #include "Logger/PekanLogger.h"
 
 #include "imgui.h"
@@ -8,10 +9,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Events/WindowEvent.h"
-
 namespace Pekan
 {
     const int DEFAULT_WINDOW_WIDTH = 1280;
@@ -20,6 +17,7 @@ namespace Pekan
     const char* DEFAULT_WINDOW_TITLE = "Pekan v0.1";
 
     GLFWwindow* PekanEngine::s_window = nullptr;
+    PekanApplication* PekanEngine::s_application = nullptr;
 
     // Returns a user-friendly string from fiven OpenGL error code
     std::string _getGLErrorMessage(unsigned error)
@@ -97,6 +95,16 @@ namespace Pekan
         }
         exitImGui();
         destroyWindow();
+    }
+
+    void PekanEngine::registerApplication(PekanApplication* application)
+    {
+        if (s_application != nullptr)
+        {
+            PK_LOG_ERROR("Trying to register multiple applications. Pekan supports only one application at a time.", "Pekan");
+            return;
+        }
+        s_application = application;
     }
 
     bool PekanEngine::isKeyPressed(int key)
@@ -182,7 +190,7 @@ namespace Pekan
             glfwSetInputMode(s_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         }
 
-        setupEventHandler();
+        setEventCallbacks();
 
         return true;
     }
@@ -194,14 +202,57 @@ namespace Pekan
         s_window = nullptr;
     }
 
-    void PekanEngine::setupEventHandler()
+    void PekanEngine::setEventCallbacks()
     {
-        glfwSetKeyCallback(s_window, EventHandler::handleKeyEvent);
-        glfwSetCursorPosCallback(s_window, EventHandler::handleMouseMovedEvent);
-        glfwSetScrollCallback(s_window, EventHandler::handleMouseScrolledEvent);
-        glfwSetMouseButtonCallback(s_window, EventHandler::handleMouseButtonEvent);
-        glfwSetWindowSizeCallback(s_window, EventHandler::handleWindowResizedEvent);
-        glfwSetWindowCloseCallback(s_window, EventHandler::handleWindowClosedEvent);
+        glfwSetKeyCallback(s_window, keyCallback);
+        glfwSetCursorPosCallback(s_window, mouseMovedCallback);
+        glfwSetScrollCallback(s_window, mouseScrolledCallback);
+        glfwSetMouseButtonCallback(s_window, mouseButtonCallback);
+        glfwSetWindowSizeCallback(s_window, windowResizedCallback);
+        glfwSetWindowCloseCallback(s_window, windowClosedCallback);
+    }
+
+    void PekanEngine::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        if (s_application)
+        {
+            s_application->handleKeyEvent(key, scancode, action, mods);
+        }
+    }
+    void PekanEngine::mouseMovedCallback(GLFWwindow* window, double xPos, double yPos)
+    {
+        if (s_application)
+        {
+            s_application->handleMouseMovedEvent(xPos, yPos);
+        }
+    }
+    void PekanEngine::mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset)
+    {
+        if (s_application)
+        {
+            s_application->handleMouseScrolledEvent(xOffset, yOffset);
+        }
+    }
+    void PekanEngine::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+    {
+        if (s_application)
+        {
+            s_application->handleMouseButtonEvent(button, action, mods);
+        }
+    }
+    void PekanEngine::windowResizedCallback(GLFWwindow* window, int width, int height)
+    {
+        if (s_application)
+        {
+            s_application->handleWindowResizedEvent(width, height);
+        }
+    }
+    void PekanEngine::windowClosedCallback(GLFWwindow* window)
+    {
+        if (s_application)
+        {
+            s_application->handleWindowClosedEvent();
+        }
     }
 
     bool PekanEngine::loadOpenGL()

@@ -24,7 +24,7 @@
 
 0010 20.03.2025 (TODO): Limit FPS
 
-0011 21.03.2025 (TODO): Event system
+0011 21.03.2025 (DONE): Event system
 
 0012 21.03.2025 (TODO): Provide a way for applications ot specify their way of closing
 
@@ -39,3 +39,7 @@
 0016 03.04.2025 (TODO): Create a Window class
 
 0017 05.04.2025 (TODO): Create Pekan enums corresponding to event-related enums in GLFW, like GLFW_KEY_W
+
+0018 11.04.2025 (TODO): Use PekanEngine's event polling on these 2 lines in PekanApplication.cpp
+                            if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+                            glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
