@@ -39,7 +39,7 @@ namespace Pekan
 		// - initializing all libraries
 		// 
 		// To be called once, at the beginning, before using the engine.
-		static bool init(bool fullScreen = false, bool hideCursor = false);
+		static bool init(PekanApplication* application, bool fullScreen = false, bool hideCursor = false);
 
 		// Exits the engine
 		// - destroying graphics window
@@ -48,10 +48,6 @@ namespace Pekan
 		// 
 		// To be called once, at the end, after finished using the engine.
 		static void exit();
-
-		// Registers an application with Pekan Engine.
-		// Each application has to be registered using this function before it could be run.
-		static void registerApplication(PekanApplication* application);
 
 		static GLFWwindow* getWindow() { return s_window; }
 
@@ -85,7 +81,7 @@ namespace Pekan
 		// Event callbacks.
 		// Functions that are called when an event occurs.
 		// Each of these functions handles a specific type of event
-		// by just sending it to Pekan's currently registered application.
+		// by just sending it to Pekan's current application.
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		static void mouseMovedCallback(GLFWwindow* window, double xPos, double yPos);
 		static void mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset);
@@ -109,7 +105,7 @@ namespace Pekan
 		// Window for rendering graphics
 		static GLFWwindow* s_window;
 
-		// Application currently registered with Pekan
+		// Application currently using Pekan
 		static PekanApplication* s_application;
 	};
 

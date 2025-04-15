@@ -1,6 +1,7 @@
 #pragma once
 
 #include <LayerStack.h>
+#include <string>
 
 namespace Pekan
 {
@@ -20,6 +21,8 @@ namespace Pekan
 		void run();
 
 		void exit();
+
+		virtual std::string getName() const { return ""; }
 
 	private: /* functions */
 

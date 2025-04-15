@@ -416,3 +416,70 @@ Mouse moves -> GLFW calls PekanEngine::mouseMovedCallback()
 -> Layer::onMouseMoved() can be implemented by client to do whatever they want and return true if event is handled
    If not implemented, it will not do anything and just return false, meaning continue to next layer
 }
+
+----------
+15.04.2025
+----------
+
+{
+Next feature we'll implement from the list is a simple one:
+    Create a way for applications to specify the window's title
+
+Taking a quick look at our current architecture it makes the most sense
+that we let applications have a name and then Pekan will automatically set window's title to be that name.
+Each specific application will be able to set its name inside of the _init() method,
+similar to how it configures the layer stack.
+So, to do that, just add this member variable in PekanApplication
+    std::string m_name;
+and then we can set its value inside of Demo03_Application::_init() like that
+    m_name = "Snake Game";
+Same for the other demos as well.
+
+Okay, now each application has a name.
+We need to use that name for the window's title.
+Window's title is set in PekanEngine.cpp like that
+    s_window = glfwCreateWindow(width, height, DEFAULT_WINDOW_TITLE, nullptr, nullptr);
+So instead of using the constant DEFAULT_WINDOW_TITLE we can use the registered application
+    s_application
+and use its name.
+For that we'll need to have a getter for the name in PekanApplication
+    const std::string& getName() const { return m_name; }
+
+Hm but now there's a problem.
+The function creating the window is
+    PekanEngine::createWindow()
+which is called by
+    PekanEngine::init()
+which is called in
+    PekanApplication::init()
+before registering the application, so when creating the window we don't yet know the name of our application.
+How can we solve this?
+We could separate engine initialization from window creation so that PekanApplication
+can first initialize the engine, then register itself, and then use the engine to create a window.
+But actually a better idea, at least at this point, seems to be merging registering with initialization,
+so instead of having a separate function registerApplication() we can just add a parameter to
+    PekanEngine::init()
+which will be the application. Then init() will handle everything in the correct order.
+Let's do that.
+
+Okay, that solved the problem, but now there is another problem of similar nature.
+We want to use the member PekanApplication::m_name when calling PekanEngine::init()
+but this happens before calling PekanApplication::_init() so the specific application
+has not set its name yet.
+What we can do is to have a virtual getter for the name that should be implemented by specific applications
+if they want to have a name.
+So remove the member m_name and change getName() to be
+    virtual std::string getName() const { return ""; }
+Now in Demo03_Application instead of setting m_name = "Snake Game" inside of _init()
+we can implement the getName() function, like that
+    std::string getName() const override { return "Snake Game"; }
+That's it. Now when PekanEngine calls
+    s_application->getName();
+this will call the overriden version of getName() and it will return "Snake Game".
+If there is no overriden version of getName() then it will call the base version, PekanApplication's version,
+which just returns an empty string, and the window's title will default to
+    DEFAULT_WINDOW_TITLE
+
+Okay, done.
+Looks good. Every application has its name, and window's title corresponds to that name.
+}

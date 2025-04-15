@@ -14,13 +14,11 @@ namespace Pekan
     bool PekanApplication::init()
     {
         // Initialize Pekan
-        if (!PekanEngine::init(m_isFullScreen, m_shouldHideCursor))
+        if (!PekanEngine::init(this, m_isFullScreen, m_shouldHideCursor))
         {
             PK_LOG_ERROR("Engine failed to initialize.", "Pekan");
             return false;
         }
-        // Register application in Pekan
-        PekanEngine::registerApplication(this);
 
         if (!_init())
         {

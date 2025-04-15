@@ -20,7 +20,7 @@
 
 0008 04.03.2025 (DONE): Add support for line numbers in log messages in PekanLogger
 
-0009 19.03.2025 (TODO): Add option for changing window's title in applications
+0009 19.03.2025 (DONE): Add option for changing window's title in applications
 
 0010 20.03.2025 (TODO): Limit FPS
 
@@ -43,3 +43,7 @@
 0018 11.04.2025 (TODO): Use PekanEngine's event polling on these 2 lines in PekanApplication.cpp
                             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
                             glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+
+0019 14.04.2025 (TODO): Create a way for derived applications to set up layer stack without directly touching
+                        the member variable m_layerStack. Maybe add an output parameter to _init() function
+                        that will be used by the base PekanApplication::init()

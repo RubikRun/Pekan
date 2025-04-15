@@ -1,18 +1,6 @@
 #include "Demo03_Scene.h"
 
-// TEMP: testing event system
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Events/WindowEvent.h"
-
-#include "Utils/PekanUtils.h"
-
 using Pekan::Renderer::PekanRenderer;
-
-// TEMP: testing event system
-using Pekan::KeyPressedEvent; using Pekan::KeyReleasedEvent;
-using Pekan::MouseMovedEvent; using Pekan::MouseScrolledEvent; using Pekan::MouseButtonPressedEvent; using Pekan::MouseButtonReleasedEvent;
-using Pekan::WindowResizedEvent; using Pekan::WindowClosedEvent;
 
 namespace Demo
 {
@@ -49,54 +37,5 @@ namespace Demo
 		m_snake.destroy();
 		m_apple.destroy();
 	}
-
-    // TEMP: testing event system
-    bool Demo03_Scene::onKeyPressed(KeyPressedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Demo03_Scene::onKeyReleased(Pekan::KeyReleasedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Demo03_Scene::onMouseMoved(Pekan::MouseMovedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Demo03_Scene::onMouseScrolled(Pekan::MouseScrolledEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Demo03_Scene::onMouseButtonPressed(Pekan::MouseButtonPressedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Demo03_Scene::onMouseButtonReleased(Pekan::MouseButtonReleasedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Demo03_Scene::onWindowResized(Pekan::WindowResizedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
-
-    bool Demo03_Scene::onWindowClosed(Pekan::WindowClosedEvent& event)
-    {
-        PK_LOG_INFO(event, "Boris");
-        return true;
-    }
 
 } // namespace Demo

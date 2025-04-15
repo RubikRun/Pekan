@@ -69,8 +69,20 @@ namespace Pekan
 
 #endif
 
-    bool PekanEngine::init(bool fullScreen, bool hideCursor)
+    bool PekanEngine::init(PekanApplication* application, bool fullScreen, bool hideCursor)
     {
+        if (s_application != nullptr)
+        {
+            PK_LOG_ERROR("Multiple applications are trying to initialize the engine. Pekan supports only one application at a time.", "Pekan");
+            return false;
+        }
+        if (application == nullptr)
+        {
+            PK_LOG_ERROR("A null application is given when trying to initialize the engine.", "Pekan");
+            return false;
+        }
+        s_application = application;
+
         if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, fullScreen, hideCursor))
         {
             return false;
@@ -95,16 +107,6 @@ namespace Pekan
         }
         exitImGui();
         destroyWindow();
-    }
-
-    void PekanEngine::registerApplication(PekanApplication* application)
-    {
-        if (s_application != nullptr)
-        {
-            PK_LOG_ERROR("Trying to register multiple applications. Pekan supports only one application at a time.", "Pekan");
-            return;
-        }
-        s_application = application;
     }
 
     bool PekanEngine::isKeyPressed(int key)
@@ -161,17 +163,27 @@ namespace Pekan
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
+        std::string windowTitle = DEFAULT_WINDOW_TITLE;
+        // If application has a name, use that name for window's title
+        if (s_application)
+        {
+            const std::string& applicationName = s_application->getName();
+            if (!applicationName.empty())
+            {
+                windowTitle = applicationName;
+            }
+        }
         // Create a GLFW window
         if (fullScreen)
         {
             GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
 
-            s_window = glfwCreateWindow(mode->width, mode->height, "Fullscreen Window", primaryMonitor, nullptr);
+            s_window = glfwCreateWindow(mode->width, mode->height, windowTitle.c_str(), primaryMonitor, nullptr);
         }
         else
         {
-            s_window = glfwCreateWindow(width, height, DEFAULT_WINDOW_TITLE, nullptr, nullptr);
+            s_window = glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
         }
         if (s_window == nullptr)
         {
