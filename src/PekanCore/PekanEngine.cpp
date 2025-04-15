@@ -149,6 +149,16 @@ namespace Pekan
         return { width, height };
     }
 
+    void PekanEngine::enableVSync()
+    {
+        glfwSwapInterval(1);
+    }
+
+    void PekanEngine::disableVSync()
+    {
+        glfwSwapInterval(0);
+    }
+
     bool PekanEngine::createWindow(int width, int height, bool fullScreen, bool hideCursor)
     {
         if (!glfwInit())
@@ -193,8 +203,6 @@ namespace Pekan
         }
         // Make the window's context current
         glfwMakeContextCurrent(s_window);
-        // Enalbe VSync
-        glfwSwapInterval(1);
 
         // Hide cursor if needed
         if (hideCursor)

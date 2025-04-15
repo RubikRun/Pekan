@@ -67,6 +67,10 @@ namespace Pekan
 		// Returns window's current resolution
 		static glm::ivec2 getWindowResolution();
 
+		// Enables/Disables VSync - using FPS equal to monitor's refresh rate
+		static void enableVSync();
+		static void disableVSync();
+
 	private: /* functions */
 
 		// Creates the graphics window,

@@ -1,6 +1,7 @@
 #include "PekanApplication.h"
 #include "Logger/PekanLogger.h"
 #include "PekanEngine.h"
+#include "FpsLimiter.h"
 
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -25,7 +26,7 @@ namespace Pekan
             return false;
         }
 
-        // Init all layers
+        // Initalize all layers
         for (Layer* layer : m_layerStack)
         {
             if (layer)
@@ -48,6 +49,15 @@ namespace Pekan
 
     void PekanApplication::run()
 	{
+        // Does this application have a specific FPS requirement?
+        const bool useFPS = (m_fps > 0.0);
+        // If not, enable VSync to automatically match FPS with monitor's refresh rate
+        if (!useFPS)
+        {
+            PekanEngine::enableVSync();
+        }
+        FpsLimiter fpsLimiter(m_fps);
+
         GLFWwindow* window = PekanEngine::getWindow();
         while (!glfwWindowShouldClose(window))
         {
@@ -82,6 +92,11 @@ namespace Pekan
             }
 
             glfwSwapBuffers(window);
+
+            if (useFPS)
+            {
+                fpsLimiter.wait();
+            }
         }
 	}
 

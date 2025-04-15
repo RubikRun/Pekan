@@ -18,6 +18,8 @@ namespace Demo
 		m_layerStack.pushLayer(demoScene);
 		m_layerStack.pushLayer(demoGuiWindow);
 
+		setFPS(24.0);
+
 		return true;
 	}
 

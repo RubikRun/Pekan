@@ -483,3 +483,52 @@ which just returns an empty string, and the window's title will default to
 Okay, done.
 Looks good. Every application has its name, and window's title corresponds to that name.
 }
+
+----------
+16.04.2025
+----------
+
+{
+Next feature we'll look at from the list is also fairly simple (HAHA from future me):
+    Limit FPS
+Currently PekanEngine enables VSync by default, so FPS is automatically set to be equal to the display's FPS.
+That's a good default behavior but we want to allow applications to specify custom FPS.
+For that, let's add a member
+    double m_fps = 0.0;
+to PekanApplication, together with a protected setter
+    inline void setFPS(double fps) { m_fps = fps; }
+If noone sets FPS it will stay at 0.0 which will mean use VSync.
+We will also remove the line that enables VSync in PekanEngine
+    glfwSwapInterval(1);
+Instead we will add these 2 new functions to PekanEngine
+    static void enableVSync();
+	static void disableVSync();
+for enabling/disabling VSync.
+Then in PekanApplication's run() function, before the main loop, we want to enable VSync if there is no FPS specified
+    const bool useFPS = (m_fps > 0.0);
+    if (!useFPS)
+    {
+        PekanEngine::enableVSync();
+    }
+If there is an FPS specified we will need to manually limit our frames to that FPS.
+How?
+There are a couple of approaches, it's not that straightforward.
+We'll add a new class FpsLimiter which will implement the waiting functionality
+such that we reach the desired FPS.
+
+I played around with different methods of implementing FpsLimiter. I liked 2 of them.
+Couldn't choose between them. I think there's a use case for both, so I'll keep them both.
+I called them "Sleep Compensate" and "Wait Blocking".
+At the top of FpsLimiter.h you can see a description of what they do and what their pros and cons are.
+
+I decided it will be bad for performance to do any runtime checks for choosing between the 2 implementations
+(for example an environment variable, or a member variable in PekanApplication that can be set by derived classes)
+So instead I decided to just use a macro for choosing between the 2 implementations at compile time
+    #define PEKAN_FPS_LIMITER_IMPL_SLEEP_COMPENSATE 1
+    #define PEKAN_FPS_LIMITER_IMPL_WAIT_BLOCKING 0
+We'll see later if we need to ship Pekan with both options included.
+For now I just wanted to have them both in code, but to use only one at a time.
+
+Looks good. Tested it quite a bit.
+Done.
+}

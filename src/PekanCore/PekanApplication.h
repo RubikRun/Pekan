@@ -24,6 +24,12 @@ namespace Pekan
 
 		virtual std::string getName() const { return ""; }
 
+	protected: /* functions */
+
+		// Set FPS (frames per second) to be used for running the application.
+		// If you don't manually set FPS your application will run with FPS equal to monitor's refresh rate (VSync)
+		inline void setFPS(double fps) { m_fps = fps; }
+
 	private: /* functions */
 
 		// Initializes the application.
@@ -56,6 +62,10 @@ namespace Pekan
 		// Flag indicating whether mouse's cursor should be hidden.
 		// To be set by derived classes inside of the _init() function.
 		bool m_shouldHideCursor = false;
+
+		// Frames per second.
+		// Value of 0.0 means use FPS equal to monitor's refresh rate (VSync)
+		double m_fps = 0.0;
 	};
 
 } // namespace Pekan

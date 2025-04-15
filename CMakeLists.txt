@@ -65,6 +65,8 @@ add_library(PekanCore STATIC
     src/PekanCore/Events/WindowEvent.h
     src/PekanCore/Events/KeyEvent.h
     src/PekanCore/Events/MouseEvent.h
+    src/PekanCore/FpsLimiter.h
+    src/PekanCore/FpsLimiter.cpp
 )
 
 # Group Logger files under a virtual folder called "Logger"

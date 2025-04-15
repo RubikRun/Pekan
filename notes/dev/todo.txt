@@ -22,7 +22,7 @@
 
 0009 19.03.2025 (DONE): Add option for changing window's title in applications
 
-0010 20.03.2025 (TODO): Limit FPS
+0010 20.03.2025 (DONE): Limit FPS
 
 0011 21.03.2025 (DONE): Event system
 

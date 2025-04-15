@@ -140,6 +140,8 @@ namespace Demo
             m_vertices.data(),
             m_vertices.size() * sizeof(Vertex)
         );
+
+        m_rotation += 1.0f;
 	}
 
 	void Demo02_Scene::render()
