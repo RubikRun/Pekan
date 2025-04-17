@@ -8,7 +8,7 @@ namespace Demo
 	bool Demo03_Application::_init()
 	{
 		// Create demo scene
-		Demo03_Scene* demoScene = new Demo03_Scene();
+		Demo03_Scene* demoScene = new Demo03_Scene(this);
 		// Add scene to application's layers
 		m_layerStack.pushLayer(demoScene);
 

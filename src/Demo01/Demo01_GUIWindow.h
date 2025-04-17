@@ -14,6 +14,8 @@ namespace Demo
 	{
 	public:
 
+		Demo01_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
+
 		inline void attachScene(Demo01_Scene* scene) { m_scene = scene; }
 
 	private: /* functions */

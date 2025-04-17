@@ -20,7 +20,7 @@ namespace Demo
 	{
 	public:
 
-		Demo02_Scene() : Layer("scene_layer") {}
+		Demo02_Scene(Pekan::PekanApplication* application) : Layer("scene_layer", application) {}
 
 		bool init() override;
 

@@ -9,8 +9,8 @@ namespace Demo
 	bool Demo00_Application::_init()
 	{
 		// Create demo scene and demo GUI window
-		Demo00_Scene* demoScene = new Demo00_Scene();
-		Demo00_GUIWindow* demoGuiWindow = new Demo00_GUIWindow();
+		Demo00_Scene* demoScene = new Demo00_Scene(this);
+		Demo00_GUIWindow* demoGuiWindow = new Demo00_GUIWindow(this);
 		// Attach demo GUI window to demo scene
 		demoScene->attachGUIWindow(demoGuiWindow);
 

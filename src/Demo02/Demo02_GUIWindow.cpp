@@ -74,10 +74,6 @@ namespace Demo
 		renderSliderFov(m_scene->getFOV());
 		renderSliderCameraDist(m_scene->getCameraDist());
 
-		// TEMP: testing FPS capping
-		ImGui::Text("%.3f ms/frame", 1000.0f / ImGui::GetIO().Framerate);
-		ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
-
 		ImGui::End();
 	}
 

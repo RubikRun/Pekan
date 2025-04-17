@@ -1,5 +1,11 @@
 #include "Demo03_Scene.h"
 
+#include "PekanApplication.h"
+#include "Events/KeyEvent.h"
+
+// TODO: remove this after we have Pekan enum for key codes
+#include <GLFW/glfw3.h>
+
 using Pekan::Renderer::PekanRenderer;
 
 namespace Demo
@@ -36,6 +42,17 @@ namespace Demo
 	{
 		m_snake.destroy();
 		m_apple.destroy();
+	}
+
+	bool Demo03_Scene::onKeyPressed(Pekan::KeyPressedEvent& event)
+	{
+		// Make application close if escape key is pressed
+		if (event.getKeyCode() == GLFW_KEY_ESCAPE)
+		{
+			stopRunningApplication();
+			return true;
+		}
+		return false;
 	}
 
 } // namespace Demo

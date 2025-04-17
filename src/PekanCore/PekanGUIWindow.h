@@ -9,8 +9,8 @@ namespace Pekan
 	class PekanGUIWindow : public Layer
 	{
 	public:
-		PekanGUIWindow() : Layer("gui_layer") {}
-		PekanGUIWindow(const std::string& layerName) : Layer(layerName) {}
+		PekanGUIWindow(Pekan::PekanApplication* application) : Layer("gui_layer", application) {}
+		PekanGUIWindow(const std::string& layerName, Pekan::PekanApplication* application) : Layer(layerName, application) {}
 
 		virtual ~PekanGUIWindow() = default;
 

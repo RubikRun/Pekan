@@ -532,3 +532,103 @@ For now I just wanted to have them both in code, but to use only one at a time.
 Looks good. Tested it quite a bit.
 Done.
 }
+
+----------
+17.04.2025
+----------
+
+{
+I'd like to look at this TO-DO item now:
+    Provide a way for applications to specify their way of closing
+
+Currently we are doing this directly inside of PekanApplication's main loop
+    // Close window if escape key is pressed
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
+which is not good. We don't want every application to be closable with the escape key.
+We want every application to be able to implement its own closing logic.
+So let's remove this from PekanApplication's main loop.
+The only demo that needs to be closable by anything other than the X button of the window, is Demo03.
+It needs to be closable with the escape key.
+
+Well, we have the event system now so we can definitely use that.
+We can make Demo03_Scene react to pressing the escape key, like that
+    bool onKeyPressed(Pekan::KeyPressedEvent& event) override;    (Demo03_Scene.h)
+and implementing it like
+    bool Demo03_Scene::onKeyPressed(Pekan::KeyPressedEvent& event)    (Demo03_Scene.cpp)
+    {
+        if (event.getKeyCode() == GLFW_KEY_ESCAPE)
+        {
+            // HERE WE HAVE TO MAKE THE APPLICATION CLOSE
+            return true;
+        }
+        return false;
+    }
+Okay, that works. It is activated when the escape key is pressed.
+
+Now how do we make the application close? Until now in PekanApplication we did this
+    glfwSetWindowShouldClose(window, true);
+Obiously we cannot do that from Demo03's code.
+PekanApplication should expose an API for closing the application, for example like that
+    void stopRunning();    (PekanApplication.h)
+and implementing it like
+    void PekanApplication::stopRunning()    (PekanApplication.cpp)
+    {
+        glfwSetWindowShouldClose(PekanEngine::getWindow(), true);
+    }
+but it'd be good for that API to not be public.
+We don't want any code to be able to close an application, we need more control than that.
+At first sight it looks like we can just make this new function stopRunning() be protected.
+That way only derived applications will be able to call it.
+But that's not exactly what we want because it's not the application's logic that will want to close the application,
+instead it's the layer's logic. We cannot react to events inside of Demo03_Application,
+we can react to events inside of Demo03_Scene.
+So we want a layer to be able to close its application.
+That's a bit problematic with our current architecture because layers are not aware that an application contains them,
+they don't know which one their application is.
+Is it a good idea to allow each layer to know its parent application?
+Not 100% sure but it seems so. I cannot think of a better solution at the moment,
+without complicating things way too much, or changing architecture overall.
+So let's go with that.
+Let's make every layer know its parent application, by adding a member
+    PekanApplication* m_application = nullptr;
+to class Layer and let's require an application parameter in Layer's constructor
+    Layer(const std::string& name, PekanApplication* application) : m_name(name), m_application(application) {}
+Now we need to change a few things, we need to add this extra application parameter to a bunch of other constructors,
+but that's okay, easy.
+
+Okay, now every layer knows its parent application.
+So it looks like we can make class Layer be a friend to class PekanApplication
+    friend class Layer;
+and then this function stopRunning() can be called from class Layer.
+However, there's a problem. It cannot be called from classes derived from Layer,
+and that was the whole point. We want derived classes of Layer to be able to close their application.
+It turns out friendship in C++ is not inheritable, so the fact that Layer is a friend to PekanApplication
+does NOT mean that derived classes of Layer will be friends to PekanApplication.
+There is no way to make derived classes of Layer be friends of PekanApplication.
+What we can do instead is to create a protected wrapper API in Layer
+    protected:
+        void stopRunningApplication();
+which calls m_application's stopRunning() function
+    if (m_application)
+    {
+        m_application->stopRunning();
+    }
+This code is okay because it's part of Layer, which is a friend to PekanApplication.
+Then derived classes cannot directly call m_application->stopRunning()
+but they can call this protected function stopRunningApplication().
+So now we can finally implement Demo03_Scene's closing logic like that
+    bool Demo03_Scene::onKeyPressed(Pekan::KeyPressedEvent& event)
+    {
+        if (event.getKeyCode() == GLFW_KEY_ESCAPE)
+        {
+            stopRunningApplication();
+            return true;
+        }
+        return false;
+    }
+Works perfectly.
+Done.
+}

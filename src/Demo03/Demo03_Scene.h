@@ -12,7 +12,7 @@ namespace Demo
 	{
 	public:
 
-		Demo03_Scene() : Layer("scene_layer") {}
+		Demo03_Scene(Pekan::PekanApplication* application) : Layer("scene_layer", application) {}
 
 		bool init() override;
 
@@ -21,6 +21,10 @@ namespace Demo
 		void render() override;
 
 		void exit() override;
+
+	private: /* functions */
+
+		bool onKeyPressed(Pekan::KeyPressedEvent& event) override;
 
 	private: /* variables */
 

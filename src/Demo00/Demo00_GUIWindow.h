@@ -12,6 +12,8 @@ namespace Demo
 	{
 	public:
 
+		Demo00_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
+
 		// Returns current value of clear color
 		inline const ImVec4& getClearColor() const { return m_clearColor; }
 

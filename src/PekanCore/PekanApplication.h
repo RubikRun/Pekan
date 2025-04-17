@@ -6,11 +6,13 @@
 namespace Pekan
 {
 	class PekanEngine;
+	class Layer;
 
 	// A base class for all Pekan applications
 	class PekanApplication
 	{
 		friend class PekanEngine;
+		friend class Layer;
 
 	public:
 
@@ -37,6 +39,9 @@ namespace Pekan
 		// To be implemented by derived classes
 		// to set up application's layer stack
 		virtual bool _init() = 0;
+
+		// Stops running the main loop and closes the window
+		void stopRunning();
 
 		// Functions that are called when an event occurs.
 		// Each of these functions handles a specific type of event
