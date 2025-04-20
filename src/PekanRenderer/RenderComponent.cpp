@@ -9,12 +9,9 @@ namespace Pekan
 
 		RenderComponent::~RenderComponent()
 		{
-			if (isValid())
-			{
-				PK_LOG_ERROR("An instance of RenderComponent is getting destroyed but the underlying GPU object is not yet destroyed."
-				             " Make sure to destroy the GPU object by calling destroy() on your RenderComponent instance"
-				             " before that instance itself gets destroyed.", "Pekan");
-			}
+			PK_ASSERT(!isValid(), "An instance of RenderComponent is getting destroyed but the underlying GPU object is not yet destroyed."
+			                      " Make sure to destroy the GPU object by calling destroy() on your RenderComponent instance"
+			                      " before that instance itself gets destroyed.", "Pekan");
 		}
 
 		void RenderComponent::create(bool doBind)
@@ -36,7 +33,7 @@ namespace Pekan
 		{
 			if (!isValid())
 			{
-				PK_LOG_WARNING("Trying to destroy a non-existing render component.", "Pekan");
+				PK_ASSERT(false, "Trying to destroy a non-existing render component.", "Pekan");
 				return;
 			}
 			_destroy();

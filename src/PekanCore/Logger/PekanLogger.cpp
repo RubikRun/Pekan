@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <fstream>
 
+#define SPACES_STR(N) std::string(N, ' ')
+
 namespace Pekan
 {
 namespace Logger
@@ -432,6 +434,16 @@ namespace Logger
             {
                 std::cout << "[DEBUG][Failed to close log file after writing message](" << sender << "): " << msg << std::endl;
             }
+        }
+    }
+
+    void _logAssertToConsole(const char* msg, const char* sender, const char* condition)
+    {
+        if (isConsoleEnabled)
+        {
+            std::cout << "(" << sender << "): " << "Assertion failed: " << condition << std::endl;
+            const int spacesCount = std::strlen(sender) + 4;
+            std::cout << SPACES_STR(spacesCount) << "with message \"" << msg << "\"" << std::endl;
         }
     }
 

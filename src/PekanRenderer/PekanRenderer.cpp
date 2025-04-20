@@ -66,7 +66,7 @@ namespace Renderer
 		case ShaderDataType::Int4:      return GL_INT;
 		case ShaderDataType::Bool:      return GL_BOOL;
 		}
-		PK_LOG_ERROR("Unknown ShaderDataType, cannot determine OpenGL base type.", "Pekan");
+		PK_ASSERT(false, "Unknown ShaderDataType, cannot determine OpenGL base type.", "Pekan");
 		return 0;
 	}
 
@@ -87,7 +87,7 @@ namespace Renderer
 			case DrawMode::TrianglesAdjacency:        return GL_TRIANGLES_ADJACENCY;
 			case DrawMode::Patches:                   return GL_PATCHES;
 		}
-		PK_LOG_ERROR("Unknown DrawMode, cannot determine OpenGL enum.", "Pekan");
+		PK_ASSERT(false, "Unknown DrawMode, cannot determine OpenGL enum.", "Pekan");
 		return 0;
 	}
 
@@ -110,7 +110,7 @@ namespace Renderer
 		case BlendFactor::ConstantAlpha:            return GL_CONSTANT_ALPHA;
 		case BlendFactor::OneMinusConstantAlpha:    return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
-		PK_LOG_ERROR("Unknown BlendFactor, cannot determine OpenGL enum.", "Pekan");
+		PK_ASSERT(false, "Unknown BlendFactor, cannot determine OpenGL enum.", "Pekan");
 		return 0;
 	}
 
@@ -128,7 +128,7 @@ namespace Renderer
 			case BufferDataUsage::DynamicRead:    return GL_DYNAMIC_READ;
 			case BufferDataUsage::DynamicCopy:    return GL_DYNAMIC_COPY;
 		}
-		PK_LOG_ERROR("Unknown BufferDataUsage, cannot determine OpenGL enum.", "Pekan");
+		PK_ASSERT(false, "Unknown BufferDataUsage, cannot determine OpenGL enum.", "Pekan");
 		return 0;
 	}
 
@@ -148,7 +148,7 @@ namespace Renderer
 			case ShaderDataType::Int4:      return 4 * 4;
 			case ShaderDataType::Bool:      return 1;
 		}
-		PK_LOG_ERROR("Unknown ShaderDataType, cannot determine its size.", "Pekan");
+		PK_ASSERT(false, "Unknown ShaderDataType, cannot determine its size.", "Pekan");
 		return 0;
 	}
 
@@ -168,7 +168,7 @@ namespace Renderer
 			case ShaderDataType::Int4:      return 4;
 			case ShaderDataType::Bool:      return 1;
 		}
-		PK_LOG_ERROR("Unknown ShaderDataType, cannot determine its components count.", "Pekan");
+		PK_ASSERT(false, "Unknown ShaderDataType, cannot determine its components count.", "Pekan");
 		return 0;
 	}
 

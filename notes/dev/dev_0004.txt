@@ -632,3 +632,35 @@ So now we can finally implement Demo03_Scene's closing logic like that
 Works perfectly.
 Done.
 }
+
+----------
+19.04.2025
+----------
+
+{
+Now let's look at this TO-DO item:
+    Create an ASSERT() mechanism
+
+Did some research on what are common ways of implementing an ASSERT() macro.
+Created this new macro
+    PK_ASSERT(CND, MSG, SND)
+in
+    PekanLogger.h
+It takes in a condition, a message and a sender.
+Message and sender have the exact same meaning as in PK_LOG_ERROR() and the other log macros.
+Condition is a condition to be checked - if it's false only then the message should be shown,
+and code should break on this line.
+This should happen only in debug builds.
+In non-debug builds the condition should just be executed as normal code.
+
+To do this properly I added this new function in PekanLogger.h
+    void _logAssertToConsole(const char* msg, const char* sender, const char* condition);
+and implemented it in PekanLogger.cpp
+
+That's about it. Not much to say.
+
+Then I went through all places where PK_LOG_*() macros are used
+and I changed some of them to PK_ASSERT().
+Tested all demos. Tested how a failing assertion looks like.
+Looks good. Done.
+}

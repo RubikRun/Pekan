@@ -14,7 +14,7 @@ namespace Pekan
 		}
 		else
 		{
-			PK_LOG_ERROR("A layer is trying to stop running the application, but the layer's application pointer is null.", "Pekan");
+			PK_ASSERT(false, "A layer is trying to stop running the application, but the layer's application pointer is null.", "Pekan");
 		}
 	}
 
