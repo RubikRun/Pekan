@@ -664,3 +664,32 @@ and I changed some of them to PK_ASSERT().
 Tested all demos. Tested how a failing assertion looks like.
 Looks good. Done.
 }
+
+----------
+21.04.2025
+----------
+
+{
+Now let's look at this TO-DO item:
+    Create a Window class
+
+It's fairly straightforward. Mostly just refactored code from PekanEngine into this new class Window.
+One thing worth mentioning is these 6 static functions in Window
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void mouseMovedCallback(GLFWwindow* window, double xPos, double yPos);
+    static void mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset);
+    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    static void windowResizedCallback(GLFWwindow* window, int width, int height);
+    static void windowClosedCallback(GLFWwindow* window);
+They are registered as the 6 event callbacks in GLFW, using this function in Window
+    void setEventCallbacks();
+Exactly the same as it was in PekanEngine, but now class Window is not static,
+so it kind of doesn't make sense that we register these static functions as event callbacks.
+This is a temporary situation that we're in, because currently we support only 1 window and 1 application at a time.
+In the future we must think about 1 application running across multiple windows
+and then being able to have different event callbacks for each window.
+For now we'll stick with having a single static set of event callbacks and having a single window.
+That's just a future note.
+That said, everything works as before, we just have window logic cleanly refactored into a Window class.
+Done.
+}

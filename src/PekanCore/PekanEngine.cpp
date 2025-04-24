@@ -1,4 +1,5 @@
 #include "PekanEngine.h"
+
 #include "PekanApplication.h"
 #include "Logger/PekanLogger.h"
 
@@ -9,6 +10,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define PK_GLSL_VERSION "#version 330 core"
+
 namespace Pekan
 {
     const int DEFAULT_WINDOW_WIDTH = 1280;
@@ -16,10 +19,11 @@ namespace Pekan
 
     const char* DEFAULT_WINDOW_TITLE = "Pekan v0.1";
 
-    GLFWwindow* PekanEngine::s_window = nullptr;
     PekanApplication* PekanEngine::s_application = nullptr;
+    bool PekanEngine::isInitialized = false;
+    Window PekanEngine::s_window;
 
-    // Returns a user-friendly string from fiven OpenGL error code
+    // Returns a user-friendly string from given OpenGL error code
     std::string _getGLErrorMessage(unsigned error)
     {
         switch (error) {
@@ -83,7 +87,23 @@ namespace Pekan
         }
         s_application = application;
 
-        if (!createWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, fullScreen, hideCursor))
+        isInitialized = true;
+
+        WindowProperties windowProperties;
+        windowProperties.fullScreen = fullScreen;
+        windowProperties.hideCursor = hideCursor;
+
+        // If application has a name, use that name for window's title
+        if (s_application)
+        {
+            const std::string& applicationName = s_application->getName();
+            if (!applicationName.empty())
+            {
+                windowProperties.title = applicationName;
+            }
+        }
+
+        if (!s_window.create(windowProperties))
         {
             return false;
         }
@@ -100,179 +120,49 @@ namespace Pekan
 
     void PekanEngine::exit()
     {
-        if (s_window == nullptr)
+        if (!isInitialized)
         {
             PK_LOG_ERROR("Trying to exit engine but engine is not yet initialized.", "Pekan");
             return;
         }
         exitImGui();
-        destroyWindow();
+        s_window.destroy();
+        isInitialized = false;
     }
 
     bool PekanEngine::isKeyPressed(int key)
     {
-        return (glfwGetKey(s_window, key) == GLFW_PRESS || glfwGetKey(s_window, key) == GLFW_REPEAT);
+        return s_window.isKeyPressed(key);
     }
 
     bool PekanEngine::isKeyReleased(int key)
     {
-        return (glfwGetKey(s_window, key) == GLFW_RELEASE);
+        return s_window.isKeyReleased(key);
     }
 
     bool PekanEngine::isKeyRepeating(int key)
     {
-        return (glfwGetKey(s_window, key) == GLFW_REPEAT);
+        return s_window.isKeyRepeating(key);
     }
 
     glm::vec2 PekanEngine::getMousePosition()
     {
-        double xMouse = 0.0;
-        double yMouse = 0.0;
-        glfwGetCursorPos(s_window, &xMouse, &yMouse);
-        return { float(xMouse), float(yMouse) };
+        return s_window.getMousePosition();
     }
 
     bool PekanEngine::isMouseButtonPressed(bool leftOrRight)
     {
-        return glfwGetMouseButton(s_window, leftOrRight ? 0 : 1) == GLFW_PRESS;
+        return s_window.isMouseButtonPressed(leftOrRight);
     }
 
     bool PekanEngine::isMouseButtonReleased(bool leftOrRight)
     {
-        return glfwGetMouseButton(s_window, leftOrRight ? 0 : 1) == GLFW_RELEASE;
+        return s_window.isMouseButtonReleased(leftOrRight);
     }
 
     glm::ivec2 PekanEngine::getWindowResolution()
     {
-        int width, height;
-        glfwGetWindowSize(s_window, &width, &height);
-        return { width, height };
-    }
-
-    void PekanEngine::enableVSync()
-    {
-        glfwSwapInterval(1);
-    }
-
-    void PekanEngine::disableVSync()
-    {
-        glfwSwapInterval(0);
-    }
-
-    bool PekanEngine::createWindow(int width, int height, bool fullScreen, bool hideCursor)
-    {
-        if (!glfwInit())
-        {
-            PK_LOG_ERROR("Failed to initialize GLFW.", "Pekan");
-            return false;
-        }
-
-        // Set window hint for OpenGL version and OpenGL Core Profile
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, PK_OPENGL_VERSION_MAJOR);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, PK_OPENGL_VERSION_MINOR);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-
-        std::string windowTitle = DEFAULT_WINDOW_TITLE;
-        // If application has a name, use that name for window's title
-        if (s_application)
-        {
-            const std::string& applicationName = s_application->getName();
-            if (!applicationName.empty())
-            {
-                windowTitle = applicationName;
-            }
-        }
-        // Create a GLFW window
-        if (fullScreen)
-        {
-            GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
-
-            s_window = glfwCreateWindow(mode->width, mode->height, windowTitle.c_str(), primaryMonitor, nullptr);
-        }
-        else
-        {
-            s_window = glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
-        }
-        if (s_window == nullptr)
-        {
-            PK_LOG_ERROR("Failed to create a window with GLFW.", "Pekan");
-            glfwTerminate();
-            return false;
-        }
-        // Make the window's context current
-        glfwMakeContextCurrent(s_window);
-
-        // Hide cursor if needed
-        if (hideCursor)
-        {
-            glfwSetInputMode(s_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-        }
-
-        setEventCallbacks();
-
-        return true;
-    }
-
-    void PekanEngine::destroyWindow()
-    {
-        glfwDestroyWindow(s_window);
-        glfwTerminate();
-        s_window = nullptr;
-    }
-
-    void PekanEngine::setEventCallbacks()
-    {
-        glfwSetKeyCallback(s_window, keyCallback);
-        glfwSetCursorPosCallback(s_window, mouseMovedCallback);
-        glfwSetScrollCallback(s_window, mouseScrolledCallback);
-        glfwSetMouseButtonCallback(s_window, mouseButtonCallback);
-        glfwSetWindowSizeCallback(s_window, windowResizedCallback);
-        glfwSetWindowCloseCallback(s_window, windowClosedCallback);
-    }
-
-    void PekanEngine::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        if (s_application)
-        {
-            s_application->handleKeyEvent(key, scancode, action, mods);
-        }
-    }
-    void PekanEngine::mouseMovedCallback(GLFWwindow* window, double xPos, double yPos)
-    {
-        if (s_application)
-        {
-            s_application->handleMouseMovedEvent(xPos, yPos);
-        }
-    }
-    void PekanEngine::mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset)
-    {
-        if (s_application)
-        {
-            s_application->handleMouseScrolledEvent(xOffset, yOffset);
-        }
-    }
-    void PekanEngine::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-    {
-        if (s_application)
-        {
-            s_application->handleMouseButtonEvent(button, action, mods);
-        }
-    }
-    void PekanEngine::windowResizedCallback(GLFWwindow* window, int width, int height)
-    {
-        if (s_application)
-        {
-            s_application->handleWindowResizedEvent(width, height);
-        }
-    }
-    void PekanEngine::windowClosedCallback(GLFWwindow* window)
-    {
-        if (s_application)
-        {
-            s_application->handleWindowClosedEvent();
-        }
+        return s_window.getResolution();
     }
 
     bool PekanEngine::loadOpenGL()
@@ -298,7 +188,7 @@ namespace Pekan
 
     bool PekanEngine::initImGui()
     {
-        if (s_window == nullptr)
+        if (!isInitialized)
         {
             PK_LOG_ERROR("Trying to initialize ImGui but engine is not yet initialized.", "Pekan");
             return false;
@@ -323,7 +213,7 @@ namespace Pekan
         }
 
         // Setup Platform/Renderer backends
-        ImGui_ImplGlfw_InitForOpenGL(s_window, true);
+        ImGui_ImplGlfw_InitForOpenGL(s_window.m_glfwWindow, true);
         ImGui_ImplOpenGL3_Init(PK_GLSL_VERSION);
 
         // Scale up widgets and font by a factor of 2

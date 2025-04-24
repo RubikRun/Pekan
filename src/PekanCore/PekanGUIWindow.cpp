@@ -13,7 +13,7 @@ namespace Pekan
 
 	void PekanGUIWindow::render()
 	{
-        if (glfwGetWindowAttrib(PekanEngine::getWindow(), GLFW_ICONIFIED) != 0)
+        if (PekanEngine::getWindow().isMinimized())
         {
             ImGui_ImplGlfw_Sleep(10);
             return;

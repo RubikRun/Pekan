@@ -56,6 +56,8 @@ add_library(PekanCore STATIC
     src/PekanCore/PekanApplication.cpp
     src/PekanCore/PekanGUIWindow.h
     src/PekanCore/PekanGUIWindow.cpp
+    src/PekanCore/Window.h
+    src/PekanCore/Window.cpp
     src/PekanCore/Layer.h
     src/PekanCore/Layer.cpp
     src/PekanCore/LayerStack.h

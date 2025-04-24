@@ -1,15 +1,10 @@
 #pragma once
 
 #include "Logger/PekanLogger.h"
+#include "Window.h"
 
 #include <string>
 #include <glm/glm.hpp>
-
-struct GLFWwindow;
-
-#define PK_OPENGL_VERSION_MAJOR 4
-#define PK_OPENGL_VERSION_MINOR 3
-#define PK_GLSL_VERSION "#version 330 core"
 
 namespace Pekan
 {
@@ -31,6 +26,8 @@ namespace Pekan
 	// managing the lifetime of a graphics window, and handling all external libraries.
 	class PekanEngine
 	{
+		friend class Window;
+
 	public:
 
 		// Initializes the engine
@@ -49,7 +46,7 @@ namespace Pekan
 		// To be called once, at the end, after finished using the engine.
 		static void exit();
 
-		static GLFWwindow* getWindow() { return s_window; }
+		static Window& getWindow() { return s_window; }
 
 		// Checks if a given key from the keyboard is currently pressed or released,
 		// or repeating which means that it had been pressed and held down for a bit, like half a second.
@@ -67,31 +64,7 @@ namespace Pekan
 		// Returns window's current resolution
 		static glm::ivec2 getWindowResolution();
 
-		// Enables/Disables VSync - using FPS equal to monitor's refresh rate
-		static void enableVSync();
-		static void disableVSync();
-
 	private: /* functions */
-
-		// Creates the graphics window,
-		// and configures it for rendering.
-		static bool createWindow(int width, int height, bool fullScreen, bool hideCursor);
-		// Destroys the graphics window.
-		static void destroyWindow();
-
-		// Connects event callbacks with the window, so that they are actually called when an event occurs.
-		static void setEventCallbacks();
-
-		// Event callbacks.
-		// Functions that are called when an event occurs.
-		// Each of these functions handles a specific type of event
-		// by just sending it to Pekan's current application.
-		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-		static void mouseMovedCallback(GLFWwindow* window, double xPos, double yPos);
-		static void mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset);
-		static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-		static void windowResizedCallback(GLFWwindow* window, int width, int height);
-		static void windowClosedCallback(GLFWwindow* window);
 
 		// Loads OpenGL function pointers
 		static bool loadOpenGL();
@@ -107,10 +80,12 @@ namespace Pekan
 	private: /* variables */
 
 		// Window for rendering graphics
-		static GLFWwindow* s_window;
+		static Window s_window;
 
 		// Application currently using Pekan
 		static PekanApplication* s_application;
+
+		static bool isInitialized;
 	};
 
 } // namespace Pekan

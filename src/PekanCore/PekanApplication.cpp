@@ -2,6 +2,7 @@
 #include "Logger/PekanLogger.h"
 #include "PekanEngine.h"
 #include "FpsLimiter.h"
+#include "Window.h"
 
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -49,24 +50,23 @@ namespace Pekan
 
     void PekanApplication::run()
 	{
-        // Does this application have a specific FPS requirement?
-        const bool useFPS = (m_fps > 0.0);
-        // If not, enable VSync to automatically match FPS with monitor's refresh rate
-        if (!useFPS)
+        // If this application doesn't have a specific FPS requirement,
+        // then use VSync to automatically match FPS with monitor's refresh rate
+        const bool useVSync = (m_fps <= 0.0);
+        if (useVSync)
         {
-            PekanEngine::enableVSync();
+            PekanEngine::getWindow().enableVSync();
         }
         FpsLimiter fpsLimiter(m_fps);
 
-        GLFWwindow* window = PekanEngine::getWindow();
-        while (!glfwWindowShouldClose(window))
+        Window& window = PekanEngine::getWindow();
+        while (!window.shouldBeClosed())
         {
             glfwPollEvents();
 
             // Handle window resizing
-            int windowWidth, windowHeight;
-            glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
-            glViewport(0, 0, windowWidth, windowHeight);
+            const glm::ivec2 frameBufferSize = window.getFrameBufferSize();
+            glViewport(0, 0, frameBufferSize.x, frameBufferSize.y);
 
             // Update all layers
             for (Layer* layer : m_layerStack)
@@ -85,9 +85,12 @@ namespace Pekan
                 }
             }
 
-            glfwSwapBuffers(window);
-
-            if (useFPS)
+            // Swap buffers to show the new frame on screen.
+            // If we are using VSync this function will automatically wait
+            // the correct amount of time before the next screen update
+            window.swapBuffers();
+            // If we are NOT using VSync then we need to manually wait some amount of time to reach our target FPS
+            if (!useVSync)
             {
                 fpsLimiter.wait();
             }
@@ -110,7 +113,7 @@ namespace Pekan
 
     void PekanApplication::stopRunning()
     {
-        glfwSetWindowShouldClose(PekanEngine::getWindow(), true);
+        PekanEngine::getWindow().setShouldBeClosed(true);
     }
 
     // Sends an event of a given type to layers of the layer stack,

@@ -36,7 +36,7 @@
 
 0015 03.04.2025 (TODO): Create an event queue so that events can be handled together at once, at a specific stage of the main loop.
 
-0016 03.04.2025 (TODO): Create a Window class
+0016 03.04.2025 (DONE): Create a Window class
 
 0017 05.04.2025 (TODO): Create Pekan enums corresponding to event-related enums in GLFW, like GLFW_KEY_W
 

@@ -5,13 +5,13 @@
 
 namespace Pekan
 {
-	class PekanEngine;
+	class Window;
 	class Layer;
 
 	// A base class for all Pekan applications
 	class PekanApplication
 	{
-		friend class PekanEngine;
+		friend class Window;
 		friend class Layer;
 
 	public:
