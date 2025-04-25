@@ -62,9 +62,16 @@ namespace Pekan
 
     void Window::destroy()
     {
-        glfwDestroyWindow(m_glfwWindow);
-        glfwTerminate();
-        m_glfwWindow = nullptr;
+        if (m_glfwWindow)
+        {
+            glfwDestroyWindow(m_glfwWindow);
+            glfwTerminate();
+            m_glfwWindow = nullptr;
+        }
+        else
+        {
+            PK_LOG_ERROR("Trying to destroy window but window is not yet created.", "Pekan");
+        }
     }
 
     void Window::enableVSync()

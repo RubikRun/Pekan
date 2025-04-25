@@ -26,8 +26,8 @@
 // - Wait Blocking can be used for a perfectly smooth motion and hitting the target FPS perfectly at the cost of higher CPU usage (like 10x higher)
 //
 // Toggle these macros on/off to choose between the 2 implementations of FpsLimiter - Sleep Compensate and Sleep Loop
-#define PEKAN_FPS_LIMITER_IMPL_SLEEP_COMPENSATE 1
-#define PEKAN_FPS_LIMITER_IMPL_WAIT_BLOCKING 0
+#define PEKAN_FPS_LIMITER_IMPL_SLEEP_COMPENSATE 0
+#define PEKAN_FPS_LIMITER_IMPL_WAIT_BLOCKING 1
 
 namespace Pekan
 {

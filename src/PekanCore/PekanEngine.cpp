@@ -19,9 +19,10 @@ namespace Pekan
 
     const char* DEFAULT_WINDOW_TITLE = "Pekan v0.1";
 
+    Window PekanEngine::s_window;
     PekanApplication* PekanEngine::s_application = nullptr;
     bool PekanEngine::isInitialized = false;
-    Window PekanEngine::s_window;
+    bool PekanEngine::isWindowCreated = false;
 
     // Returns a user-friendly string from given OpenGL error code
     std::string _getGLErrorMessage(unsigned error)
@@ -73,7 +74,7 @@ namespace Pekan
 
 #endif
 
-    bool PekanEngine::init(PekanApplication* application, bool fullScreen, bool hideCursor)
+    bool PekanEngine::init(PekanApplication* application)
     {
         if (s_application != nullptr)
         {
@@ -88,22 +89,28 @@ namespace Pekan
         s_application = application;
 
         isInitialized = true;
+        return true;
+    }
 
-        WindowProperties windowProperties;
-        windowProperties.fullScreen = fullScreen;
-        windowProperties.hideCursor = hideCursor;
-
-        // If application has a name, use that name for window's title
-        if (s_application)
+    void PekanEngine::exit()
+    {
+        if (!isInitialized)
         {
-            const std::string& applicationName = s_application->getName();
-            if (!applicationName.empty())
-            {
-                windowProperties.title = applicationName;
-            }
+            PK_LOG_ERROR("Trying to exit engine but engine is not yet initialized.", "Pekan");
+            return;
         }
+        if (isWindowCreated)
+        {
+            exitImGui();
+            s_window.destroy();
+            isWindowCreated = false;
+        }
+        isInitialized = false;
+    }
 
-        if (!s_window.create(windowProperties))
+    bool PekanEngine::createWindow(WindowProperties properties)
+    {
+        if (!s_window.create(properties))
         {
             return false;
         }
@@ -115,19 +122,9 @@ namespace Pekan
         {
             return false;
         }
-        return true;
-    }
 
-    void PekanEngine::exit()
-    {
-        if (!isInitialized)
-        {
-            PK_LOG_ERROR("Trying to exit engine but engine is not yet initialized.", "Pekan");
-            return;
-        }
-        exitImGui();
-        s_window.destroy();
-        isInitialized = false;
+        isWindowCreated = true;
+        return true;
     }
 
     bool PekanEngine::isKeyPressed(int key)
@@ -221,21 +218,6 @@ namespace Pekan
         io.FontGlobalScale = 1.05f;
 
         return true;
-    }
-
-    void PekanEngine::renderImGui()
-    {
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // Update and Render additional Platform Windows
-        // Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            GLFWwindow* backup_current_context = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup_current_context);
-        }
     }
 
     void PekanEngine::exitImGui()

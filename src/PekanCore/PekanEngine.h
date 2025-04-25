@@ -31,36 +31,37 @@ namespace Pekan
 	public:
 
 		// Initializes the engine
-		// - creating a graphics window
-		// - creating a GUI window
-		// - initializing all libraries
-		// 
 		// To be called once, at the beginning, before using the engine.
-		static bool init(PekanApplication* application, bool fullScreen = false, bool hideCursor = false);
+		static bool init(PekanApplication* application);
 
 		// Exits the engine
-		// - destroying graphics window
-		// - destroying GUI window
-		// - freeing all resources
-		// 
 		// To be called once, at the end, after finished using the engine.
 		static void exit();
 
+		// Creates a window with given properties, where graphics can be rendered.
+		// Sets up OpenGL and ImGui for this window.
+		//
+		// NOTE: Currently Pekan supports only 1 window at a time,
+		// so this function must be called at most once by an application.
+		static bool createWindow(WindowProperties properties);
+
 		static Window& getWindow() { return s_window; }
+
+		///////////////////
+		// INPUT POLLING //
+		///////////////////
 
 		// Checks if a given key from the keyboard is currently pressed or released,
 		// or repeating which means that it had been pressed and held down for a bit, like half a second.
 		static bool isKeyPressed(int key);
 		static bool isKeyReleased(int key);
 		static bool isKeyRepeating(int key);
-
 		// Returns current mouse position, in pixels, relative to window's top-left corner
 		static glm::vec2 getMousePosition();
 		// Checks if mouse button is currently pressed/released.
 		// If leftOrRight is true then left button is checked, otherwise right button is checked.
 		static bool isMouseButtonPressed(bool leftOrRight);
 		static bool isMouseButtonReleased(bool leftOrRight);
-
 		// Returns window's current resolution
 		static glm::ivec2 getWindowResolution();
 
@@ -71,9 +72,6 @@ namespace Pekan
 
 		// Initializes ImGui library, and creates ImGui context
 		static bool initImGui();
-		// Renders ImGui's draw data.
-		// Must be called after drawing GUI with ImGui to actually render the GUI. (that's a funny sentence lol)
-		static void renderImGui();
 		// Exists ImGui library, and destroys ImGui context
 		static void exitImGui();
 
@@ -86,6 +84,7 @@ namespace Pekan
 		static PekanApplication* s_application;
 
 		static bool isInitialized;
+		static bool isWindowCreated;
 	};
 
 } // namespace Pekan

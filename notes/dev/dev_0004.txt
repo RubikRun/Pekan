@@ -693,3 +693,53 @@ That's just a future note.
 That said, everything works as before, we just have window logic cleanly refactored into a Window class.
 Done.
 }
+
+----------
+25.04.2025
+----------
+
+{
+I noticed a bug.
+Setting these 2 member variables like that in a demo application's _init() function
+    m_isFullScreen = true;
+    m_shouldHideCursor = true;
+doesn't work. Of course it doesn't because in PekanApplication::init() we are calling
+    PekanEngine::init(this, m_isFullScreen, m_shouldHideCursor)
+before calling demo application's _init().
+
+Something is fundamentally wrong with Pekan's architecture there.
+Trying to put it into words:
+- A specific application should be able to configure window's properties at the init stage
+- Creating a window should happen after that, because it needs to know the properties
+- Loading OpenGL and initializing ImGui require a window (a GLFW context)
+There are 2 options that I can think of
+1. Separate window creation from engine initialization, so that PekanApplication can first initializa the engine,
+   then call specific application's _init() function, and then create window by calling some function on PekanEngine.
+2. Create a virtual function in PekanApplication that returns window's properties and can be overriden
+   on specific applications to return the properties needed by the specific application.
+   Then PekanEngine will call that function in its own init() function.
+I will go with option 1 because I feel like it will be better for our future architecture.
+Option 2 seems cleaner at this stage because we always have a single window,
+but in the future I want Pekan to support multiple windows,
+and also to work without a window at all, for example for console games or other types of mediums.
+
+I did option 2.
+More specifically, added a function
+    static bool createWindow(WindowProperties properties);
+in PekanEngine, and removed the 2 window-related parameters from PekanEngine::init(), now it's just this:
+    static bool init(PekanApplication* application);
+and the only thing it does currently is register the application.
+Creating the window, loading OpenGL and initializing ImGui is done in createWindow().
+Then specific applications should call createWindow(), if they want a window at all,
+and they can configure the window by passing a WindowProperties object.
+Additionally, now that engine initialization is separated from window creation,
+it'd be good to have another member isWindowCreated, similar to isInitialized
+    static bool isInitialized;
+    static bool isWindowCreated;
+
+By the way, I did set FPS to 60 in Demo03 and Demo02, because they are moving faster on my laptop display (higher refresh rate).
+Should've done this together with the FPS commit earlier, but whatever, doing it now.
+
+Bug is fixed now, architecture is better, and applications have cleaner and more flexible control over the window.
+Done.
+}

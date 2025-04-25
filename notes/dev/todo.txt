@@ -47,3 +47,5 @@
 0019 14.04.2025 (TODO): Create a way for derived applications to set up layer stack without directly touching
                         the member variable m_layerStack. Maybe add an output parameter to _init() function
                         that will be used by the base PekanApplication::init()
+
+0020 25.04.2025 (TODO): Create a delta-time mechanism for FPS-independent movement

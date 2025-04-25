@@ -60,14 +60,6 @@ namespace Pekan
 		// Stack of layers making up the application
 		LayerStack m_layerStack;
 
-		// Flag indicating whether application should be rendered at full screen.
-		// To be set by derived classes inside of the _init() function.
-		bool m_isFullScreen = false;
-
-		// Flag indicating whether mouse's cursor should be hidden.
-		// To be set by derived classes inside of the _init() function.
-		bool m_shouldHideCursor = false;
-
 		// Frames per second.
 		// Value of 0.0 means use FPS equal to monitor's refresh rate (VSync)
 		double m_fps = 0.0;
