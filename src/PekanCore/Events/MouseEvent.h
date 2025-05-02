@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "MouseEvent_Enums.h"
 
 #include <sstream>
 
@@ -56,28 +57,28 @@ namespace Pekan
 	class MouseButtonEvent : public Event
 	{
 	public:
-		inline int getMouseButton() const { return m_button; }
+		inline MouseButton getMouseButton() const { return m_button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	protected:
-		MouseButtonEvent(int button)
+		MouseButtonEvent(MouseButton button)
 			: m_button(button)
 		{}
 
-		int m_button;
+		MouseButton m_button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(int button)
+		MouseButtonPressedEvent(MouseButton button)
 			: MouseButtonEvent(button)
 		{}
 
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonPressedEvent { button: " << m_button << " }";
+			ss << "MouseButtonPressedEvent { button: " << int(m_button) << " }";
 			return ss.str();
 		}
 
@@ -87,14 +88,14 @@ namespace Pekan
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(int button)
+		MouseButtonReleasedEvent(MouseButton button)
 			: MouseButtonEvent(button)
 		{}
 
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonReleasedEvent { button: " << m_button << " }";
+			ss << "MouseButtonReleasedEvent { button: " << int(m_button) << " }";
 			return ss.str();
 		}
 

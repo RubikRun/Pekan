@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Events/KeyEvent_Enums.h"
+#include "Events/MouseEvent_Enums.h"
+
 #include <string>
 #include <glm/glm.hpp>
 
@@ -56,15 +59,14 @@ namespace Pekan
 
 		// Checks if a given key from the keyboard is currently pressed or released,
 		// or repeating which means that it had been pressed and held down for a bit, like half a second.
-		bool isKeyPressed(int key) const;
-		bool isKeyReleased(int key) const;
-		bool isKeyRepeating(int key) const;
+		bool isKeyPressed(KeyCode key) const;
+		bool isKeyReleased(KeyCode key) const;
+		bool isKeyRepeating(KeyCode key) const;
 		// Returns current mouse position, in pixels, relative to window's top-left corner
 		glm::vec2 getMousePosition() const;
 		// Checks if mouse button is currently pressed/released.
-		// If leftOrRight is true then left button is checked, otherwise right button is checked.
-		bool isMouseButtonPressed(bool leftOrRight) const;
-		bool isMouseButtonReleased(bool leftOrRight) const;
+		bool isMouseButtonPressed(MouseButton button) const;
+		bool isMouseButtonReleased(MouseButton button) const;
 		// Returns window's current resolution
 		glm::ivec2 getResolution() const;
 		// Returns frame buffer's current size

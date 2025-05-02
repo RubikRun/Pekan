@@ -104,19 +104,19 @@ namespace Pekan
         return glfwGetWindowAttrib(m_glfwWindow, GLFW_ICONIFIED) != 0;
     }
 
-    bool Window::isKeyPressed(int key) const
+    bool Window::isKeyPressed(KeyCode key) const
     {
-        return (glfwGetKey(m_glfwWindow, key) == GLFW_PRESS || glfwGetKey(m_glfwWindow, key) == GLFW_REPEAT);
+        return (glfwGetKey(m_glfwWindow, int(key)) == GLFW_PRESS || glfwGetKey(m_glfwWindow, int(key)) == GLFW_REPEAT);
     }
 
-    bool Window::isKeyReleased(int key) const
+    bool Window::isKeyReleased(KeyCode key) const
     {
-        return (glfwGetKey(m_glfwWindow, key) == GLFW_RELEASE);
+        return (glfwGetKey(m_glfwWindow, int(key)) == GLFW_RELEASE);
     }
 
-    bool Window::isKeyRepeating(int key) const
+    bool Window::isKeyRepeating(KeyCode key) const
     {
-        return (glfwGetKey(m_glfwWindow, key) == GLFW_REPEAT);
+        return (glfwGetKey(m_glfwWindow, int(key)) == GLFW_REPEAT);
     }
 
     glm::vec2 Window::getMousePosition() const
@@ -127,14 +127,14 @@ namespace Pekan
         return { float(xMouse), float(yMouse) };
     }
 
-    bool Window::isMouseButtonPressed(bool leftOrRight) const
+    bool Window::isMouseButtonPressed(MouseButton button) const
     {
-        return glfwGetMouseButton(m_glfwWindow, leftOrRight ? 0 : 1) == GLFW_PRESS;
+        return glfwGetMouseButton(m_glfwWindow, int(button)) == GLFW_PRESS;
     }
 
-    bool Window::isMouseButtonReleased(bool leftOrRight) const
+    bool Window::isMouseButtonReleased(MouseButton button) const
     {
-        return glfwGetMouseButton(m_glfwWindow, leftOrRight ? 0 : 1) == GLFW_RELEASE;
+        return glfwGetMouseButton(m_glfwWindow, int(button)) == GLFW_RELEASE;
     }
 
     glm::ivec2 Window::getResolution() const
@@ -165,7 +165,7 @@ namespace Pekan
     {
         if (PekanEngine::s_application)
         {
-            PekanEngine::s_application->handleKeyEvent(key, scancode, action, mods);
+            PekanEngine::s_application->handleKeyEvent(KeyCode(key), scancode, action, mods);
         }
     }
     void Window::mouseMovedCallback(GLFWwindow* window, double xPos, double yPos)
@@ -186,7 +186,7 @@ namespace Pekan
     {
         if (PekanEngine::s_application)
         {
-            PekanEngine::s_application->handleMouseButtonEvent(button, action, mods);
+            PekanEngine::s_application->handleMouseButtonEvent(MouseButton(button), action, mods);
         }
     }
     void Window::windowResizedCallback(GLFWwindow* window, int width, int height)

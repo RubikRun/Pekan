@@ -67,6 +67,8 @@ add_library(PekanCore STATIC
     src/PekanCore/Events/Event.h
     src/PekanCore/Events/WindowEvent.h
     src/PekanCore/Events/KeyEvent.h
+    src/PekanCore/Events/KeyEvent_Enums.h
+    src/PekanCore/Events/MouseEvent_Enums.h
     src/PekanCore/Events/MouseEvent.h
     src/PekanCore/FpsLimiter.h
     src/PekanCore/FpsLimiter.cpp
@@ -79,7 +81,14 @@ SOURCE_GROUP("Header Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.h)
 SOURCE_GROUP("Source Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.cpp)
 SOURCE_GROUP("Header Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.h)
 # Group Events files under a virtual folder called "Events"
-SOURCE_GROUP("Header Files\\Events" FILES src/PekanCore/Events/Event.h src/PekanCore/Events/WindowEvent.h src/PekanCore/Events/KeyEvent.h src/PekanCore/Events/MouseEvent.h)
+SOURCE_GROUP("Header Files\\Events" FILES
+    src/PekanCore/Events/Event.h
+    src/PekanCore/Events/WindowEvent.h
+    src/PekanCore/Events/KeyEvent.h
+    src/PekanCore/Events/KeyEvent_Enums.h
+    src/PekanCore/Events/MouseEvent.h
+    src/PekanCore/Events/MouseEvent_Enums.h
+)
 
 # Set link libraries for PekanCore
 target_link_libraries(PekanCore PRIVATE

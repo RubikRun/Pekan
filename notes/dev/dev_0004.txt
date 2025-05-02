@@ -743,3 +743,30 @@ Should've done this together with the FPS commit earlier, but whatever, doing it
 Bug is fixed now, architecture is better, and applications have cleaner and more flexible control over the window.
 Done.
 }
+
+{
+Now let's tackle this annoying TO-DO item
+    Create Pekan enums corresponding to event-related enums in GLFW, like GLFW_KEY_W
+
+Okay, it was not that annoying.
+Created this new header file
+    KeyEvent_Enums.h
+containing this new enum class
+    enum class KeyCode
+that holds all key codes, with their numerical value matching that of GLFW key codes,
+so that you can just cast a KeyCode enum into an int and use it with GLFW.
+
+Similarly added this new header file
+    MouseEvent_Enums.h
+containing this new enum class
+    enum class MouseButton
+that holds just the values LeftButton and RightButton.
+Later, we might need other mouse buttons, but for now we're good with just these 2.
+
+Then we just include those headers in a couple of files, like KeyEvent.h and PekanEngine.h
+and we make the key-related and mouse-button-related functions take in a KeyCode or a MouseButton instead of an int.
+
+That's about it.
+Everything works as before, but now we don't need to use GLFW enums in demo applications, we can use the new Pekan enums.
+Done.
+}

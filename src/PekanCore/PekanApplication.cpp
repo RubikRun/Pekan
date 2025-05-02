@@ -131,7 +131,7 @@ namespace Pekan
         }
     }
 
-    void PekanApplication::handleKeyEvent(int key, int scancode, int action, int mods)
+    void PekanApplication::handleKeyEvent(KeyCode key, int scancode, int action, int mods)
     {
         switch (action)
         {
@@ -168,7 +168,7 @@ namespace Pekan
         _dispatchEvent(event, m_layerStack, &Layer::onMouseScrolled);
     }
 
-    void PekanApplication::handleMouseButtonEvent(int button, int action, int mods)
+    void PekanApplication::handleMouseButtonEvent(MouseButton button, int action, int mods)
     {
         switch (action)
         {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "KeyEvent_Enums.h"
 
 #include <sstream>
 
@@ -10,21 +11,21 @@ namespace Pekan
 	class KeyEvent : public Event
 	{
 	public:
-		inline int getKeyCode() const { return m_keyCode; }
+		inline KeyCode getKeyCode() const { return m_keyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
-		KeyEvent(int keyCode)
+		KeyEvent(KeyCode keyCode)
 			: m_keyCode(keyCode) {
 		}
 
-		int m_keyCode;
+		KeyCode m_keyCode;
 	};
 
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keyCode, bool isRepeating)
+		KeyPressedEvent(KeyCode keyCode, bool isRepeating)
 			: KeyEvent(keyCode), m_isRepeating(isRepeating)
 		{}
 
@@ -33,7 +34,7 @@ namespace Pekan
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent { keyCode: " << m_keyCode << ", isRepeating: " << m_isRepeating << " }";
+			ss << "KeyPressedEvent { keyCode: " << int(m_keyCode) << ", isRepeating: " << m_isRepeating << " }";
 			return ss.str();
 		}
 
@@ -45,14 +46,14 @@ namespace Pekan
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		KeyReleasedEvent(int keyCode)
+		KeyReleasedEvent(KeyCode keyCode)
 			: KeyEvent(keyCode)
 		{}
 
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleasedEvent { keyCode: " << m_keyCode << " }";
+			ss << "KeyReleasedEvent { keyCode: " << int(m_keyCode) << " }";
 			return ss.str();
 		}
 

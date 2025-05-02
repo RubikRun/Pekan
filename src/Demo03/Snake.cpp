@@ -1,13 +1,11 @@
 #include "Snake.h"
 #include "Utils/PekanUtils.h"
 
-// TODO: remove this after we have Pekan enum for key codes
-#include <GLFW/glfw3.h>
-
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::PekanEngine;
+using Pekan::KeyCode;
 
 static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
@@ -106,19 +104,19 @@ namespace Demo
         {
             m_frames++;
 
-            if (PekanEngine::isKeyPressed(GLFW_KEY_W))
+            if (PekanEngine::isKeyPressed(KeyCode::KEY_W))
             {
                 m_direction = { 0, -1 };
             }
-            else if (PekanEngine::isKeyPressed(GLFW_KEY_A))
+            else if (PekanEngine::isKeyPressed(KeyCode::KEY_A))
             {
                 m_direction = { -1, 0 };
             }
-            else if (PekanEngine::isKeyPressed(GLFW_KEY_S))
+            else if (PekanEngine::isKeyPressed(KeyCode::KEY_S))
             {
                 m_direction = { 0, 1 };
             }
-            else if (PekanEngine::isKeyPressed(GLFW_KEY_D))
+            else if (PekanEngine::isKeyPressed(KeyCode::KEY_D))
             {
                 m_direction = { 1, 0 };
             }

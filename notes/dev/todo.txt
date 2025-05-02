@@ -38,7 +38,7 @@
 
 0016 03.04.2025 (DONE): Create a Window class
 
-0017 05.04.2025 (TODO): Create Pekan enums corresponding to event-related enums in GLFW, like GLFW_KEY_W
+0017 05.04.2025 (DONE): Create Pekan enums corresponding to event-related enums in GLFW, like GLFW_KEY_W
 
 0018 11.04.2025 (TODO): Use PekanEngine's event polling on these 2 lines in PekanApplication.cpp
                             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

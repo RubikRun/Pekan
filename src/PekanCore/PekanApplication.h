@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Events/KeyEvent_Enums.h"
+#include "Events/MouseEvent_Enums.h"
+
 #include <LayerStack.h>
 #include <string>
 
@@ -48,10 +51,10 @@ namespace Pekan
 		// by sending it to each layer of the application, one by one, until a layer succesfully handles the event.
 		// The order of layers receiving the event is the opposite of the order of rendering,
 		// meaning that layers drawn last (on top) receive events first.
-		void handleKeyEvent(int key, int scancode, int action, int mods);
+		void handleKeyEvent(KeyCode key, int scancode, int action, int mods);
 		void handleMouseMovedEvent(double xPos, double yPos);
 		void handleMouseScrolledEvent(double xOffset, double yOffset);
-		void handleMouseButtonEvent(int button, int action, int mods);
+		void handleMouseButtonEvent(MouseButton button, int action, int mods);
 		void handleWindowResizedEvent(int width, int height);
 		void handleWindowClosedEvent();
 

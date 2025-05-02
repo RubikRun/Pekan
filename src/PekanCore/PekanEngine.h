@@ -2,6 +2,8 @@
 
 #include "Logger/PekanLogger.h"
 #include "Window.h"
+#include "Events/KeyEvent_Enums.h"
+#include "Events/MouseEvent_Enums.h"
 
 #include <string>
 #include <glm/glm.hpp>
@@ -53,15 +55,14 @@ namespace Pekan
 
 		// Checks if a given key from the keyboard is currently pressed or released,
 		// or repeating which means that it had been pressed and held down for a bit, like half a second.
-		static bool isKeyPressed(int key);
-		static bool isKeyReleased(int key);
-		static bool isKeyRepeating(int key);
+		static bool isKeyPressed(KeyCode key);
+		static bool isKeyReleased(KeyCode key);
+		static bool isKeyRepeating(KeyCode key);
 		// Returns current mouse position, in pixels, relative to window's top-left corner
 		static glm::vec2 getMousePosition();
 		// Checks if mouse button is currently pressed/released.
-		// If leftOrRight is true then left button is checked, otherwise right button is checked.
-		static bool isMouseButtonPressed(bool leftOrRight);
-		static bool isMouseButtonReleased(bool leftOrRight);
+		static bool isMouseButtonPressed(MouseButton button);
+		static bool isMouseButtonReleased(MouseButton button);
 		// Returns window's current resolution
 		static glm::ivec2 getWindowResolution();
 

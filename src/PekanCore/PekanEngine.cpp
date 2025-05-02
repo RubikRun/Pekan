@@ -127,17 +127,17 @@ namespace Pekan
         return true;
     }
 
-    bool PekanEngine::isKeyPressed(int key)
+    bool PekanEngine::isKeyPressed(KeyCode key)
     {
         return s_window.isKeyPressed(key);
     }
 
-    bool PekanEngine::isKeyReleased(int key)
+    bool PekanEngine::isKeyReleased(KeyCode key)
     {
         return s_window.isKeyReleased(key);
     }
 
-    bool PekanEngine::isKeyRepeating(int key)
+    bool PekanEngine::isKeyRepeating(KeyCode key)
     {
         return s_window.isKeyRepeating(key);
     }
@@ -147,14 +147,14 @@ namespace Pekan
         return s_window.getMousePosition();
     }
 
-    bool PekanEngine::isMouseButtonPressed(bool leftOrRight)
+    bool PekanEngine::isMouseButtonPressed(MouseButton button)
     {
-        return s_window.isMouseButtonPressed(leftOrRight);
+        return s_window.isMouseButtonPressed(button);
     }
 
-    bool PekanEngine::isMouseButtonReleased(bool leftOrRight)
+    bool PekanEngine::isMouseButtonReleased(MouseButton button)
     {
-        return s_window.isMouseButtonReleased(leftOrRight);
+        return s_window.isMouseButtonReleased(button);
     }
 
     glm::ivec2 PekanEngine::getWindowResolution()
