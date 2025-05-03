@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Events/Event.h"
 #include "Events/KeyEvent_Enums.h"
 #include "Events/MouseEvent_Enums.h"
-
 #include <LayerStack.h>
+
 #include <string>
 
 namespace Pekan
@@ -58,6 +59,11 @@ namespace Pekan
 		void handleWindowResizedEvent(int width, int height);
 		void handleWindowClosedEvent();
 
+		// Handles the event queue.
+		//
+		// Can be implemented by derived classes with specific logic of handling the events from the event queue.
+		virtual void handleEventQueue() { while (!m_eventQueue.empty()) { m_eventQueue.pop(); } }
+
 	protected: /* variables */
 
 		// Stack of layers making up the application
@@ -66,6 +72,9 @@ namespace Pekan
 		// Frames per second.
 		// Value of 0.0 means use FPS equal to monitor's refresh rate (VSync)
 		double m_fps = 0.0;
+
+		// Event queue where events are pushed if they are not handled by any layer
+		EventQueue m_eventQueue;
 	};
 
 } // namespace Pekan

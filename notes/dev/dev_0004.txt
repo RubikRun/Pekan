@@ -770,3 +770,48 @@ That's about it.
 Everything works as before, but now we don't need to use GLFW enums in demo applications, we can use the new Pekan enums.
 Done.
 }
+
+----------
+02.05.2025
+----------
+
+{
+Time to work on this TO-DO item
+    Create an event queue so that events can be handled together at once, at a specific stage of the main loop.
+Seems hard.
+
+I considered a few different decisions along the way, argued with ChatGPT for a while :D
+At the end what I did is fairly simple:
+
+Created this new class in Event.h
+    EventQueue
+that is basically a wrapper over
+    std::queue<std::unique_ptr<Event>>
+a queue of base Event pointers.
+
+Added this new member to PekanApplication
+    EventQueue m_eventQueue;
+Now each application has an event queue.
+The idea is: Events that are not handled by any layer will be pushed to the event queue
+and they can be processed all at once by a custom logic.
+The custom logic of how to process the event queue will be this new virtual function in PekanApplication
+    virtual void handleEventQueue()
+Its default behavior is just to pop all events out of the queue.
+A derived application can chose to override this function
+and it will be called by PekanApplication's run() function, each frame.
+
+That's about it. The rest is implementation details.
+
+An architecture decision that I considered is if I should allow each layer to specify custom event queue handling logic,
+so basically the virtual function
+    virtual void handleEventQueue()
+could be part of class Layer instead of class PekanApplication,
+and then PekanApplication could call this function on each layer.
+However, this leaves too much freedom to layers, because each layer can do whatever it wants with the event queue.
+That's why I decided NOT to do it like that, and instead have a single event queue handling function inside of PekanApplication.
+In the future it might make sense to do this per-layer thing, because we might want to allow certain layers
+to handle certain events from the event queue and other layers to handle other events,
+but for now I'm not too sure if it'd be needed, and it complicated things way too much.
+
+Done.
+}

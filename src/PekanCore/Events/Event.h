@@ -2,24 +2,13 @@
 
 #include <string>
 #include <functional>
+#include <queue>
+#include <memory>
 
 struct GLFWwindow;
 
 namespace Pekan
 {
-
-	class KeyPressedEvent; class KeyReleasedEvent;
-	class MouseMovedEvent; class MouseScrolledEvent; class MouseButtonPressedEvent; class MouseButtonReleasedEvent;
-	class WindowResizedEvent; class WindowClosedEvent;
-
-	typedef std::function<bool(KeyPressedEvent&)> KeyPressedCallback;
-	typedef std::function<bool(KeyReleasedEvent&)> KeyReleasedCallback;
-	typedef std::function<bool(MouseMovedEvent&)> MouseMovedCallback;
-	typedef std::function<bool(MouseScrolledEvent&)> MouseScrolledCallback;
-	typedef std::function<bool(MouseButtonPressedEvent&)> MouseButtonPressedCallback;
-	typedef std::function<bool(MouseButtonReleasedEvent&)> MouseButtonReleasedCallback;
-	typedef std::function<bool(WindowResizedEvent&)> WindowResizedCallback;
-	typedef std::function<bool(WindowClosedEvent&)> WindowClosedCallback;
 
 	enum class EventType
 	{
@@ -47,6 +36,7 @@ namespace Pekan
 #define EVENT_CLASS_CATEGORY(category) \
 	virtual int getCategoryFlags() const override { return category; }
 
+	// A base class for all events in Pekan
 	class Event
 	{
 	public:
@@ -65,5 +55,40 @@ namespace Pekan
 	{
 		return os << e.toString();
 	}
+
+	// A queue of events
+	// where events are pushed when they happen
+	// and can be handled later, usually once per frame,
+	// by popping them one by one from the queue.
+	class EventQueue
+	{
+	public:
+
+		void push(std::unique_ptr<Event> event)
+		{
+			m_queue.push(std::move(event));
+		}
+
+		bool empty() const
+		{
+			return m_queue.empty();
+		}
+
+		int size() const
+		{
+			return m_queue.size();
+		}
+
+		std::unique_ptr<Event> pop()
+		{
+			std::unique_ptr<Event> event = std::move(m_queue.front());
+			m_queue.pop();
+			return event;
+		}
+
+	private:
+
+		std::queue<std::unique_ptr<Event>> m_queue;
+	};
 
 } // namespace Pekan

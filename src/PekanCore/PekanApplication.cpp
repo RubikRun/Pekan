@@ -62,7 +62,11 @@ namespace Pekan
         Window& window = PekanEngine::getWindow();
         while (!window.shouldBeClosed())
         {
+            // Process all pending events, calling the handler function of each one.
             glfwPollEvents();
+            // Process all reamining events - those that were not handled by their handler function,
+            // and instead were added to the event queue.
+            handleEventQueue();
 
             // Handle window resizing
             const glm::ivec2 frameBufferSize = window.getFrameBufferSize();
@@ -118,17 +122,22 @@ namespace Pekan
 
     // Sends an event of a given type to layers of the layer stack,
     // one by one, until a layer successfully handles the event.
+    // If no layer successfully handles the event, then the event is pushed into the event queue
+    //
+    // WARNING: Leaves the original event object in an invalid state. Make sure you DON'T use it after calling this function.
     template<typename EventT>
-    static void _dispatchEvent(EventT& event, LayerStack& layerStack, bool (Layer::*onEventFunc)(EventT&))
+    static void _dispatchEvent(std::unique_ptr<EventT>& event, LayerStack& layerStack, EventQueue& eventQueue, bool (Layer::*onEventFunc)(EventT&))
     {
         for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
         {
             Layer* layer = *it;
-            if (layer && (layer->*onEventFunc)(event))
+            if (layer && (layer->*onEventFunc)(*event.get()))
             {
                 break;
             }
         }
+        // At this point no layer has handled the event, so add it to event queue
+        eventQueue.push(std::move(event));
     }
 
     void PekanApplication::handleKeyEvent(KeyCode key, int scancode, int action, int mods)
@@ -137,20 +146,20 @@ namespace Pekan
         {
             case GLFW_PRESS:
             {
-                KeyPressedEvent event(key, false);
-                _dispatchEvent(event, m_layerStack, &Layer::onKeyPressed);
+                std::unique_ptr<KeyPressedEvent> event = std::make_unique<KeyPressedEvent>(key, false);
+                _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onKeyPressed);
                 break;
             }
             case GLFW_RELEASE:
             {
-                KeyReleasedEvent event(key);
-                _dispatchEvent(event, m_layerStack, &Layer::onKeyReleased);
+                std::unique_ptr<KeyReleasedEvent> event = std::make_unique<KeyReleasedEvent>(key);
+                _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onKeyReleased);
                 break;
             }
             case GLFW_REPEAT:
             {
-                KeyPressedEvent event(key, true);
-                _dispatchEvent(event, m_layerStack, &Layer::onKeyPressed);
+                std::unique_ptr<KeyPressedEvent> event = std::make_unique<KeyPressedEvent>(key, true);
+                _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onKeyPressed);
                 break;
             }
         }
@@ -158,14 +167,14 @@ namespace Pekan
 
     void PekanApplication::handleMouseMovedEvent(double xPos, double yPos)
     {
-        MouseMovedEvent event = { float(xPos), float(yPos) };
-        _dispatchEvent(event, m_layerStack, &Layer::onMouseMoved);
+        std::unique_ptr<MouseMovedEvent> event = std::make_unique<MouseMovedEvent>(float(xPos), float(yPos));
+        _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onMouseMoved);
     }
 
     void PekanApplication::handleMouseScrolledEvent(double xOffset, double yOffset)
     {
-        MouseScrolledEvent event = { float(xOffset), float(yOffset) };
-        _dispatchEvent(event, m_layerStack, &Layer::onMouseScrolled);
+        std::unique_ptr<MouseScrolledEvent> event = std::make_unique<MouseScrolledEvent>(float(xOffset), float(yOffset));
+        _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onMouseScrolled);
     }
 
     void PekanApplication::handleMouseButtonEvent(MouseButton button, int action, int mods)
@@ -174,14 +183,14 @@ namespace Pekan
         {
             case GLFW_PRESS:
             {
-                MouseButtonPressedEvent event(button);
-                _dispatchEvent(event, m_layerStack, &Layer::onMouseButtonPressed);
+                std::unique_ptr<MouseButtonPressedEvent> event = std::make_unique<MouseButtonPressedEvent>(button);
+                _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onMouseButtonPressed);
                 break;
             }
             case GLFW_RELEASE:
             {
-                MouseButtonReleasedEvent event(button);
-                _dispatchEvent(event, m_layerStack, &Layer::onMouseButtonReleased);
+                std::unique_ptr<MouseButtonReleasedEvent> event = std::make_unique<MouseButtonReleasedEvent>(button);
+                _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onMouseButtonReleased);
                 break;
             }
         }
@@ -189,14 +198,14 @@ namespace Pekan
 
     void PekanApplication::handleWindowResizedEvent(int width, int height)
     {
-        WindowResizedEvent event(width, height);
-        _dispatchEvent(event, m_layerStack, &Layer::onWindowResized);
+        std::unique_ptr<WindowResizedEvent> event = std::make_unique<WindowResizedEvent>(width, height);
+        _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onWindowResized);
     }
 
     void PekanApplication::handleWindowClosedEvent()
     {
-        WindowClosedEvent event;
-        _dispatchEvent(event, m_layerStack, &Layer::onWindowClosed);
+        std::unique_ptr<WindowClosedEvent> event = std::make_unique<WindowClosedEvent>();
+        _dispatchEvent(event, m_layerStack, m_eventQueue, &Layer::onWindowClosed);
     }
 
 } // namespace Pekan
