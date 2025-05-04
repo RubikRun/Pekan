@@ -1,7 +1,7 @@
 #include "PekanApplication.h"
 #include "Logger/PekanLogger.h"
 #include "PekanEngine.h"
-#include "FpsLimiter.h"
+#include "Time/FpsLimiter.h"
 #include "Window.h"
 
 #include "Events/KeyEvent.h"
@@ -72,12 +72,14 @@ namespace Pekan
             const glm::ivec2 frameBufferSize = window.getFrameBufferSize();
             glViewport(0, 0, frameBufferSize.x, frameBufferSize.y);
 
+            const double deltaTime = m_deltaTimer.getDeltaTime();
+
             // Update all layers
             for (Layer* layer : m_layerStack)
             {
                 if (layer)
                 {
-                    layer->update();
+                    layer->update(deltaTime);
                 }
             }
             // Render all layers

@@ -18,7 +18,7 @@ namespace Demo
         return true;
 	}
 
-	void Demo03_Scene::update()
+	void Demo03_Scene::update(double dt)
 	{
 		m_snake.update();
 		m_apple.update();

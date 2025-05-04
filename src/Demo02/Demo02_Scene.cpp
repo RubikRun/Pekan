@@ -118,7 +118,7 @@ namespace Demo
         return true;
 	}
 
-	void Demo02_Scene::update()
+	void Demo02_Scene::update(double dt)
 	{
         // Set model, view, and projection matrices with current properties
         m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation * PI / 180.0f, glm::vec3(0.5f, 1.0f, 0.0f));
@@ -141,7 +141,7 @@ namespace Demo
             m_vertices.size() * sizeof(Vertex)
         );
 
-        m_rotation += 1.0f;
+        m_rotation += float(60.0 * dt);
 	}
 
 	void Demo02_Scene::render()

@@ -40,7 +40,7 @@ namespace Demo
         return true;
 	}
 
-	void Demo01_Scene::update()
+	void Demo01_Scene::update(double dt)
 	{
         m_vertices.clear();
         for (const Rectangle& square : m_squares)

@@ -70,8 +70,10 @@ add_library(PekanCore STATIC
     src/PekanCore/Events/KeyEvent_Enums.h
     src/PekanCore/Events/MouseEvent_Enums.h
     src/PekanCore/Events/MouseEvent.h
-    src/PekanCore/FpsLimiter.h
-    src/PekanCore/FpsLimiter.cpp
+    src/PekanCore/Time/FpsLimiter.h
+    src/PekanCore/Time/FpsLimiter.cpp
+    src/PekanCore/Time/DeltaTimer.h
+    src/PekanCore/Time/DeltaTimer.cpp
 )
 
 # Group Logger files under a virtual folder called "Logger"
@@ -89,6 +91,9 @@ SOURCE_GROUP("Header Files\\Events" FILES
     src/PekanCore/Events/MouseEvent.h
     src/PekanCore/Events/MouseEvent_Enums.h
 )
+# Group Time files under a virtual folder called "Time"
+SOURCE_GROUP("Source Files\\Time" FILES src/PekanCore/Time/FpsLimiter.cpp src/PekanCore/Time/DeltaTimer.cpp)
+SOURCE_GROUP("Header Files\\Time" FILES src/PekanCore/Time/FpsLimiter.h src/PekanCore/Time/DeltaTimer.h)
 
 # Set link libraries for PekanCore
 target_link_libraries(PekanCore PRIVATE

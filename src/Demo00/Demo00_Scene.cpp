@@ -52,7 +52,7 @@ namespace Demo
         return true;
 	}
 
-	void Demo00_Scene::update()
+	void Demo00_Scene::update(double dt)
 	{
         m_shader.bind();
         const ImVec2& position = m_guiWindow->getPosition();

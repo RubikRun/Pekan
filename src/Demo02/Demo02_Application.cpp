@@ -26,8 +26,6 @@ namespace Demo
 		m_layerStack.pushLayer(demoScene);
 		m_layerStack.pushLayer(demoGuiWindow);
 
-		setFPS(60.0);
-
 		return true;
 	}
 

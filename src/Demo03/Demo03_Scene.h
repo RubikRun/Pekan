@@ -16,7 +16,7 @@ namespace Demo
 
 		bool init() override;
 
-		void update() override;
+		void update(double deltaTime) override;
 
 		void render() override;
 

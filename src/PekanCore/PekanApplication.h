@@ -3,7 +3,8 @@
 #include "Events/Event.h"
 #include "Events/KeyEvent_Enums.h"
 #include "Events/MouseEvent_Enums.h"
-#include <LayerStack.h>
+#include "LayerStack.h"
+#include "Time/DeltaTimer.h"
 
 #include <string>
 
@@ -75,6 +76,9 @@ namespace Pekan
 
 		// Event queue where events are pushed if they are not handled by any layer
 		EventQueue m_eventQueue;
+
+		// Delta timer used to keep track of time passed since last frame was rendered
+		DeltaTimer m_deltaTimer;
 	};
 
 } // namespace Pekan

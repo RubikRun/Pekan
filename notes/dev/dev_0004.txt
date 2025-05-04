@@ -815,3 +815,53 @@ but for now I'm not too sure if it'd be needed, and it complicated things way to
 
 Done.
 }
+
+----------
+04.05.2025
+----------
+
+{
+Next TO-DO item that I will implement is this
+    Create a delta-time mechanism for FPS-independent movement
+
+As an example I want the cube in Demo02 to rotate at the same speed no matter the FPS.
+
+Okay, that was pretty easy.
+Added this new class
+    DeltaTimer
+in 2 new files
+    DeltaTimer.h
+    DeltaTimer.cpp
+under this new directory
+    Time
+in PekanCore, where I also put
+    FpsLimiter.h
+    FpsLimiter.cpp
+
+The new class DeltaTimer is quite simple.
+It has just 1 function
+    double getDeltaTime();
+which returns the "delta time", meaning the time that has passed since this function was last called.
+If the function is called for the first time it will just return 0.0.
+Imlpementation is straightforward.
+
+Then how do we use this DeltaTimer class?
+Well, we add this new member variable in PekanApplication
+    DeltaTimer m_deltaTimer;
+and then just use it in the run() function to get the delta time
+    const double deltaTime = m_deltaTimer.getDeltaTime();
+inside the main loop just before calling update() on all layers.
+This deltaTime variable now contains the time passed since last frame.
+We can pass this deltaTime to the update() function of all layers.
+So we just add it as an extra parameter to Layer::update()
+    virtual void update(double deltaTime) {}
+Now each layer can access this deltaTime parameter in their update() function
+and can use it to multiply their movement speeds, to achieve FPS-independent movement.
+
+In Demo02 that would look like:
+    m_rotation += float(60.0 * dt);
+Instead of adding a constant (it was 1.0) we can add a constant times dt.
+Now whatever FPS we use for Demo02, the cube will move with the same speed.
+
+Done.
+}

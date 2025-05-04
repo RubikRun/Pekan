@@ -1,4 +1,4 @@
-#include "FpsLimiter.h"
+#include "Time/FpsLimiter.h"
 
 using namespace std::chrono;
 using TimePoint = std::chrono::high_resolution_clock::time_point;
