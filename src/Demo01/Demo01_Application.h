@@ -8,7 +8,7 @@ namespace Demo
 
 	class Demo01_Application : public PekanApplication
 	{
-		bool _init() override;
+		bool _init(Pekan::LayerStack& layerStack) override;
 		std::string getName() const override { return "Squares Editor"; }
 	};
 

@@ -865,3 +865,37 @@ Now whatever FPS we use for Demo02, the cube will move with the same speed.
 
 Done.
 }
+
+{
+Next is this TO-DO item
+    Create a way for derived applications to set up layer stack without directly touching the member variable m_layerStack...
+
+Just added this output parameter
+    LayerStack& layerStack
+to the _init() function in PekanApplication
+    virtual bool _init(LayerStack& layerStack) = 0;
+Now derived applications can touch the layer stack only through this variable, only in this function.
+Made the member variable
+    m_layerStack
+be private, together with all other member variables in PekanApplication.
+Previously
+    m_fps
+needed to be protected because derived applications used to set m_fps directly inside of _init()
+but now we have setFPS() for that, so m_fps doesn't need to be protected anymore, it should be private.
+
+Done.
+}
+
+{
+We have one final TO-DO item
+    Use PekanEngine's event polling on these 2 lines in PekanApplication.cpp
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+
+This is actually already done.
+First line doesn't exist anymore because we support custom closing logic and not always closing with escape key.
+Second line has been changed to use Pekan's event polling
+    const glm::ivec2 frameBufferSize = window.getFrameBufferSize();
+
+Done.
+}

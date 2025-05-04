@@ -6,11 +6,12 @@
 #include "PekanEngine.h"
 using Pekan::PekanEngine;
 using Pekan::WindowProperties;
+using Pekan::LayerStack;
 
 namespace Demo
 {
 
-	bool Demo00_Application::_init()
+	bool Demo00_Application::_init(LayerStack& layerStack)
 	{
 		WindowProperties windowProperties;
 		windowProperties.title = getName();
@@ -23,8 +24,8 @@ namespace Demo
 		demoScene->attachGUIWindow(demoGuiWindow);
 
 		// Add scene and GUI window to application's layers
-		m_layerStack.pushLayer(demoScene);
-		m_layerStack.pushLayer(demoGuiWindow);
+		layerStack.pushLayer(demoScene);
+		layerStack.pushLayer(demoGuiWindow);
 
 		return true;
 	}

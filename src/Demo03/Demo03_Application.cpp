@@ -5,11 +5,12 @@
 #include "PekanEngine.h"
 using Pekan::PekanEngine;
 using Pekan::WindowProperties;
+using Pekan::LayerStack;
 
 namespace Demo
 {
 
-	bool Demo03_Application::_init()
+	bool Demo03_Application::_init(LayerStack& layerStack)
 	{
 		WindowProperties windowProperties;
 		windowProperties.fullScreen = true;
@@ -19,7 +20,7 @@ namespace Demo
 		// Create demo scene
 		Demo03_Scene* demoScene = new Demo03_Scene(this);
 		// Add scene to application's layers
-		m_layerStack.pushLayer(demoScene);
+		layerStack.pushLayer(demoScene);
 
 		setFPS(60.0);
 

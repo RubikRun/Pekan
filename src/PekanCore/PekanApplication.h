@@ -41,9 +41,8 @@ namespace Pekan
 
 		// Initializes the application.
 		// 
-		// To be implemented by derived classes
-		// to set up application's layer stack
-		virtual bool _init() = 0;
+		// To be implemented by derived classes to fill layer stack with application's layers.
+		virtual bool _init(LayerStack& layerStack) = 0;
 
 		// Stops running the main loop and closes the window
 		void stopRunning();
@@ -65,7 +64,7 @@ namespace Pekan
 		// Can be implemented by derived classes with specific logic of handling the events from the event queue.
 		virtual void handleEventQueue() { while (!m_eventQueue.empty()) { m_eventQueue.pop(); } }
 
-	protected: /* variables */
+	private: /* variables */
 
 		// Stack of layers making up the application
 		LayerStack m_layerStack;
