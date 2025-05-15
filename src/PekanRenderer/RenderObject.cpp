@@ -33,6 +33,7 @@ namespace Renderer
 		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
 		m_indexBuffer.create(indexData, indexDataSize, indexDataUsage);
 		m_shader.create(vertexShaderSource, fragmentShaderSource);
+		m_texture.create();
 	}
 
 	void RenderObject::create
@@ -55,6 +56,7 @@ namespace Renderer
 		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
 		m_indexBuffer.create();
 		m_shader.create(vertexShaderSource, fragmentShaderSource);
+		m_texture.create();
 	}
 
 	void RenderObject::create(const VertexBufferLayout& layout, const char* vertexShaderSource, const char* fragmentShaderSource)
@@ -66,6 +68,7 @@ namespace Renderer
 		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
 		m_indexBuffer.create();
 		m_shader.create(vertexShaderSource, fragmentShaderSource);
+		m_texture.create();
 	}
 
 	void RenderObject::destroy()
@@ -80,20 +83,29 @@ namespace Renderer
 		m_indexBuffer.destroy();
 		m_vertexBuffer.destroy();
 		m_vertexArray.destroy();
+		m_texture.destroy();
 	}
 
 	void RenderObject::bind()
 	{
-		PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_shader.isValid());
+		PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
 
 		m_vertexArray.bind();
 		m_shader.bind();
+		if (m_textureSlot != 0xffffffff)
+		{
+			m_texture.bind(m_textureSlot);
+		}
 	}
 
 	void RenderObject::unbind()
 	{
-		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid());
+		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
 
+		if (m_textureSlot != 0xffffffff)
+		{
+			m_texture.bind(m_textureSlot);
+		}
 		m_shader.unbind();
 		m_vertexArray.unbind();
 	}
@@ -136,6 +148,15 @@ namespace Renderer
 
 		m_indexBuffer.setData(data, size, dataUsage);
 		m_indexDataUsage = dataUsage;
+	}
+
+	void RenderObject::setTextureImage(const Image& image, const char* uniformName, unsigned slot)
+	{
+		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
+
+		m_texture.setImage(image);
+		m_shader.setUniform1i(uniformName, slot);
+		m_textureSlot = slot;
 	}
 
 } // namespace Renderer

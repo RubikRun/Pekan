@@ -55,3 +55,11 @@
 0022 15.05.2025 (DONE): In RenderObject's setVertexData() and setIndexData() functions do something so that client doesn't have to provide BufferDataUsage each time.
                         It should be optional.
                         If they don't provide a BufferDataUsage then the BufferDataUsage passed in the beggining to the create() function should be used.
+
+0023 15.05.2025 (TODO): Create enums for parameters in class Texture
+
+0024 17.05.2025 (TODO): Think about how many and which ones of the create() overloads in RenderObject we need.
+                        I would say it's good to have create() overloads for combinations of the required components (vertices and shader)
+                        but the optional components (indices and texture) should be set by explicitly calling a set*() function.
+
+0025 17.05.2025 (TODO): Check what happens if you call setTextureImage() more than once on a single RenderObject

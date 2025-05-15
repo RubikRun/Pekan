@@ -54,6 +54,12 @@ namespace Renderer {
 		GLCall(glUniform1f(location, value));
 	}
 
+	void Shader::setUniform1i(const char* uniformName, int value)
+	{
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform1i(location, value));
+	}
+
 	void Shader::setUniform2fv(const char* uniformName, const glm::vec2& value)
 	{
 		const int location = getUniformLocation(uniformName);

@@ -1019,4 +1019,133 @@ Added a test image of the Teenage Mutant Ninja Turtles series from 2003 :D
 Tried to load it using the Image class.
 Seems to work.
 
+Okay, we have images handled.
+Now the hard part - implementing the actual textures.
+We will create a new class
+    Texture
+in files
+    Texture.h
+    Texture.cpp
+in
+    PekanRenderer
+that will be a basic wrapper over an OpenGL texture object.
+It will, of course, derive from RenderComponent.
+The main thing happening in this Texture class will be assigning an image to the texture object
+    void setImage(const Image& image);
+We will also have a create() overload that directly does this upon creation of the texture object
+    void create(const Image& image);
+like that:
+    void Texture::create(const Image& image)
+    {
+        RenderComponent::create(false);
+        setImage(image);
+    }
+Remember that we also have the default create() function coming from RenderComponent that just creates an empty texture object.
+Now let's look at the implementation of setImage().
+The main thing happening is that we assign the given image to the texture object with this OpenGL function
+    glTexImage2D(...)
+It requires a bunch of parameters. Some of them are easy to figure out, like the width and height of the image,
+we already have those inside of the Image object itself. But some of them are harder to figure out, like the format and internal format.
+They depend on the number of channels of the image, and we cannot directly pass the number of channels,
+we need to pass GL_RGBA as the format if the number of channels is 4 for example, or we need to pass GL_RGB as the format if the number of channels is 3, etc.
+For that we'll add a new static function inside of class Texture
+    static void getFormat(const Image& image, unsigned& format, unsigned& internalFormat);
+that determines the format and internal format that a texture must have to support the image.
+Specifically we need the OpenGL enum values for the format and internal format, and that's exactly what the function fills in to the output parameters
+    unsigned& format, unsigned& internalFormat
+So that was all about the glTexImage2D() call.
+Before it we need to configure a few other things about the texture.
+We need to configure the minify and magnify function, and how the texture will wrap.
+For now I will configure them with some hardcoded OpenGL values that seem reasonable as defaults.
+Later we might need to provide user with control over these values, to allow them to configure them as they wish.
+One final thing worth mentioning is the functions
+    void bind()
+    void unbind()
+Textures are special in this regard, we don't just bind a texture,
+we bind a texture to a specific texture slot (texture unit).
+So we'll add these 2 overloads
+    void bind(unsigned slot) const;
+    void unbind(unsigned slot) const;
+If I could I would remove the parameterless versions of bind() and unbind() because they don't make much sense,
+but they are required from the base class RenderComponent. Inside of it bind() and unbind() are pure virtual so we need to implement them.
+We will implement them to bind/unbind the texture to the currently active texture slot,
+and we'll add a new function in Texture
+    static void activateSlot(unsigned slot);
+that activates a specific slot.
+So now if users of class Texture want to bind a texture object to a specific slot, say 8, they can either do
+    texObj.bind(8);
+or
+    Texture::activateSlot(8);
+    texObj.bind();
+First one is safer. Would recommend using it.
+That's it. That's the Texture class.
+
+Now let's see how we'll use the Texture class.
+If we have a Texture object with a loaded image and we bind it to let's say slot 8 how can we actually use that texture?
+Well, we need to use texture slot 8 inside of our fragment shader.
+The usual workflow is that we have a uniform
+    uniform sampler2D tex0;
+inside of the fragment shader.
+This uniform is supposed to be set from the CPU side to be equal to the desired slot, in this case 8,
+so we would do this
+    m_shader.setUniform1i("tex0", 8);
+Then inside the shader we can use this tex0 together with the texture() function and a texture coordinate like that:
+    texture(tex0, vTexCoord);
+where vTexCoord is a vec2 containing the coordinates of the point of the texture that we need to sample.
+
+To make all of this more convenient we'll integrate the Texture class inside of class RenderObject.
+Let's add a member
+    Texture m_texture;
+This member will be created and destroyed the same way as other members in the create() and destroy() functions.
+To actually set an image to the texture we'll add this new function
+    void setTextureImage
+    (
+        const Image& image,
+        const char* uniformName,
+        unsigned slot
+    );
+that assigns the image to the texture like that
+    m_texture.setImage(image);
+but what it also does is set the uniform inside of the shader to be equal to the slot where the texture will be bound
+    m_shader.setUniform1i(uniformName, slot);
+How do we make sure that this same slot is the slot where the texture will be bound?
+Well, we'll add this new member as well, to RenderObject
+    unsigned m_textureSlot = 0xffffffff;
+where we'll remember the slot where the texture is supposed to be bound.
+So inside of setTextureImage() we will also set
+    m_textureSlot = slot;
+Then when binding the whole RenderObject we will bind the texture to this same slot, like that
+    if (m_textureSlot != 0xffffffff)
+    {
+        m_texture.bind(m_textureSlot);
+    }
+This, of course, happens only if an image has been assigned and a slot exists.
+Otherwise the texture is empty and won't be used.
+
+So now how do we use a RenderObject with a texture?
+We need one final thing, and that's to specify UV coordinates (texture coordinates) of each vertex.
+So we'll change the color vertex attribute to be a "texCoord" vertexAttribute.
+That's a vertex attribute of type vec2 and it specifies what texture coordinates each vertex should have.
+    (The last 2 numbers of each row are the UV coordinates)
+    const float vertices[] =
+    {
+        0.8f,  0.8f, 1.0f, 1.0f, // top right
+        0.8f, -0.8f, 1.0f, 0.0f, // bottom right
+        -0.8f, -0.8f, 0.0f, 0.0f, // bottom left
+        -0.8f,  0.8f, 0.0f, 1.0f  // top left
+    };
+    ...
+    { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "texCoord" } },
+Then these texture coordinates will be interpolated for every pixel in between the vertices, so for every pixel inside a triangle,
+and we'll receive this varying variable
+    in vec2 vTexCoord;
+inside of the fragment shader. It will contain the texture coordinates of the current pixel, telling it to which point of the texture it corresponds.
+Then we can sample the texture like that
+    FragColor = texture(tex0, vTexCoord);
+and we have our fragment color.
+
+That's it.
+Testing all of that with the TMNT image.
+Seems to work. Textures are ready.
+Done.
 }

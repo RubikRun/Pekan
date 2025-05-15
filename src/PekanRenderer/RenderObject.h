@@ -4,14 +4,18 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "Texture.h"
 
 namespace Pekan
 {
 namespace Renderer
 {
 
-	// A class representing a renderable object in Pekan.
-	// It consists of vertices, indices and a shader.
+	// A class representing a renderable object in Pekan, consisting of:
+	// - vertices
+	// - indices (optional)
+	// - a shader
+	// - a texture (optional)
 	class RenderObject
 	{
 	public:
@@ -80,6 +84,13 @@ namespace Renderer
 			BufferDataUsage dataUsage
 		);
 
+		void setTextureImage
+		(
+			const Image& image,
+			const char* uniformName,
+			unsigned slot
+		);
+
 		Shader& getShader() { return m_shader; }
 		const Shader& getShader() const { return m_shader; }
 
@@ -92,6 +103,9 @@ namespace Renderer
 		IndexBuffer m_indexBuffer;
 
 		Shader m_shader;
+
+		Texture m_texture;
+		unsigned m_textureSlot = 0xffffffff;
 
 		BufferDataUsage m_vertexDataUsage = BufferDataUsage::None;
 		BufferDataUsage m_indexDataUsage = BufferDataUsage::None;

@@ -1,0 +1,94 @@
+#include "Texture.h"
+
+#include "Logger/PekanLogger.h"
+#include "Image.h"
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+
+const glm::vec4 COLOR_OUTSIDE_BOUNDS = glm::vec4(255, 0, 0, 255);
+const unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
+
+namespace Pekan {
+namespace Renderer {
+
+	void Texture::create(const Image& image)
+	{
+		RenderComponent::create(false);
+		setImage(image);
+	}
+
+	void Texture::setImage(const Image& image)
+	{
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
+
+		// Configure the minify and magnify functions of the texture
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+		// Configure texture wrapping
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
+		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &COLOR_OUTSIDE_BOUNDS.x));
+
+		// Set image data to the texture object
+		unsigned format = 0, internalFormat = 0;
+		getFormat(image, format, internalFormat);
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.getWidth(), image.getHeight(), 0, format, DEFAULT_PIXEL_TYPE, image.getData()));
+		// Generate mipmaps
+		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+	}
+
+	void Texture::bind() const
+	{
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
+	}
+
+	void Texture::unbind() const
+	{
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+	}
+
+	void Texture::bind(unsigned slot) const
+	{
+		activateSlot(slot);
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
+	}
+
+	void Texture::unbind(unsigned slot) const
+	{
+		activateSlot(slot);
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+	}
+
+	void Texture::activateSlot(unsigned slot)
+	{
+		const unsigned slotEnumValue = PekanRenderer::getTextureSlotOpenGLEnum(slot);
+		GLCall(glActiveTexture(slotEnumValue));
+	}
+
+	void Texture::_create()
+	{
+		GLCall(glGenTextures(1, &m_id));
+	}
+	void Texture::_destroy()
+	{
+		GLCall(glDeleteTextures(1, &m_id));
+	}
+
+	void Texture::getFormat(const Image& image, unsigned& format, unsigned& internalFormat)
+	{
+		PK_ASSERT_QUICK(image.getNumChannels() >= 0);
+
+		switch (image.getNumChannels())
+		{
+			case 1:    format = GL_RED;     internalFormat = GL_R8;       break;
+			case 2:    format = GL_RG;      internalFormat = GL_RG8;      break;
+			case 3:    format = GL_RGB;     internalFormat = GL_RGB8;     break;
+			case 4:    format = GL_RGBA;    internalFormat = GL_RGBA8;    break;
+			default: PK_LOG_ERROR("Trying to use an unsupported image format for a texture.", "Pekan"); break;
+		}
+	}
+
+} // namespace Pekan
+} // namespace Renderer

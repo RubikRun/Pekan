@@ -1,15 +1,19 @@
 #include "Demo04_Scene.h"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
+#include "Image.h"
 
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::Shader;
+using Pekan::Renderer::Image;
 
 static const char* vertexShaderFilePath = "resources/04_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/04_fragment_shader.glsl";
+
+static const char* EXAMPLE_IMAGE_FILEPATH = "resources/tmnt.png";
 
 namespace Demo
 {
@@ -19,10 +23,10 @@ namespace Demo
         // Set up vertex data and configure vertex attributes
         const float vertices[] =
         {
-             0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
-            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
+             0.8f,  0.8f, 1.0f, 1.0f, // top right
+             0.8f, -0.8f, 1.0f, 0.0f, // bottom right
+            -0.8f, -0.8f, 0.0f, 0.0f, // bottom left
+            -0.8f,  0.8f, 0.0f, 1.0f  // top left
         };
         const unsigned indices[] =
         {
@@ -33,13 +37,16 @@ namespace Demo
         m_renderObject.create
         (
             vertices, sizeof(vertices),
-            { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
+            { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "texCoord" } },
             BufferDataUsage::StaticDraw,
             indices, sizeof(indices),
             BufferDataUsage::StaticDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
+
+        Image image(EXAMPLE_IMAGE_FILEPATH);
+        m_renderObject.setTextureImage(image, "tex0", 0);
 
         return true;
 	}

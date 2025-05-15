@@ -75,6 +75,7 @@ namespace Renderer
 		friend class VertexBufferElement;
 		friend class VertexBuffer;
 		friend class IndexBuffer;
+		friend class Texture;
 
 	public:
 
@@ -129,6 +130,9 @@ namespace Renderer
 
 		// Checks if a shader data type's base type is int
 		static bool isShaderDataTypeInt(ShaderDataType type);
+
+		// Returns the OpenGL enum value corresponding to the given texture slot
+		static unsigned getTextureSlotOpenGLEnum(unsigned slot);
 	};
 
 } // namespace Renderer
