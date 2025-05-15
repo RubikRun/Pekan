@@ -17,6 +17,7 @@ if(WITH_DEMO_PROJECTS)
     add_subdirectory(src/Demo01)
     add_subdirectory(src/Demo02)
     add_subdirectory(src/Demo03)
+    add_subdirectory(src/Demo04)
 endif()
 # Add PekanRenderer subdirectory
 add_subdirectory(src/PekanRenderer)
@@ -44,6 +45,7 @@ if(WITH_DEMO_PROJECTS)
     set_target_properties(Demo01 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo02 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo03 PROPERTIES FOLDER "Demos")
+    set_target_properties(Demo04 PROPERTIES FOLDER "Demos")
 endif()
 
 # Add a static library PekanCore, compiling the following source files
@@ -64,6 +66,9 @@ add_library(PekanCore STATIC
     src/PekanCore/LayerStack.cpp
     src/PekanCore/Utils/PekanUtils.h
     src/PekanCore/Utils/PekanUtils.cpp
+    src/PekanCore/Utils/FileUtils.h
+    src/PekanCore/Utils/FileUtils.cpp
+    src/PekanCore/Utils/stb.cpp
     src/PekanCore/Events/Event.h
     src/PekanCore/Events/WindowEvent.h
     src/PekanCore/Events/KeyEvent.h
@@ -80,8 +85,8 @@ add_library(PekanCore STATIC
 SOURCE_GROUP("Source Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.cpp)
 SOURCE_GROUP("Header Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.h)
 # Group Utils files under a virtual folder called "Utils"
-SOURCE_GROUP("Source Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.cpp)
-SOURCE_GROUP("Header Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.h)
+SOURCE_GROUP("Source Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.cpp src/PekanCore/Utils/FileUtils.cpp src/PekanCore/Utils/stb.cpp)
+SOURCE_GROUP("Header Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.h src/PekanCore/Utils/FileUtils.h)
 # Group Events files under a virtual folder called "Events"
 SOURCE_GROUP("Header Files\\Events" FILES
     src/PekanCore/Events/Event.h
@@ -106,6 +111,7 @@ target_link_libraries(PekanCore PRIVATE
 
 # Set include directories for PekanCore
 target_include_directories(PekanCore PUBLIC src/PekanCore)
+target_include_directories(PekanCore PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)
     # Set Demo03 to be the startup project by default

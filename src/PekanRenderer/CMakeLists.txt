@@ -17,6 +17,8 @@ add_library(PekanRenderer STATIC
     VertexArray.cpp
     Shader.h
     Shader.cpp
+    Image.h
+    Image.cpp
 )
 
 # Set include directories for PekanRenderer

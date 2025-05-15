@@ -954,3 +954,69 @@ Then I removed the data usage parameter from all calls of setVertexData() and se
 All demos work as before.
 Done.
 }
+
+{
+Next feature is a big one:
+    Textures.
+
+Let's create a new demo
+    Demo04
+It will be very similar to Demo00 so let's begin with a copy of Demo00.
+The only difference will be that we'll use a texture for the rectangle instead of a gradient color.
+
+First of all, the way we'll read in image files to actual data in C++ is using this library
+    stb
+More specifically
+    stb_image
+It's a single-file public domain library. You can get it from here
+    https://github.com/nothings/stb
+We just need this single header file:
+    stb_image.h
+and we'll put it under
+    dep/stb/
+In order for it to work we also need a source file containing these 2 lines
+    #define STB_IMAGE_IMPLEMENTATION
+    #include <stb/stb_image.h>
+Let's create a source file
+    stb.cpp
+under
+    src/PekanCore/Utils
+and paste those 2 lines there.
+That's it, now we should be able to include <stb_image.h> and use functions from it.
+
+As already said, we will use stb to load image files,
+so let's create these 2 new files
+    FileUtils.h
+    FileUtils.cpp
+under
+    src/PekanCore/Utils
+and write a single function
+    const unsigned char* readImageFile(const char* filepath, int& width, int& height, int& numChannels);
+that reads in an image from file and returns raw pixel data.
+This function is basically a wrapper over
+    stbi_load()
+so that users of PekanCore can call this Pekan function instead of directly using stb.
+It also flips the pixels by first calling
+    stbi_set_flip_vertically_on_load(true);
+
+It would be good to also have an Image class inside of PekanRenderer,
+that keeps track of the pixel data, width, height, numChannels and other properties that an image might have.
+So create a new class Image in 2 files
+    Image.h
+    Image.cpp
+in PekanRenderer. We will need these members:
+    const unsigned char* m_data = nullptr;
+    int m_width = -1;
+    int m_height = -1;
+    int m_numChannels = -1;
+and getters for each one of them. Then we'll also need a load function
+    bool load(const char* filepath);
+and for convenience we might also have a constructor for directly loading the image upon creation of an Image instance
+    Image(const char* filepath) { load(filepath); }
+
+Added a test image of the Teenage Mutant Ninja Turtles series from 2003 :D
+    src/Demo04/resources/tmnt.png
+Tried to load it using the Image class.
+Seems to work.
+
+}
