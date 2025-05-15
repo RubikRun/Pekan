@@ -447,6 +447,14 @@ namespace Logger
         }
     }
 
+    void _logAssertToConsole(const char* condition)
+    {
+        if (isConsoleEnabled)
+        {
+            std::cout << "Assertion failed: " << condition << std::endl;
+        }
+    }
+
     void _logDebugToFile(const char* msg, const char* sender, std::string_view sourceFileName, int sourceFileLine)
     {
         if (isFileEnabled && isDebugEnabled)

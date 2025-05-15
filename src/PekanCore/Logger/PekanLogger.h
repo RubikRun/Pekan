@@ -148,6 +148,7 @@ namespace Logger
 #endif
 
 	void _logAssertToConsole(const char* msg, const char* sender, const char* condition);
+	void _logAssertToConsole(const char* condition);
 
 #if PK_LOGGER_SUPPORT
 	#if PK_LOGGER_USE_FILEPATH_FOR_SOURCE_FILE
@@ -289,6 +290,7 @@ namespace Logger
 
 #ifndef NDEBUG
 
+// Checks if a condition is met. If not, logs a message and breaks the debugger at current line.
 // CND = condition, MSG = message, SND = sender
 #define PK_ASSERT(CND, MSG, SND) \
     do \
@@ -300,11 +302,22 @@ namespace Logger
             std::abort(); \
         } \
     } while (false)
+#define PK_ASSERT_QUICK(CND) \
+    do \
+    { \
+        if (!(CND)) \
+        { \
+			PK_STR("QuickAssert"); \
+			Pekan::Logger::_logAssertToConsole(#CND); \
+            std::abort(); \
+        } \
+    } while (false)
 
 #else
 
 // Does nothing in non-debug builds.
 // ( Condition is placed inside of an empty if statement to avoid warnings of "not using return value" )
 #define PK_ASSERT(CND, MSG, SND) if (CND) {}
+#define PK_ASSERT_QUICK(CND) if (CND) {}
 
 #endif

@@ -899,3 +899,23 @@ Second line has been changed to use Pekan's event polling
 
 Done.
 }
+
+{
+All TO-DO items are done now.
+We have 4 more features to implement, and 1 feature (layering) to test and maybe finish.
+
+Let's start implementing
+    RenderObject wrapper
+
+----------
+15.05.2025
+----------
+
+While implementing the RenderObject wrapper I needed to use PK_ASSERT a lot,
+and I wanted to use it without a message or a sender, just to quickly check some condition.
+Currently the PK_ASSERT macro requires 3 parameters - condition, message, sender.
+Let's create a lighter version of PK_ASSERT, call it
+    PK_ASSERT_QUICK
+It's the same but with the condition only.
+
+}
