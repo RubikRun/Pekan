@@ -59,10 +59,20 @@ namespace Renderer
 		void setVertexData
 		(
 			const void* data,
+			long long size
+		);
+		void setVertexData
+		(
+			const void* data,
 			long long size,
 			BufferDataUsage dataUsage
 		);
 
+		void setIndexData
+		(
+			const void* data,
+			long long size
+		);
 		void setIndexData
 		(
 			const void* data,
@@ -82,6 +92,9 @@ namespace Renderer
 		IndexBuffer m_indexBuffer;
 
 		Shader m_shader;
+
+		BufferDataUsage m_vertexDataUsage = BufferDataUsage::None;
+		BufferDataUsage m_indexDataUsage = BufferDataUsage::None;
 	};
 
 } // namespace Renderer

@@ -103,7 +103,7 @@ namespace Demo
             m_position.x + m_size, m_position.y + m_size,
             m_position.x + m_size, m_position.y
         };
-        m_renderObject.setVertexData(m_vertices.data(), 8 * sizeof(int), BufferDataUsage::DynamicDraw);
+        m_renderObject.setVertexData(m_vertices.data(), 8 * sizeof(int));
     }
 
 } // namespace Demo

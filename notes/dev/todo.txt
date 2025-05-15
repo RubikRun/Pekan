@@ -52,6 +52,6 @@
 
 0021 15.05.2025 (TODO): Research glBufferSubData(). Decide if we need it in Pekan.
 
-0022 15.05.2025 (TODO): In RenderObject's setVertexData() and setIndexData() functions do something so that client doesn't have to provide BufferDataUsage each time.
+0022 15.05.2025 (DONE): In RenderObject's setVertexData() and setIndexData() functions do something so that client doesn't have to provide BufferDataUsage each time.
                         It should be optional.
                         If they don't provide a BufferDataUsage then the BufferDataUsage passed in the beggining to the create() function should be used.

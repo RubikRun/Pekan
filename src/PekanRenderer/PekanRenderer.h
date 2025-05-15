@@ -55,15 +55,16 @@ namespace Renderer
 	// Enum for different types of usage of a buffer
 	enum class BufferDataUsage
 	{
-		StreamDraw = 0,
-		StreamRead = 1,
-		StreamCopy = 2,
-		StaticDraw = 3,
-		StaticRead = 4,
-		StaticCopy = 5,
-		DynamicDraw = 6,
-		DynamicRead = 7,
-		DynamicCopy = 8
+		None = 0,
+		StreamDraw = 1,
+		StreamRead = 2,
+		StreamCopy = 3,
+		StaticDraw = 4,
+		StaticRead = 5,
+		StaticCopy = 6,
+		DynamicDraw = 7,
+		DynamicRead = 8,
+		DynamicCopy = 9
 	};
 
 	// This is a singleton/static class containing common rendering functionality,

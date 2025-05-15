@@ -5,6 +5,9 @@ namespace Pekan
 namespace Renderer
 {
 
+	static const BufferDataUsage DEFAULT_VERTEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
+	static const BufferDataUsage DEFAULT_INDEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
+
 	void RenderObject::create
 	(
 		const void* vertexData,
@@ -21,6 +24,9 @@ namespace Renderer
 		PK_ASSERT_QUICK(vertexData != nullptr); PK_ASSERT_QUICK(vertexDataSize >= 0);
 		PK_ASSERT_QUICK(indexData != nullptr); PK_ASSERT_QUICK(indexDataSize >= 0);
 		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
+
+		m_vertexDataUsage = vertexDataUsage;
+		m_indexDataUsage = indexDataUsage;
 
 		m_vertexArray.create();
 		m_vertexBuffer.create(vertexData, vertexDataSize, vertexDataUsage);
@@ -41,6 +47,8 @@ namespace Renderer
 	{
 		PK_ASSERT_QUICK(vertexData != nullptr); PK_ASSERT_QUICK(vertexDataSize >= 0);
 		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
+
+		m_vertexDataUsage = vertexDataUsage;
 
 		m_vertexArray.create();
 		m_vertexBuffer.create(vertexData, vertexDataSize, vertexDataUsage);
@@ -65,6 +73,9 @@ namespace Renderer
 		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_indexBuffer.isValid());
 		PK_ASSERT_QUICK(m_vertexBuffer.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid());
 
+		m_vertexDataUsage = BufferDataUsage::None;
+		m_indexDataUsage = BufferDataUsage::None;
+
 		m_shader.destroy();
 		m_indexBuffer.destroy();
 		m_vertexBuffer.destroy();
@@ -87,11 +98,36 @@ namespace Renderer
 		m_vertexArray.unbind();
 	}
 
+	void RenderObject::setVertexData(const void* data, long long size)
+	{
+		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+
+		if (m_vertexDataUsage == BufferDataUsage::None)
+		{
+			m_vertexDataUsage = DEFAULT_VERTEX_DATA_USAGE;
+		}
+
+		m_vertexBuffer.setData(data, size, m_vertexDataUsage);
+	}
+
 	void RenderObject::setVertexData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
 		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
 
 		m_vertexBuffer.setData(data, size, dataUsage);
+		m_vertexDataUsage = dataUsage;
+	}
+
+	void RenderObject::setIndexData(const void* data, long long size)
+	{
+		PK_ASSERT_QUICK(m_indexBuffer.isValid());
+
+		if (m_indexDataUsage == BufferDataUsage::None)
+		{
+			m_indexDataUsage = DEFAULT_INDEX_DATA_USAGE;
+		}
+
+		m_indexBuffer.setData(data, size, m_indexDataUsage);
 	}
 
 	void RenderObject::setIndexData(const void* data, long long size, BufferDataUsage dataUsage)
@@ -99,6 +135,7 @@ namespace Renderer
 		PK_ASSERT_QUICK(m_indexBuffer.isValid());
 
 		m_indexBuffer.setData(data, size, dataUsage);
+		m_indexDataUsage = dataUsage;
 	}
 
 } // namespace Renderer

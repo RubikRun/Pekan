@@ -929,5 +929,28 @@ Later client can fill vertex data and/or index data using the setVertexData() an
 
 All demos work as before. RenderObject's API looks good.
 Done.
+}
 
+{
+While we're at it let's do this new TO-DO item
+    In RenderObject's setVertexData() and setIndexData() functions do something so that client doesn't have to provide BufferDataUsage each time.
+    It should be optional.
+    If they don't provide a BufferDataUsage then the BufferDataUsage passed in the beggining to the create() function should be used.
+
+Okay, pretty easy.
+I just added these 2 member variables to RenderObject:
+    BufferDataUsage m_vertexDataUsage = BufferDataUsage::None;
+    BufferDataUsage m_indexDataUsage = BufferDataUsage::None;
+For their default values I had to add a new value to the BufferDataUsage enum - None.
+Then in the create() functions if there is a vertexDataUsage parameter, then the m_vertexDataUsage member is set to that parameter.
+That way we remember with what data usage was the render object created. Same for index data.
+Then I added an overload of setVertexData() and an overload of setIndexData() that doesn't take in a data usage parameter.
+In these 2 overloads we'll just use the 2 new members as data usage, if they are not none
+(if they are none it means that the render object was not created with a data usage).
+If they are none, we'll use a default data usage.
+That's it.
+
+Then I removed the data usage parameter from all calls of setVertexData() and setIndexData() where it was not needed.
+All demos work as before.
+Done.
 }

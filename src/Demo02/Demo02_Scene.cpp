@@ -127,8 +127,7 @@ namespace Demo
         m_renderObject.setVertexData
         (
             m_vertices.data(),
-            m_vertices.size() * sizeof(Vertex),
-            BufferDataUsage::DynamicDraw
+            m_vertices.size() * sizeof(Vertex)
         );
 
         m_rotation += float(60.0 * dt);

@@ -231,8 +231,8 @@ namespace Demo
         m_indices.push_back((m_squaresCount - 1) * 4 + 3);
         m_indices.push_back((m_squaresCount - 1) * 4 + 0);
 
-        m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
-        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
+        m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int));
+        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int));
 
         m_speedIdx++;
     }
@@ -246,7 +246,7 @@ namespace Demo
         {
             m_tailIdx = m_squaresCount - 1;
         }
-        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
+        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int));
 
         if (!isRectangleInsideOfWindow(getRectangle(m_headIdx), m_resolution) || isBitingItself())
         {
