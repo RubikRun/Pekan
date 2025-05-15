@@ -5,6 +5,8 @@
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
+using Pekan::Renderer::BufferDataUsage;
+using Pekan::Renderer::Shader;
 
 static const char* vertexShaderFilePath = "resources/00_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
@@ -14,12 +16,6 @@ namespace Demo
 
     bool Demo00_Scene::init()
 	{
-        m_shader.create
-        (
-            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
-        );
-
         // Set up vertex data and configure vertex attributes
         const float vertices[] =
         {
@@ -34,30 +30,29 @@ namespace Demo
             1, 2, 3   // second triangle
         };
 
-        // Create a vertex array
-        m_vertexArray.create();
-
-        // Create a vertex buffer with vertices data
-        m_vertexBuffer.create
+        m_renderObject.create
         (
-            vertices,
-            sizeof(vertices)
+            vertices, sizeof(vertices),
+            { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
+            BufferDataUsage::StaticDraw,
+            indices, sizeof(indices),
+            BufferDataUsage::StaticDraw,
+            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
+            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
-        // Create an index buffer with indices data
-        m_indexBuffer.create(indices, sizeof(indices));
-
-        // Add vertex buffer to vertex array
-        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
 
         return true;
 	}
 
 	void Demo00_Scene::update(double dt)
 	{
-        m_shader.bind();
+        // Get position from GUI
         const ImVec2& position = m_guiWindow->getPosition();
-        m_shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
-        m_shader.unbind();
+        // Set "uPosition" uniform inside of the shader
+        Shader& shader = m_renderObject.getShader();
+        shader.bind();
+        shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+        shader.unbind();
 	}
 
 	void Demo00_Scene::render()
@@ -75,19 +70,14 @@ namespace Demo
             PekanRenderer::clear();
         }
 
-        m_shader.bind();
-        m_vertexArray.bind();
+        m_renderObject.bind();
         PekanRenderer::drawIndexed(6, DrawMode::Triangles);
-        m_vertexArray.unbind();
-        m_shader.unbind();
+        m_renderObject.unbind();
 	}
 
 	void Demo00_Scene::exit()
 	{
-        m_vertexBuffer.destroy();
-        m_indexBuffer.destroy();
-        m_vertexArray.destroy();
-        m_shader.destroy();
+        m_renderObject.destroy();
 	}
 
 } // namespace Demo

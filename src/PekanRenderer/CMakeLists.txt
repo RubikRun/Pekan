@@ -5,6 +5,8 @@ project(PekanRenderer)
 add_library(PekanRenderer STATIC
     PekanRenderer.h
     PekanRenderer.cpp
+    RenderObject.h
+    RenderObject.cpp
     RenderComponent.h
     RenderComponent.cpp
     VertexBuffer.h

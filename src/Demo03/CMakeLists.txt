@@ -12,8 +12,6 @@ add_executable(Demo03
     Snake.cpp
     Apple.h
     Apple.cpp
-    RenderObject.h
-    RenderObject.cpp
 )
 
 # Set link libraries for Demo03

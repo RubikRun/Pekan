@@ -84,8 +84,8 @@ namespace Demo
         (
             m_vertices.data(),
             m_vertices.size() * sizeof(int),
-            BufferDataUsage::DynamicDraw,
             { { ShaderDataType::Int2, "position" } },
+            BufferDataUsage::DynamicDraw,
             m_indices.data(),
             m_indices.size() * sizeof(int),
             BufferDataUsage::DynamicDraw,

@@ -1,9 +1,7 @@
 #pragma once
 
 #include "Layer.h"
-#include "VertexBuffer.h"
-#include "VertexArray.h"
-#include "Shader.h"
+#include "RenderObject.h"
 
 #include "Demo01_GUIWindow.h"
 
@@ -42,16 +40,12 @@ namespace Demo
 
 	private: /* variables */
 
+		Pekan::Renderer::RenderObject m_renderObject;
+
 		// List holding currently existing squares
 		std::vector<Rectangle> m_squares;
 		// Array of vertex data of currently existing squares
 		std::vector<float> m_vertices;
-
-		Pekan::Renderer::VertexBuffer m_vertexBuffer;
-
-		Pekan::Renderer::VertexArray m_vertexArray;
-
-		Pekan::Renderer::Shader m_shader;
 
 		glm::ivec2 m_resolution;
 	};

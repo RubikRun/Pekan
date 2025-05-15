@@ -26,16 +26,12 @@ namespace Demo
         PekanRenderer::enableBlending();
         PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
-        m_shader.create(
+        m_renderObject.create
+        (
+            { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
-
-        // Create a vertex array
-        m_vertexArray.create();
-        // Create an empty vertex buffer, with layout specified, and add it to vertex array
-        m_vertexBuffer.create();
-        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } });
 
         return true;
 	}
@@ -83,26 +79,21 @@ namespace Demo
             m_vertices.insert(m_vertices.end(), std::begin(squareVertices), std::end(squareVertices));
         }
 
-        m_vertexArray.bind();
-        m_vertexBuffer.setData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
+        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
 	}
 
 	void Demo01_Scene::render()
 	{
         PekanRenderer::clear();
 
-        m_shader.bind();
-        m_vertexArray.bind();
+        m_renderObject.bind();
         PekanRenderer::draw(m_vertices.size() / 6);
-        m_vertexArray.unbind();
-        m_shader.unbind();
+        m_renderObject.unbind();
 	}
 
 	void Demo01_Scene::exit()
 	{
-        m_vertexBuffer.destroy();
-        m_vertexArray.destroy();
-        m_shader.destroy();
+        m_renderObject.destroy();
 	}
 
     void Demo01_Scene::addSquare()

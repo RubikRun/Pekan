@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Layer.h"
-#include "VertexBuffer.h"
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
+#include "RenderObject.h"
 
 #include "Demo02_GUIWindow.h"
 
@@ -48,13 +45,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::VertexBuffer m_vertexBuffer;
-
-		Pekan::Renderer::VertexArray m_vertexArray;
-
-		Pekan::Renderer::IndexBuffer m_indexBuffer;
-
-		Pekan::Renderer::Shader m_shader;
+		Pekan::Renderer::RenderObject m_renderObject;
 
 		// List holding current colors of cube's sides
 		std::vector<glm::vec3> m_colors;

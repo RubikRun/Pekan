@@ -6,6 +6,7 @@
 
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
+using Pekan::Renderer::BufferDataUsage;
 using Pekan::PekanEngine;
 
 #define PI 3.14159265359f
@@ -85,25 +86,15 @@ namespace Demo
 
         PekanRenderer::enableDepthTest();
 
-        // Create a vertex array
-        m_vertexArray.create();
-
-        // Create a vertex buffer with vertices data
-        m_vertexBuffer.create
+        m_renderObject.create
         (
             m_vertices.data(),
-            m_vertices.size() * sizeof(Vertex)
-        );
-
-        // Add vertex buffer to vertex array
-        m_vertexArray.addVertexBuffer(m_vertexBuffer, { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "color" } });
-
-        // Create an index buffer with indices data
-        m_indexBuffer.create(indices, sizeof(indices));
-
-        // Create a shader by compiling source code of vertex shader and fragment shader
-        m_shader.create
-        (
+            m_vertices.size() * sizeof(Vertex),
+            { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "color" } },
+            BufferDataUsage::DynamicDraw,
+            indices,
+            sizeof(indices),
+            BufferDataUsage::StaticDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
@@ -133,12 +124,11 @@ namespace Demo
             m_vertices[i * 4 + 3].color = m_colors[i];
         }
 
-        m_vertexArray.bind();
-        m_vertexBuffer.bind();
-        m_vertexBuffer.setData
+        m_renderObject.setVertexData
         (
             m_vertices.data(),
-            m_vertices.size() * sizeof(Vertex)
+            m_vertices.size() * sizeof(Vertex),
+            BufferDataUsage::DynamicDraw
         );
 
         m_rotation += float(60.0 * dt);
@@ -148,30 +138,21 @@ namespace Demo
 	{
         PekanRenderer::clear(true);
 
-        m_vertexBuffer.bind();
-        m_vertexArray.bind();
-        m_indexBuffer.bind();
-        m_shader.bind();
+        m_renderObject.bind();
 
         // Set uniform of model-view-projection matrix
         glm::mat4 mvpMatrix = m_projMatrix * m_viewMatrix * m_modelMatrix;
-        m_shader.setUniformMatrix4fv("u_MVP", mvpMatrix);
+        m_renderObject.getShader().setUniformMatrix4fv("u_MVP", mvpMatrix);
 
         // Draw cube
         PekanRenderer::drawIndexed(36);
 
-        m_vertexBuffer.unbind();
-        m_vertexArray.unbind();
-        m_indexBuffer.unbind();
-        m_shader.unbind();
+        m_renderObject.unbind();
 	}
 
 	void Demo02_Scene::exit()
 	{
-        m_vertexBuffer.destroy();
-        m_vertexArray.destroy();
-        m_indexBuffer.destroy();
-        m_shader.destroy();
+        m_renderObject.destroy();
 	}
 
 } // namespace Demo

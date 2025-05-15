@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Layer.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "Shader.h"
+#include "RenderObject.h"
 
 #include "Demo00_GUIWindow.h"
 
@@ -30,13 +27,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::VertexBuffer m_vertexBuffer;
-
-		Pekan::Renderer::IndexBuffer m_indexBuffer;
-
-		Pekan::Renderer::VertexArray m_vertexArray;
-
-		Pekan::Renderer::Shader m_shader;
+		Pekan::Renderer::RenderObject m_renderObject;
 
 		// GUI window for controlling background's color
 		const Demo00_GUIWindow* m_guiWindow = nullptr;

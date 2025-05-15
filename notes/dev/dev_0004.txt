@@ -918,4 +918,16 @@ Let's create a lighter version of PK_ASSERT, call it
     PK_ASSERT_QUICK
 It's the same but with the condition only.
 
+Okay, done implementing RenderObject wrapper. It's now under
+    src/PekanRenderer/RenderObject.h
+    src/PekanRenderer/RenderObject.cpp
+I mostly copied it from Demo03, and changed all demos to use it.
+One thing worth mentioning:
+I added 2 overloads of the create() function, one without index data, and one without vertex data and index data.
+Both of these overloads still create the vertex buffer and the index buffer but they create them empty.
+Later client can fill vertex data and/or index data using the setVertexData() and setIndexData() functions.
+
+All demos work as before. RenderObject's API looks good.
+Done.
+
 }
