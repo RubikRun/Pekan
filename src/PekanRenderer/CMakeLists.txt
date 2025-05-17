@@ -21,9 +21,11 @@ add_library(PekanRenderer STATIC
     RenderComponents/Texture.cpp
     Image.h
     Image.cpp
+    2D/Shapes/TriangleShape.h
+    2D/Shapes/TriangleShape.cpp
 )
 
-# Group Time files under a virtual folder called "Time"
+# Group RenderComponents files under a virtual folder called "RenderComponents"
 SOURCE_GROUP("Source Files\\RenderComponents" FILES
     RenderComponents/RenderComponent.cpp
     RenderComponents/VertexBuffer.cpp
@@ -41,8 +43,19 @@ SOURCE_GROUP("Header Files\\RenderComponents" FILES
     RenderComponents/Texture.h
 )
 
+# Group 2D Shapes files under a virtual folder called "2D/Shapes"
+SOURCE_GROUP("Source Files\\2D\\Shapes" FILES
+    2D/Shapes/TriangleShape.cpp
+)
+SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
+    2D/Shapes/TriangleShape.h
+)
+
 # Set include directories for PekanRenderer
-target_include_directories(PekanRenderer PUBLIC . RenderComponents)
+target_include_directories(PekanRenderer PUBLIC . RenderComponents 2D/Shapes)
 
 # Set link libraries for PekanRenderer
 target_link_libraries(PekanRenderer PRIVATE PekanCore glad glm opengl32.lib)
+
+# Set PEKAN_RENDERER_ROOT_DIR macro to be the path to current source directory
+target_compile_definitions(PekanRenderer PRIVATE PEKAN_RENDERER_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")

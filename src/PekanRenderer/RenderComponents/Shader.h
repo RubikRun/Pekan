@@ -31,6 +31,7 @@ namespace Renderer {
 		void setUniform1i(const char* uniformName, int value);
 		void setUniform2fv(const char* uniformName, const glm::vec2& value);
 		void setUniform3fv(const char* uniformName, const glm::vec3& value);
+		void setUniform4fv(const char* uniformName, const glm::vec4& value);
 		void setUniformMatrix4fv(const char* uniformName, const glm::mat4& value);
 
 	private: /* functions */

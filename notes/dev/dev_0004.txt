@@ -1166,4 +1166,103 @@ Let's create a new directory inside PekanRenderer
 and inside of it put all the files containing classes that derive from RenderComponent, together with the RenderComponent class itself.
 Done.
 
+Let's start with the triangle wrapper now.
+Create 2 new files
+    TriangleShape.h
+    TriangleShape.cpp
+under a new directory
+    2D/Shapes
+
+Later we might want to have a base class Shape and make TriangleShape derive from it,
+but for now let's just implement class TriangleShape basing it on RenderObject.
+The way we'll base it on RenderObject will NOT be through inheritance, instead we'll just have a member variable
+    RenderObject m_renderObject;
+
+For creating a TriangleShape we will require the 3 vertices obviously.
+It would also be good to require a bool parameter called "dynamic" that tells us if we should create the vertex buffer
+with dynamic data usage or static data usage.
+So the create() function of TriangleShape will look like
+    void create
+    (
+        glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC,
+        bool dynamic = true
+    );
+The implementation is straightforward. We just create an array from the 3 vertex positions,
+and we call m_renderObject.create() with it, passing the needed parameters.
+
+What about the shader? What shader are we going to pass?
+We might give freedom for user to pass their own shader, but for now we'll not do that.
+Instead we will have an internal shader.
+More specifically, we'll have a 2D vertex shader that takes in 2D vertex positions and does nothing
+    src\PekanRenderer\assets\shaders\2D_vertex_shader.glsl
+and a "solid color" fragment shader that colors each pixel with a fixed color which is provded via a uniform called "uColor"
+    assets\shaders\SolidColor_fragment_shader.glsl
+These 2 shaders are not specific to TriangleShape, we will use them for all 2D shapes
+when we want to NOT do anything to the vertices on GPU, and to color each pixel a solid color.
+
+So far we had loaded our shaders only in demo applications and the filepaths to those shaders were relative to the demo's working directory.
+We cannot do that now. The filepaths of these 2 new shaders are inside of Pekan's folder structure and are relative to Pekan's root,
+which is obviously independent from demo's working directory. Demos can be run from anywhere.
+What can we do about it?
+We can create a macro through CMake that points to Pekan's root or in this case to PekanRenderer's root.
+It's done like that:
+    target_compile_definitions(PekanRenderer PRIVATE PEKAN_RENDERER_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+Now at the moment of generating projects, this macro
+    PEKAN_RENDERER_ROOT_DIR
+will be set to the specific path to the PekanRenderer directory, in my case
+    C:\dev\Pekan\src\PekanRenderer
+We can use that macro to get filepaths to the 2 shaders like that:
+    #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/assets/shaders/TriangleShape_vertex_shader.glsl"
+    #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/assets/shaders/TriangleShape_fragment_shader.glsl"
+Now we can easily pass the contents of the 2 shaders to m_renderObject.create() like that:
+    Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+    Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+
+What else?
+We need a standard destroy() function,
+and we need a render() function that just binds the render object and issues a draw call of 3 vertices
+    m_renderObject.bind();
+    PekanRenderer::draw(3);
+
+Finally, we need to set the color uniform "uColor" inside render object's shader
+    m_renderObject.getShader().setUniform4fv("uColor", { 1.0f, 0.0f, 0.0f, 1.0f });
+For now setting a solid red color. Next commit we'll have to provide users of TriangleShape with control over the color.
+
+Let's test it in Demo04.
+Just draw a small triangle somewhere on screen, together with the textured rectangle.
+It works!
+
+Now let's allow user to set a color, instead of just hardcoding red.
+Add these functions to TriangleShape
+    inline glm::vec4 getColor() const { return m_color; }
+    void setColor(glm::vec4 color);
+and this member
+    glm::vec4 m_color;
+and then in setColor() we'll obviously set m_color to the given color,
+but we'll also set the "uColor" uniform inside the shader, but only if the shader is valid (created)
+    m_color = color;
+    if (m_renderObject.getShader().isValid())
+    {
+        m_renderObject.getShader().setUniform4fv("uColor", color);
+    }
+That's it.
+Test it in Demo04 by animating the color.
+It works!
+
+Now let's allow the triangle to be moved.
+We can easily add a setVertices() function that just sets 3 entirely new vertices.
+This is fine and we'll do it, but let's also have a function setPosition() that sets the position of triangle's origin.
+Vertex positions will be considered relative to that origin.
+We can also have a move() function that adds a deltaX and deltaY to triangle's origin.
+So I added these 2 functions
+    void setPosition(glm::vec2 position);
+    void move(glm::vec2 deltaPosition);
+and these members
+    glm::vec2 m_position = glm::vec2(0.0f, 0.0f);
+    glm::vec2 m_vertices[3] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+and some getters for them.
+It works!
+
+That's the TriangleShape basically.
+Done.
 }

@@ -55,10 +55,14 @@ namespace Renderer
 			const char* fragmentShaderSource
 		);
 
+		// Checks if render object is valid,
+		// meaning that it has been created and not yet destroyed.
+		bool isValid() const;
+
 		void destroy();
 
-		void bind();
-		void unbind();
+		void bind() const;
+		void unbind() const;
 
 		void setVertexData
 		(

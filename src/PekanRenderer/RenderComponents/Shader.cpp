@@ -49,29 +49,44 @@ namespace Renderer {
 		GLCall(glUseProgram(0));
 	}
 
-	void Shader::setUniform1f(const char* uniformName, float value) {
+	void Shader::setUniform1f(const char* uniformName, float value)
+	{
+		bind();
 		const int location = getUniformLocation(uniformName);
 		GLCall(glUniform1f(location, value));
 	}
 
 	void Shader::setUniform1i(const char* uniformName, int value)
 	{
+		bind();
 		const int location = getUniformLocation(uniformName);
 		GLCall(glUniform1i(location, value));
 	}
 
 	void Shader::setUniform2fv(const char* uniformName, const glm::vec2& value)
 	{
+		bind();
 		const int location = getUniformLocation(uniformName);
 		GLCall(glUniform2fv(location, 1, glm::value_ptr(value)));
 	}
 
-	void Shader::setUniform3fv(const char* uniformName, const glm::vec3& value) {
+	void Shader::setUniform3fv(const char* uniformName, const glm::vec3& value)
+	{
+		bind();
 		const int location = getUniformLocation(uniformName);
 		GLCall(glUniform3fv(location, 1, glm::value_ptr(value)));
 	}
 
-	void Shader::setUniformMatrix4fv(const char* uniformName, const glm::mat4& value) {
+	void Shader::setUniform4fv(const char* uniformName, const glm::vec4& value)
+	{
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform4fv(location, 1, glm::value_ptr(value)));
+	}
+
+	void Shader::setUniformMatrix4fv(const char* uniformName, const glm::mat4& value)
+	{
+		bind();
 		const int location = getUniformLocation(uniformName);
 		GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]));
 	}

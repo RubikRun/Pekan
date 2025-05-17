@@ -2,6 +2,7 @@
 
 #include "Layer.h"
 #include "RenderObject.h"
+#include "TriangleShape.h"
 
 #include "Demo04_GUIWindow.h"
 
@@ -29,8 +30,14 @@ namespace Demo
 
 		Pekan::Renderer::RenderObject m_renderObject;
 
+		Pekan::Renderer::TriangleShape m_triangle;
+
+		glm::vec2 m_triangleInitialPosition;
+
 		// GUI window for controlling background's color
 		const Demo04_GUIWindow* m_guiWindow = nullptr;
+
+		float t = 0.0f;
 	};
 
 } // namespace Demo

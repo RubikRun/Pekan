@@ -9,6 +9,7 @@ using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::Shader;
 using Pekan::Renderer::Image;
+using Pekan::Renderer::BlendFactor;
 
 static const char* vertexShaderFilePath = "resources/04_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/04_fragment_shader.glsl";
@@ -19,7 +20,11 @@ namespace Demo
 {
 
     bool Demo04_Scene::init()
-	{
+    {
+        // Enable and configure blending
+        PekanRenderer::enableBlending();
+        PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
+
         // Set up vertex data and configure vertex attributes
         const float vertices[] =
         {
@@ -48,22 +53,39 @@ namespace Demo
         Image image(EXAMPLE_IMAGE_FILEPATH);
         m_renderObject.setTextureImage(image, "tex0", 0);
 
-        return true;
-	}
+        m_triangle.create({ -0.1f, -0.1f }, { 0.1f, -0.1f }, { 0.1f, 0.1f });
 
-	void Demo04_Scene::update(double dt)
-	{
+        m_triangleInitialPosition = { 0.8f, 0.8f };
+        m_triangle.setPosition(m_triangleInitialPosition);
+
+        t = 0.0f;
+
+        return true;
+    }
+
+    // Oscillates between 0 and 1 in a sine wave, as x grows
+    static float osc(float x)
+    {
+        return (sin(x) + 1.0f) / 2.0f;
+    }
+
+    void Demo04_Scene::update(double dt)
+    {
         // Get position from GUI
         const ImVec2& position = m_guiWindow->getPosition();
         // Set "uPosition" uniform inside of the shader
-        Shader& shader = m_renderObject.getShader();
-        shader.bind();
-        shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
-        shader.unbind();
-	}
+        Shader& texRectShader = m_renderObject.getShader();
+        texRectShader.bind();
+        texRectShader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+        texRectShader.unbind();
 
-	void Demo04_Scene::render()
-	{
+        m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
+        m_triangle.setColor({ osc(t), osc(t / 2.0f), osc(t / 3.0f), osc(t / 3.0f) });
+        t += float(dt) * 5.0f;
+    }
+
+    void Demo04_Scene::render()
+    {
         // Clear background color
         if (m_guiWindow != nullptr)
         {
@@ -80,11 +102,14 @@ namespace Demo
         m_renderObject.bind();
         PekanRenderer::drawIndexed(6, DrawMode::Triangles);
         m_renderObject.unbind();
-	}
 
-	void Demo04_Scene::exit()
-	{
+        m_triangle.render();
+    }
+
+    void Demo04_Scene::exit()
+    {
         m_renderObject.destroy();
-	}
+        m_triangle.destroy();
+    }
 
 } // namespace Demo

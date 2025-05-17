@@ -114,6 +114,9 @@ target_include_directories(PekanCore PUBLIC src/PekanCore)
 target_include_directories(PekanCore PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)
-    # Set Demo03 to be the startup project by default
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo03)
+    # Set Demo04 to be the startup project by default
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo04)
 endif()
+
+# Set PEKAN_ROOT_DIR macro to be the path to current source directory
+target_compile_definitions(PekanCore PRIVATE PEKAN_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")

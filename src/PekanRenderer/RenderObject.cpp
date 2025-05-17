@@ -71,6 +71,18 @@ namespace Renderer
 		m_texture.create();
 	}
 
+	bool RenderObject::isValid() const
+	{
+		// Assert that if vertex array is valid then all other components are valid (happens only in debug builds)
+		PK_ASSERT_QUICK
+		(
+			!m_vertexArray.isValid() ||
+			(m_vertexBuffer.isValid() || m_indexBuffer.isValid() || m_shader.isValid() || m_texture.isValid())
+		);
+		// Check only vertex array for validity in release builds
+		return m_vertexArray.isValid();
+	}
+
 	void RenderObject::destroy()
 	{
 		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_indexBuffer.isValid());
@@ -86,7 +98,7 @@ namespace Renderer
 		m_texture.destroy();
 	}
 
-	void RenderObject::bind()
+	void RenderObject::bind() const
 	{
 		PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
 
@@ -98,7 +110,7 @@ namespace Renderer
 		}
 	}
 
-	void RenderObject::unbind()
+	void RenderObject::unbind() const
 	{
 		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
 
