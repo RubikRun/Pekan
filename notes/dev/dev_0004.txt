@@ -1149,3 +1149,21 @@ Testing all of that with the TMNT image.
 Seems to work. Textures are ready.
 Done.
 }
+
+----------
+17.05.2025
+----------
+
+{
+Next feature is also a big one
+    Wrappers for 2D shapes
+
+I'll do them one by one, starting from triangle.
+
+Before starting let's restructure the files in PekanRenderer a bit, because currently they are all in one place, there are no subdirectories.
+Let's create a new directory inside PekanRenderer
+    RenderComponents
+and inside of it put all the files containing classes that derive from RenderComponent, together with the RenderComponent class itself.
+Done.
+
+}
