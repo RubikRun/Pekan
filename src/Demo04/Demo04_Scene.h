@@ -33,6 +33,9 @@ namespace Demo
 		Pekan::Renderer::TriangleShape m_triangle;
 
 		glm::vec2 m_triangleInitialPosition;
+		glm::vec2 m_triangleInitialVertexA;
+		glm::vec2 m_triangleInitialVertexB;
+		glm::vec2 m_triangleInitialVertexC;
 
 		// GUI window for controlling background's color
 		const Demo04_GUIWindow* m_guiWindow = nullptr;

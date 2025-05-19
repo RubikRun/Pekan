@@ -53,7 +53,10 @@ namespace Demo
         Image image(EXAMPLE_IMAGE_FILEPATH);
         m_renderObject.setTextureImage(image, "tex0", 0);
 
-        m_triangle.create({ -0.1f, -0.1f }, { 0.1f, -0.1f }, { 0.1f, 0.1f });
+        m_triangleInitialVertexA = { -0.1f, -0.1f };
+        m_triangleInitialVertexB = { 0.1f, -0.1f };
+        m_triangleInitialVertexC = { 0.1f, 0.1f };
+        m_triangle.create(m_triangleInitialVertexA, m_triangleInitialVertexB, m_triangleInitialVertexC);
 
         m_triangleInitialPosition = { 0.8f, 0.8f };
         m_triangle.setPosition(m_triangleInitialPosition);
@@ -81,6 +84,9 @@ namespace Demo
 
         m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
         m_triangle.setColor({ osc(t), osc(t / 2.0f), osc(t / 3.0f), osc(t / 3.0f) });
+        m_triangle.setVertexA(m_triangleInitialVertexA + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
+        m_triangle.setVertexB(m_triangleInitialVertexB + glm::vec2(cos(t * 2.0f) * 0.05f, sin(t) * 0.1f));
+        m_triangle.setVertexC(m_triangleInitialVertexC + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
         t += float(dt) * 5.0f;
     }
 

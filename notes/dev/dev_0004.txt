@@ -1266,3 +1266,23 @@ It works!
 That's the TriangleShape basically.
 Done.
 }
+
+----------
+19.05.2025
+----------
+
+{
+Before moving on to the next shape class, let's create a base Shape class
+by extracting all the shape-common logic from TriangleShape.
+
+Did it.
+Looks pretty clean now!
+Class Shape contains the position, color and render object and it defines all common actions.
+The responsibility of class TriangleShape is only to provide the logic around the 3 vertices specifically.
+
+I also added functionality for setting each individual vertex after having created the TriangleShape.
+Tested it in Demo04. Works pretty well.
+
+Code looks solid!
+Done.
+}

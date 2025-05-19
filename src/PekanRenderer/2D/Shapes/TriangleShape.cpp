@@ -2,28 +2,10 @@
 
 #include "Utils/PekanUtils.h"
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/assets/shaders/VertexShader_2D.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/assets/shaders/FragmentShader_SolidColor.glsl"
-
-static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-static constexpr unsigned FLOAT_SIZE = sizeof(float);
-static constexpr unsigned VERTICES_SIZE = 6 * FLOAT_SIZE;
-
 namespace Pekan
 {
 namespace Renderer
 {
-
-    void TriangleShape::create()
-    {
-        m_position = { 0.0f, 0.0f };
-
-        m_vertices[0] = glm::vec2(0.0f, 0.0f);
-        m_vertices[1] = glm::vec2(0.0f, 0.0f);
-        m_vertices[2] = glm::vec2(0.0f, 0.0f);
-
-        setColor(DEFAULT_COLOR);
-    }
 
 	void TriangleShape::create
     (
@@ -31,61 +13,45 @@ namespace Renderer
         bool dynamic
     )
 	{
-        m_position = { 0.0f, 0.0f };
+        Shape::create();
 
         m_vertices[0] = vertexA;
         m_vertices[1] = vertexB;
         m_vertices[2] = vertexC;
 
-        const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
-
-        m_renderObject.create(
-            m_vertices, VERTICES_SIZE,
-            { { ShaderDataType::Float2, "position" } },
-            vertexDataUsage,
-            Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-            Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
-        );
-
-        setColor(DEFAULT_COLOR);
+        Shape::createRenderObject(m_vertices, dynamic);
 	}
 
-    void TriangleShape::destroy()
+    void TriangleShape::setVertexA(glm::vec2 vertexA)
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to destroy a TriangleShape that is not yet created.", "Pekan");
-        m_renderObject.destroy();
+        m_vertices[0] = vertexA + m_position;
+        updateRenderObject();
     }
 
-    void TriangleShape::render() const
+    void TriangleShape::setVertexB(glm::vec2 vertexB)
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to render a TriangleShape that is not yet created.", "Pekan");
-        m_renderObject.bind();
-        PekanRenderer::draw(3);
+        m_vertices[1] = vertexB + m_position;
+        updateRenderObject();
     }
 
-    void TriangleShape::setPosition(glm::vec2 position)
+    void TriangleShape::setVertexC(glm::vec2 vertexC)
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to set position of a TriangleShape that is not yet created.", "Pekan");
-        move(position - m_position);
+        m_vertices[2] = vertexC + m_position;
+        updateRenderObject();
     }
 
-    void TriangleShape::move(glm::vec2 deltaPosition)
+    void TriangleShape::_moveVertices(glm::vec2 deltaPosition)
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to move a TriangleShape that is not yet created.", "Pekan");
-        m_position += deltaPosition;
-
         m_vertices[0] += deltaPosition;
         m_vertices[1] += deltaPosition;
         m_vertices[2] += deltaPosition;
 
-        m_renderObject.setVertexData(m_vertices, VERTICES_SIZE);
+        updateRenderObject();
     }
 
-    void TriangleShape::setColor(glm::vec4 color)
+    void TriangleShape::updateRenderObject()
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to set color of a TriangleShape that is not yet created.", "Pekan");
-        m_color = color;
-        m_renderObject.getShader().setUniform4fv("uColor", color);
+        m_renderObject.setVertexData(m_vertices, getVerticesSize());
     }
 
 } // namespace Renderer
