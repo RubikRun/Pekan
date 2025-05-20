@@ -30,7 +30,14 @@ namespace Renderer
     {
         PK_ASSERT(m_renderObject.isValid(), "Trying to render a Shape that is not yet created.", "Pekan");
         m_renderObject.bind();
-        PekanRenderer::draw(getNumberOfVertices());
+        if (m_usingIndices)
+        {
+            PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3);
+        }
+        else
+        {
+            PekanRenderer::draw(getNumberOfVertices());
+        }
     }
 
     void Shape::setPosition(glm::vec2 position)
@@ -56,16 +63,40 @@ namespace Renderer
 
     void Shape::createRenderObject(const void* vertexData, bool dynamic)
     {
+        m_usingIndices = false;
         const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
 
         m_renderObject.create
         (
-            vertexData, getVerticesSize(),
+            vertexData, getVertexDataSize(),
             { { ShaderDataType::Float2, "position" } },
             vertexDataUsage,
             Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
             Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
         );
+        setColor(m_color);
+    }
+
+    void Shape::createRenderObject(const void* vertexData, const void* indexData, bool dynamic)
+    {
+        m_usingIndices = true;
+        const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
+
+        m_renderObject.create
+        (
+            vertexData, getVertexDataSize(),
+            { { ShaderDataType::Float2, "position" } }, vertexDataUsage,
+            indexData, getIndexDataSize(),
+            BufferDataUsage::StaticDraw,
+            Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+            Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+        );
+        setColor(m_color);
+    }
+
+    void Shape::updateRenderObject()
+    {
+        m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
     }
 
 } // namespace Renderer

@@ -45,13 +45,7 @@ namespace Renderer
         m_vertices[0] += deltaPosition;
         m_vertices[1] += deltaPosition;
         m_vertices[2] += deltaPosition;
-
         updateRenderObject();
-    }
-
-    void TriangleShape::updateRenderObject()
-    {
-        m_renderObject.setVertexData(m_vertices, getVerticesSize());
     }
 
 } // namespace Renderer

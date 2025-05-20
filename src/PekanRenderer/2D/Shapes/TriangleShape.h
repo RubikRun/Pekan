@@ -35,8 +35,7 @@ namespace Renderer
 
 		int getNumberOfVertices() const override { return 3; }
 
-		// Updates the underlying render object with current vertices data
-		void updateRenderObject();
+		const glm::vec2* getVertexData() const override { return m_vertices; };
 
 	private: /* variables */
 

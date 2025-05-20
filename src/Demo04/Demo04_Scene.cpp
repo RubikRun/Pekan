@@ -61,6 +61,13 @@ namespace Demo
         m_triangleInitialPosition = { 0.8f, 0.8f };
         m_triangle.setPosition(m_triangleInitialPosition);
 
+        m_rectangleInitialWidth = 0.2f;
+        m_rectangleInitialHeight = 0.4f;
+        m_rectangle.create(m_rectangleInitialWidth, m_rectangleInitialHeight);
+
+        m_rectangleInitialPosition = { -0.8f, -0.8f };
+        m_rectangle.setPosition(m_rectangleInitialPosition);
+
         t = 0.0f;
 
         return true;
@@ -70,6 +77,10 @@ namespace Demo
     static float osc(float x)
     {
         return (sin(x) + 1.0f) / 2.0f;
+    }
+    static float osc(float x, float a, float b)
+    {
+        return a + (b - a) * osc(x);
     }
 
     void Demo04_Scene::update(double dt)
@@ -83,10 +94,16 @@ namespace Demo
         texRectShader.unbind();
 
         m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
-        m_triangle.setColor({ osc(t), osc(t / 2.0f), osc(t / 3.0f), osc(t / 3.0f) });
+        m_triangle.setColor({ osc(t), osc(t / 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
         m_triangle.setVertexA(m_triangleInitialVertexA + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
-        m_triangle.setVertexB(m_triangleInitialVertexB + glm::vec2(cos(t * 2.0f) * 0.05f, sin(t) * 0.1f));
+        m_triangle.setVertexB(m_triangleInitialVertexB + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f));
         m_triangle.setVertexC(m_triangleInitialVertexC + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
+
+        m_rectangle.setPosition(m_rectangleInitialPosition + glm::vec2(sin(t / 2.0f) * 0.12f, sin(t / 5.0f) * 0.04f));
+        m_rectangle.setColor({ osc(t / 2.0f), osc(t), osc(t / 3.0f), osc(t / 7.0f, 0.3f, 1.0f) });
+        m_rectangle.setWidth(osc(t / 2.0f, m_rectangleInitialWidth * 0.5f, m_rectangleInitialWidth * 1.5f));
+        m_rectangle.setHeight(osc(t / 5.0f, m_rectangleInitialHeight * 0.5f, m_rectangleInitialHeight * 1.5f));
+
         t += float(dt) * 5.0f;
     }
 
@@ -106,16 +123,18 @@ namespace Demo
         }
 
         m_renderObject.bind();
-        PekanRenderer::drawIndexed(6, DrawMode::Triangles);
+        PekanRenderer::drawIndexed(6);
         m_renderObject.unbind();
 
         m_triangle.render();
+        m_rectangle.render();
     }
 
     void Demo04_Scene::exit()
     {
         m_renderObject.destroy();
         m_triangle.destroy();
+        m_rectangle.destroy();
     }
 
 } // namespace Demo

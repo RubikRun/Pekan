@@ -63,3 +63,5 @@
                         but the optional components (indices and texture) should be set by explicitly calling a set*() function.
 
 0025 17.05.2025 (TODO): Check what happens if you call setTextureImage() more than once on a single RenderObject
+
+0026 20.05.2025 (TODO): Check if passing vertices to TriangleShape's create() in reverse order still works (change clockwise-ness of vertices).

@@ -1286,3 +1286,47 @@ Tested it in Demo04. Works pretty well.
 Code looks solid!
 Done.
 }
+
+----------
+20.05.2025
+----------
+
+{
+Now that we have a good base class Shape let's create the next 2D shape wrapper
+    RectangleShape
+
+Did it.
+Mostly straightforward. One interesting thing that's worth mentioning
+is that we had made class Shape support only RenderObjects without indices and rendering without indices.
+So I had to add support for indices in Shape.
+Added this member
+    bool m_usingIndices = false;
+which is a flag telling us if the shape is using indices.
+Also added this overload of createRenderObject()
+    void createRenderObject(const void* vertexData, const void* indexData, bool dynamic);
+that takes in indices.
+So now if the Shape is created with this overload then m_usingIndices will be true.
+We care about this flag when we want to render the Shape, so inside of the render() function we can do that
+    if (m_usingIndices)
+    {
+        PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3);
+    }
+    else
+    {
+        PekanRenderer::draw(getNumberOfVertices());
+    }
+I also added this function for convenience
+    inline int getIndexDataSize() const { return (getNumberOfVertices() - 2) * 3 * sizeof(unsigned); }
+for calculating the (expected) size of the index data.
+
+What else?
+The RectangleShape is a bit different from TriangleShape in that it doesn't give control over the 4 different vertices.
+Instead a rectangle has a width and height and this is what users can provide.
+The position coming from Shape is used as the position of the bottom left corner of the rectangle.
+So if you position a rectangle on (X, Y) that's going to be the position of its bottom left corner.
+So wherever you place a rectangle you are placing its bottom left corner.
+Everything else is pretty standard.
+
+Tested in Demo04. Works pretty well.
+Done.
+}
