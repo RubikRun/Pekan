@@ -68,6 +68,18 @@ namespace Demo
         m_rectangleInitialPosition = { -0.8f, -0.8f };
         m_rectangle.setPosition(m_rectangleInitialPosition);
 
+        m_circlesInitialRadius[0] = 0.3f;
+        m_circles[0].create(m_circlesInitialRadius[0]);
+
+        m_circlesInitialPosition[0] = { 0.0f, 0.0f };
+        m_circles[0].setPosition(m_circlesInitialPosition[0]);
+
+        m_circlesInitialRadius[1] = 0.2f;
+        m_circles[1].create(m_circlesInitialRadius[1]);
+
+        m_circlesInitialPosition[1] = { 0.0f, 0.0f };
+        m_circles[1].setPosition(m_circlesInitialPosition[1]);
+
         t = 0.0f;
 
         return true;
@@ -76,7 +88,7 @@ namespace Demo
     // Oscillates between 0 and 1 in a sine wave, as x grows
     static float osc(float x)
     {
-        return (sin(x) + 1.0f) / 2.0f;
+        return (cos(x) + 1.0f) / 2.0f;
     }
     static float osc(float x, float a, float b)
     {
@@ -94,15 +106,21 @@ namespace Demo
         texRectShader.unbind();
 
         m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
-        m_triangle.setColor({ osc(t), osc(t / 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
+        m_triangle.setColor({ osc(t), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
         m_triangle.setVertexA(m_triangleInitialVertexA + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
         m_triangle.setVertexB(m_triangleInitialVertexB + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f));
         m_triangle.setVertexC(m_triangleInitialVertexC + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
 
         m_rectangle.setPosition(m_rectangleInitialPosition + glm::vec2(sin(t / 2.0f) * 0.12f, sin(t / 5.0f) * 0.04f));
-        m_rectangle.setColor({ osc(t / 2.0f), osc(t), osc(t / 3.0f), osc(t / 7.0f, 0.3f, 1.0f) });
+        m_rectangle.setColor({ osc(t / 2.0f + 1.0f), osc(t), osc(t / 3.0f), osc(t / 7.0f, 0.3f, 1.0f) });
         m_rectangle.setWidth(osc(t / 2.0f, m_rectangleInitialWidth * 0.5f, m_rectangleInitialWidth * 1.5f));
         m_rectangle.setHeight(osc(t / 5.0f, m_rectangleInitialHeight * 0.5f, m_rectangleInitialHeight * 1.5f));
+
+        m_circles[0].setSegmentsCount(int(osc(t / 5.0f, 3.0f, 30.0f)));
+
+        m_circles[1].setPosition(m_circlesInitialPosition[1] + glm::vec2(sin(t / 3.0f) * 0.09f, sin(t / 5.0f) * 0.03f));
+        m_circles[1].setColor({ osc(t / 7.0f + 1.0f), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
+        m_circles[1].setRadius(osc(t / 2.0f, m_circlesInitialRadius[1] * 0.4f, m_circlesInitialRadius[1] * 1.0f));
 
         t += float(dt) * 5.0f;
     }
@@ -128,6 +146,8 @@ namespace Demo
 
         m_triangle.render();
         m_rectangle.render();
+        m_circles[0].render();
+        m_circles[1].render();
     }
 
     void Demo04_Scene::exit()
@@ -135,6 +155,8 @@ namespace Demo
         m_renderObject.destroy();
         m_triangle.destroy();
         m_rectangle.destroy();
+        m_circles[0].destroy();
+        m_circles[1].destroy();
     }
 
 } // namespace Demo

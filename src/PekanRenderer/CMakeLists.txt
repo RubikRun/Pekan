@@ -27,6 +27,8 @@ add_library(PekanRenderer STATIC
     2D/Shapes/TriangleShape.cpp
     2D/Shapes/RectangleShape.h
     2D/Shapes/RectangleShape.cpp
+    2D/Shapes/CircleShape.h
+    2D/Shapes/CircleShape.cpp
 )
 
 # Group RenderComponents files under a virtual folder called "RenderComponents"
@@ -52,11 +54,13 @@ SOURCE_GROUP("Source Files\\2D\\Shapes" FILES
     2D/Shapes/Shape.cpp
     2D/Shapes/TriangleShape.cpp
     2D/Shapes/RectangleShape.cpp
+    2D/Shapes/CircleShape.cpp
 )
 SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
     2D/Shapes/Shape.h
     2D/Shapes/TriangleShape.h
     2D/Shapes/RectangleShape.h
+    2D/Shapes/CircleShape.h
 )
 
 # Set include directories for PekanRenderer

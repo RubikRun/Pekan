@@ -328,7 +328,7 @@ so that derived classes can choose to override some of these functions if they w
 Then we have to actually call those functions on each layer of the layer stack when an event occurs,
 and we have to pass an Event object of the corresponding subtype.
 How can we do that?
-Well, we already have these 6 static functgions in EventHandler
+Well, we already have these 6 static functions in EventHandler
     static void handleKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void handleMouseMovedEvent(GLFWwindow* window, double xPos, double yPos);
     static void handleMouseScrolledEvent(GLFWwindow* window, double xOffset, double yOffset);
@@ -1328,5 +1328,109 @@ So wherever you place a rectangle you are placing its bottom left corner.
 Everything else is pretty standard.
 
 Tested in Demo04. Works pretty well.
+Done.
+}
+
+{
+Next 2D shape wrapper
+    CircleShape
+
+Circles are a bit more interesting, but also a bit simpler.
+They only have a radius so we'll need this member
+    float m_radius = 0.0f;
+plus getters and setters for it
+    void setRadius(float radius);
+    inline float getRadius() const { return m_radius; }
+The create() function will take in a radius
+    void create
+    (
+        float radius,
+        bool dynamic = true
+    );
+How is it going to create the circle? What are the vertices of a circle?
+Well, the standard way to render a circle is approximating it with a regular N-gon.
+In other words dividing the circle's circumference into N equal parts,
+and forming N triangles with the center, giving you a triangle fan.
+For that to work we will have to issue a draw call with
+    DrawMode::TriangleFan
+instead of the default
+    DrawMode::Triangles
+Since the code that makes the draw call is inside of the base class Shape - inside of the render() function,
+we need some way for derived classes to specify their draw mode.
+So let's add this virtual function in class Shape
+    virtual DrawMode getDrawMode() const { return DrawMode::Triangles; }
+that returns the draw mode that needs to be used for rendering.
+By default shapes will be rendered with DrawMode::Triangles
+unless they override this function to return something else.
+In the case of CircleShape we want it to be that:
+    virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
+
+Alright, now how do we generate the vertices of a circle?
+Well, it depends on the number of segments, and it's good to make this number be configurable.
+Add this member to class CircleShape
+    int m_segmentsCount = 0;
+together with a getter and a setter
+    void setSegmentsCount(int segmentsCount);
+    inline int getSegmentsCount() const { return m_segmentsCount; }
+Then in the create() function we'll set this member m_segmentsCount equal to some default number of segments
+    static const int DEFAULT_SEGMENTS_COUNT = 42;
+    ...
+    m_segmentsCount = DEFAULT_SEGMENTS_COUNT;
+Now, generating the vertices obviously depends on the number of segments,
+so we will have a different number of vertices based on the current number of segments.
+This means we can't no longer have a static array of a constant number of elements, we need a vector
+    std::vector<glm::vec2> m_vertices;
+Then let's create a function
+    void generateVertices();
+that generates (or regenerates) circle's vertices based on the current number of segments.
+The first vertex will be the center
+    m_vertices.clear();
+    m_vertices.push_back({ 0.0f, 0.0f });
+Then we need m_segmentsCount + 1 more vertices placed evenly around the circle.
+Why m_segmentsCount + 1 ?
+Well, because the first and last vertex need to be at the same position to "close the loop".
+The way the GPU renders a triangle fan is it draws a triangle from vertices 0, 1, 2, then 0, 2, 3,
+then 0, 3, 4, ... , 0, N-3, N-2, then 0, N-2, N-1, where N is the number of vertices in the vertex buffer.
+In our case vertex 0 is the center, then we want vertex 1 to be at
+    cos(0), sin(0)
+and vertex 2 to be at
+    cos(2 * pi / m_segmentsCount)
+    sin(2 * pi / m_segmentsCount)
+and vertex 3 to be at
+    cos(2 * 2 * pi / m_segmentsCount)
+    sin(2 * 2 * pi / m_segmentsCount)
+and vertex 4 to be at
+    cos(3 * 2 * pi / m_segmentsCount)
+    sin(3 * 2 * pi / m_segmentsCount)
+etc.
+The last vertex needs to be the same as the first one
+    cos(0) = cos(m_segmentsCount * 2 * pi / m_segmentsCount)
+    sin(0) = sin(m_segmentsCount * 2 * pi / m_segmentsCount)
+so that the final triangle that connects the last point to the first point is also drawn.
+(Otherwise the circle will be drawn as a pie with a missing piece)
+So that's how we generate the vertices around the circle
+    for (int i = 0; i <= m_segmentsCount; i++)
+    {
+        const float angle = i * 2.0f * PI / m_segmentsCount;
+        const float x = m_radius * cos(angle);
+        const float y = m_radius * sin(angle);
+        m_vertices.push_back({ x, y });
+    }
+
+This function
+    generateVertices()
+will have to be called also when setting a new number of vertices
+    void CircleShape::setSegmentsCount(int segmentsCount)
+    {
+        m_segmentsCount = segmentsCount;
+        generateVertices();
+        updateRenderObject();
+    }
+
+That's about it.
+Tested it in Demo04 with 2 circles,
+one of them has number of segments changing with time,
+and the other has position, radius and color changing with time.
+Seems to work pretty well.
 Done.
 }

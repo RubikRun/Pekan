@@ -4,6 +4,7 @@
 #include "RenderObject.h"
 #include "TriangleShape.h"
 #include "RectangleShape.h"
+#include "CircleShape.h"
 
 #include "Demo04_GUIWindow.h"
 
@@ -33,6 +34,7 @@ namespace Demo
 
 		Pekan::Renderer::TriangleShape m_triangle;
 		Pekan::Renderer::RectangleShape m_rectangle;
+		Pekan::Renderer::CircleShape m_circles[2];
 
 		glm::vec2 m_triangleInitialPosition;
 		glm::vec2 m_triangleInitialVertexA;
@@ -42,6 +44,9 @@ namespace Demo
 		glm::vec2 m_rectangleInitialPosition;
 		float m_rectangleInitialWidth;
 		float m_rectangleInitialHeight;
+
+		glm::vec2 m_circlesInitialPosition[2];
+		float m_circlesInitialRadius[2];
 
 		// GUI window for controlling background's color
 		const Demo04_GUIWindow* m_guiWindow = nullptr;

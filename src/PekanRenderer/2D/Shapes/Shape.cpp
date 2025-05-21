@@ -32,11 +32,11 @@ namespace Renderer
         m_renderObject.bind();
         if (m_usingIndices)
         {
-            PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3);
+            PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
         }
         else
         {
-            PekanRenderer::draw(getNumberOfVertices());
+            PekanRenderer::draw(getNumberOfVertices(), getDrawMode());
         }
     }
 

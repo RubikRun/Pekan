@@ -35,6 +35,9 @@ namespace Renderer
 
 		virtual const glm::vec2* getVertexData() const = 0;
 
+		// Can be overriden by derived classes to return the desired draw mode to be used for rendering the shape
+		virtual DrawMode getDrawMode() const { return DrawMode::Triangles; }
+
 		inline int getVertexDataSize() const { return getNumberOfVertices() * sizeof(float) * 2; }
 		inline int getIndexDataSize() const { return (getNumberOfVertices() - 2) * 3 * sizeof(unsigned); }
 
