@@ -57,7 +57,7 @@ namespace Renderer
         m_vertices.reserve(m_segmentsCount + 2);
         m_vertices.push_back(m_position);
 
-        for (int i = 0; i <= m_segmentsCount; i++)
+        for (int i = 1; i <= m_segmentsCount + 1; i++)
         {
             const float angle = i * 2.0f * PI / m_segmentsCount;
             const float x = m_radius * cos(angle) + m_position.x;

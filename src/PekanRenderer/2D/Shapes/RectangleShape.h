@@ -9,6 +9,7 @@ namespace Pekan
 namespace Renderer
 {
 
+	// A class representing a 2D rectangle shape with a solid color
 	class RectangleShape : public Shape
 	{
 	public:

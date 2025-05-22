@@ -1434,3 +1434,44 @@ and the other has position, radius and color changing with time.
 Seems to work pretty well.
 Done.
 }
+
+----------
+22.05.2025
+----------
+
+{
+A little optimization can be done for CircleShape.
+Currently it keeps its vertices in a vector like that
+    std::vector<glm::vec2> m_vertices;
+which is okay, but it uses dynamic memory.
+Not perfect for a large number of circles.
+Imagine a game where 1 million circles have to be rendered,
+and all of them have the same fixed number of segments that is not going to change.
+Then it makes more sense to store those circles in static memory.
+Of course this would remove the ability to change number of segments dynamically,
+which is not great - there might be scenarios where you want to change the number of segment dynamically,
+for example depending on the size of the circle, when moving the camera.
+In conclusion, we need both options.
+So I will add another class
+    class CircleShapeStatic
+which will have a static fixed number of segments that cannot be change during the lifetime of an object.
+The only compile-time way to specify number of segments is through a template parameter,
+so CircleShapeStatic will need to be a template class
+    template <unsigned NSegments = 42>
+    class CircleShapeStatic : public Shape
+and then the vertices can be kept like that:
+    glm::vec2 m_vertices[NSegments + 2];
+This change from vector to a static array leads to changes to the implementation of some functions,
+but it's pretty straightforward.
+One annoying aspect of using a template class is that we cannot have a .cpp file with function definitions anymore.
+We need to have the definitions inside of the header, or a cleaner solution is to have another header
+    CircleShapeStatic_impl.h
+containing the definitions of the functions, and then we can just include this new header at the end of the old one
+    #include "CircleShapeStatic_impl.h"
+
+That's about it.
+Testing it in Demo04. Changed the second circle to be a CircleShapeStatic
+    Pekan::Renderer::CircleShapeStatic<> m_circleStatic;
+Works same as before.
+Done.
+}

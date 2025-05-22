@@ -68,17 +68,17 @@ namespace Demo
         m_rectangleInitialPosition = { -0.8f, -0.8f };
         m_rectangle.setPosition(m_rectangleInitialPosition);
 
-        m_circlesInitialRadius[0] = 0.3f;
-        m_circles[0].create(m_circlesInitialRadius[0]);
+        m_circleInitialRadius = 0.3f;
+        m_circle.create(m_circleInitialRadius);
 
-        m_circlesInitialPosition[0] = { 0.0f, 0.0f };
-        m_circles[0].setPosition(m_circlesInitialPosition[0]);
+        m_circleInitialPosition = { 0.0f, 0.0f };
+        m_circle.setPosition(m_circleInitialPosition);
 
-        m_circlesInitialRadius[1] = 0.2f;
-        m_circles[1].create(m_circlesInitialRadius[1]);
+        m_circleStaticInitialRadius = 0.2f;
+        m_circleStatic.create(m_circleStaticInitialRadius);
 
-        m_circlesInitialPosition[1] = { 0.0f, 0.0f };
-        m_circles[1].setPosition(m_circlesInitialPosition[1]);
+        m_circleStaticInitialPosition = { 0.0f, 0.0f };
+        m_circleStatic.setPosition(m_circleStaticInitialPosition);
 
         t = 0.0f;
 
@@ -116,11 +116,11 @@ namespace Demo
         m_rectangle.setWidth(osc(t / 2.0f, m_rectangleInitialWidth * 0.5f, m_rectangleInitialWidth * 1.5f));
         m_rectangle.setHeight(osc(t / 5.0f, m_rectangleInitialHeight * 0.5f, m_rectangleInitialHeight * 1.5f));
 
-        m_circles[0].setSegmentsCount(int(osc(t / 5.0f, 3.0f, 30.0f)));
+        m_circle.setSegmentsCount(int(osc(t / 5.0f, 3.0f, 30.0f)));
 
-        m_circles[1].setPosition(m_circlesInitialPosition[1] + glm::vec2(sin(t / 3.0f) * 0.09f, sin(t / 5.0f) * 0.03f));
-        m_circles[1].setColor({ osc(t / 7.0f + 1.0f), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
-        m_circles[1].setRadius(osc(t / 2.0f, m_circlesInitialRadius[1] * 0.4f, m_circlesInitialRadius[1] * 1.0f));
+        m_circleStatic.setPosition(m_circleInitialPosition[1] + glm::vec2(sin(t / 3.0f) * 0.09f, sin(t / 5.0f) * 0.03f));
+        m_circleStatic.setColor({ osc(t / 7.0f + 1.0f), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
+        m_circleStatic.setRadius(osc(t / 2.0f, m_circleStaticInitialRadius * 0.4f, m_circleStaticInitialRadius * 1.0f));
 
         t += float(dt) * 5.0f;
     }
@@ -146,8 +146,8 @@ namespace Demo
 
         m_triangle.render();
         m_rectangle.render();
-        m_circles[0].render();
-        m_circles[1].render();
+        m_circle.render();
+        m_circleStatic.render();
     }
 
     void Demo04_Scene::exit()
@@ -155,8 +155,8 @@ namespace Demo
         m_renderObject.destroy();
         m_triangle.destroy();
         m_rectangle.destroy();
-        m_circles[0].destroy();
-        m_circles[1].destroy();
+        m_circle.destroy();
+        m_circleStatic.destroy();
     }
 
 } // namespace Demo

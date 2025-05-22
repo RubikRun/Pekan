@@ -9,6 +9,7 @@ namespace Pekan
 namespace Renderer
 {
 
+	// A class representing a 2D triangle shape with a solid color
 	class TriangleShape : public Shape
 	{
 	public:

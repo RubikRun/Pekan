@@ -9,6 +9,13 @@ namespace Pekan
 namespace Renderer
 {
 
+	// A class representing a 2D circle shape with a solid color.
+	//
+	// NOTE: This class supports dynamically changing the number of segments of a circle,
+	//       meaning that you can change the number of segments during the lifetime of a circle object.
+	//       If you don't plan on dynamically changing the number of segments it'd be better to instead use
+	//           class CircleShapeStatic
+	//       for better performance.
 	class CircleShape : public Shape
 	{
 	public:
