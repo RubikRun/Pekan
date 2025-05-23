@@ -86,12 +86,10 @@ namespace Demo
             m_vertices.size() * sizeof(int),
             { { ShaderDataType::Int2, "position" } },
             BufferDataUsage::DynamicDraw,
-            m_indices.data(),
-            m_indices.size() * sizeof(int),
-            BufferDataUsage::DynamicDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
+        m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
 
         m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
 

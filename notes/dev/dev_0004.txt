@@ -1475,3 +1475,19 @@ Testing it in Demo04. Changed the second circle to be a CircleShapeStatic
 Works same as before.
 Done.
 }
+
+----------
+23.05.2025
+----------
+
+{
+Let's take a look at this TO-DO item
+    Think about how many and which ones of the create() overloads in RenderObject we need.
+
+Yeah I guess it makes sense to have only 2 overloads of create().
+One with vertex data and one without.
+The index data should be provided through a set method, same as a texture.
+So basically remove the first create() overload and change the client code wherever this overload was used
+to instead use the next overload and then call setIndexData(...).
+Done.
+}

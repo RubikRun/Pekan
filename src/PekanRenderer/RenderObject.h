@@ -20,22 +20,8 @@ namespace Renderer
 	{
 	public:
 
-		// Creates a render object with vertices, indices and a shader.
-		void create
-		(
-			const void* vertexData,
-			long long vertexDataSize,
-			const VertexBufferLayout& layout,
-			BufferDataUsage vertexDataUsage,
-			const void* indexData,
-			long long indexDataSize,
-			BufferDataUsage indexDataUsage,
-			const char* vertexShaderSource,
-			const char* fragmentShaderSource
-		);
-
 		// Creates a render object with vertices and a shader.
-		// Index data can be set later.
+		// Index data and a texture can be set later.
 		void create
 		(
 			const void* vertexData,
@@ -47,7 +33,7 @@ namespace Renderer
 		);
 
 		// Creates a render object with a shader only.
-		// Vertex data and index data can be set later.
+		// Vertex data, index data and a texture can be set later.
 		void create
 		(
 			const VertexBufferLayout& layout,

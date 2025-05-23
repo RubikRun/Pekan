@@ -86,11 +86,11 @@ namespace Renderer
         (
             vertexData, getVertexDataSize(),
             { { ShaderDataType::Float2, "position" } }, vertexDataUsage,
-            indexData, getIndexDataSize(),
-            BufferDataUsage::StaticDraw,
             Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
             Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
         );
+        m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::StaticDraw);
+
         setColor(m_color);
     }
 

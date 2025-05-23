@@ -14,34 +14,6 @@ namespace Renderer
 		long long vertexDataSize,
 		const VertexBufferLayout& layout,
 		BufferDataUsage vertexDataUsage,
-		const void* indexData,
-		long long indexDataSize,
-		BufferDataUsage indexDataUsage,
-		const char* vertexShaderSource,
-		const char* fragmentShaderSource
-	)
-	{
-		PK_ASSERT_QUICK(vertexData != nullptr); PK_ASSERT_QUICK(vertexDataSize >= 0);
-		PK_ASSERT_QUICK(indexData != nullptr); PK_ASSERT_QUICK(indexDataSize >= 0);
-		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
-
-		m_vertexDataUsage = vertexDataUsage;
-		m_indexDataUsage = indexDataUsage;
-
-		m_vertexArray.create();
-		m_vertexBuffer.create(vertexData, vertexDataSize, vertexDataUsage);
-		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
-		m_indexBuffer.create(indexData, indexDataSize, indexDataUsage);
-		m_shader.create(vertexShaderSource, fragmentShaderSource);
-		m_texture.create();
-	}
-
-	void RenderObject::create
-	(
-		const void* vertexData,
-		long long vertexDataSize,
-		const VertexBufferLayout& layout,
-		BufferDataUsage vertexDataUsage,
 		const char* vertexShaderSource,
 		const char* fragmentShaderSource
 	)

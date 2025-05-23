@@ -44,11 +44,10 @@ namespace Demo
             vertices, sizeof(vertices),
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "texCoord" } },
             BufferDataUsage::StaticDraw,
-            indices, sizeof(indices),
-            BufferDataUsage::StaticDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
+        m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
         Image image(EXAMPLE_IMAGE_FILEPATH);
         m_renderObject.setTextureImage(image, "tex0", 0);

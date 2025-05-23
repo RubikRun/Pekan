@@ -92,12 +92,10 @@ namespace Demo
             m_vertices.size() * sizeof(Vertex),
             { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "color" } },
             BufferDataUsage::DynamicDraw,
-            indices,
-            sizeof(indices),
-            BufferDataUsage::StaticDraw,
             Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
+        m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
         // Set default transform matrices
         m_modelMatrix = glm::rotate(glm::mat4(1.0f), m_rotation * PI / 180.0f, glm::vec3(0.5f, 1.0f, 0.0f));
