@@ -52,36 +52,15 @@ namespace Renderer
 		void bind() const;
 		void unbind() const;
 
-		void setVertexData
-		(
-			const void* data,
-			long long size
-		);
-		void setVertexData
-		(
-			const void* data,
-			long long size,
-			BufferDataUsage dataUsage
-		);
+		void setVertexData(const void* data, long long size);
+		void setVertexData(const void* data, long long size, BufferDataUsage dataUsage);
 
-		void setIndexData
-		(
-			const void* data,
-			long long size
-		);
-		void setIndexData
-		(
-			const void* data,
-			long long size,
-			BufferDataUsage dataUsage
-		);
+		void setIndexData(const void* data, long long size);
+		void setIndexData(const void* data, long long size, BufferDataUsage dataUsage);
 
-		void setTextureImage
-		(
-			const Image& image,
-			const char* uniformName,
-			unsigned slot
-		);
+		void setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource);
+
+		void setTextureImage(const Image& image, const char* uniformName, unsigned slot);
 
 		Shader& getShader() { return m_shader; }
 		const Shader& getShader() const { return m_shader; }

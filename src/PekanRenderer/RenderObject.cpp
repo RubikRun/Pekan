@@ -150,6 +150,13 @@ namespace Renderer
 		m_indexDataUsage = dataUsage;
 	}
 
+	void RenderObject::setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource)
+	{
+		PK_ASSERT_QUICK(m_shader.isValid());
+		m_shader.setSource(vertexShaderSource, fragmentShaderSource);
+		m_textures.clear();
+	}
+
 	void RenderObject::setTextureImage(const Image& image, const char* uniformName, unsigned slot)
 	{
 		PK_ASSERT_QUICK(m_shader.isValid());
@@ -172,6 +179,7 @@ namespace Renderer
 		m_textures[slot] = std::make_shared<Texture>();
 		m_textures[slot]->create(image);
 		// Set slot to shader's uniform
+		m_shader.bind();
 		m_shader.setUniform1i(uniformName, slot);
 	}
 

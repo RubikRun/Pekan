@@ -1,18 +1,25 @@
 #include "Demo04_Scene.h"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
-#include "Image.h"
 
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::Shader;
-using Pekan::Renderer::Image;
 using Pekan::Renderer::BlendFactor;
 
-static const char* vertexShaderFilePath = "resources/04_vertex_shader.glsl";
-static const char* fragmentShaderFilePath = "resources/04_fragment_shader.glsl";
+static const char* VERTEX_SHADER_FILEPATHS[] =
+{
+    "resources/04_00_vertex_shader.glsl",
+    "resources/04_01_vertex_shader.glsl"
+};
+
+static const char* FRAGMENT_SHADER_FILEPATHS[] =
+{
+    "resources/04_00_fragment_shader.glsl",
+    "resources/04_01_fragment_shader.glsl"
+};
 
 static const char* IMAGE0_FILEPATH = "resources/tmnt.png";
 static const char* IMAGE1_FILEPATH = "resources/powerpuff.png";
@@ -40,20 +47,31 @@ namespace Demo
             1, 2, 3   // second triangle
         };
 
+        if (m_guiWindow != nullptr)
+        {
+            m_shaderIdx = m_guiWindow->getShaderIdx();
+        }
+        else
+        {
+            m_shaderIdx = 0;
+        }
+
         m_renderObject.create
         (
             vertices, sizeof(vertices),
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "texCoord" } },
             BufferDataUsage::StaticDraw,
-            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::Utils::readFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
+            Pekan::Utils::readFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
         );
         m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
-        Image image0(IMAGE0_FILEPATH);
-        m_renderObject.setTextureImage(image0, "uTex0", 0);
-        Image image1(IMAGE1_FILEPATH);
-        m_renderObject.setTextureImage(image1, "uTex1", 1);
+        // Load the two images
+        m_image0.load(IMAGE0_FILEPATH);
+        m_image1.load(IMAGE1_FILEPATH);
+        // Set two images as textures to the render object
+        m_renderObject.setTextureImage(m_image0, "uTex0", 0);
+        m_renderObject.setTextureImage(m_image1, "uTex1", 1);
 
         m_triangleInitialVertexA = { -0.1f, -0.1f };
         m_triangleInitialVertexB = { 0.1f, -0.1f };
@@ -99,14 +117,34 @@ namespace Demo
 
     void Demo04_Scene::update(double dt)
     {
-        // Get position from GUI
-        const ImVec2& position = m_guiWindow->getPosition();
-        // Set "uPosition" uniform inside of the shader
         Shader& texRectShader = m_renderObject.getShader();
         texRectShader.bind();
-        texRectShader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+
+        if (m_guiWindow != nullptr)
+        {
+            // If selected shader in GUI has changed
+            const int guiShaderIdx = m_guiWindow->getShaderIdx();
+            if (m_shaderIdx != guiShaderIdx)
+            {
+                m_shaderIdx = guiShaderIdx;
+                // then set new shader's source code
+                m_renderObject.setShaderSource
+                (
+                    Pekan::Utils::readFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
+                    Pekan::Utils::readFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
+                );
+                // We need to set textures again after changing the shader
+                m_renderObject.setTextureImage(m_image0, "uTex0", 0);
+                m_renderObject.setTextureImage(m_image1, "uTex1", 1);
+            }
+
+            // Get position from GUI
+            const ImVec2& position = m_guiWindow->getPosition();
+            // Set "uPosition" uniform inside of the shader
+            texRectShader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+        }
+
         texRectShader.setUniform1f("uMixFactor", osc(t / 5.0f));
-        texRectShader.unbind();
 
         m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
         m_triangle.setColor({ osc(t), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });

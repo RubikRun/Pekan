@@ -51,6 +51,9 @@ namespace Renderer {
 		// If such uniform doesn't exist, returns -1.
 		int getUniformLocation(const std::string& uniformName) const;
 
+		// Detaches and deletes all shaders currently attached to this shader program
+		void detachAndDeleteShaders();
+
 	private: /* variables */
 
 		// A map that caches locations of uniforms inside the shader.
@@ -62,6 +65,9 @@ namespace Renderer {
 		// and next times when we need it we can just read it from the cache.
 		// It maps uniform names to uniform locations.
 		mutable std::unordered_map<std::string, int> m_uniformLocationCache;
+
+		// Flag indicating if shader program currently has any shaders attached
+		bool m_hasShadersAttached = false;
 	};
 
 } // namespace Pekan

@@ -8,7 +8,7 @@ uniform float uMixFactor;
 
 void main()
 {
-   vec4 tex1 = texture(uTex0, vTexCoord);
-   vec4 tex2 = texture(uTex1, vTexCoord);
-   FragColor = mix(tex1, tex2, uMixFactor);
+   vec4 tex0 = texture(uTex0, vTexCoord);
+   vec4 tex1 = texture(uTex1, vTexCoord);
+   FragColor = mix(tex0, tex1, uMixFactor);
 }

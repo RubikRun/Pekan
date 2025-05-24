@@ -23,6 +23,9 @@ namespace Demo
 		// Checks if shapes are currently enabled
 		inline bool isEnabledShapes() const { return m_enabledShapes; }
 
+		// Returns currently selected shader index
+		inline int getShaderIdx() const { return m_shaderIdx; }
+
 	private: /* functions */
 
 		void _render() override;
@@ -39,6 +42,9 @@ namespace Demo
 
 		// Flag indicating if shapes are enabled and should be rendered
 		bool m_enabledShapes = false;
+
+		// Shader index determining which shader will be used for rendering
+		int m_shaderIdx = 0;
 	};
 
 } // namespace Demo

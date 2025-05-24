@@ -6,6 +6,7 @@
 #include "RectangleShape.h"
 #include "CircleShape.h"
 #include "CircleShapeStatic.h"
+#include "Image.h"
 
 #include "Demo04_GUIWindow.h"
 
@@ -51,6 +52,11 @@ namespace Demo
 		glm::vec2 m_circleStaticInitialPosition;
 		float m_circleInitialRadius;
 		float m_circleStaticInitialRadius;
+
+		int m_shaderIdx = -1;
+
+		Pekan::Renderer::Image m_image0;
+		Pekan::Renderer::Image m_image1;
 
 		// GUI window for controlling background's color
 		const Demo04_GUIWindow* m_guiWindow = nullptr;

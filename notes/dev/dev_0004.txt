@@ -1550,6 +1550,10 @@ and then blending between the two of them in the fragment shader like that
 based on a mix factor uMixFactor which is a uniform that we will set in the scene's update() function to oscillate between the two images
     texRectShader.setUniform1f("uMixFactor", osc(t / 5.0f));
 
+----------
+24.05.2025
+----------
+
 Running Demo04 it looks quite busy, you can't clearly see the 2 textures being blended together,
 so let's add a checkbox that hides/shows all shapes
     ImGui::Text("Enable Shapes");
@@ -1574,4 +1578,70 @@ calls unbind() which is a pure virtual function in RenderComponent and it's defi
 but RenderComponent's destructor is called after a derived class' constructor so at this point the unbind() function is destroyed and cannot be called.
 So let's just add this destructor to each derived class of RenderComponent.
 Done. All demos work the same way, and don't crash on closing.
+}
+
+{
+I have a small fun side quest in mind.
+Let's try to do some shader effects with the 2 textures in Demo04.
+
+For that it'd be cool to be able to dynamically switch shaders at runtime through GUI.
+Not sure if this will require any changes in engine code. It'll be interesting to see if it can be done with current engine.
+
+Nope, it cannot be done with current engine.
+We need a function in RenderObject that sets new shader source
+    void setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource);
+The essential thing it should do is
+    m_shader.setSource(vertexShaderSource, fragmentShaderSource);
+It also needs to clear the textures vector
+    m_textures.clear();
+because current textures are bound to the current shader (to the current shader's source code).
+They correspond to slots and uniforms in the current shader's source code.
+Changing the shader's source code invalidates the textures.
+Importantly, this means that client code should remember to set their textures again after changing shader's source code,
+but this is pretty normal and expected because normally when you change shader's source code you don't want to keep the exact same textures
+bound to the exact same slots and uniforms. You usually completely change the textures.
+Nevertheless, I created a TO-DO item for this, to think about it more carefully later, because I'm not fully sure now.
+
+There is a problem now. The setSource() function of class Shader doesn't work when calling it after having created the shader already.
+So far we have used it only for creating the shader at the beginning of its lifetime with create(),
+but we have never tried using it to reset source.
+It doesn't work. Why?
+Because the previous vertex shader and fragment shader are not detached and deleted,
+and when you add new vertex and fragment shader they are added to the old ones, they don't override the old ones,
+so now we have 2 main functions in the merged fragment shaders, and 2 main functions in the merged vertex shaders,
+which results in a linking error.
+So, we need to first detach and delete the old ones.
+Let's create a function for that
+    void detachAndDeleteShaders();
+Details not important.
+So if we already have shaders attached at setSource() then we'll first call detachAndDeleteShaders().
+Now it works.
+
+One shader effect that I have in mind is to have 2 points in the plane, in the fragment shader.
+They may be hardcoded at (0.25, 0.25) and (0.75, 0.75) (in texture space) for now, later we might make them move.
+   vec2 p0 = vec2(0.25, 0.25);
+   vec2 p1 = vec2(0.75, 0.75);
+Then each pixel will be sampled from a mix of tex0 and tex1 based on its distance to the 2 points.
+More precisely the closer a pixel is to p0 the more it will be sampled from tex0,
+and the closer it is to p1 the more it will be sampled from tex1.
+However this is not exactly the formula that we will use. It will NOT be based on distance exactly.
+I want points that are completely from one side of p0 to be sampled completely from tex0.
+For example the pixel (0.1, 0.2) should be completely sampled from tex0.
+More precisely, we'll look at the direction from p0 to p1
+    vec2 p0p1 = vec2(p1.x - p0.x, p1.y - p0.y);
+and for any pixel (x, y) we'll consider the distance from p0 to (x, y) ALONG the direction p0->p1.
+    float p0dist = dot(p0v, normalize(p0p1));
+where p0v is just the vector from p0 to (x, y)
+    vec2 p0v = vec2(vTexCoord.x - p0.x, vTexCoord.y - p0.y);
+Then dividing this distance by the distance from p0 to p1
+    float blend = p0dist / distance(p0, p1);
+will put it in such range that pixels in between p0 and p1 will get assigned a number from 0 to 1,
+pixels to "the left" (in the slanted direction described above) of p0 will be < 0,
+and pixels to "the right" of p1 will be > 1.
+We will, of course, clamp this value to the range [0, 1] so that it can be used for a mix between the 2 textures.
+    blend = clamp(blend, 0.0, 1.0);
+    ...
+    FragColor = mix(tex0, tex1, blend);
+That's it. That's the shader effect. Calling it "Two Points Blend".
+
 }

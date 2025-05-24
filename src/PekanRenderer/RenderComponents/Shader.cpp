@@ -8,6 +8,8 @@
 namespace Pekan {
 namespace Renderer {
 
+	static const unsigned MAX_SHADERS_ATTACHED = 10;
+
 	Shader::~Shader()
 	{
 		if (isValid())
@@ -18,6 +20,8 @@ namespace Renderer {
 
 	void Shader::create(const char* vertexShaderSource, const char* fragmentShaderSource)
 	{
+		m_hasShadersAttached = false;
+
 		// Create underlying render component, but don't bind yet.
 		// We need to have a valid compiled shader program before binding.
 		RenderComponent::create(false);
@@ -29,6 +33,12 @@ namespace Renderer {
 
 	void Shader::setSource(const char* vertexShaderSource, const char* fragmentShaderSource)
 	{
+		if (m_hasShadersAttached)
+		{
+			detachAndDeleteShaders();
+			m_uniformLocationCache.clear();
+		}
+
 		// Compile shaders
 		const unsigned vertexShaderID = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
 		const unsigned fragmentShaderID = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
@@ -47,6 +57,8 @@ namespace Renderer {
 		// Delete the individual shaders, as the shader program has them now
 		GLCall(glDeleteShader(vertexShaderID));
 		GLCall(glDeleteShader(fragmentShaderID));
+
+		m_hasShadersAttached = true;
 	}
 
 	void Shader::bind() const {
@@ -107,6 +119,7 @@ namespace Renderer {
 	void Shader::_destroy()
 	{
 		GLCall(glDeleteProgram(m_id));
+		m_hasShadersAttached = false;
 		// Clear the cache of uniform locations
 		// since they apply specifically to the shader being destroyed here.
 		m_uniformLocationCache.clear();
@@ -141,6 +154,22 @@ namespace Renderer {
 		// Cache the location so that it can be reused in next calls to this function
 		m_uniformLocationCache[uniformName] = location;
 		return location;
+	}
+
+	void Shader::detachAndDeleteShaders()
+	{
+		int shaderCount = 0;
+		unsigned shaders[MAX_SHADERS_ATTACHED];
+		// Get attached shaders
+		glGetAttachedShaders(m_id, MAX_SHADERS_ATTACHED, &shaderCount, shaders);
+		// Detach and delete each shader
+		for (int i = 0; i < shaderCount; i++)
+		{
+			glDetachShader(m_id, shaders[i]);
+			glDeleteShader(shaders[i]);
+		}
+
+		m_hasShadersAttached = false;
 	}
 
 } // namespace Pekan
