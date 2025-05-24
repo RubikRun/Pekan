@@ -14,6 +14,8 @@ namespace Renderer
 	{
 	public:
 
+		~IndexBuffer();
+
 		// Make base class RenderComponent's version of create() be visible in this derived class
 		using RenderComponent::create;
 		// Creates the underlying index buffer object, fills it with given data, and binds it

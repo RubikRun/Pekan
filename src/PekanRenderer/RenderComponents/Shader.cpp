@@ -8,6 +8,14 @@
 namespace Pekan {
 namespace Renderer {
 
+	Shader::~Shader()
+	{
+		if (isValid())
+		{
+			destroy();
+		}
+	}
+
 	void Shader::create(const char* vertexShaderSource, const char* fragmentShaderSource)
 	{
 		// Create underlying render component, but don't bind yet.

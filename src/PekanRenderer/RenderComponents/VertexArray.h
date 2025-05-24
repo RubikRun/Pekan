@@ -14,6 +14,8 @@ namespace Renderer
 	{
 	public:
 
+		~VertexArray();
+
 		// Make base class RenderComponent's version of create() be visible in this derived class
 		using RenderComponent::create;
 

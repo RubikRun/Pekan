@@ -75,6 +75,7 @@ namespace Renderer
 		friend class VertexBufferElement;
 		friend class VertexBuffer;
 		friend class IndexBuffer;
+		friend class RenderObject;
 		friend class Texture;
 
 	public:
@@ -133,6 +134,9 @@ namespace Renderer
 
 		// Returns the OpenGL enum value corresponding to the given texture slot
 		static unsigned getTextureSlotOpenGLEnum(unsigned slot);
+
+		// Returns the maximum number of texture slots supported on current hardware
+		static int getMaxTextureSlots();
 	};
 
 } // namespace Renderer

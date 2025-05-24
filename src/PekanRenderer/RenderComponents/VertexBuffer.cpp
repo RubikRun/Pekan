@@ -42,6 +42,14 @@ namespace Renderer
 		m_stride = offset;
 	}
 
+	VertexBuffer::~VertexBuffer()
+	{
+		if (isValid())
+		{
+			destroy();
+		}
+	}
+
 	void VertexBuffer::create(
 		const void* data,
 		long long size,

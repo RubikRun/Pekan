@@ -12,6 +12,8 @@ namespace Renderer {
 	{
 	public:
 
+		~Texture();
+
 		// Make base class RenderComponent's version of create() be visible in this derived class
 		using RenderComponent::create;
 
@@ -37,6 +39,8 @@ namespace Renderer {
 		// Determines the format (and internal format) that a texture must have to support a given image
 		static void getFormat(const Image& image, unsigned& format, unsigned& internalFormat);
 	};
+
+	typedef std::shared_ptr<Texture> TexturePtr;
 
 } // namespace Pekan
 } // namespace Renderer

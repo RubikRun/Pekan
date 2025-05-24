@@ -1491,3 +1491,87 @@ So basically remove the first create() overload and change the client code where
 to instead use the next overload and then call setIndexData(...).
 Done.
 }
+
+{
+Look at next TO-DO item
+    Check what happens if you call setTextureImage() more than once on a single RenderObject
+
+It doesn't work of course.
+I mean it will work with only your last call. Previous calls will be overwritten.
+That's because we currently support only one texture per RenderObject.
+
+Let's implement support for multiple textures in RenderObject.
+Basically, instead of a single texture we need a vector of texture pointers
+    std::vector<TexturePtr> m_textures;
+At each index i, the texture will correspond to slot i.
+So if at index i we have a non-null pointer this means that a texture exists, has been created by user,
+and should be bound to slot i.
+We will modify the setTextureImage() function to grow the m_textures vector whenever the requested slot exceeds the current size of the vector.
+    if (slot >= m_textures.size())
+    {
+        m_textures.resize(slot + 1);
+    }
+Then at the requested slot we will just create a new texture from the given image
+    m_textures[slot] = std::make_shared<Texture>();
+    m_textures[slot]->create(image);
+That's the essential part.
+
+When growing the vector it'd be good to check if the requested slot is not too big.
+There is a GPU-imposed limit on the number of available texture slots.
+Let's add a function in PekanRenderer that retrieves this GPU limit
+    static int getMaxTextureSlots();
+and then in setTextureImage() before proceeding to doing anything, check if requested slot is less than the limit
+    if (int(slot) >= PekanRenderer::getMaxTextureSlots())
+    {
+        ... log error ...
+        return;
+    }
+
+What's left is to act on the vector of textures instead of a single texture in all other places,
+for example in bind() we need to do this
+    for (unsigned i = 0; i < m_textures.size(); i++)
+    {
+        if (m_textures[i] != nullptr)
+        {
+            PK_ASSERT_QUICK(m_textures[i]->isValid());
+            m_textures[i]->bind(i);
+        }
+    }
+Go through all textures, and bind the ones that are not null, making sure that they are valid with a quick assert.
+
+That's pretty much it.
+Let's test it in Demo04 by having 2 images, one of the TMNT and one of the powerpuff girls
+    static const char* IMAGE0_FILEPATH = "resources/tmnt.png";
+    static const char* IMAGE1_FILEPATH = "resources/powerpuff.png";
+and then blending between the two of them in the fragment shader like that
+    vec4 tex1 = texture(uTex0, vTexCoord);
+    vec4 tex2 = texture(uTex1, vTexCoord);
+    FragColor = mix(tex1, tex2, uMixFactor);
+based on a mix factor uMixFactor which is a uniform that we will set in the scene's update() function to oscillate between the two images
+    texRectShader.setUniform1f("uMixFactor", osc(t / 5.0f));
+
+Running Demo04 it looks quite busy, you can't clearly see the 2 textures being blended together,
+so let's add a checkbox that hides/shows all shapes
+    ImGui::Text("Enable Shapes");
+    ImGui::Checkbox("##", &m_enabledShapes);
+Then in scene's render() function we will render the shapes only if this checkbox is enabled.
+
+Side note: There is a small bug when you add an image under the same texture slot multiple times
+by calling setTextureImage() multiple times. It has to do with the way we keep TexturePtr's in a vector.
+When a Texture object gets automatically destroyed by the vector we want the destroy() function to be called.
+However, this should happen only if the Texture object is valid.
+So basically we need this destructor of class Texture
+    Texture::~Texture()
+    {
+        if (isValid())
+        {
+            destroy();
+        }
+    }
+To be honest it's a good idea to do the same for all other RenderComponents.
+Annoyingly we cannot do this in RenderComponent's destructor because the destroy() function
+calls unbind() which is a pure virtual function in RenderComponent and it's defined in derived classes,
+but RenderComponent's destructor is called after a derived class' constructor so at this point the unbind() function is destroyed and cannot be called.
+So let's just add this destructor to each derived class of RenderComponent.
+Done. All demos work the same way, and don't crash on closing.
+}

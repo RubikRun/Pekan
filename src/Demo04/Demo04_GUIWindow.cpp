@@ -8,7 +8,7 @@ namespace Demo
 
 	void Demo04_GUIWindow::_render()
 	{
-		ImGui::SetNextWindowSize(ImVec2(200, 120));
+		ImGui::SetNextWindowSize(ImVec2(200, 160));
 		ImGui::Begin("Pekan");
 
 		ImGui::Text("Background Color");
@@ -16,6 +16,9 @@ namespace Demo
 
 		ImGui::Text("Position");
 		ImGui::DragFloat2("", (float*)&(m_position), 0.01f, -1.0f, 1.0f);
+
+		ImGui::Text("Enable Shapes");
+		ImGui::Checkbox("##", &m_enabledShapes);
 
 		ImGui::End();
 	}

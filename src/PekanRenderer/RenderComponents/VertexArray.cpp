@@ -9,6 +9,14 @@ namespace Pekan
 namespace Renderer
 {
 
+	VertexArray::~VertexArray()
+	{
+		if (isValid())
+		{
+			destroy();
+		}
+	}
+
 	void VertexArray::bind() const {
 		GLCall(glBindVertexArray(m_id));
 	}

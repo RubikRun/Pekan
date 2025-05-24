@@ -224,5 +224,15 @@ namespace Renderer
 		return 0;
 	}
 
+	int PekanRenderer::getMaxTextureSlots()
+	{
+		static int maxTextureSlots = -1;
+		if (maxTextureSlots == -1)
+		{
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureSlots);
+		}
+		return maxTextureSlots;
+	}
+
 } // namespace Renderer
 } // namespace Pekan

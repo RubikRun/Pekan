@@ -15,6 +15,8 @@ namespace Renderer {
 	{
 	public:
 
+		~Shader();
+
 		// Make base class RenderComponent's version of create() be visible in this derived class
 		using RenderComponent::create;
 		// Creates the underlying shader program object with given source code for vertex shader and fragment shader

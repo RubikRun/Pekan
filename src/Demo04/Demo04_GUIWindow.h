@@ -20,6 +20,9 @@ namespace Demo
 		// Returns current value of position
 		inline const ImVec2& getPosition() const { return m_position; }
 
+		// Checks if shapes are currently enabled
+		inline bool isEnabledShapes() const { return m_enabledShapes; }
+
 	private: /* functions */
 
 		void _render() override;
@@ -33,6 +36,9 @@ namespace Demo
 
 		// Position of the square, relative to window's center
 		ImVec2 m_position = ImVec2(0.0f, 0.0f);
+
+		// Flag indicating if shapes are enabled and should be rendered
+		bool m_enabledShapes = false;
 	};
 
 } // namespace Demo

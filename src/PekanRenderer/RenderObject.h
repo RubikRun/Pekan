@@ -6,6 +6,8 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include <vector>
+
 namespace Pekan
 {
 namespace Renderer
@@ -94,8 +96,8 @@ namespace Renderer
 
 		Shader m_shader;
 
-		Texture m_texture;
-		unsigned m_textureSlot = 0xffffffff;
+		// A vector of textures, where the index of each texture is the slot where it will be bound
+		std::vector<TexturePtr> m_textures;
 
 		BufferDataUsage m_vertexDataUsage = BufferDataUsage::None;
 		BufferDataUsage m_indexDataUsage = BufferDataUsage::None;

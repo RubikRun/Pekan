@@ -14,7 +14,8 @@ using Pekan::Renderer::BlendFactor;
 static const char* vertexShaderFilePath = "resources/04_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/04_fragment_shader.glsl";
 
-static const char* EXAMPLE_IMAGE_FILEPATH = "resources/tmnt.png";
+static const char* IMAGE0_FILEPATH = "resources/tmnt.png";
+static const char* IMAGE1_FILEPATH = "resources/powerpuff.png";
 
 namespace Demo
 {
@@ -49,8 +50,10 @@ namespace Demo
         );
         m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
-        Image image(EXAMPLE_IMAGE_FILEPATH);
-        m_renderObject.setTextureImage(image, "tex0", 0);
+        Image image0(IMAGE0_FILEPATH);
+        m_renderObject.setTextureImage(image0, "uTex0", 0);
+        Image image1(IMAGE1_FILEPATH);
+        m_renderObject.setTextureImage(image1, "uTex1", 1);
 
         m_triangleInitialVertexA = { -0.1f, -0.1f };
         m_triangleInitialVertexB = { 0.1f, -0.1f };
@@ -102,6 +105,7 @@ namespace Demo
         Shader& texRectShader = m_renderObject.getShader();
         texRectShader.bind();
         texRectShader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+        texRectShader.setUniform1f("uMixFactor", osc(t / 5.0f));
         texRectShader.unbind();
 
         m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
@@ -143,10 +147,13 @@ namespace Demo
         PekanRenderer::drawIndexed(6);
         m_renderObject.unbind();
 
-        m_triangle.render();
-        m_rectangle.render();
-        m_circle.render();
-        m_circleStatic.render();
+        if (m_guiWindow != nullptr && m_guiWindow->isEnabledShapes())
+        {
+            m_triangle.render();
+            m_rectangle.render();
+            m_circle.render();
+            m_circleStatic.render();
+        }
     }
 
     void Demo04_Scene::exit()

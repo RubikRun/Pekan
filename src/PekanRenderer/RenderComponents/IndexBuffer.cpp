@@ -6,6 +6,13 @@ namespace Pekan
 {
 namespace Renderer
 {
+	IndexBuffer::~IndexBuffer()
+	{
+		if (isValid())
+		{
+			destroy();
+		}
+	}
 
 	void IndexBuffer::create(const void* data, long long size, BufferDataUsage dataUsage)
 	{

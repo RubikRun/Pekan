@@ -28,7 +28,6 @@ namespace Renderer
 		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
 		m_indexBuffer.create();
 		m_shader.create(vertexShaderSource, fragmentShaderSource);
-		m_texture.create();
 	}
 
 	void RenderObject::create(const VertexBufferLayout& layout, const char* vertexShaderSource, const char* fragmentShaderSource)
@@ -40,7 +39,6 @@ namespace Renderer
 		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
 		m_indexBuffer.create();
 		m_shader.create(vertexShaderSource, fragmentShaderSource);
-		m_texture.create();
 	}
 
 	bool RenderObject::isValid() const
@@ -49,7 +47,7 @@ namespace Renderer
 		PK_ASSERT_QUICK
 		(
 			!m_vertexArray.isValid() ||
-			(m_vertexBuffer.isValid() || m_indexBuffer.isValid() || m_shader.isValid() || m_texture.isValid())
+			(m_vertexBuffer.isValid() || m_indexBuffer.isValid() || m_shader.isValid())
 		);
 		// Check only vertex array for validity in release builds
 		return m_vertexArray.isValid();
@@ -67,28 +65,46 @@ namespace Renderer
 		m_indexBuffer.destroy();
 		m_vertexBuffer.destroy();
 		m_vertexArray.destroy();
-		m_texture.destroy();
+
+		for (const TexturePtr& texture : m_textures)
+		{
+			if (texture != nullptr)
+			{
+				PK_ASSERT_QUICK(texture->isValid());
+				texture->destroy();
+			}
+		}
 	}
 
 	void RenderObject::bind() const
 	{
-		PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
+		PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_shader.isValid());
 
 		m_vertexArray.bind();
 		m_shader.bind();
-		if (m_textureSlot != 0xffffffff)
+		// Bind textures
+		for (unsigned i = 0; i < m_textures.size(); i++)
 		{
-			m_texture.bind(m_textureSlot);
+			if (m_textures[i] != nullptr)
+			{
+				PK_ASSERT_QUICK(m_textures[i]->isValid());
+				m_textures[i]->bind(i);
+			}
 		}
 	}
 
 	void RenderObject::unbind() const
 	{
-		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
+		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid());
 
-		if (m_textureSlot != 0xffffffff)
+		// Unbind textures
+		for (unsigned i = 0; i < m_textures.size(); i++)
 		{
-			m_texture.bind(m_textureSlot);
+			if (m_textures[i] != nullptr)
+			{
+				PK_ASSERT_QUICK(m_textures[i]->isValid());
+				m_textures[i]->unbind(i);
+			}
 		}
 		m_shader.unbind();
 		m_vertexArray.unbind();
@@ -136,11 +152,27 @@ namespace Renderer
 
 	void RenderObject::setTextureImage(const Image& image, const char* uniformName, unsigned slot)
 	{
-		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_texture.isValid());
+		PK_ASSERT_QUICK(m_shader.isValid());
 
-		m_texture.setImage(image);
+		// Check if requested slot is available on current hardware
+		if (int(slot) >= PekanRenderer::getMaxTextureSlots())
+		{
+			PK_LOG_ERROR("Requested texture slot " << slot << " is not available on current hardware."
+				" Maximum available texture slot is " << PekanRenderer::getMaxTextureSlots(), "Pekan");
+			return;
+		}
+
+		// If textures vector is not big enough to contain requested slot, resize it
+		if (slot >= m_textures.size())
+		{
+			m_textures.resize(slot + 1);
+		}
+
+		// Create texture with given image at the requested slot
+		m_textures[slot] = std::make_shared<Texture>();
+		m_textures[slot]->create(image);
+		// Set slot to shader's uniform
 		m_shader.setUniform1i(uniformName, slot);
-		m_textureSlot = slot;
 	}
 
 } // namespace Renderer
