@@ -72,3 +72,5 @@
                         More specifically when client changes the shader in a RenderObject what should happen to the textures?
                         Currently they are just all deleted and client should set textures anew if they need them in the new shader.
                         Is this an okay behavior? Is there something else that can be done?
+
+0029 25.05.2025 (TODO): What will happen if you call a create() function of a 2D shape more than once, without calling destroy() in between?

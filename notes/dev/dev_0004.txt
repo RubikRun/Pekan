@@ -1667,3 +1667,57 @@ That's it. Calling it done here.
 Multiple textures work now, and dynamically changing shaders works.
 Done.
 }
+
+{
+Okay, I did some TO-DO items, now it's time to continue with the next 2D shape wrapper - a line
+
+There are 2 distinct ways to render a line.
+
+First way, is to create the line from 2 slim triangles.
+A good thing about this approach is that it supports different thicknesses for the lines.
+A bad thing is that it may be a bit slower.
+
+Second way, is to just draw a line primitive with OpenGL
+    glDrawArrays(GL_LINES, 0, 2);
+This is a faster way, but thickness can't be provided.
+
+I will do both - class LineShape will be a line made up of 2 triangles,
+and class Line will be just a line primitive.
+
+Let's start with class Line.
+Should it derive from class Shape? No, not really,
+because we don't need a position for the line, and because we'll do the draw call differently.
+Instead, we'll have a member
+    RenderObject m_renderObject;
+and we'll managed it in a way similar to how class Shape manages its m_renderObject.
+We'll use the same vertex and fragment shaders.
+It's pretty straightforward.
+The actual draw call will look like
+    PekanRenderer::draw(2, DrawMode::Lines);
+
+Let's create a new demo
+    Demo05
+for testing lines.
+Later I'll do a Mandelbrot Timestable there,
+it's made up entirely from lines and it looks cool.
+
+Class Line works perfectly fine.
+However, I see that the line is jagged, doesn't look great.
+That's because we don't do anti-aliasing currently, so let's do it now.
+It's quite simple in OpenGL to enable MSAA (Multisample Anti-Aliasing)
+It's just this OpenGL call
+    GLCall(glEnable(GL_MULTISAMPLE));
+and the GLFW window should be configured to use more than 1 sample per pixel, like that
+    glfwWindowHint(GLFW_SAMPLES, 8);
+Instead of puttin 8 there, let's add a new property inside of WindowProperties
+    int numberOfSamples = 1;
+and then applications will be able to set this property before creating their window.
+What about the OpenGL call for enabling MSAA? Let's wrap that in a static function in PekanRenderer
+    static void enableMultisampleAntiAliasing();
+That's it, now in Demo05_Scene::init() we can enable MSAA like that
+    PekanRenderer::enableMultisampleAntiAliasing();
+and in Demo05_Application::_init() we can set the number of samples per pixel like that
+    windowProperties.numberOfSamples = 16;
+It works! Line looks pretty good now.
+
+}

@@ -107,6 +107,13 @@ namespace Renderer
 		// meaning that the ones in front will be rendered and the ones behind will be hidden.
 		static void enableDepthTest();
 
+		// Enables Multisample Anti-Aliasing (MSAA) for removing jagged edges of shapes and lines.
+		// IMPORTANT: In order for MSAA to work you need to have a window
+		//            with numberOfSamples greater than 1, preferably 4 or 8.
+		//            You can set numberOfSamples in your WindowProperties when creating a window
+		//            in your application's initialization function.
+		static void enableMultisampleAntiAliasing();
+
 	private: /* functions */
 
 		// Returns the OpenGL base data type corresponding to the given shader data type.

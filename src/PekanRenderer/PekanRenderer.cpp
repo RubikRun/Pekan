@@ -3,6 +3,9 @@
 
 #include <glad/glad.h>
 
+// Default number of samples to be used for Multisample Anti-Aliasing (MSAA)
+const int DEFAULT_NUMBER_OF_SAMPLES = 8;
+
 namespace Pekan
 {
 namespace Renderer
@@ -48,6 +51,11 @@ namespace Renderer
 	void PekanRenderer::enableDepthTest()
 	{
 		GLCall(glEnable(GL_DEPTH_TEST));
+	}
+
+	void PekanRenderer::enableMultisampleAntiAliasing()
+	{
+		GLCall(glEnable(GL_MULTISAMPLE));
 	}
 
 	unsigned PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)

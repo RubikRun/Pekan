@@ -20,6 +20,8 @@ namespace Pekan
 		std::string title = "Pekan Engine v0.1";
 		bool fullScreen = false;
 		bool hideCursor = false;
+		// Number of samples per pixel to be used for multisampling
+		int numberOfSamples = 1;
 	};
 
 	// A class representing an OS-independent window

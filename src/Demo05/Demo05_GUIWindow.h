@@ -1,0 +1,38 @@
+#pragma once
+
+#include "PekanGUIWindow.h"
+using Pekan::PekanGUIWindow;
+
+#include "imgui.h"
+
+namespace Demo
+{
+
+	class Demo05_GUIWindow : public PekanGUIWindow
+	{
+	public:
+
+		Demo05_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
+
+		// Returns current value of clear color
+		inline const ImVec4& getClearColor() const { return m_clearColor; }
+
+		// Returns current value of position
+		inline const ImVec2& getPosition() const { return m_position; }
+
+	private: /* functions */
+
+		void _render() override;
+
+		bool init() override;
+
+	private: /* variables */
+
+		// Color for clearing scene's background
+		ImVec4 m_clearColor = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
+
+		// Position of the square, relative to window's center
+		ImVec2 m_position = ImVec2(0.0f, 0.0f);
+	};
+
+} // namespace Demo

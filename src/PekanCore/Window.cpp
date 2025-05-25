@@ -27,6 +27,8 @@ namespace Pekan
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, PK_OPENGL_VERSION_MINOR);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+        // Set window hint for number of samples
+        glfwWindowHint(GLFW_SAMPLES, properties.numberOfSamples);
 
         // Create a GLFW window
         if (properties.fullScreen)
