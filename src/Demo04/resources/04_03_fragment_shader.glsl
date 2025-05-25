@@ -13,23 +13,42 @@ const float pradius_outer = 0.008;
 const vec4 pcolor_inner = vec4(0.0, 0.0, 0.0, 1.0);
 const vec4 pcolor_outer = vec4(1.0, 1.0, 1.0, 1.0);
 
-// Radius of trajectory of points
-const float ptraj_radius = 0.2;
-const float ptraj_speed = 0.1;
-const vec2 ptraj_center = vec2(0.5, 0.5);
+const float p0traj_radius = 0.2;
+const float p0traj_speed = 0.1;
+const vec2 p0traj_center = vec2(0.5, 0.5);
+
+const float p1traj_ampl = 0.2;
+const float p1traj_scale = 12.0;
+const float p1traj_speed = 0.05;
+const vec2 p1traj_center = vec2(0.5, 0.5);
+
+float osc(float x)
+{
+   int xi = int(x);
+   if (xi % 2 == 0)
+   {
+      return x - float(xi);
+   }
+   else
+   {
+      return 1.0 - (x - float(xi));
+   }
+}
 
 void main()
 {
    if (uTime < 0.0) discard; // ensure uniform will not be optimized away
 
-   float angle = uTime * ptraj_speed;
+   float angle0 = uTime * p0traj_speed;
    vec2 p0 = vec2(
-      cos(angle) * ptraj_radius + ptraj_center.x,
-      sin(angle) * ptraj_radius + ptraj_center.y
+      cos(angle0) * p0traj_radius + p0traj_center.x,
+      sin(angle0) * p0traj_radius + p0traj_center.y
    );
+
+   float p1x = osc(uTime * p1traj_speed) - 0.5 + p1traj_center.x;
    vec2 p1 = vec2(
-      cos(angle + M_PI) * ptraj_radius + ptraj_center.x,
-      sin(angle + M_PI) * ptraj_radius + ptraj_center.y
+      p1x,
+      sin(p1x * p1traj_scale) * p1traj_ampl + p1traj_center.y
    );
 
    if (distance(p0, vTexCoord) < pradius_inner || distance(p1, vTexCoord) < pradius_inner)

@@ -6,7 +6,7 @@
 namespace Demo
 {
 
-	static const char* SHADER_NAMES[] = { "Standard Blend", "Two Points Blend" };
+	static const char* SHADER_NAMES[] = { "Standard Blend", "Two Points Blend 1", "Two Points Blend 2", "Two Points Blend 3" };
 
 	void Demo04_GUIWindow::_render()
 	{

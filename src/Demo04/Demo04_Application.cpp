@@ -15,8 +15,8 @@ namespace Demo
 	{
 		WindowProperties windowProperties;
 		windowProperties.title = getName();
-		windowProperties.width = 800;
-		windowProperties.height = 800;
+		windowProperties.width = 960;
+		windowProperties.height = 960;
 		PekanEngine::createWindow(windowProperties);
 
 		setFPS(60.0);

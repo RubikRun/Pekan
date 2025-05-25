@@ -12,13 +12,17 @@ using Pekan::Renderer::BlendFactor;
 static const char* VERTEX_SHADER_FILEPATHS[] =
 {
     "resources/04_00_vertex_shader.glsl",
-    "resources/04_01_vertex_shader.glsl"
+    "resources/04_01_vertex_shader.glsl",
+    "resources/04_02_vertex_shader.glsl",
+    "resources/04_03_vertex_shader.glsl"
 };
 
 static const char* FRAGMENT_SHADER_FILEPATHS[] =
 {
     "resources/04_00_fragment_shader.glsl",
-    "resources/04_01_fragment_shader.glsl"
+    "resources/04_01_fragment_shader.glsl",
+    "resources/04_02_fragment_shader.glsl",
+    "resources/04_03_fragment_shader.glsl"
 };
 
 static const char* IMAGE0_FILEPATH = "resources/tmnt.png";
@@ -144,7 +148,7 @@ namespace Demo
             texRectShader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
         }
 
-        texRectShader.setUniform1f("uMixFactor", osc(t / 5.0f));
+        texRectShader.setUniform1f("uTime", t);
 
         m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
         m_triangle.setColor({ osc(t), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });

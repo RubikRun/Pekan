@@ -1644,4 +1644,26 @@ We will, of course, clamp this value to the range [0, 1] so that it can be used 
     FragColor = mix(tex0, tex1, blend);
 That's it. That's the shader effect. Calling it "Two Points Blend".
 
+----------
+25.05.2025
+----------
+
+Now let's make the points move.
+
+Also, we can make the points themselves visible.
+There are 2 ways to do that. First way, we can draw circles on top of the points.
+Second way is a more shader-based approach, and we'll go with it,
+We will pass only the time as a uniform to the shader,
+and let the shader itself generate and draw the points.
+How will the shader draw the points?
+Well, it just needs to color the pixels close enough to the points in a certain color, say black.
+Done. Points are now visible.
+
+Let's make them move in a circle and always being on two opposite sides of the circle.
+Done.
+
+Added 2 more shaders that move the two points in different ways.
+That's it. Calling it done here.
+Multiple textures work now, and dynamically changing shaders works.
+Done.
 }
