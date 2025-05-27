@@ -15,10 +15,12 @@ namespace Demo
 	{
 		WindowProperties windowProperties;
 		windowProperties.title = getName();
-		windowProperties.width = 900;
-		windowProperties.height = 900;
+		windowProperties.width = 1000;
+		windowProperties.height = 1000;
 		windowProperties.numberOfSamples = 16;
 		PekanEngine::createWindow(windowProperties);
+
+		setFPS(60.0);
 
 		// Create demo scene and demo GUI window
 		Demo05_Scene* demoScene = new Demo05_Scene(this);

@@ -74,3 +74,7 @@
                         Is this an okay behavior? Is there something else that can be done?
 
 0029 25.05.2025 (TODO): What will happen if you call a create() function of a 2D shape more than once, without calling destroy() in between?
+
+0030 27.05.2025 (TODO): Create a 2D camera that can be moved with mouse and/or with WASD keys
+
+0031 27.05.2025 (TODO): Create a world space and a resolution-independent way to render 2D shapes

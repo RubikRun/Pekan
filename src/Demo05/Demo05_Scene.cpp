@@ -2,12 +2,23 @@
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
 
+#include <glm/gtc/constants.hpp>
+static const float PI = glm::pi<float>();
+
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::Shader;
 using Pekan::Renderer::BlendFactor;
+
+// Parameters for Mandelbrot Times Table
+const glm::vec2 MTT0_CENTER = glm::vec2(-0.5f, 0.0f);
+const glm::vec2 MTT1_CENTER = glm::vec2(0.5f, 0.0f);
+const float MTT0_RADIUS = 0.45f;
+const float MTT1_RADIUS = 0.45f;
+const float MTT0_SPEED = 0.05f;
+const float MTT1_SPEED = 0.05f;
 
 namespace Demo
 {
@@ -19,11 +30,17 @@ namespace Demo
         PekanRenderer::enableBlending();
         PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
-        m_line.create({ -0.5f, -0.5f }, { 0.5f, 0.5f });
-        m_line.setColor({ 0.9f, 0.9f, 0.9f, 1.0f });
-
-        m_lineShape.create({ -0.5f, 0.5f }, { 0.5f, -0.5f });
-        m_lineShape.setColor({ 0.9f, 0.9f, 0.9f, 1.0f });
+        for (int i = 0; i < MTT0_SUBDIVS; i++)
+        {
+            m_lines[i].create({ 0.0f, 0.0f }, { 0.0f, 0.0f });
+            m_lines[i].setColor({ 0.9f, 0.9f, 0.9f, 1.0f });
+        }
+        for (int i = 0; i < MTT1_SUBDIVS; i++)
+        {
+            m_lineShapes[i].create({ 0.0f, 0.0f }, { 0.0f, 0.0f });
+            m_lineShapes[i].setColor({ 0.9f, 0.9f, 0.9f, 1.0f });
+            m_lineShapes[i].setThickness(0.001f);
+        }
 
         t = 0.0f;
 
@@ -41,14 +58,11 @@ namespace Demo
 
     void Demo05_Scene::update(double dt)
     {
-        const float THICKNESS_AMPL = 0.2f;
+        updateMtt();
 
-        m_line.setColor({ osc(t / 25.0f + 3.0f), osc(t / 15.0f), osc(t / 35.0f), osc(t / 35.0f, 0.3f, 1.0f) });
-
-        m_lineShape.setThickness(THICKNESS_AMPL + cos(t) * THICKNESS_AMPL);
-        m_lineShape.setColor({ osc(t / 10.0f), osc(t / 20.0f + 2.0f), osc(t / 30.0f), osc(t / 3.0f, 0.6f, 1.0f) });
-
-        t += float(dt) * 3.0f;
+        t += float(dt);
+        m_mtt0factor += float(dt) * MTT0_SPEED;
+        m_mtt1factor += float(dt) * MTT1_SPEED;
     }
 
     void Demo05_Scene::render()
@@ -66,14 +80,70 @@ namespace Demo
             PekanRenderer::clear();
         }
 
-        m_line.render();
-        m_lineShape.render();
+        for (int i = 0; i < MTT0_SUBDIVS; i++)
+        {
+            m_lines[i].render();
+        }
+        for (int i = 0; i < MTT1_SUBDIVS; i++)
+        {
+            m_lineShapes[i].render();
+        }
     }
 
     void Demo05_Scene::exit()
     {
-        m_line.destroy();
-        m_lineShape.destroy();
+        for (int i = 0; i < MTT0_SUBDIVS; i++)
+        {
+            m_lines[i].destroy();
+        }
+        for (int i = 0; i < MTT1_SUBDIVS; i++)
+        {
+            m_lineShapes[i].destroy();
+        }
+    }
+
+    static glm::vec2 getMtt0Point(float ang)
+    {
+        return glm::vec2
+        (
+            cos(ang) * MTT0_RADIUS + MTT0_CENTER.x,
+            sin(ang) * MTT0_RADIUS + MTT0_CENTER.y
+        );
+    }
+
+    static glm::vec2 getMtt1Point(float ang)
+    {
+        return glm::vec2
+        (
+            cos(ang) * MTT1_RADIUS + MTT1_CENTER.x,
+            sin(ang) * MTT1_RADIUS + MTT1_CENTER.y
+        );
+    }
+
+    void Demo05_Scene::updateMtt()
+    {
+        const float arc0 = 2.0f * PI / MTT0_SUBDIVS;
+        for (int i = 0; i < MTT0_SUBDIVS; i++)
+        {
+            const float angA = float(i) * arc0;
+            const float angB = float(i) * m_mtt0factor * arc0;
+            m_lines[i].setPointA(getMtt0Point(angA));
+            m_lines[i].setPointB(getMtt0Point(angB));
+        }
+
+        const float arc1 = 2.0f * PI / MTT1_SUBDIVS;
+        for (int i = 0; i < MTT1_SUBDIVS; i++)
+        {
+            const float angA = float(i) * arc1;
+            const float angB = float(i) * m_mtt1factor * arc1;
+            m_lineShapes[i].setPointA(getMtt1Point(angA));
+            m_lineShapes[i].setPointB(getMtt1Point(angB));
+
+            if (m_guiWindow != nullptr)
+            {
+                m_lineShapes[i].setThickness(m_guiWindow->getLineThickness());
+            }
+        }
     }
 
 } // namespace Demo

@@ -12,10 +12,10 @@ namespace Demo
 		ImGui::Begin("Pekan");
 
 		ImGui::Text("Background Color");
-		ImGui::ColorEdit3("", (float*)(&m_clearColor));
+		ImGui::ColorEdit3("##BackgroundColor", (float*)(&m_clearColor));
 
-		ImGui::Text("Position");
-		ImGui::DragFloat2("", (float*)&(m_position), 0.01f, -1.0f, 1.0f);
+		ImGui::Text("Line Thickness");
+		ImGui::SliderFloat("##LineThickness", &m_lineThickness, 0.0001f, 0.01f, "%.5f");
 
 		ImGui::End();
 	}

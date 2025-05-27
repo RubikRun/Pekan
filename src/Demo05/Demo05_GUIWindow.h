@@ -17,8 +17,8 @@ namespace Demo
 		// Returns current value of clear color
 		inline const ImVec4& getClearColor() const { return m_clearColor; }
 
-		// Returns current value of position
-		inline const ImVec2& getPosition() const { return m_position; }
+		// Returns current line thickness
+		inline float getLineThickness() const { return m_lineThickness; }
 
 	private: /* functions */
 
@@ -31,8 +31,8 @@ namespace Demo
 		// Color for clearing scene's background
 		ImVec4 m_clearColor = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
 
-		// Position of the square, relative to window's center
-		ImVec2 m_position = ImVec2(0.0f, 0.0f);
+		// Line thickness to be used for MTT's lines in Demo05
+		float m_lineThickness = 0.001f;
 	};
 
 } // namespace Demo

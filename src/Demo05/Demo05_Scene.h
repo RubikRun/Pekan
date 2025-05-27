@@ -6,6 +6,9 @@
 
 #include "Demo05_GUIWindow.h"
 
+#define MTT0_SUBDIVS 200
+#define MTT1_SUBDIVS 200
+
 namespace Demo
 {
 
@@ -26,14 +29,22 @@ namespace Demo
 		// Attaches a GUI window for controlling background's color
 		void attachGUIWindow(const Demo05_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
 
+	private: /* functions */
+
+		void updateMtt();
+
 	private: /* variables */
 
-		Pekan::Renderer::Line m_line;
+		Pekan::Renderer::Line m_lines[MTT0_SUBDIVS];
 
-		Pekan::Renderer::LineShape m_lineShape;
+		Pekan::Renderer::LineShape m_lineShapes[MTT1_SUBDIVS];
 
 		// GUI window for controlling background's color
 		const Demo05_GUIWindow* m_guiWindow = nullptr;
+
+		// Multiplication factor of the 2 Mandelbrot Times Tables
+		float m_mtt0factor = 2.0f;
+		float m_mtt1factor = 2.0f;
 
 		float t = 0.0f;
 	};

@@ -1753,4 +1753,12 @@ We'll make the thickness change with time just to see if it's fully correct.
 Also let's change colors and opacity with time.
 It works!
 
+Now let's test it more extensively in Demo05 by implementing a Mandelbrot Times Table,
+or better yet 1 MTT using class Line and 1 MTT using class LineShape.
+Done. Looks good.
+
+Let's quickly add a slider in GUI that controls the thickness of LineShapes.
+Done.
+
+This concludes the subject of lines. We have class LineShape and class Line.
 }
