@@ -31,6 +31,8 @@ add_library(PekanRenderer STATIC
     2D/Shapes/CircleShape.cpp
     2D/Shapes/CircleShapeStatic.h
     2D/Shapes/CircleShapeStatic_impl.h
+    2D/Shapes/LineShape.h
+    2D/Shapes/LineShape.cpp
     2D/Line.h
     2D/Line.cpp
 )
@@ -57,12 +59,14 @@ SOURCE_GROUP("Source Files\\2D\\Shapes" FILES
     2D/Shapes/Shape.cpp
     2D/Shapes/TriangleShape.cpp
     2D/Shapes/RectangleShape.cpp
+    2D/Shapes/LineShape.cpp
     2D/Shapes/CircleShape.cpp
 )
 SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
     2D/Shapes/Shape.h
     2D/Shapes/TriangleShape.h
     2D/Shapes/RectangleShape.h
+    2D/Shapes/LineShape.h
     2D/Shapes/CircleShape.h
     2D/Shapes/CircleShapeStatic.h
     2D/Shapes/CircleShapeStatic_impl.h

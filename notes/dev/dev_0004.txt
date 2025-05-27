@@ -1720,4 +1720,37 @@ and in Demo05_Application::_init() we can set the number of samples per pixel li
     windowProperties.numberOfSamples = 16;
 It works! Line looks pretty good now.
 
+----------
+27.05.2025
+----------
+
+Now let's implement the LineShape class as well,
+creating the line from 2 thin triangles.
+It will be very similar to other shape classes like RectangleShape.
+The essential difference is how we generate vertices from point A, point B and a thickness.
+Let's create a private member function for that
+    void generateVertices();
+We basically need to turn the 2 points A and B into 4 points based on the thickness T.
+So A will turn into 2 points and B will turn into 2 points.
+The way to turn an original point into 2 points is to add a vector of length T / 2 in the 2 directions perpendicular to AB.
+    const glm::vec2 dir = glm::normalize(m_pointB - m_pointA);
+    const glm::vec2 normalOffset
+    (
+        -(m_thickness / 2.0f) * dir.y,
+        (m_thickness / 2.0f) * dir.x
+    );
+The normal offset vector is just that - a vector in one of the perpendicular directions with length T / 2.
+The vector in the other perpendicular direction will be just the negative of that vector.
+So we can get the 4 vertices like that
+    m_vertices[0] = m_pointA + normalOffset;
+    m_vertices[1] = m_pointA - normalOffset;
+    m_vertices[2] = m_pointB - normalOffset;
+    m_vertices[3] = m_pointB + normalOffset;
+That's pretty much it. Everything else is very standard.
+
+Let's test it in Demo05.
+We'll make the thickness change with time just to see if it's fully correct.
+Also let's change colors and opacity with time.
+It works!
+
 }

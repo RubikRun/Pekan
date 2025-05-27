@@ -2,6 +2,7 @@
 
 #include "Layer.h"
 #include "2D/Line.h"
+#include "2D/Shapes/LineShape.h"
 
 #include "Demo05_GUIWindow.h"
 
@@ -29,8 +30,12 @@ namespace Demo
 
 		Pekan::Renderer::Line m_line;
 
+		Pekan::Renderer::LineShape m_lineShape;
+
 		// GUI window for controlling background's color
 		const Demo05_GUIWindow* m_guiWindow = nullptr;
+
+		float t = 0.0f;
 	};
 
 } // namespace Demo

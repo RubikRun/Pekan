@@ -8,7 +8,7 @@ namespace Renderer
 {
 
     // Indices of vertices of the 2 triangles making up the rectangle
-    static const unsigned INDICES[6] = { 0, 1, 2, 3, 2, 1 };
+    static const unsigned INDICES[6] = { 0, 1, 2, 0, 2, 3 };
 
 	void RectangleShape::create
     (
@@ -23,8 +23,8 @@ namespace Renderer
 
         m_vertices[0] = glm::vec2(0.0f, 0.0f);
         m_vertices[1] = glm::vec2(width, 0.0f);
-        m_vertices[2] = glm::vec2(0.0f, height);
-        m_vertices[3] = glm::vec2(width, height);
+        m_vertices[2] = glm::vec2(width, height);
+        m_vertices[3] = glm::vec2(0.0f, height);
 
         Shape::createRenderObject(m_vertices, INDICES, dynamic);
 	}
@@ -33,7 +33,7 @@ namespace Renderer
     {
         m_width = width;
         m_vertices[1].x = width + m_position.x;
-        m_vertices[3].x = width + m_position.x;
+        m_vertices[2].x = width + m_position.x;
         updateRenderObject();
     }
 
