@@ -15,6 +15,7 @@ namespace Demo
 	{
 		WindowProperties windowProperties;
 		windowProperties.title = getName();
+		windowProperties.numberOfSamples = 16;
 		PekanEngine::createWindow(windowProperties);
 
 		// Create demo scene and demo GUI window

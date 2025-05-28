@@ -122,7 +122,7 @@ namespace Demo
 
     void Demo05_Scene::updateMtt()
     {
-        const float arc0 = 2.0f * PI / MTT0_SUBDIVS;
+        const float arc0 = 2.0f * PI / float(MTT0_SUBDIVS);
         for (int i = 0; i < MTT0_SUBDIVS; i++)
         {
             const float angA = float(i) * arc0;
@@ -131,7 +131,7 @@ namespace Demo
             m_lines[i].setPointB(getMtt0Point(angB));
         }
 
-        const float arc1 = 2.0f * PI / MTT1_SUBDIVS;
+        const float arc1 = 2.0f * PI / float(MTT1_SUBDIVS);
         for (int i = 0; i < MTT1_SUBDIVS; i++)
         {
             const float angA = float(i) * arc1;

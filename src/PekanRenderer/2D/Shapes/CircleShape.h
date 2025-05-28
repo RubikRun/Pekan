@@ -34,11 +34,11 @@ namespace Renderer
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return m_segmentsCount; }
 
+		int getNumberOfVertices() const override { return m_vertices.size(); }
+
 	private: /* functions */
 
 		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		int getNumberOfVertices() const override { return m_vertices.size(); }
 
 		const glm::vec2* getVertexData() const override { return m_vertices.data(); };
 

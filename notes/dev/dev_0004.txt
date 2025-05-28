@@ -1762,3 +1762,75 @@ Done.
 
 This concludes the subject of lines. We have class LineShape and class Line.
 }
+
+----------
+28.05.2025
+----------
+
+{
+We have one last 2D shape to implement - polygon.
+
+A polygon is any shape made up of some vertices connected in a loop.
+Technically all shapes so far have been polygons, but now we need a general polygon.
+User should be able to provide a list of vertices and form a polygon with them.
+
+So let's create a new class
+    class PolygonShape : public Shape
+The logic is mostly straightforward. This time we will not have any additional data except the vertices
+    std::vector<glm::vec2> m_vertices;
+In the create() function we'll take in a list of vertices
+    void create
+    (
+        const std::vector<glm::vec2>& vertices,
+        bool dynamic = true
+    );
+and literally just set m_vertices equal to that given list of vertices and then create the render object
+    m_vertices = vertices;
+    Shape::createRenderObject(m_vertices.data(), dynamic);
+The way we'll render a polygon will be using a TriangleFan primitive, same as the circle.
+    virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
+However, this will work only for convex polygons.
+For now we will allow only convex polygons.
+Later we must implement a triangulation algorithm that splits the polygon into triangles in a good way,
+so that we can support non-convex polygons as well.
+For now we will check that the given vertices form a convex polygon, and if not we'll log an error message.
+Let's create a function that checks if a polygon is convex
+    bool isConvex() const;
+The idea here is simple - we just loop over all triplets of 3 consecutive vertices A, B, C,
+and check if they form an angle that turns left or right.
+This is equivalent to seeing if the cross product of AB and BC is positive or negative.
+In order for a polygon to be convex we want all triplets A,B,C to turn the same direction,
+either all left or all right, which is equivalent to all of their cross products being either positive or negative.
+That's it. That's how isConvex() works.
+We'll use this function to check that the vertices given in create() form a convex polygon and log an error message otherwise.
+    if (!isConvex())
+    {
+        PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you are creating a non-convex one. "
+            "It might not be rendered correctly", "Pekan");
+    }
+We must do a similar check in setVertices() and setVertex().
+This check might be a bit expensive for performance though, and it's only really useful in development,
+so let's do all this convex stuff only in Debug builds.
+Also, it's temporary. We'll implement a triangulation algorithm in v0.3.
+
+Side note, it'd be usedful for PolygonShape to have a function that returns the number of vertices.
+We already have this function
+    int getNumberOfVertices() const override { return m_vertices.size(); }
+Only problem is that it's private (or protected). It comes from class Shape.
+Class Shape needs this function to be implemented by derived classes,
+but there is no reason it has to be protected. We just didn't need it to be public until now.
+So let's just make it public
+    public:
+        ...
+        int getNumberOfVertices() const override { return m_vertices.size(); }
+It will have to be public in class Shape and in all derived classes.
+Done.
+
+Side note, enabled MSAA in Demo02 and Demo01, they look a bit better now.
+
+That's basically it.
+Now let's test PolygonShape in Demo04.
+It works! Looks pretty good.
+
+With that we are officially DONE with 2D shapes!
+}

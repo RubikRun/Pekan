@@ -30,11 +30,11 @@ namespace Renderer
 		inline glm::vec2 getVertexB() const { return m_vertices[1]; }
 		inline glm::vec2 getVertexC() const { return m_vertices[2]; }
 
+		int getNumberOfVertices() const override { return 3; }
+
 	private: /* functions */
 
 		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		int getNumberOfVertices() const override { return 3; }
 
 		const glm::vec2* getVertexData() const override { return m_vertices; };
 

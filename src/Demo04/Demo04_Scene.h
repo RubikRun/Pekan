@@ -6,6 +6,7 @@
 #include "RectangleShape.h"
 #include "CircleShape.h"
 #include "CircleShapeStatic.h"
+#include "PolygonShape.h"
 #include "Image.h"
 
 #include "Demo04_GUIWindow.h"
@@ -30,6 +31,10 @@ namespace Demo
 		// Attaches a GUI window for controlling background's color
 		void attachGUIWindow(const Demo04_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
 
+	private: /* functions */
+
+		void updatePolygon();
+
 	private: /* variables */
 
 		Pekan::Renderer::RenderObject m_renderObject;
@@ -38,6 +43,7 @@ namespace Demo
 		Pekan::Renderer::RectangleShape m_rectangle;
 		Pekan::Renderer::CircleShape m_circle;
 		Pekan::Renderer::CircleShapeStatic<> m_circleStatic;
+		Pekan::Renderer::PolygonShape m_polygon;
 
 		glm::vec2 m_triangleInitialPosition;
 		glm::vec2 m_triangleInitialVertexA;
@@ -52,6 +58,8 @@ namespace Demo
 		glm::vec2 m_circleStaticInitialPosition;
 		float m_circleInitialRadius;
 		float m_circleStaticInitialRadius;
+
+		glm::vec2 m_polygonInitialPosition;
 
 		int m_shaderIdx = -1;
 

@@ -78,3 +78,5 @@
 0030 27.05.2025 (TODO): Create a 2D camera that can be moved with mouse and/or with WASD keys
 
 0031 27.05.2025 (TODO): Create a world space and a resolution-independent way to render 2D shapes
+
+0032 28.05.2025 (TODO): Implement triangulation algorithm in PolygonShape to support non-convex polygons

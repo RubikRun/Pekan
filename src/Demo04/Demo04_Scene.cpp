@@ -2,6 +2,9 @@
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
 
+#include <glm/gtc/constants.hpp>
+static const float PI = glm::pi<float>();
+
 using Pekan::Renderer::PekanRenderer;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
@@ -28,11 +31,15 @@ static const char* FRAGMENT_SHADER_FILEPATHS[] =
 static const char* IMAGE0_FILEPATH = "resources/tmnt.png";
 static const char* IMAGE1_FILEPATH = "resources/powerpuff.png";
 
+static const int POLYGON_VERTICES_COUNT = 7;
+static const float POLYGON_RADIUS = 0.2f;
+
 namespace Demo
 {
 
     bool Demo04_Scene::init()
     {
+        PekanRenderer::enableMultisampleAntiAliasing();
         // Enable and configure blending
         PekanRenderer::enableBlending();
         PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
@@ -104,6 +111,12 @@ namespace Demo
         m_circleStaticInitialPosition = { 0.0f, 0.0f };
         m_circleStatic.setPosition(m_circleStaticInitialPosition);
 
+        m_polygonInitialPosition = { 0.7f, -0.7f };
+        m_polygon.create({ glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f),
+            glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) });
+        PK_ASSERT_QUICK(m_polygon.getVertices().size() == POLYGON_VERTICES_COUNT);
+        m_polygon.setPosition(m_polygonInitialPosition);
+
         t = 0.0f;
 
         return true;
@@ -167,6 +180,8 @@ namespace Demo
         m_circleStatic.setColor({ osc(t / 7.0f + 1.0f), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
         m_circleStatic.setRadius(osc(t / 2.0f, m_circleStaticInitialRadius * 0.4f, m_circleStaticInitialRadius * 1.0f));
 
+        updatePolygon();
+
         t += float(dt) * 5.0f;
     }
 
@@ -195,6 +210,7 @@ namespace Demo
             m_rectangle.render();
             m_circle.render();
             m_circleStatic.render();
+            m_polygon.render();
         }
     }
 
@@ -205,6 +221,26 @@ namespace Demo
         m_rectangle.destroy();
         m_circle.destroy();
         m_circleStatic.destroy();
+        m_polygon.destroy();
+    }
+
+    void Demo04_Scene::updatePolygon()
+    {
+        std::vector<glm::vec2> vertices(7, glm::vec2(0.0f, 0.0f));
+        const float baseArc = 2.0f * PI / float(POLYGON_VERTICES_COUNT);
+        for (int i = 0; i < POLYGON_VERTICES_COUNT; i++)
+        {
+            const float arc = baseArc * float(i);
+            vertices[i] = glm::vec2
+            (
+                cos(arc) * POLYGON_RADIUS + osc(t / float(i + 1), 0.0f, float(i + 1) / 190.0f),
+                sin(arc) * POLYGON_RADIUS + osc(t / float(POLYGON_VERTICES_COUNT - i), 0.0f, float(POLYGON_VERTICES_COUNT - i) / 190.0f)
+            );
+        }
+        m_polygon.setVertices(vertices);
+
+        m_polygon.setPosition(m_polygonInitialPosition + glm::vec2(sin(t / 8.0f) * 0.07f, sin(t / 6.0f) * 0.04f));
+        m_polygon.setColor({ osc(t / 2.0f), osc(t / 5.0f + 2.0f), osc(t / 11.0f), osc(t / 15.0f, 0.6f, 1.0f) });
     }
 
 } // namespace Demo

@@ -31,6 +31,8 @@ namespace Demo
 
     bool Demo02_Scene::init()
 	{
+        PekanRenderer::enableMultisampleAntiAliasing();
+
         m_resolution = PekanEngine::getWindowResolution();
 
         // Set default colors of cube's sides

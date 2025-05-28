@@ -30,11 +30,11 @@ namespace Renderer
 		inline glm::vec2 getPointB() const { return m_vertices[1]; }
 		inline float getThickness() const { return m_thickness; }
 
+		int getNumberOfVertices() const override { return 4; }
+
 	private: /* functions */
 
 		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		int getNumberOfVertices() const override { return 4; }
 
 		const glm::vec2* getVertexData() const override { return m_vertices; };
 

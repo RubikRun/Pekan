@@ -32,11 +32,11 @@ namespace Renderer
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return NSegments; }
 
+		int getNumberOfVertices() const override { return NSegments + 2; }
+
 	private: /* functions */
 
 		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		int getNumberOfVertices() const override { return NSegments + 2; }
 
 		const glm::vec2* getVertexData() const override { return m_vertices; };
 

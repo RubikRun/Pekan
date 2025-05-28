@@ -31,6 +31,8 @@ add_library(PekanRenderer STATIC
     2D/Shapes/CircleShape.cpp
     2D/Shapes/CircleShapeStatic.h
     2D/Shapes/CircleShapeStatic_impl.h
+    2D/Shapes/PolygonShape.h
+    2D/Shapes/PolygonShape.cpp
     2D/Shapes/LineShape.h
     2D/Shapes/LineShape.cpp
     2D/Line.h
@@ -61,6 +63,7 @@ SOURCE_GROUP("Source Files\\2D\\Shapes" FILES
     2D/Shapes/RectangleShape.cpp
     2D/Shapes/LineShape.cpp
     2D/Shapes/CircleShape.cpp
+    2D/Shapes/PolygonShape.cpp
 )
 SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
     2D/Shapes/Shape.h
@@ -70,6 +73,7 @@ SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
     2D/Shapes/CircleShape.h
     2D/Shapes/CircleShapeStatic.h
     2D/Shapes/CircleShapeStatic_impl.h
+    2D/Shapes/PolygonShape.h
 )
 # Group 2D files under a virtual folder called "2D"
 SOURCE_GROUP("Source Files\\2D" FILES

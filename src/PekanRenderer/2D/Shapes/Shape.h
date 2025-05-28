@@ -27,11 +27,11 @@ namespace Renderer
 		inline glm::vec4 getColor() const { return m_color; }
 		void setColor(glm::vec4 color);
 
+		virtual int getNumberOfVertices() const = 0;
+
 	private: /* functions */
 
 		virtual void _moveVertices(glm::vec2 deltaPosition) = 0;
-
-		virtual int getNumberOfVertices() const = 0;
 
 		virtual const glm::vec2* getVertexData() const = 0;
 

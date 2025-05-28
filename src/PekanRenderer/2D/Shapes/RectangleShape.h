@@ -28,11 +28,11 @@ namespace Renderer
 		inline float getWidth() const { return m_width; }
 		inline float getHeight() const { return m_height; }
 
+		int getNumberOfVertices() const override { return 4; }
+
 	private: /* functions */
 
 		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		int getNumberOfVertices() const override { return 4; }
 
 		const glm::vec2* getVertexData() const override { return m_vertices; };
 

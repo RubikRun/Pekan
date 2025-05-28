@@ -20,6 +20,8 @@ namespace Demo
 
     bool Demo01_Scene::init()
 	{
+        PekanRenderer::enableMultisampleAntiAliasing();
+
         m_resolution = PekanEngine::getWindowResolution();
 
         // Enable and configure blending
