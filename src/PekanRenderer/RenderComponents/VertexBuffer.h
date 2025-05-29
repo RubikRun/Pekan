@@ -90,6 +90,12 @@ namespace Renderer
 		// Fills vertex buffer with given data. Any previous data is removed.
 		void setData(const void* data, long long size, BufferDataUsage dataUsage = BufferDataUsage::StaticDraw);
 
+		// Fills a region of the vertex buffer with given data. Previous data in this region is overwritten.
+		// @param[in] data - Data to be filled in to the region
+		// @param[in] offset - Offset from the beginning of the vertex buffer to where the region begins
+		// @param[in] size - Size of the region. Should match the size of given data.
+		void setSubData(const void* data, long long offset, long long size);
+
 		void bind() const override;
 		void unbind() const override;
 

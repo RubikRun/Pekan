@@ -35,6 +35,8 @@ namespace Demo
             Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
         );
 
+        t = 0.0f;
+
         return true;
 	}
 
@@ -82,6 +84,27 @@ namespace Demo
         }
 
         m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
+
+        // If we should move third square and there is a third square,
+        // we will move it slightly just to test m_renderObject.setVertexSubData(...)
+        if (m_guiWindow != nullptr && m_guiWindow->getMoveThirdSquare() && m_squares.size() >= 3)
+        {
+            // Traverse vertex attributes of third square
+            for (int i = 2 * 6 * 6; i < 3 * 6 * 6; i++)
+            {
+                // If vertex attribute is position
+                if (i % 6 == 0 || i % 6 == 1)
+                {
+                    // Move vertex slightly, in X and Y direction equally
+                    m_vertices[i] += cos(t * 15.0f) / 300.0f;
+                }
+            }
+
+            // Update the region of vertex buffer the contains the third square
+            m_renderObject.setVertexSubData(&m_vertices[2 * 6 * 6], 2 * 6 * 6 * sizeof(float), 6 * 6 * sizeof(float));
+        }
+
+        t += float(dt);
 	}
 
 	void Demo01_Scene::render()

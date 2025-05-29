@@ -18,6 +18,8 @@ namespace Demo
 
 		inline void attachScene(Demo01_Scene* scene) { m_scene = scene; }
 
+		inline bool getMoveThirdSquare() const { return m_moveThirdSquare; }
+
 	private: /* functions */
 
 		void _render() override;
@@ -29,6 +31,8 @@ namespace Demo
 		Demo01_Scene* m_scene = nullptr;
 
 		glm::ivec2 m_resolution;
+
+		bool m_moveThirdSquare = false;
 	};
 
 } // namespace Demo

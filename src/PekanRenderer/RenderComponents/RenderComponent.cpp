@@ -19,7 +19,7 @@ namespace Pekan
 			if (isValid())
 			{
 				PK_LOG_WARNING("Creating a render component, but there is already a render component created"
-				               " in this RenderComponent instance. Old render component will be deleted.", "Pekan");
+				               " in this RenderComponent instance. Old render component will be destroyed.", "Pekan");
 				destroy();
 			}
 			_create();

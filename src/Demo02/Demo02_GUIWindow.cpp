@@ -50,6 +50,11 @@ namespace Demo
 		ImGui::PopItemWidth();
 	}
 
+	static void renderCheckboxHideFourthFace(bool& hideFourthFace)
+	{
+		ImGui::Checkbox("Hide fourth face", &hideFourthFace);
+	}
+
 	void Demo02_GUIWindow::_render()
 	{
 		if (m_scene == nullptr)
@@ -73,6 +78,7 @@ namespace Demo
 		renderSliderRotation(m_scene->getRotation());
 		renderSliderFov(m_scene->getFOV());
 		renderSliderCameraDist(m_scene->getCameraDist());
+		renderCheckboxHideFourthFace(m_scene->getHideFourthFace());
 
 		ImGui::End();
 	}

@@ -66,6 +66,12 @@ namespace Renderer
 		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage)));
 	}
 
+	void VertexBuffer::setSubData(const void* data, long long offset, long long size)
+	{
+		bind();
+		GLCall(glBufferSubData(GL_ARRAY_BUFFER, offset, size, data));
+	}
+
 	void VertexBuffer::bind() const
 	{
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_id));

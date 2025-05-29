@@ -69,6 +69,8 @@ namespace Demo
         ImGui::SetNextWindowSize(ImVec2(320, m_resolution.y));
         ImGui::Begin("Squares");
 
+        ImGui::Checkbox("Move third square slightly", &m_moveThirdSquare);
+
         if (ImGui::Button("+"))
         {
             m_scene->addSquare();

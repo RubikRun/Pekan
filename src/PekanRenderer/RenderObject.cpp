@@ -130,6 +130,12 @@ namespace Renderer
 		m_vertexDataUsage = dataUsage;
 	}
 
+	void RenderObject::setVertexSubData(const void* data, long long offset, long long size)
+	{
+		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+		m_vertexBuffer.setSubData(data, offset, size);
+	}
+
 	void RenderObject::setIndexData(const void* data, long long size)
 	{
 		PK_ASSERT_QUICK(m_indexBuffer.isValid());
@@ -148,6 +154,12 @@ namespace Renderer
 
 		m_indexBuffer.setData(data, size, dataUsage);
 		m_indexDataUsage = dataUsage;
+	}
+
+	void RenderObject::setIndexSubData(const void* data, long long offset, long long size)
+	{
+		PK_ASSERT_QUICK(m_indexBuffer.isValid());
+		m_indexBuffer.setSubData(data, offset, size);
 	}
 
 	void RenderObject::setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource)

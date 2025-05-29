@@ -54,9 +54,11 @@ namespace Renderer
 
 		void setVertexData(const void* data, long long size);
 		void setVertexData(const void* data, long long size, BufferDataUsage dataUsage);
+		void setVertexSubData(const void* data, long long offset, long long size);
 
 		void setIndexData(const void* data, long long size);
 		void setIndexData(const void* data, long long size, BufferDataUsage dataUsage);
+		void setIndexSubData(const void* data, long long offset, long long size);
 
 		void setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 

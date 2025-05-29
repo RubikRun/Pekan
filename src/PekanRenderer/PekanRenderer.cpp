@@ -58,6 +58,13 @@ namespace Renderer
 		GLCall(glEnable(GL_MULTISAMPLE));
 	}
 
+	void PekanRenderer::enableFaceCulling()
+	{
+		GLCall(glEnable(GL_CULL_FACE));
+		GLCall(glCullFace(GL_BACK));
+		GLCall(glFrontFace(GL_CCW));
+	}
+
 	unsigned PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)

@@ -50,7 +50,7 @@
 
 0020 25.04.2025 (DONE): Create a delta-time mechanism for FPS-independent movement
 
-0021 15.05.2025 (TODO): Research glBufferSubData(). Decide if we need it in Pekan.
+0021 15.05.2025 (DONE): Research glBufferSubData(). Decide if we need it in Pekan.
 
 0022 15.05.2025 (DONE): In RenderObject's setVertexData() and setIndexData() functions do something so that client doesn't have to provide BufferDataUsage each time.
                         It should be optional.

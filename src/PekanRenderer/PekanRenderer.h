@@ -114,6 +114,10 @@ namespace Renderer
 		//            in your application's initialization function.
 		static void enableMultisampleAntiAliasing();
 
+		// Enables face culling, which means that triangles will be rendered only if they are front-facing.
+		// Back-facing triangles will not be rendered.
+		static void enableFaceCulling();
+
 	private: /* functions */
 
 		// Returns the OpenGL base data type corresponding to the given shader data type.

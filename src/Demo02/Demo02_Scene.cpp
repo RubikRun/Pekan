@@ -21,17 +21,18 @@ namespace Demo
 
     const unsigned indices[] =
     {
-        0, 1, 2, 2, 3, 0, // Back
-        4, 5, 6, 6, 7, 4, // Front
-        8, 9, 10, 10, 11, 8, // Left
-        12, 13, 14, 14, 15, 12, // Right
-        16, 17, 18, 18, 19, 16, // Top
-        20, 21, 22, 22, 23, 20  // Bottom
+        0, 1, 2, 0, 2, 3, // Back
+        4, 5, 6, 4, 6, 7, // Front
+        8, 9, 10, 8, 10, 11, // Left
+        12, 13, 14, 12, 14, 15, // Right
+        16, 17, 18, 16, 18, 19, // Top
+        20, 21, 22, 20, 22, 23  // Bottom
     };
 
     bool Demo02_Scene::init()
 	{
         PekanRenderer::enableMultisampleAntiAliasing();
+        PekanRenderer::enableFaceCulling();
 
         m_resolution = PekanEngine::getWindowResolution();
 
@@ -50,10 +51,10 @@ namespace Demo
         m_vertices =
         {
             // Back face (Red)
-            {{-0.5f, -0.5f, -0.5f}, m_colors[0]},
-            {{ 0.5f, -0.5f, -0.5f}, m_colors[0]},
-            {{ 0.5f,  0.5f, -0.5f}, m_colors[0]},
-            {{-0.5f,  0.5f, -0.5f}, m_colors[0]},
+            {{  0.5f, -0.5f, -0.5f}, m_colors[0]},
+            {{ -0.5f, -0.5f, -0.5f}, m_colors[0]},
+            {{ -0.5f,  0.5f, -0.5f}, m_colors[0]},
+            {{  0.5f,  0.5f, -0.5f}, m_colors[0]},
 
             // Front face (Green)
             {{-0.5f, -0.5f,  0.5f}, m_colors[1]},
@@ -63,21 +64,21 @@ namespace Demo
 
             // Left face (Blue)
             {{-0.5f, -0.5f, -0.5f}, m_colors[2]},
-            {{-0.5f,  0.5f, -0.5f}, m_colors[2]},
-            {{-0.5f,  0.5f,  0.5f}, m_colors[2]},
             {{-0.5f, -0.5f,  0.5f}, m_colors[2]},
+            {{-0.5f,  0.5f,  0.5f}, m_colors[2]},
+            {{-0.5f,  0.5f, -0.5f}, m_colors[2]},
 
             // Right face (Yellow)
+            {{ 0.5f, -0.5f,  0.5f}, m_colors[3]},
             {{ 0.5f, -0.5f, -0.5f}, m_colors[3]},
             {{ 0.5f,  0.5f, -0.5f}, m_colors[3]},
             {{ 0.5f,  0.5f,  0.5f}, m_colors[3]},
-            {{ 0.5f, -0.5f,  0.5f}, m_colors[3]},
 
             // Top face (Magenta)
-            {{-0.5f,  0.5f, -0.5f}, m_colors[4]},
-            {{ 0.5f,  0.5f, -0.5f}, m_colors[4]},
-            {{ 0.5f,  0.5f,  0.5f}, m_colors[4]},
             {{-0.5f,  0.5f,  0.5f}, m_colors[4]},
+            {{ 0.5f,  0.5f,  0.5f}, m_colors[4]},
+            {{ 0.5f,  0.5f, -0.5f}, m_colors[4]},
+            {{-0.5f,  0.5f, -0.5f}, m_colors[4]},
 
             // Bottom face (Cyan)
             {{-0.5f, -0.5f, -0.5f}, m_colors[5]},
@@ -106,6 +107,9 @@ namespace Demo
 
         m_rotation = 0.0f;
 
+        m_hideFourthFace = false;
+        m_hideFourthFaceCache = false;
+
         return true;
 	}
 
@@ -130,7 +134,22 @@ namespace Demo
             m_vertices.size() * sizeof(Vertex)
         );
 
-        m_rotation += float(60.0 * dt);
+        if (m_hideFourthFace != m_hideFourthFaceCache)
+        {
+            m_hideFourthFaceCache = m_hideFourthFace;
+
+            if (m_hideFourthFace)
+            {
+                const unsigned indicesReversed[] = { 14, 13, 12, 12, 15, 14 };
+                m_renderObject.setIndexSubData(indicesReversed, 3 * 6 * sizeof(unsigned), 6 * sizeof(unsigned));
+            }
+            else
+            {
+                m_renderObject.setIndexSubData(&indices[18], 3 * 6 * sizeof(unsigned), 6 * sizeof(unsigned));
+            }
+        }
+
+        m_rotation += float(3.0 * dt);
 	}
 
 	void Demo02_Scene::render()

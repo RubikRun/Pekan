@@ -43,6 +43,10 @@ namespace Demo
 		inline float getCameraDist() const { return m_cameraDist; }
 		inline float& getCameraDist() { return m_cameraDist; }
 
+		// Returns (a reference to) the hide fourth face parameter
+		inline bool getHideFourthFace() const { return m_hideFourthFace; }
+		inline bool& getHideFourthFace() { return m_hideFourthFace; }
+
 	private: /* variables */
 
 		Pekan::Renderer::RenderObject m_renderObject;
@@ -60,6 +64,9 @@ namespace Demo
 
 		// Distance from camera to scene's center
 		float m_cameraDist = 2.5f;
+
+		bool m_hideFourthFace = false;
+		bool m_hideFourthFaceCache = false;
 
 		// Transform matrices
 		glm::mat4 m_modelMatrix;

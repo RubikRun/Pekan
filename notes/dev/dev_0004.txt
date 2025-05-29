@@ -1834,3 +1834,51 @@ It works! Looks pretty good.
 
 With that we are officially DONE with 2D shapes!
 }
+
+{
+Let's look at this TO-DO item
+    Research glBufferSubData(). Decide if we need it in Pekan.
+
+glBufferSubData() updates a portion of an already allocated buffer object without reallocating or redefining the entire buffer.
+It's definitely useful to have that in class VertexBuffer and IndexBuffer for cases when user wants to set data of just a part of a buffer.
+
+So let's just add this new function
+    void setSubData(const void* data, long long offset, long long size);
+to both VertexBuffer and IndexBuffer. The function signature looks exactly the same for both of them.
+The implementation is almost the same, only difference is the target buffer.
+In the case of VertexBuffer it's this
+    void VertexBuffer::setSubData(const void* data, long long offset, long long size)
+    {
+        bind();
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, offset, size, data));
+    }
+and for IndexBuffer it's the same but with GL_ELEMENT_ARRAY_BUFFER instead of GL_ARRAY_BUFFER.
+Pretty easy.
+
+Question is how do we test it?
+That will be a bit tricky. I don't want to create a whole new demo just for that.
+So let's test it quickly in an old demo in a sneaky way.
+
+We can test VertexBuffer's setSubData() in Demo01 by making the third (why not?) square move slightly every frame,
+if there is a third square at all. Since all squares are in the same buffer we can use setSubData()
+to change only the third one.
+In order for that to work we actually need to add 2 wrapper functions in RenderObject as well
+    void setVertexSubData(const void* data, long long offset, long long size);
+    void setIndexSubData(const void* data, long long offset, long long size);
+Okay, easy.
+
+By the way, do we need to check if the given region is within the bounds of the buffer?
+Not really. We are not checking anything like that, because raw RenderComponents will not be directly used by users,
+they will be used by other classes in PekanRenderer like the 2D shapes.
+We must choose the levels on which to do checks. We cannot do all checks on all levels, it'd be bad for performance.
+
+So let's continue now with making the third square in Demo01 move slightly.
+Done. It works.
+Let's also add a checkbox in GUI that enables/disables this movement of the third square.
+
+I guess for IndexBuffer's setSubData() function we can do something similar
+in Demo02 by adding a checkbox in GUI that reverses the order of indices of one of the sides of the cube.
+When enabled, that side of the cube should be invisible.
+Let's do it with the fourth side.
+Done. It works.
+}

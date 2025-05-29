@@ -38,14 +38,21 @@ namespace Demo
 		inline const std::vector<Rectangle>& getSquares() const { return m_squares; }
 		inline std::vector<Rectangle>& getSquares() { return m_squares; }
 
+		// Attaches a GUI window for controlling background's color
+		void attachGUIWindow(const Demo01_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
+
 	private: /* variables */
 
 		Pekan::Renderer::RenderObject m_renderObject;
+
+		const Demo01_GUIWindow* m_guiWindow = nullptr;
 
 		// List holding currently existing squares
 		std::vector<Rectangle> m_squares;
 		// Array of vertex data of currently existing squares
 		std::vector<float> m_vertices;
+
+		float t = 0.0f;
 
 		glm::ivec2 m_resolution;
 	};

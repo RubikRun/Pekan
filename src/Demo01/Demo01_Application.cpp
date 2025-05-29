@@ -21,8 +21,9 @@ namespace Demo
 		// Create demo scene and demo GUI window
 		Demo01_Scene* demoScene = new Demo01_Scene(this);
 		Demo01_GUIWindow* demoGuiWindow = new Demo01_GUIWindow(this);
-		// Attach demo scene to demo GUI window
+		// Attach demo scene to demo GUI window and attach demo GUI window to demo scene
 		demoGuiWindow->attachScene(demoScene);
+		demoScene->attachGUIWindow(demoGuiWindow);
 
 		// Add scene and GUI window to application's layers
 		layerStack.pushLayer(demoScene);
