@@ -1882,3 +1882,33 @@ When enabled, that side of the cube should be invisible.
 Let's do it with the fourth side.
 Done. It works.
 }
+
+----------
+29.05.2025
+----------
+
+{
+Let's look at this TO-DO item
+    Create enums for parameters in class Texture
+
+First, we'll need 2 new enum types in PekanRenderer for minifying and magnifying functions
+    TextureMinifyFunction
+    TextureMagnifyFunction
+Their values will correspond to the values defined in the OpenGL documentation.
+We'll have these 2 static functions in PekanRenderer for converting from our enum types to OpenGL enums
+    static unsigned getTextureMinifyFunctionOpenGLEnum(TextureMinifyFunction function);
+    static unsigned getTextureMagnifyFunctionOpenGLEnum(TextureMagnifyFunction function);
+Then in class Texture we'll have 2 new public functions for setting a minify/magnify function
+    void setMinifyFunction(TextureMinifyFunction function);
+    void setMagnifyFunction(TextureMagnifyFunction function);
+and we'll use them in the create() function with default values
+    setMinifyFunction(DEFAULT_TEXTURE_MINIFY_FUNCTION);
+    setMagnifyFunction(DEFAULT_TEXTURE_MAGNIFY_FUNCTION);
+where these default values are
+    static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::LinearOnLinearMipmap;
+    static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Linear;
+That's basically it.
+Now if someone wants to change the minify/magnify function they can use the setMinifyFunction() and setMagnifyFunction() functions.
+We'll not test that for now, because we don't have an appropriate scene for it, and it's not that important.
+
+}

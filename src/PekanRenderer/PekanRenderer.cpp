@@ -249,5 +249,31 @@ namespace Renderer
 		return maxTextureSlots;
 	}
 
+	unsigned PekanRenderer::getTextureMinifyFunctionOpenGLEnum(TextureMinifyFunction function)
+	{
+		switch (function)
+		{
+			case TextureMinifyFunction::Nearest:                   return GL_NEAREST;
+			case TextureMinifyFunction::Linear:                    return GL_LINEAR;
+			case TextureMinifyFunction::NearestOnNearestMipmap:    return GL_NEAREST_MIPMAP_NEAREST;
+			case TextureMinifyFunction::LinearOnNearestMipmap:     return GL_NEAREST;
+			case TextureMinifyFunction::NearestOnLinearMipmap:     return GL_NEAREST;
+			case TextureMinifyFunction::LinearOnLinearMipmap:      return GL_NEAREST;
+		};
+		PK_ASSERT(false, "Unknown TextureMinifyFunction, cannot determine OpenGL enum.", "Pekan");
+		return 0;
+	}
+
+	unsigned PekanRenderer::getTextureMagnifyFunctionOpenGLEnum(TextureMagnifyFunction function)
+	{
+		switch (function)
+		{
+			case TextureMagnifyFunction::Nearest:    return GL_NEAREST;
+			case TextureMagnifyFunction::Linear:     return GL_LINEAR;
+		};
+		PK_ASSERT(false, "Unknown TextureMagnifyFunction, cannot determine OpenGL enum.", "Pekan");
+		return 0;
+	}
+
 } // namespace Renderer
 } // namespace Pekan

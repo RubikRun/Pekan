@@ -67,6 +67,42 @@ namespace Renderer
 		DynamicCopy = 9
 	};
 
+	// Enum for different minify functions that can be used for texture sampling.
+	// A minify function is used when a texture has higher frequency than our sampling.
+	// So for each of our samples we might consider multiple texels.
+	enum class TextureMinifyFunction
+	{
+		// Uses the value of the texture element that is nearest (in Manhattan distance) to the specified texture coordinates
+		Nearest = 0,
+		// Uses the weighted average of the four texture elements that are closest to the specified texture coordinates
+		Linear = 1,
+		// Chooses the nearest mipmap - the one that most closely matches the size of the pixel being textured,
+		// and uses the Nearest criterion to produce a texture value
+		NearestOnNearestMipmap = 2,
+		// Chooses the nearest mipmap - the one that most closely matches the size of the pixel being textured,
+		// and uses the Linear criterion to produce a texture value
+		LinearOnNearestMipmap = 3,
+		// Chooses the two mipmaps that most closely match the size of the pixel being textured
+		// and uses the Nearest criterion to produce a texture value from each mipmap.
+		// The final texture value is a weighted average of those two values
+		NearestOnLinearMipmap = 4,
+		// Chooses the two mipmaps that most closely match the size of the pixel being textured
+		// and uses the Linear criterion to produce a texture value from each mipmap.
+		// The final texture value is a weighted average of those two values
+		LinearOnLinearMipmap
+	};
+
+	// Enum for different minify functions that can be used for texture sampling.
+	// A magnify function is used when a texture has lower frequency than our sampling.
+	// So each texel might be used for multiple of our samples.
+	enum class TextureMagnifyFunction
+	{
+		// Uses the value of the texture element that is nearest (in Manhattan distance) to the specified texture coordinates
+		Nearest = 0,
+		// Uses the weighted average of the four texture elements that are closest to the specified texture coordinates
+		Linear = 1,
+	};
+
 	// This is a singleton/static class containing common rendering functionality,
 	// not specific to any graphics object, but just for the general rendering context.
 	class PekanRenderer
@@ -148,6 +184,12 @@ namespace Renderer
 
 		// Returns the maximum number of texture slots supported on current hardware
 		static int getMaxTextureSlots();
+
+		// Returns the OpenGL enum value corresponding to the given texture minify function
+		static unsigned getTextureMinifyFunctionOpenGLEnum(TextureMinifyFunction function);
+
+		// Returns the OpenGL enum value corresponding to the given texture magnify function
+		static unsigned getTextureMagnifyFunctionOpenGLEnum(TextureMagnifyFunction function);
 	};
 
 } // namespace Renderer

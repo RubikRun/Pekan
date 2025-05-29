@@ -7,6 +7,8 @@ namespace Renderer {
 
 	class Image;
 
+
+
 	// A class representing a texture in Pekan's renderer
 	class Texture : public RenderComponent
 	{
@@ -30,6 +32,11 @@ namespace Renderer {
 
 		// Activates given texture slot
 		static void activateSlot(unsigned slot);
+
+		// Sets a minify function to be used for sampling the texture
+		void setMinifyFunction(TextureMinifyFunction function);
+		// Sets a magnify function to be used for sampling the texture
+		void setMagnifyFunction(TextureMagnifyFunction function);
 
 	private: /* functions */
 

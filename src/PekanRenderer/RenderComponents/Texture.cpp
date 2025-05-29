@@ -12,6 +12,9 @@ const unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
 namespace Pekan {
 namespace Renderer {
 
+	static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::LinearOnLinearMipmap;
+	static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Linear;
+
 	Texture::~Texture()
 	{
 		if (isValid())
@@ -28,11 +31,11 @@ namespace Renderer {
 
 	void Texture::setImage(const Image& image)
 	{
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
+		bind();
 
-		// Configure the minify and magnify functions of the texture
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		// Configure the default minify and magnify functions of the texture
+		setMinifyFunction(DEFAULT_TEXTURE_MINIFY_FUNCTION);
+		setMagnifyFunction(DEFAULT_TEXTURE_MAGNIFY_FUNCTION);
 
 		// Configure texture wrapping
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
@@ -73,6 +76,20 @@ namespace Renderer {
 	{
 		const unsigned slotEnumValue = PekanRenderer::getTextureSlotOpenGLEnum(slot);
 		GLCall(glActiveTexture(slotEnumValue));
+	}
+
+	void Texture::setMinifyFunction(TextureMinifyFunction function)
+	{
+		bind();
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+			PekanRenderer::getTextureMinifyFunctionOpenGLEnum(function)));
+	}
+
+	void Texture::setMagnifyFunction(TextureMagnifyFunction function)
+	{
+		bind();
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+			PekanRenderer::getTextureMagnifyFunctionOpenGLEnum(function)));
 	}
 
 	void Texture::_create()
