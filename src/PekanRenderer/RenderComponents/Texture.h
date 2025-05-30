@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PekanRenderer.h"
 #include "RenderComponent.h"
 
 namespace Pekan {
@@ -37,6 +38,15 @@ namespace Renderer {
 		void setMinifyFunction(TextureMinifyFunction function);
 		// Sets a magnify function to be used for sampling the texture
 		void setMagnifyFunction(TextureMagnifyFunction function);
+
+		// Sets a wrap mode to be used for the X texture coordinate
+		void setWrapModeX(TextureWrapMode wrapMode);
+		// Sets a wrap mode to be used for the Y texture coordinate
+		void setWrapModeY(TextureWrapMode wrapMode);
+
+		// Sets a color for the border of the texture.
+		// This color will be used to color pixels outside of the [0, 1] range if the wrap mode is ClampToBorder.
+		void setBorderColor(glm::vec4 color);
 
 	private: /* functions */
 

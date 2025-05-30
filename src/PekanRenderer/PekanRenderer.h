@@ -89,7 +89,7 @@ namespace Renderer
 		// Chooses the two mipmaps that most closely match the size of the pixel being textured
 		// and uses the Linear criterion to produce a texture value from each mipmap.
 		// The final texture value is a weighted average of those two values
-		LinearOnLinearMipmap
+		LinearOnLinearMipmap = 5
 	};
 
 	// Enum for different minify functions that can be used for texture sampling.
@@ -101,6 +101,25 @@ namespace Renderer
 		Nearest = 0,
 		// Uses the weighted average of the four texture elements that are closest to the specified texture coordinates
 		Linear = 1,
+	};
+
+	// Enum for different modes of wrapping that can be used with textures.
+	// Wrapping is used when a given texture coordinate t, could be either an X coordinate or a Y coordinate,
+	// is outside of the [0, 1] range.
+	enum class TextureWrapMode
+	{
+		// Clamps t to the [0, 1] range, hence to the edge of the texture.
+		ClampToEdge = 0,
+		// Repeats the texture.
+		// The integer part of t is ignored, only the fractional part frac(t) is used,
+		// causing a repeating pattern.
+		Repeat = 1,
+		// Repeats the texture, but mirrors it every second time.
+		// If the integer part of t is even, we use the fractional part frac(t).
+		// If the integer part of t is odd, we use the "mirror" of the fractional part: 1 - frac(t)
+		MirroredRepeat = 2,
+		// Uses the texture's border color if t is outside of [0, 1]
+		ClampToBorder = 3
 	};
 
 	// This is a singleton/static class containing common rendering functionality,
@@ -190,6 +209,9 @@ namespace Renderer
 
 		// Returns the OpenGL enum value corresponding to the given texture magnify function
 		static unsigned getTextureMagnifyFunctionOpenGLEnum(TextureMagnifyFunction function);
+
+		// Returns the OpenGL enum value corresponding to the given wrap mode
+		static unsigned getTextureWrapModeOpenGLEnum(TextureWrapMode wrapMode);
 	};
 
 } // namespace Renderer

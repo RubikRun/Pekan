@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PekanRenderer.h"
 #include "VertexBuffer.h"
 #include "RenderComponent.h"
 

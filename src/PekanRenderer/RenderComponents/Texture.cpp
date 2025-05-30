@@ -6,14 +6,16 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-const glm::vec4 COLOR_OUTSIDE_BOUNDS = glm::vec4(255, 0, 0, 255);
-const unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
+static const unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
 
 namespace Pekan {
 namespace Renderer {
 
 	static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::LinearOnLinearMipmap;
 	static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Linear;
+	static const TextureWrapMode DEFAULT_WRAP_MODE_X = TextureWrapMode::ClampToBorder;
+	static const TextureWrapMode DEFAULT_WRAP_MODE_Y = TextureWrapMode::ClampToBorder;
+	static const glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(255, 0, 0, 255);
 
 	Texture::~Texture()
 	{
@@ -38,9 +40,9 @@ namespace Renderer {
 		setMagnifyFunction(DEFAULT_TEXTURE_MAGNIFY_FUNCTION);
 
 		// Configure texture wrapping
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
-		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &COLOR_OUTSIDE_BOUNDS.x));
+		setWrapModeX(DEFAULT_WRAP_MODE_X);
+		setWrapModeY(DEFAULT_WRAP_MODE_Y);
+		setBorderColor(DEFAULT_BORDER_COLOR);
 
 		// Set image data to the texture object
 		unsigned format = 0, internalFormat = 0;
@@ -90,6 +92,26 @@ namespace Renderer {
 		bind();
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
 			PekanRenderer::getTextureMagnifyFunctionOpenGLEnum(function)));
+	}
+
+	void Texture::setWrapModeX(TextureWrapMode wrapMode)
+	{
+		bind();
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+			PekanRenderer::getTextureWrapModeOpenGLEnum(wrapMode)));
+	}
+
+	void Texture::setWrapModeY(TextureWrapMode wrapMode)
+	{
+		bind();
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+			PekanRenderer::getTextureWrapModeOpenGLEnum(wrapMode)));
+	}
+
+	void Texture::setBorderColor(glm::vec4 color)
+	{
+		bind();
+		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color.x));
 	}
 
 	void Texture::_create()

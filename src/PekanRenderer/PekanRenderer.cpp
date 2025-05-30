@@ -275,5 +275,18 @@ namespace Renderer
 		return 0;
 	}
 
+	unsigned PekanRenderer::getTextureWrapModeOpenGLEnum(TextureWrapMode wrapMode)
+	{
+		switch (wrapMode)
+		{
+			case TextureWrapMode::ClampToEdge:       return GL_CLAMP_TO_EDGE;
+			case TextureWrapMode::Repeat:            return GL_REPEAT;
+			case TextureWrapMode::MirroredRepeat:    return GL_MIRRORED_REPEAT;
+			case TextureWrapMode::ClampToBorder:     return GL_CLAMP_TO_BORDER;
+		};
+		PK_ASSERT(false, "Unknown TextureWrapMode, cannot determine OpenGL enum.", "Pekan");
+		return 0;
+	}
+
 } // namespace Renderer
 } // namespace Pekan

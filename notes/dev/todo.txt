@@ -56,7 +56,7 @@
                         It should be optional.
                         If they don't provide a BufferDataUsage then the BufferDataUsage passed in the beggining to the create() function should be used.
 
-0023 15.05.2025 (TODO): Create enums for parameters in class Texture
+0023 15.05.2025 (DONE): Create enums for parameters in class Texture
 
 0024 17.05.2025 (DONE): Think about how many and which ones of the create() overloads in RenderObject we need.
                         I would say it's good to have create() overloads for combinations of the required components (vertices and shader)

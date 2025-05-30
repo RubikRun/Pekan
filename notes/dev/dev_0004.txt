@@ -1911,4 +1911,40 @@ That's basically it.
 Now if someone wants to change the minify/magnify function they can use the setMinifyFunction() and setMagnifyFunction() functions.
 We'll not test that for now, because we don't have an appropriate scene for it, and it's not that important.
 
+----------
+30.05.2025
+----------
+
+Next enum that we'll need for textures is the wrapping mode.
+Add this new enum in PekanRenderer
+    enum class TextureWrapMode
+    {
+        ClampToEdge = 0,
+        Repeat = 1,
+        MirroredRepeat = 2,
+        ClampToBorder = 3
+    };
+together with a static function in class PekanRenderer that maps this Pekan enum to an OpenGL enum value
+    static unsigned getTextureWrapModeOpenGLEnum(TextureWrapMode wrapMode);
+Then in class Texture add these 2 new functions
+    void setWrapModeX(TextureWrapMode wrapMode);
+    void setWrapModeY(TextureWrapMode wrapMode);
+for setting a wrap mode for X and Y texture coordinates.
+We'll call these 2 functions in the create() function
+    setWrapModeX(DEFAULT_WRAP_MODE_X);
+    setWrapModeY(DEFAULT_WRAP_MODE_Y);
+where these default values are
+    static const TextureWrapMode DEFAULT_WRAP_MODE_X = TextureWrapMode::ClampToBorder;
+    static const TextureWrapMode DEFAULT_WRAP_MODE_Y = TextureWrapMode::ClampToBorder;
+That's it for this enum.
+
+A related thing that we need is to have this inside a function
+    GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &DEFAULT_BORDER_COLOR.x));
+in class Texture
+    void setBorderColor(glm::vec4 color);
+That's it.
+
+We will not test any of that, because we don't have an appropriate scene for it, and it's not that important.
+Solution compiles and all demos work as before.
+Done.
 }
