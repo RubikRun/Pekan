@@ -10,7 +10,7 @@ namespace Demo
 
 	void Demo04_GUIWindow::_render()
 	{
-		ImGui::SetNextWindowSize(ImVec2(300, 210));
+		ImGui::SetNextWindowSize(ImVec2(300, 290));
 		ImGui::Begin("Pekan");
 
 		ImGui::Text("Background Color");
@@ -19,11 +19,17 @@ namespace Demo
 		ImGui::Text("Position");
 		ImGui::DragFloat2("##Position", (float*)&(m_position), 0.01f, -1.0f, 1.0f);
 
+		ImGui::Text("Shader");
+		ImGui::Combo("##Shader", &m_shaderIdx, SHADER_NAMES, IM_ARRAYSIZE(SHADER_NAMES));
+
 		ImGui::Text("Enable Shapes");
 		ImGui::Checkbox("##EnableShapes", &m_enabledShapes);
 
-		ImGui::Text("Shader");
-		ImGui::Combo("##Shader", &m_shaderIdx, SHADER_NAMES, IM_ARRAYSIZE(SHADER_NAMES));
+		ImGui::Text("Reverse Triangle Orientation");
+		ImGui::Checkbox("##ReverseTriangleOrientation", &m_reverseTriangleOrientation);
+
+		ImGui::Text("Enable Face Culling");
+		ImGui::Checkbox("##EnableFaceCulling", &m_enabledFaceCulling);
 
 		ImGui::End();
 	}

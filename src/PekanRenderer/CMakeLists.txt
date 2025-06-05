@@ -1,6 +1,8 @@
 # Create project PekanRenderer
 project(PekanRenderer)
 
+option(PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING "Disable orientation checking for 2D shapes" OFF)
+
 # Add a static library PekanRenderer, compiling the following source files
 add_library(PekanRenderer STATIC
     PekanRenderer.h
@@ -89,5 +91,9 @@ target_include_directories(PekanRenderer PUBLIC . RenderComponents 2D/Shapes)
 # Set link libraries for PekanRenderer
 target_link_libraries(PekanRenderer PRIVATE PekanCore glad glm opengl32.lib)
 
-# Set PEKAN_RENDERER_ROOT_DIR macro to be the path to current source directory
-target_compile_definitions(PekanRenderer PRIVATE PEKAN_RENDERER_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_definitions(PekanRenderer PRIVATE
+    # Set PEKAN_RENDERER_ROOT_DIR definition to be the path to current source directory
+    PEKAN_RENDERER_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+    # Set PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING definition to be 0 or 1 depending on the on/off state of the option
+    PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING=$<IF:$<BOOL:${PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING}>,1,0>
+)

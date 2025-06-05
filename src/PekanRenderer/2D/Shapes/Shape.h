@@ -54,15 +54,20 @@ namespace Renderer
 		// Updates the underlying render object with current vertex data
 		void updateRenderObject();
 
-	protected: /* variables*/
+		// Updates the underlying render object with current vertex data and given index data
+		void updateRenderObject(const void* indexData);
 
-		RenderObject m_renderObject;
+	protected: /* variables*/
 
 		// Shape's position (origin) in world space.
 		// 
 		// Vertices will be relative to this position
 		// so that the whole shape can be moved by changing the position.
 		glm::vec2 m_position = glm::vec2(0.0f, 0.0f);
+
+	private: /* variables */
+
+		RenderObject m_renderObject;
 
 		glm::vec4 m_color;
 

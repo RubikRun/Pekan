@@ -47,15 +47,15 @@ namespace Demo
         // Set up vertex data and configure vertex attributes
         const float vertices[] =
         {
-             0.8f,  0.8f, 1.0f, 1.0f, // top right
-             0.8f, -0.8f, 1.0f, 0.0f, // bottom right
             -0.8f, -0.8f, 0.0f, 0.0f, // bottom left
+             0.8f, -0.8f, 1.0f, 0.0f, // bottom right
+             0.8f,  0.8f, 1.0f, 1.0f, // top right
             -0.8f,  0.8f, 0.0f, 1.0f  // top left
         };
         const unsigned indices[] =
         {
-            0, 1, 3,  // first triangle
-            1, 2, 3   // second triangle
+            0, 1, 2,
+            0, 2, 3
         };
 
         if (m_guiWindow != nullptr)
@@ -84,13 +84,7 @@ namespace Demo
         m_renderObject.setTextureImage(m_image0, "uTex0", 0);
         m_renderObject.setTextureImage(m_image1, "uTex1", 1);
 
-        m_triangleInitialVertexA = { -0.1f, -0.1f };
-        m_triangleInitialVertexB = { 0.1f, -0.1f };
-        m_triangleInitialVertexC = { 0.1f, 0.1f };
-        m_triangle.create(m_triangleInitialVertexA, m_triangleInitialVertexB, m_triangleInitialVertexC);
-
-        m_triangleInitialPosition = { 0.8f, 0.8f };
-        m_triangle.setPosition(m_triangleInitialPosition);
+        m_triangle.create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f });
 
         m_rectangleInitialWidth = 0.2f;
         m_rectangleInitialHeight = 0.4f;
@@ -116,6 +110,19 @@ namespace Demo
             glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) });
         PK_ASSERT_QUICK(m_polygon.getVertices().size() == POLYGON_VERTICES_COUNT);
         m_polygon.setPosition(m_polygonInitialPosition);
+
+        if (m_guiWindow != nullptr)
+        {
+            m_enabledFaceCulling = m_guiWindow->getEnabledFaceCulling();
+            if (m_enabledFaceCulling)
+            {
+                PekanRenderer::enableFaceCulling();
+            }
+            else
+            {
+                PekanRenderer::disableFaceCulling();
+            }
+        }
 
         t = 0.0f;
 
@@ -155,6 +162,20 @@ namespace Demo
                 m_renderObject.setTextureImage(m_image1, "uTex1", 1);
             }
 
+            // If enabled/disabled state of face culling has changed in GUI
+            if (m_enabledFaceCulling != m_guiWindow->getEnabledFaceCulling())
+            {
+                m_enabledFaceCulling = !m_enabledFaceCulling;
+                if (m_enabledFaceCulling)
+                {
+                    PekanRenderer::enableFaceCulling();
+                }
+                else
+                {
+                    PekanRenderer::disableFaceCulling();
+                }
+            }
+
             // Get position from GUI
             const ImVec2& position = m_guiWindow->getPosition();
             // Set "uPosition" uniform inside of the shader
@@ -163,11 +184,21 @@ namespace Demo
 
         texRectShader.setUniform1f("uTime", t);
 
-        m_triangle.setPosition(m_triangleInitialPosition + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
+        m_triangle.setPosition(glm::vec2(0.8f, 0.8f) + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
         m_triangle.setColor({ osc(t), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
-        m_triangle.setVertexA(m_triangleInitialVertexA + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
-        m_triangle.setVertexB(m_triangleInitialVertexB + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f));
-        m_triangle.setVertexC(m_triangleInitialVertexC + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
+
+        if (m_guiWindow != nullptr && m_guiWindow->getReverseTriangleOrientation())
+        {
+            m_triangle.setVertexA(glm::vec2(0.1f, 0.1f) + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
+            m_triangle.setVertexB(glm::vec2(0.1f, -0.1f) + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f));
+            m_triangle.setVertexC(glm::vec2(-0.1f, -0.1f) + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
+        }
+        else
+        {
+            m_triangle.setVertexA(glm::vec2(-0.1f, -0.1f) + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
+            m_triangle.setVertexB(glm::vec2(0.1f, -0.1f) + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f));
+            m_triangle.setVertexC(glm::vec2(0.1f, 0.1f) + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
+        }
 
         m_rectangle.setPosition(m_rectangleInitialPosition + glm::vec2(sin(t / 2.0f) * 0.12f, sin(t / 5.0f) * 0.04f));
         m_rectangle.setColor({ osc(t / 2.0f + 1.0f), osc(t), osc(t / 3.0f), osc(t / 7.0f, 0.3f, 1.0f) });

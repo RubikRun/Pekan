@@ -26,6 +26,12 @@ namespace Demo
 		// Returns currently selected shader index
 		inline int getShaderIdx() const { return m_shaderIdx; }
 
+		// Checks if triangle's vertices should be reversed (CW order instead of CCW)
+		inline bool getReverseTriangleOrientation() const { return m_reverseTriangleOrientation; }
+
+		// Checks if face culling should be enabled
+		inline bool getEnabledFaceCulling() const { return m_enabledFaceCulling; }
+
 	private: /* functions */
 
 		void _render() override;
@@ -41,7 +47,13 @@ namespace Demo
 		ImVec2 m_position = ImVec2(0.0f, 0.0f);
 
 		// Flag indicating if shapes are enabled and should be rendered
-		bool m_enabledShapes = false;
+		bool m_enabledShapes = true;
+
+		// Flag indicating if we should reverse the triangle orientation to be CW instead of CCW
+		bool m_reverseTriangleOrientation = false;
+
+		// Flag indicating if face culling should be enabled
+		bool m_enabledFaceCulling = false;
 
 		// Shader index determining which shader will be used for rendering
 		int m_shaderIdx = 0;

@@ -169,9 +169,11 @@ namespace Renderer
 		//            in your application's initialization function.
 		static void enableMultisampleAntiAliasing();
 
-		// Enables face culling, which means that triangles will be rendered only if they are front-facing.
+		// Enables/disables face culling, which means that triangles will be rendered only if they are front-facing.
 		// Back-facing triangles will not be rendered.
 		static void enableFaceCulling();
+		static void disableFaceCulling();
+		static inline bool isEnabledFaceCulling() { return s_isEnabledFaceCulling; }
 
 	private: /* functions */
 
@@ -212,6 +214,10 @@ namespace Renderer
 
 		// Returns the OpenGL enum value corresponding to the given wrap mode
 		static unsigned getTextureWrapModeOpenGLEnum(TextureWrapMode wrapMode);
+
+	private: /* variables */
+
+		static bool s_isEnabledFaceCulling;
 	};
 
 } // namespace Renderer

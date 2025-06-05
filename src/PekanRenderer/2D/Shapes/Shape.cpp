@@ -99,5 +99,11 @@ namespace Renderer
         m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
     }
 
+    void Shape::updateRenderObject(const void* indexData)
+    {
+        m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
+        m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::DynamicDraw);
+    }
+
 } // namespace Renderer
 } // namespace Renderer

@@ -1948,3 +1948,130 @@ We will not test any of that, because we don't have an appropriate scene for it,
 Solution compiles and all demos work as before.
 Done.
 }
+
+----------
+04.06.2025
+----------
+
+{
+Let's look at this TO-DO item
+    Check if passing vertices to TriangleShape's create() in reverse order still works (change clockwise-ness of vertices).
+
+First of all, obviously this depends on whether face culling is enabled.
+If it's NOT enabled, then all shapes will be visible no matter the orientation of their vertices.
+If it's enabled
+    PekanRenderer::enableFaceCulling();
+then, indeed, shapes will be hidden if their vertices are in clockwise order.
+I verified this by reversing the order of triangle's vertices in Demo04
+    //m_triangleInitialVertexA = { -0.1f, -0.1f };
+    //m_triangleInitialVertexB = { 0.1f, -0.1f };
+    //m_triangleInitialVertexC = { 0.1f, 0.1f };
+    m_triangleInitialVertexA = { 0.1f, 0.1f };
+    m_triangleInitialVertexB = { 0.1f, -0.1f };
+    m_triangleInitialVertexC = { -0.1f, -0.1f };
+
+By the way, this problem applies only to class TriangleShape and class PolygonShape,
+not to other Shape classes. That's because for other Shape classes we implicitly create the vertices
+from given user parameters, and we always create them in CCW order.
+Only class TriangleShape and class PolygonShape give control over each vertex,
+and hence have the possibility of having CW vertices.
+
+Is this bad?
+Answer is not very clear.
+If user has enabled face culling, they want their triangles to be invisible from the back.
+But do they want their TriangleShapes to be invisible from the back?
+Not sure. Probably not. It's a design choice.
+It makes more sense to me at this moment that a TriangleShape should always be visible,
+and the face culling should apply to FACES of meshes - they are triangles but not TriangleShapes.
+So TL;DR - It is bad. We want all shapes to be always visible no matter the order of vertices.
+
+We can definitely do that, but is there a downside to doing it?
+Well, a downside would be performance.
+Checking if vertices are ordered correctly, and if not, reordering them, is some additional CPU work.
+So what do we do?
+Should we always check orientation and lose some performance?
+Well, we should definitely NOT check orientation if face culling is disabled, I think this is pretty clear.
+If face culling is enabled, should we check orientation by default?
+Yes, I think so.
+We can have a configurable option to disable orientation checking, as an optimization.
+Should this option be per-shape? Or should it be global?
+Global makes more sense at this point of development.
+Should it be a global runtime option?
+So that it can be enabled at some point and then disable at another point?
+No, probably not needed.
+Better for performance if it's a compile time option, so basically a macro that can be set through CMake or as a #define.
+
+So let's actually do it now.
+First, introducing this new option in PekanRenderer's CMake file
+    option(PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING "Disable orientation checking for 2D shapes" OFF)
+and setting it as a compile definition
+    target_compile_definitions(PekanRenderer PRIVATE
+        ...
+        PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING=$<IF:$<BOOL:${PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING}>,1,0>
+    )
+Then in class TriangleShape we'll introduce this new member variable
+    unsigned m_indices[3] = { 0, 1, 2 };
+but only if PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING is 0.
+Together with it we'll add this new function
+    void updateIndicesOrientation();
+that will update the m_indices member to be { 0, 1, 2 } or { 2, 1, 0 } depending on whether
+the 3 vertices in m_vertices are currently in CCW or CW order.
+Then each time that vertices are changed in TriangleShape we'll need to call this function
+to update the indices, making sure that triangle is drawn in CCW order.
+That's not all.
+If PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING is 0 we need to pass the indices to Shape::createRenderObject() like that:
+    Shape::createRenderObject(m_vertices, m_indices, dynamic);
+If PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING is 1 we'll just not use indices at all
+    Shape::createRenderObject(m_vertices, dynamic);
+Same kind of logic applies for updating the render object
+    updateRenderObject(m_indices);
+in the first case, and
+    updateRenderObject();
+in the second.
+By the way, such function updateRenderObject(m_indices) doesn't exist, lol.
+So let's create it in class Shape
+    void updateRenderObject(const void* indexData);
+It just needs to call setVertexData() and setIndexData() on the underlying render object.
+    m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
+    m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::DynamicDraw);
+
+That's the crux of it.
+Now we need to NOT do this whole orientation checking if face culling is NOT enabled.
+How do we check if face culling is enabled?
+Currently we can't.
+We need to implement this in PekanRenderer.
+Let's add this static member variable
+    static bool s_isEnabledFaceCulling;
+together with this static function
+    static inline bool isEnabledFaceCulling() { return s_isEnabledFaceCulling; }
+The initialization value of the member variable will be false
+    bool PekanRenderer::s_isEnabledFaceCulling = false;
+because face culling is NOT enabled when you start the engine.
+Then inside of PekanRenderer::enableFaceCulling() we'll set it to true
+    s_isEnabledFaceCulling = true;
+For consistency let's add a function for disabling face culling because currently we can only enable it and leave it enabled forever.
+    static void disableFaceCulling();
+It needs to disable face culling and, of course, set the member variable to false
+    s_isEnabledFaceCulling = false;
+Now inside of TriangleShape's updateIndicesOrientation() function we can first check if face culling is enabled,
+and if it's not, we can just skip and not do anything
+    if (!PekanRenderer::isEnabledFaceCulling())
+    {
+        return;
+    }
+to not waste performance reorienting triangle vertices when face culling is off.
+
+That's about it.
+Did a few other small changes, but nothing important.
+
+Tested it in Demo04 by adding 2 checkboxes,
+one that reverses the order of triangle's vertices from CCW to CW,
+and one that enables face culling.
+It works as expected in all cases.
+Basically the triangle is always visible unless we turn on the option
+    PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+and enable face culling, and reverse the order of triangle's vertices.
+In that case triangle is invisible, which is exactly what we want.
+
+What's left now is to do the exact same thing with PolygonShape.
+}

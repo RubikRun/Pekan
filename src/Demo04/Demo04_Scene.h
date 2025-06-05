@@ -45,11 +45,6 @@ namespace Demo
 		Pekan::Renderer::CircleShapeStatic<> m_circleStatic;
 		Pekan::Renderer::PolygonShape m_polygon;
 
-		glm::vec2 m_triangleInitialPosition;
-		glm::vec2 m_triangleInitialVertexA;
-		glm::vec2 m_triangleInitialVertexB;
-		glm::vec2 m_triangleInitialVertexC;
-
 		glm::vec2 m_rectangleInitialPosition;
 		float m_rectangleInitialWidth;
 		float m_rectangleInitialHeight;
@@ -68,6 +63,8 @@ namespace Demo
 
 		// GUI window for controlling background's color
 		const Demo04_GUIWindow* m_guiWindow = nullptr;
+
+		bool m_enabledFaceCulling = false;
 
 		float t = 0.0f;
 	};

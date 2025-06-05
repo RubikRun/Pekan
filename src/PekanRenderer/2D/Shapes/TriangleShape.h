@@ -25,6 +25,7 @@ namespace Renderer
 		void setVertexA(glm::vec2 vertexA);
 		void setVertexB(glm::vec2 vertexB);
 		void setVertexC(glm::vec2 vertexC);
+		void setVertices(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC);
 
 		inline glm::vec2 getVertexA() const { return m_vertices[0]; }
 		inline glm::vec2 getVertexB() const { return m_vertices[1]; }
@@ -38,10 +39,21 @@ namespace Renderer
 
 		const glm::vec2* getVertexData() const override { return m_vertices; };
 
+#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+		// Updates indices so that the orientation of the 3 vertices is CCW,
+		// but only if face culling is enabled in PekanRenderer, otherwise there's no point.
+		void updateIndicesOrientation();
+#endif
+
 	private: /* variables */
 
 		// The 3 vertices of the triangle, in world space
 		glm::vec2 m_vertices[3] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+
+#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+		// Indices of the 3 vertices of the triangle, determining the order in which they will be drawn
+		unsigned m_indices[3] = { 0, 1, 2 };
+#endif
 	};
 
 } // namespace Renderer

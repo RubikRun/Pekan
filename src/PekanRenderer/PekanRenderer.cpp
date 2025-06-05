@@ -10,6 +10,7 @@ namespace Pekan
 {
 namespace Renderer
 {
+	bool PekanRenderer::s_isEnabledFaceCulling = false;
 
 	void PekanRenderer::draw(unsigned elementsCount, DrawMode mode)
 	{
@@ -63,23 +64,30 @@ namespace Renderer
 		GLCall(glEnable(GL_CULL_FACE));
 		GLCall(glCullFace(GL_BACK));
 		GLCall(glFrontFace(GL_CCW));
+		s_isEnabledFaceCulling = true;
+	}
+
+	void PekanRenderer::disableFaceCulling()
+	{
+		GLCall(glDisable(GL_CULL_FACE));
+		s_isEnabledFaceCulling = false;
 	}
 
 	unsigned PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)
 		{
-		case ShaderDataType::Float:     return GL_FLOAT;
-		case ShaderDataType::Float2:    return GL_FLOAT;
-		case ShaderDataType::Float3:    return GL_FLOAT;
-		case ShaderDataType::Float4:    return GL_FLOAT;
-		case ShaderDataType::Mat3:      return GL_FLOAT;
-		case ShaderDataType::Mat4:      return GL_FLOAT;
-		case ShaderDataType::Int:       return GL_INT;
-		case ShaderDataType::Int2:      return GL_INT;
-		case ShaderDataType::Int3:      return GL_INT;
-		case ShaderDataType::Int4:      return GL_INT;
-		case ShaderDataType::Bool:      return GL_BOOL;
+			case ShaderDataType::Float:     return GL_FLOAT;
+			case ShaderDataType::Float2:    return GL_FLOAT;
+			case ShaderDataType::Float3:    return GL_FLOAT;
+			case ShaderDataType::Float4:    return GL_FLOAT;
+			case ShaderDataType::Mat3:      return GL_FLOAT;
+			case ShaderDataType::Mat4:      return GL_FLOAT;
+			case ShaderDataType::Int:       return GL_INT;
+			case ShaderDataType::Int2:      return GL_INT;
+			case ShaderDataType::Int3:      return GL_INT;
+			case ShaderDataType::Int4:      return GL_INT;
+			case ShaderDataType::Bool:      return GL_BOOL;
 		}
 		PK_ASSERT(false, "Unknown ShaderDataType, cannot determine OpenGL base type.", "Pekan");
 		return 0;
@@ -110,20 +118,20 @@ namespace Renderer
 	{
 		switch (blendFactor)
 		{
-		case BlendFactor::Zero:                     return GL_ZERO;
-		case BlendFactor::One:                      return GL_ONE;
-		case BlendFactor::SrcColor:                 return GL_SRC_COLOR;
-		case BlendFactor::OneMinusSrcColor:         return GL_ONE_MINUS_SRC_COLOR;
-		case BlendFactor::DstColor:                 return GL_DST_COLOR;
-		case BlendFactor::OneMinusDstColor:         return GL_ONE_MINUS_DST_COLOR;
-		case BlendFactor::SrcAlpha:                 return GL_SRC_ALPHA;
-		case BlendFactor::OneMinusSrcAlpha:         return GL_ONE_MINUS_SRC_ALPHA;
-		case BlendFactor::DstAlpha:                 return GL_DST_ALPHA;
-		case BlendFactor::OneMinusDstAlpha:         return GL_ONE_MINUS_DST_ALPHA;
-		case BlendFactor::ConstantColor:            return GL_CONSTANT_COLOR;
-		case BlendFactor::OneMinusConstantColor:    return GL_ONE_MINUS_CONSTANT_COLOR;
-		case BlendFactor::ConstantAlpha:            return GL_CONSTANT_ALPHA;
-		case BlendFactor::OneMinusConstantAlpha:    return GL_ONE_MINUS_CONSTANT_ALPHA;
+			case BlendFactor::Zero:                     return GL_ZERO;
+			case BlendFactor::One:                      return GL_ONE;
+			case BlendFactor::SrcColor:                 return GL_SRC_COLOR;
+			case BlendFactor::OneMinusSrcColor:         return GL_ONE_MINUS_SRC_COLOR;
+			case BlendFactor::DstColor:                 return GL_DST_COLOR;
+			case BlendFactor::OneMinusDstColor:         return GL_ONE_MINUS_DST_COLOR;
+			case BlendFactor::SrcAlpha:                 return GL_SRC_ALPHA;
+			case BlendFactor::OneMinusSrcAlpha:         return GL_ONE_MINUS_SRC_ALPHA;
+			case BlendFactor::DstAlpha:                 return GL_DST_ALPHA;
+			case BlendFactor::OneMinusDstAlpha:         return GL_ONE_MINUS_DST_ALPHA;
+			case BlendFactor::ConstantColor:            return GL_CONSTANT_COLOR;
+			case BlendFactor::OneMinusConstantColor:    return GL_ONE_MINUS_CONSTANT_COLOR;
+			case BlendFactor::ConstantAlpha:            return GL_CONSTANT_ALPHA;
+			case BlendFactor::OneMinusConstantAlpha:    return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
 		PK_ASSERT(false, "Unknown BlendFactor, cannot determine OpenGL enum.", "Pekan");
 		return 0;
