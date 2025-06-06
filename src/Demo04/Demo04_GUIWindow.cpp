@@ -10,7 +10,7 @@ namespace Demo
 
 	void Demo04_GUIWindow::_render()
 	{
-		ImGui::SetNextWindowSize(ImVec2(300, 290));
+		ImGui::SetNextWindowSize(ImVec2(300, 340));
 		ImGui::Begin("Pekan");
 
 		ImGui::Text("Background Color");
@@ -27,6 +27,9 @@ namespace Demo
 
 		ImGui::Text("Reverse Triangle Orientation");
 		ImGui::Checkbox("##ReverseTriangleOrientation", &m_reverseTriangleOrientation);
+
+		ImGui::Text("Reverse Polygon Orientation");
+		ImGui::Checkbox("##ReversePolygonOrientation", &m_reversePolygonOrientation);
 
 		ImGui::Text("Enable Face Culling");
 		ImGui::Checkbox("##EnableFaceCulling", &m_enabledFaceCulling);

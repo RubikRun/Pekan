@@ -7,6 +7,15 @@ namespace Pekan
 namespace Renderer
 {
 
+#ifndef NDEBUG
+    // Checks if the orientation of 3 given vertices is CCW (counter-clockwise)
+    static bool isOrientationCCW(const glm::vec2& a, const glm::vec2& b, const glm::vec2& c)
+    {
+        const float det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+        return (det >= 0.0f);
+    }
+#endif
+
 	void PolygonShape::create
     (
         const std::vector<glm::vec2>& vertices,
@@ -21,6 +30,12 @@ namespace Renderer
         {
             PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you are creating a non-convex one. "
                 "It might not be rendered correctly", "Pekan");
+        }
+        if (PekanRenderer::isEnabledFaceCulling() && m_vertices.size() > 2
+            && !isOrientationCCW(m_vertices[0], m_vertices[1], m_vertices[2]))
+        {
+            PK_LOG_WARNING("Trying to create a PolygonShape with CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
+                " so your polygon will NOT be visible.", "Pekan");
         }
 #endif
 
@@ -37,10 +52,15 @@ namespace Renderer
             PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you have a non-convex one.  "
                 "It might not be rendered correctly", "Pekan");
         }
+        if (PekanRenderer::isEnabledFaceCulling() && m_vertices.size() > 2
+            && !isOrientationCCW(m_vertices[0], m_vertices[1], m_vertices[2]))
+        {
+            PK_LOG_WARNING("Trying to set vertices of a PolygonShape resulting in CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
+                " so your polygon will NOT be visible.", "Pekan");
+        }
 #endif
 
         _moveVertices(m_position);
-        updateRenderObject();
     }
 
     void PolygonShape::setVertex(int index, glm::vec2 vertex)
@@ -58,7 +78,15 @@ namespace Renderer
             PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you have a non-convex one.  "
                 "It might not be rendered correctly", "Pekan");
         }
+        if (PekanRenderer::isEnabledFaceCulling() && m_vertices.size() > 2
+            && !isOrientationCCW(m_vertices[0], m_vertices[1], m_vertices[2]))
+        {
+            PK_LOG_WARNING("Trying to set a vertex of a PolygonShape resulting in CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
+                " so your polygon will NOT be visible.", "Pekan");
+        }
 #endif
+
+        updateRenderObject();
     }
 
     glm::vec2 PolygonShape::getVertex(int index) const
@@ -91,7 +119,8 @@ namespace Renderer
 
         // Traverse polygon's vertices
         const int n = int(m_vertices.size());
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; ++i)
+        {
             // Reference the current 3 consecutive vertices A, B, C
             const glm::vec2& a = m_vertices[i];
             const glm::vec2& b = m_vertices[(i + 1) % n];

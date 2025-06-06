@@ -257,15 +257,18 @@ namespace Demo
 
     void Demo04_Scene::updatePolygon()
     {
+        const bool reverseOrientation = (m_guiWindow != nullptr && m_guiWindow->getReversePolygonOrientation());
+        const float reverseFactor = reverseOrientation ? -1.0f : 1.0f;
         std::vector<glm::vec2> vertices(7, glm::vec2(0.0f, 0.0f));
-        const float baseArc = 2.0f * PI / float(POLYGON_VERTICES_COUNT);
+        const float baseArc = reverseFactor * 2.0f * PI / float(POLYGON_VERTICES_COUNT);
         for (int i = 0; i < POLYGON_VERTICES_COUNT; i++)
         {
+            const int iRev = reverseOrientation ? (POLYGON_VERTICES_COUNT - i) % POLYGON_VERTICES_COUNT : i;
             const float arc = baseArc * float(i);
             vertices[i] = glm::vec2
             (
-                cos(arc) * POLYGON_RADIUS + osc(t / float(i + 1), 0.0f, float(i + 1) / 190.0f),
-                sin(arc) * POLYGON_RADIUS + osc(t / float(POLYGON_VERTICES_COUNT - i), 0.0f, float(POLYGON_VERTICES_COUNT - i) / 190.0f)
+                cos(arc) * POLYGON_RADIUS + osc(t / float(iRev + 1), 0.0f, float(iRev + 1) / 190.0f),
+                sin(arc) * POLYGON_RADIUS + osc(t / float(POLYGON_VERTICES_COUNT - iRev), 0.0f, float(POLYGON_VERTICES_COUNT - iRev) / 190.0f)
             );
         }
         m_polygon.setVertices(vertices);

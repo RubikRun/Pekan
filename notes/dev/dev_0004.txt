@@ -2073,5 +2073,24 @@ Basically the triangle is always visible unless we turn on the option
 and enable face culling, and reverse the order of triangle's vertices.
 In that case triangle is invisible, which is exactly what we want.
 
-What's left now is to do the exact same thing with PolygonShape.
+What's left now is to do the same thing with PolygonShape.
+However, I started doing it and it's too complicated and invloved.
+It introduces some design problems with the base class Shape.
+Biggest problem is that in order to do this with PolygonShape we need to use a vector of indices
+and its size IS NOT correctly computed by getIndexDataSize() because getIndexDataSize()
+works with the assumtion that we're using triangles as the primitive, not triangle fan.
+Class CircleShape uses triangle fan, but it doesn't use indices.
+Basically using triangle fan + indices is problematic in class Shape.
+So, decided NOT to do this in class PolygonShape.
+That's not so bad because PolygonShape will be redesigned in the future to use the ear-clipping algorithm
+and then it will use triangles as primitive.
+
+For now, we can just check the orientation of the polygon in debug mode,
+and log a warning message if it's CW and face culling is enabled,
+to let the developer know why their polygon is not showing.
+Done.
+
+Added a checkbox in the GUI of Demo04 for reversing the orientation of polygon's vertices.
+Works as expected.
+Done.
 }

@@ -29,6 +29,9 @@ namespace Demo
 		// Checks if triangle's vertices should be reversed (CW order instead of CCW)
 		inline bool getReverseTriangleOrientation() const { return m_reverseTriangleOrientation; }
 
+		// Checks if polygon's vertices should be reversed (CW order instead of CCW)
+		inline bool getReversePolygonOrientation() const { return m_reversePolygonOrientation; }
+
 		// Checks if face culling should be enabled
 		inline bool getEnabledFaceCulling() const { return m_enabledFaceCulling; }
 
@@ -51,6 +54,9 @@ namespace Demo
 
 		// Flag indicating if we should reverse the triangle orientation to be CW instead of CCW
 		bool m_reverseTriangleOrientation = false;
+
+		// Flag indicating if we should reverse the polygon orientation to be CW instead of CCW
+		bool m_reversePolygonOrientation = false;
 
 		// Flag indicating if face culling should be enabled
 		bool m_enabledFaceCulling = false;

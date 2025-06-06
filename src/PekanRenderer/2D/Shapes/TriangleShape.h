@@ -40,8 +40,8 @@ namespace Renderer
 		const glm::vec2* getVertexData() const override { return m_vertices; };
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-		// Updates indices so that the orientation of the 3 vertices is CCW,
-		// but only if face culling is enabled in PekanRenderer, otherwise there's no point.
+		// Updates indices so that the orientation of the 3 vertices is CCW.
+		// This is done only if face culling is enabled in PekanRenderer, otherwise there's no point.
 		void updateIndicesOrientation();
 #endif
 
