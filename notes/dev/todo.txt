@@ -68,7 +68,7 @@
 
 0027 22.05.2025 (DONE): Think about using getVertexData() in createRenderObject() instead of having a vertexData parameter
 
-0028 24.05.2025 (TODO): Think about the relationship between textures and a shader in RenderObject.
+0028 24.05.2025 (DONE): Think about the relationship between textures and a shader in RenderObject.
                         More specifically when client changes the shader in a RenderObject what should happen to the textures?
                         Currently they are just all deleted and client should set textures anew if they need them in the new shader.
                         Is this an okay behavior? Is there something else that can be done?

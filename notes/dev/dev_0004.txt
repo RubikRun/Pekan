@@ -2136,3 +2136,23 @@ Done.
 It builds and Demo04 works as before, with and without the PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING option.
 Done.
 }
+
+{
+Next TO-DO item
+    Think about the relationship between textures and a shader in RenderObject.
+    More specifically when client changes the shader in a RenderObject what should happen to the textures?
+    Currently they are just all deleted and client should set textures anew if they need them in the new shader.
+    Is this an okay behavior? Is there something else that can be done?
+
+Well, currently we can't really do anything else since we don't have a resource manager.
+In the future we might pass an image ID instead of a whole image to setTextureImage(),
+so that images are not loaded and unloaded whenever we change textures and/or shaders.
+Also we might have a system that keeps track of texture objects existing on the GPU
+and reference counting of how many RenderObjects use them, something like that.
+
+It's not the moment to do all that now, so for now we'll keep it as it is:
+All textures of a RenderObject will be deleted when a shader is changed
+and user will have to set new textures.
+
+Done.
+}
