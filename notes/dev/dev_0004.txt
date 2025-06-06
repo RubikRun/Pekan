@@ -2094,3 +2094,45 @@ Added a checkbox in the GUI of Demo04 for reversing the orientation of polygon's
 Works as expected.
 Done.
 }
+
+----------
+06.06.2025
+----------
+
+{
+Next TO-DO item
+    Think about using getVertexData() in createRenderObject() instead of having a vertexData parameter
+
+Seems like a reasonable thing to do at first sight.
+There is already a pure virtual function
+    virtual const glm::vec2* getVertexData() const = 0;
+in class Shape, which is implemented by all derived classes,
+and it's used in Shape's updateRenderObject() function (both overloads).
+So why not use it in createRenderObject() as well, instead of having a vertexData parameter?
+Let's try.
+
+Okay, pretty easy.
+It build and works same as before.
+
+Let's do the same with indices now, seems to make sense for the same reason.
+This time we don't already have a virtual function getIndexData() so let's create it
+    virtual const unsigned* getIndexData() const { return nullptr; }
+I will NOT make it pure virtual because some (most) derived classes will not use indices at all,
+so they can just skip overriding this function and they should work like that.
+Then we'll remove the indexData parameter from the createRenderObject() function.
+This leaves us with a single overload, because both overloads would be parameter-less now.
+Until now the way we knew if we're using indices or not was based on which overload of createRenderObject() is called.
+Obiously we can't do that anymore, because now we have a single overload.
+Luckily, we can use the return value of getIndexData() instead. If it's NULL then we'll NOT use indices, otherwise we WILL use indices. That's even easier.
+    const unsigned* indexData = getIndexData();
+    m_usingIndices = (indexData != nullptr);
+    if (m_usingIndices)
+    {
+        m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::StaticDraw);
+    }
+What's left now is to implement getIndexData() in all derived classes that use indices.
+Done.
+
+It builds and Demo04 works as before, with and without the PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING option.
+Done.
+}

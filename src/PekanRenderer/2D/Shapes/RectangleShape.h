@@ -35,6 +35,7 @@ namespace Renderer
 		void _moveVertices(glm::vec2 deltaPosition) override;
 
 		const glm::vec2* getVertexData() const override { return m_vertices; };
+		const unsigned* getIndexData() const override { return s_indices; }
 
 	private: /* variables */
 
@@ -43,6 +44,9 @@ namespace Renderer
 
 		float m_width = 0.0f;
 		float m_height = 0.0f;
+
+		// Indices of vertices of the 2 triangles making up the rectangle
+		static const unsigned s_indices[6];
 	};
 
 } // namespace Renderer

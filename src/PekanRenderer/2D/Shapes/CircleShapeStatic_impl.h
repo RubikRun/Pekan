@@ -17,7 +17,7 @@ namespace Renderer
         m_radius = radius;
         generateVertices();
 
-        Shape::createRenderObject(m_vertices, dynamic);
+        Shape::createRenderObject(dynamic);
 	}
 
     template <unsigned NSegments>

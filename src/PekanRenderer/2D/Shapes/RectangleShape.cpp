@@ -7,8 +7,7 @@ namespace Pekan
 namespace Renderer
 {
 
-    // Indices of vertices of the 2 triangles making up the rectangle
-    static const unsigned INDICES[6] = { 0, 1, 2, 0, 2, 3 };
+    const unsigned RectangleShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
 
 	void RectangleShape::create
     (
@@ -26,7 +25,7 @@ namespace Renderer
         m_vertices[2] = glm::vec2(width, height);
         m_vertices[3] = glm::vec2(0.0f, height);
 
-        Shape::createRenderObject(m_vertices, INDICES, dynamic);
+        Shape::createRenderObject(dynamic);
 	}
 
     void RectangleShape::setWidth(float width)

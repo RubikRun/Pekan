@@ -24,7 +24,7 @@ namespace Renderer
 
         generateVertices();
 
-        Shape::createRenderObject(m_vertices.data(), dynamic);
+        Shape::createRenderObject(dynamic);
 	}
 
     void CircleShape::setRadius(float radius)

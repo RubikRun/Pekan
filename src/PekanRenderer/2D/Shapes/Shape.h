@@ -34,6 +34,7 @@ namespace Renderer
 		virtual void _moveVertices(glm::vec2 deltaPosition) = 0;
 
 		virtual const glm::vec2* getVertexData() const = 0;
+		virtual const unsigned* getIndexData() const { return nullptr; }
 
 		// Can be overriden by derived classes to return the desired draw mode to be used for rendering the shape
 		virtual DrawMode getDrawMode() const { return DrawMode::Triangles; }
@@ -43,13 +44,9 @@ namespace Renderer
 
 	protected: /* functions */
 
-		// Creates the underlying render object with given vertex data
+		// Creates the underlying render object
 		// @param[in] dynamic - Specifies if shape is going to be moved often. Used for optimization.
-		void createRenderObject(const void* vertexData, bool dynamic);
-
-		// Creates the underlying render object with given vertex data and index data
-		// @param[in] dynamic - Specifies if shape is going to be moved often. Used for optimization.
-		void createRenderObject(const void* vertexData, const void* indexData, bool dynamic);
+		void createRenderObject(bool dynamic);
 
 		// Updates the underlying render object with current vertex data
 		void updateRenderObject();

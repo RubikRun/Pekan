@@ -39,7 +39,7 @@ namespace Renderer
         }
 #endif
 
-        Shape::createRenderObject(m_vertices.data(), dynamic);
+        Shape::createRenderObject(dynamic);
 	}
 
     void PolygonShape::setVertices(const std::vector<glm::vec2>& vertices)

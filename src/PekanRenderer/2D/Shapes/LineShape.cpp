@@ -7,8 +7,7 @@ namespace Pekan
 namespace Renderer
 {
 
-    // Indices of vertices of the 2 triangles making up the line
-    static const unsigned INDICES[6] = { 0, 1, 2, 0, 2, 3 };
+    const unsigned LineShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
 
 	void LineShape::create
     (
@@ -24,7 +23,7 @@ namespace Renderer
 
         generateVertices();
 
-        Shape::createRenderObject(m_vertices, INDICES, dynamic);
+        Shape::createRenderObject(dynamic);
 	}
 
     void LineShape::setPointA(glm::vec2 pointA)

@@ -37,6 +37,7 @@ namespace Renderer
 		void _moveVertices(glm::vec2 deltaPosition) override;
 
 		const glm::vec2* getVertexData() const override { return m_vertices; };
+		const unsigned* getIndexData() const override { return s_indices; }
 
 		// Generates (or regenerates) line's vertices based on current point A, point B and thickness
 		void generateVertices();
@@ -49,6 +50,9 @@ namespace Renderer
 		glm::vec2 m_pointA = glm::vec2(0.0f, 0.0f);
 		glm::vec2 m_pointB = glm::vec2(0.0f, 0.0f);
 		float m_thickness = 0.0f;
+
+		// Indices of vertices of the 2 triangles making up the line
+		static const unsigned s_indices[6];
 	};
 
 } // namespace Renderer

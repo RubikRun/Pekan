@@ -30,10 +30,9 @@ namespace Renderer
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        Shape::createRenderObject(m_vertices, m_indices, dynamic);
-#else
-        Shape::createRenderObject(m_vertices, dynamic);
 #endif
+
+        Shape::createRenderObject(dynamic);
 	}
 
     void TriangleShape::setVertexA(glm::vec2 vertexA)

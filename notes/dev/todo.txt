@@ -66,7 +66,7 @@
 
 0026 20.05.2025 (DONE): Check if passing vertices to TriangleShape's create() in reverse order still works (change clockwise-ness of vertices).
 
-0027 22.05.2025 (TODO): Think about using getVertexData() in createRenderObject() instead of having a vertexData parameter
+0027 22.05.2025 (DONE): Think about using getVertexData() in createRenderObject() instead of having a vertexData parameter
 
 0028 24.05.2025 (TODO): Think about the relationship between textures and a shader in RenderObject.
                         More specifically when client changes the shader in a RenderObject what should happen to the textures?

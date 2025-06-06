@@ -61,35 +61,25 @@ namespace Renderer
         m_renderObject.getShader().setUniform4fv("uColor", color);
     }
 
-    void Shape::createRenderObject(const void* vertexData, bool dynamic)
+    void Shape::createRenderObject(bool dynamic)
     {
-        m_usingIndices = false;
         const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
 
+        // Create render object with vertex data and shaders
         m_renderObject.create
         (
-            vertexData, getVertexDataSize(),
-            { { ShaderDataType::Float2, "position" } },
-            vertexDataUsage,
-            Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-            Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
-        );
-        setColor(m_color);
-    }
-
-    void Shape::createRenderObject(const void* vertexData, const void* indexData, bool dynamic)
-    {
-        m_usingIndices = true;
-        const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
-
-        m_renderObject.create
-        (
-            vertexData, getVertexDataSize(),
+            getVertexData(), getVertexDataSize(),
             { { ShaderDataType::Float2, "position" } }, vertexDataUsage,
             Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
             Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
         );
-        m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::StaticDraw);
+        // If derived class has index data, set index data as well
+        const unsigned* indexData = getIndexData();
+        m_usingIndices = (indexData != nullptr);
+        if (m_usingIndices)
+        {
+            m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::StaticDraw);
+        }
 
         setColor(m_color);
     }
