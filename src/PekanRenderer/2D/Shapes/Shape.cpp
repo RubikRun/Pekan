@@ -22,13 +22,13 @@ namespace Renderer
 
     void Shape::destroy()
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to destroy a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(isValid(), "Trying to destroy a Shape that is not yet created.", "Pekan");
         m_renderObject.destroy();
     }
 
     void Shape::render() const
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to render a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(isValid(), "Trying to render a Shape that is not yet created.", "Pekan");
         m_renderObject.bind();
         if (m_usingIndices)
         {
@@ -42,27 +42,34 @@ namespace Renderer
 
     void Shape::setPosition(glm::vec2 position)
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to set position of a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(isValid(), "Trying to set position of a Shape that is not yet created.", "Pekan");
         _moveVertices(position - m_position);
         m_position = position;
     }
 
     void Shape::move(glm::vec2 deltaPosition)
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to move a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(isValid(), "Trying to move a Shape that is not yet created.", "Pekan");
         _moveVertices(deltaPosition);
         m_position += deltaPosition;
     }
 
     void Shape::setColor(glm::vec4 color)
     {
-        PK_ASSERT(m_renderObject.isValid(), "Trying to set color of a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(isValid(), "Trying to set color of a Shape that is not yet created.", "Pekan");
         m_color = color;
         m_renderObject.getShader().setUniform4fv("uColor", color);
     }
 
     void Shape::createRenderObject(bool dynamic)
     {
+        if (isValid())
+        {
+            PK_LOG_WARNING("Creating a 2D shape, but this Shape instance has been created before,"
+                " there is a valid render object inside. This old render object will be destroyed.", "Pekan");
+            destroy();
+        }
+
         const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
 
         // Create render object with vertex data and shaders

@@ -2156,3 +2156,42 @@ and user will have to set new textures.
 
 Done.
 }
+
+----------
+09.06.2025
+----------
+
+{
+Next TO-DO item
+    What will happen if you call a create() function of a 2D shape more than once, without calling destroy() in between?
+
+Let's try and see.
+Well, currently if I try to call create() on a 2D shape instance that has already been created I get 4 of these warnings in the console
+    [WARNING in RenderComponent.cpp:22](Pekan): Creating a render component, but there is already a render component created
+        in this RenderComponent instance. Old render component will be destroyed.
+and it works fine.
+
+That's ok, it makes some sense, because a 2D shape has an underlying render object which is made up of 4 render components,
+and apparently these 4 render components give off the warning.
+However, it would be better to catch this incorrect usage while still in the create() function of RenderObject,
+so that you get a single warning message saying "RenderObject instance is already created".
+Easy enough. Did it.
+Now when you try to create() a 2D shape twice you get this warning message
+    [WARNING in RenderObject.cpp:27](Pekan): Creating a render object, but there is already a render object
+        created in this RenderObject instance.Old render object will be destroyed.
+
+We can do a bit more than that, we can even detect in Shape.
+So now if you have a raw RenderObject and you call create() twice on it you will get the warning message above,
+but you have a Shape and you call create() twice on it you will get
+    [WARNING in Shape.cpp:69](Pekan): Creating a 2D shape, but this Shape instance has been created before, 
+        here is a valid render object inside. This old render object will be destroyed.
+
+I also had to add a
+    isValid()
+function to class Shape. It just checks if the underlying render object is valid.
+
+Tested a few different cases.
+Warning messages look good and come up at the right times.
+Ignoring the messages, everything else works normally, as expected.
+Done.
+}

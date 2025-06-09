@@ -73,7 +73,7 @@
                         Currently they are just all deleted and client should set textures anew if they need them in the new shader.
                         Is this an okay behavior? Is there something else that can be done?
 
-0029 25.05.2025 (TODO): What will happen if you call a create() function of a 2D shape more than once, without calling destroy() in between?
+0029 25.05.2025 (DONE): What will happen if you call a create() function of a 2D shape more than once, without calling destroy() in between?
 
 0030 27.05.2025 (TODO): Create a 2D camera that can be moved with mouse and/or with WASD keys
 

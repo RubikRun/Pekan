@@ -29,6 +29,14 @@ namespace Renderer
 
 		virtual int getNumberOfVertices() const = 0;
 
+		// Checks if shape is valid,
+		// meaning it has been created and not yet destroyed.
+		//
+		// NOTE: Derived classes have the responsibility to create the underlying render object
+		//       in their create() functions and that's when a shape becomes valid,
+		//       NOT when Shape::create() is called.
+		inline bool isValid() const { return m_renderObject.isValid(); }
+
 	private: /* functions */
 
 		virtual void _moveVertices(glm::vec2 deltaPosition) = 0;

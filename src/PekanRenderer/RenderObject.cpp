@@ -21,6 +21,13 @@ namespace Renderer
 		PK_ASSERT_QUICK(vertexData != nullptr); PK_ASSERT_QUICK(vertexDataSize >= 0);
 		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
 
+		if (isValid())
+		{
+			PK_LOG_WARNING("Creating a render object, but there is already a render object created"
+				" in this RenderObject instance. Old render object will be destroyed.", "Pekan");
+			destroy();
+		}
+
 		m_vertexDataUsage = vertexDataUsage;
 
 		m_vertexArray.create();
@@ -33,6 +40,13 @@ namespace Renderer
 	void RenderObject::create(const VertexBufferLayout& layout, const char* vertexShaderSource, const char* fragmentShaderSource)
 	{
 		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
+
+		if (isValid())
+		{
+			PK_LOG_WARNING("Creating a render object, but there is already a render object created"
+				" in this RenderObject instance. Old render object will be destroyed.", "Pekan");
+			destroy();
+		}
 
 		m_vertexArray.create();
 		m_vertexBuffer.create();
