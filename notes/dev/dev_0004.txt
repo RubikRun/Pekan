@@ -2195,3 +2195,31 @@ Warning messages look good and come up at the right times.
 Ignoring the messages, everything else works normally, as expected.
 Done.
 }
+
+----------
+10.06.2025
+----------
+
+{
+Next TO-DO item is a big one, not by size but by importance.
+    Create a 2D camera that can be moved with mouse and/or with WASD keys
+
+For the Camera2D class I have to make a decision if I want to construct a view-projection matrix
+from the camera's properties and pass that matrix to the shader,
+or just pass camera's properties directly to the shader.
+Hmmmm...
+I'll use a matrix.
+Mainly because it simplifies composition of transforms.
+
+I created a class
+    Camera2D
+with parameters
+    width
+    height
+    zoom
+    position
+It maintains a 4D view-projection matrix that can be retrieved by calling
+    camera.getViewProjectionMatrix();
+and passed to a vertex shader.
+Then the vertex shader should multiply vertices by that matrix before passing them to the next shader stage.
+}

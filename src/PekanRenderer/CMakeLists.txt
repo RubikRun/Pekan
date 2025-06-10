@@ -23,6 +23,8 @@ add_library(PekanRenderer STATIC
     RenderComponents/Texture.cpp
     Image.h
     Image.cpp
+    2D/Camera2D.h
+    2D/Camera2D.cpp
     2D/Shapes/Shape.h
     2D/Shapes/Shape.cpp
     2D/Shapes/TriangleShape.h
@@ -79,9 +81,11 @@ SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
 )
 # Group 2D files under a virtual folder called "2D"
 SOURCE_GROUP("Source Files\\2D" FILES
+    2D/Camera2D.cpp
     2D/Line.cpp
 )
 SOURCE_GROUP("Header Files\\2D" FILES
+    2D/Camera2D.h
     2D/Line.h
 )
 
