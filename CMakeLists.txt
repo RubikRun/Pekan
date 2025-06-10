@@ -19,6 +19,7 @@ if(WITH_DEMO_PROJECTS)
     add_subdirectory(src/Demo03)
     add_subdirectory(src/Demo04)
     add_subdirectory(src/Demo05)
+    add_subdirectory(src/Demo06)
 endif()
 # Add PekanRenderer subdirectory
 add_subdirectory(src/PekanRenderer)
@@ -48,6 +49,7 @@ if(WITH_DEMO_PROJECTS)
     set_target_properties(Demo03 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo04 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo05 PROPERTIES FOLDER "Demos")
+    set_target_properties(Demo06 PROPERTIES FOLDER "Demos")
 endif()
 
 # Add a static library PekanCore, compiling the following source files
@@ -116,8 +118,8 @@ target_include_directories(PekanCore PUBLIC src/PekanCore)
 target_include_directories(PekanCore PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)
-    # Set Demo05 to be the startup project by default
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo05)
+    # Set Demo06 to be the startup project by default
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo06)
 endif()
 
 # Set PEKAN_ROOT_DIR macro to be the path to current source directory

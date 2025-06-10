@@ -2222,4 +2222,15 @@ It maintains a 4D view-projection matrix that can be retrieved by calling
     camera.getViewProjectionMatrix();
 and passed to a vertex shader.
 Then the vertex shader should multiply vertices by that matrix before passing them to the next shader stage.
+
+How can we test this?
+Let's create a new demo. Thinking ahead, let's make it be suitable for testing Batch Rendering as well.
+Let's create a scene with thousands of different shapes moving around, and a slider in GUI for controlling the number of shapes.
+We'll have 2 goals in this demo:
+- To demonstrate how camera can move and zooom in the scene's world
+- To optimize the scene with Batch Rendering
+
+So let's create Demo06 starting with a copy of Demo00.
+Done.
+
 }
