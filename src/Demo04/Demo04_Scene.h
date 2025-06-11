@@ -61,7 +61,6 @@ namespace Demo
 		Pekan::Renderer::Image m_image0;
 		Pekan::Renderer::Image m_image1;
 
-		// GUI window for controlling background's color
 		const Demo04_GUIWindow* m_guiWindow = nullptr;
 
 		bool m_enabledFaceCulling = false;

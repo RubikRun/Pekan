@@ -8,14 +8,11 @@ namespace Demo
 
 	void Demo06_GUIWindow::_render()
 	{
-		ImGui::SetNextWindowSize(ImVec2(200, 120));
+		ImGui::SetNextWindowSize(ImVec2(300, 80));
 		ImGui::Begin("Pekan");
 
-		ImGui::Text("Background Color");
-		ImGui::ColorEdit3("", (float*)(&m_clearColor));
-
-		ImGui::Text("Position");
-		ImGui::DragFloat2("", (float*)&(m_position), 0.01f, -1.0f, 1.0f);
+		ImGui::Text("Number Of Shapes");
+		ImGui::SliderInt("##NumberOfShapes", &m_numberOfShapes, 5, 5000);
 
 		ImGui::End();
 	}

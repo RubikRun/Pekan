@@ -80,3 +80,5 @@
 0031 27.05.2025 (TODO): Create a world space and a resolution-independent way to render 2D shapes
 
 0032 28.05.2025 (TODO): Implement triangulation algorithm in PolygonShape to support non-convex polygons
+
+0033 11.06.2025 (TODO): Add support for rotation of 2D shapes

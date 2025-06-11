@@ -14,11 +14,8 @@ namespace Demo
 
 		Demo06_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
 
-		// Returns current value of clear color
-		inline const ImVec4& getClearColor() const { return m_clearColor; }
-
-		// Returns current value of position
-		inline const ImVec2& getPosition() const { return m_position; }
+		// Returns current number of shapes
+		inline int getNumberOfShapes() const { return m_numberOfShapes; }
 
 	private: /* functions */
 
@@ -28,11 +25,7 @@ namespace Demo
 
 	private: /* variables */
 
-		// Color for clearing scene's background
-		ImVec4 m_clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-		// Position of the square, relative to window's center
-		ImVec2 m_position = ImVec2(0.0f, 0.0f);
+		int m_numberOfShapes = 100;
 	};
 
 } // namespace Demo

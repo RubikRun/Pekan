@@ -15,6 +15,8 @@ namespace Demo
 	{
 		WindowProperties windowProperties;
 		windowProperties.title = getName();
+		windowProperties.width = 1720;
+		windowProperties.height = 980;
 		PekanEngine::createWindow(windowProperties);
 
 		// Create demo scene and demo GUI window

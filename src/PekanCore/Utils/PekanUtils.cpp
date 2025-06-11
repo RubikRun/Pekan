@@ -43,10 +43,30 @@ namespace Utils
         return distribution(getRandomNumberGenerator());
     }
 
+    int getRandomInt(glm::ivec2 range)
+    {
+        return getRandomInt(range.x, range.y);
+    }
+
     float getRandomFloat(float min, float max)
     {
         std::uniform_real_distribution<float> distribution(min, max);
         return distribution(getRandomNumberGenerator());
+    }
+
+    float getRandomFloat(glm::vec2 range)
+    {
+        return getRandomFloat(range.x, range.y);
+    }
+
+    glm::vec2 getRandomVec2(glm::vec2 xRange, glm::vec2 yRange)
+    {
+        return { getRandomFloat(xRange), getRandomFloat(yRange) };
+    }
+
+    glm::vec2 getRandomIVec2(glm::ivec2 xRange, glm::ivec2 yRange)
+    {
+        return { getRandomInt(xRange), getRandomInt(yRange) };
     }
 
 } // namespace Utils

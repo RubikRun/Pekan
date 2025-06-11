@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include <string>
 #include <random>
 #include <chrono>
@@ -14,9 +16,17 @@ namespace Utils
 
     // Generates a random int in a given range
     int getRandomInt(int min, int max);
+    int getRandomInt(glm::ivec2 range);
 
     // Generates a random float in a given range
     float getRandomFloat(float min, float max);
+    float getRandomFloat(glm::vec2 range);
+
+    // Generates a random vec2 (2 float values) in a given range
+    glm::vec2 getRandomVec2(glm::vec2 xRange, glm::vec2 yRange);
+
+    // Generates a random ivec2 (2 int values) in a given range
+    glm::vec2 getRandomIVec2(glm::ivec2 xRange, glm::ivec2 yRange);
 
 } // namespace Utils
 } // namespace Pekan

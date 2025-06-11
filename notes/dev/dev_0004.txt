@@ -2249,4 +2249,17 @@ Done.
     It works.
     }
 
+Now let's continue with Demo06.
+Created a GUI slider for controlling the number of shapes.
+Created a bunch of random rectangles in a coordinate system with a different center and a different scale from the standard [-1, 1].
+Currently we can't see them because they are outside of [-1, 1].
+We need to use the camera now and configure it so that we can see the rectangle's bounding box properly.
+
+Also added a few new functions under the Pekan::Utils namespace
+    int getRandomInt(glm::ivec2 range);
+    float getRandomFloat(glm::vec2 range);
+    glm::vec2 getRandomVec2(glm::vec2 xRange, glm::vec2 yRange);
+    glm::vec2 getRandomIVec2(glm::ivec2 xRange, glm::ivec2 yRange);
+just for convenience.
+
 }
