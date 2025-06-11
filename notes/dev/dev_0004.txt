@@ -2233,4 +2233,20 @@ We'll have 2 goals in this demo:
 So let's create Demo06 starting with a copy of Demo00.
 Done.
 
+----------
+11.06.2025
+----------
+
+    {
+    Random side quest.
+    I want to be able to control the position where window spawns when an application is launched.
+    I think it makes sense for this to be part of struct WindowProperties
+        glm::ivec2 initialPosition = glm::ivec2(30, 40);
+    and to be used in class Window's create() function like that:
+        glfwSetWindowPos(m_glfwWindow, properties.initialPosition.x, properties.initialPosition.y);
+    Of course, only if the application is not fullscreen.
+    Done.
+    It works.
+    }
+
 }

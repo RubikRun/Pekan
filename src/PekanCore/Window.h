@@ -17,6 +17,15 @@ namespace Pekan
 	{
 		int width = 1280;
 		int height = 720;
+
+		// Initial position where the window will be spawned when the application is launched.
+		// This is the position of the top-left corner of the window, in pixel coordinates.
+		//
+		// NOTE: A window's top bar is NOT considered part of the window,
+		//       so it will be ABOVE this position.
+		//       In other words, this position will be the bottom-left corner of the bar.
+		glm::ivec2 initialPosition = glm::ivec2(30, 40);
+
 		std::string title = "Pekan Engine v0.1";
 		bool fullScreen = false;
 		bool hideCursor = false;

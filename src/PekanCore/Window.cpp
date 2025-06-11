@@ -48,6 +48,13 @@ namespace Pekan
             glfwTerminate();
             return false;
         }
+
+        if (!properties.fullScreen)
+        {
+            // Set window's initial position
+            glfwSetWindowPos(m_glfwWindow, properties.initialPosition.x, properties.initialPosition.y);
+        }
+
         // Make the window's context current
         glfwMakeContextCurrent(m_glfwWindow);
 
