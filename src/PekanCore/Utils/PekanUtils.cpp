@@ -69,5 +69,16 @@ namespace Utils
         return { getRandomInt(xRange), getRandomInt(yRange) };
     }
 
+    glm::vec4 getRandomColor(bool randomizeAlpha)
+    {
+        return
+        {
+            getRandomFloat(0.0f, 1.0f),
+            getRandomFloat(0.0f, 1.0f),
+            getRandomFloat(0.0f, 1.0f),
+            randomizeAlpha ? getRandomFloat(0.0f, 1.0f) : 1.0f
+        };
+    }
+
 } // namespace Utils
 } // namespace Pekan

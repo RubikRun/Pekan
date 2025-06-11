@@ -2262,4 +2262,40 @@ Also added a few new functions under the Pekan::Utils namespace
     glm::vec2 getRandomIVec2(glm::ivec2 xRange, glm::ivec2 yRange);
 just for convenience.
 
+So let's see how we can use the camera now to see the rectangles properly.
+We basically need to get the camera's view projection matrix
+( We already have a function for that -> Camera::getViewProjectionMatrix() )
+and set it as a uniform inside class Shape's shader.
+Since all 2D shapes use the same vertex shader, it makes sense that this will apply to all shapes,
+so it can be implemented in the base class Shape.
+How do we pass the view projection matrix to class Shape? At what point, through what function?
+It'd be best to pass the whole camera to Shape::render()
+and then Shape::render() can get the view projection matrix and set it to the shader's uniform.
+    (
+    In the future we might want to have a RenderContext struct/class that holds together the camera, lights, render target,
+    and other things that apply to rendering globally.
+    For now we'll not do that because we don't need it immediately, it's better to do it when the need is apparent.
+    Also another reason - not sure if I want to have 2 different structs RenderContext2D and RenderContext3D
+    and this is not a decision that needs to be taken right now.
+    )
+So let's just have a camera parameter in Shape::render().
+    void render(const Camera2D& camera);
+For now I'll keep the old render() overload as well so that old demos work as well.
+Created a TO-DO item to remove this old render() overload in the future and always provide a camera.
+Then we need this new uniform in the vertex shader of class Shape
+    uniform mat4 u_viewProjectionMatrix;
+and we just need to multiply the position attribute by this matrix before passing it along to the next stage
+    gl_Position = u_viewProjectionMatrix * vec4(a_position, 0.0, 1.0);
+Now in Shape::render() we can use the camera parameter to get the view projection matrix and set it to the shader's uniform
+    const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
+    m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", viewProjectionMatrix);
+That's fundamentally it.
+
+I also added some new methods to Camera2D and a new function getRandomColor() in Pekan::Utils,
+and some other minor changes, nothing important.
+
+Tried using a camera in Demo06. Rectangles appear on the window now.
+Also tried to move and zoom out the camera in Demo06's update() function.
+It works!
+
 }

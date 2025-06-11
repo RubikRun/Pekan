@@ -10,6 +10,8 @@
 #include "PolygonShape.h"
 #include "LineShape.h"
 
+#include "Camera2D.h"
+
 #include "Demo06_GUIWindow.h"
 
 #include <vector>
@@ -43,6 +45,7 @@ namespace Demo
 	private: /* functions */
 
 		void createBbox();
+		void createCamera();
 		void createShapes();
 		void createRectangles();
 
@@ -54,6 +57,8 @@ namespace Demo
 		std::vector<Pekan::Renderer::TriangleShape> m_triangles;
 		std::vector<Pekan::Renderer::PolygonShape> m_polygons;
 		std::vector<Pekan::Renderer::LineShape> m_lines;
+
+		Pekan::Renderer::Camera2D m_camera;
 
 		BoundingBox2D m_bbox;
 

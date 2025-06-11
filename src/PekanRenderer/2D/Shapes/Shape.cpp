@@ -2,8 +2,8 @@
 
 #include "Utils/PekanUtils.h"
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/assets/shaders/VertexShader_2D.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/assets/shaders/FragmentShader_SolidColor.glsl"
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/VertexShader_2D.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/FragmentShader_SolidColor.glsl"
 
 static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 static constexpr unsigned FLOAT_SIZE = sizeof(float);
@@ -30,6 +30,26 @@ namespace Renderer
     {
         PK_ASSERT(isValid(), "Trying to render a Shape that is not yet created.", "Pekan");
         m_renderObject.bind();
+
+        if (m_usingIndices)
+        {
+            PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
+        }
+        else
+        {
+            PekanRenderer::draw(getNumberOfVertices(), getDrawMode());
+        }
+    }
+
+    void Shape::render(const Camera2D& camera)
+    {
+        PK_ASSERT(isValid(), "Trying to render a Shape that is not yet created.", "Pekan");
+        m_renderObject.bind();
+
+        // Set shader's view projection matrix uniform
+        const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
+        m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", viewProjectionMatrix);
+
         if (m_usingIndices)
         {
             PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
@@ -87,6 +107,10 @@ namespace Renderer
         {
             m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::StaticDraw);
         }
+
+        // Set shader's view projection matrix uniform to an identity matrix
+        static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+        m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
 
         setColor(m_color);
     }

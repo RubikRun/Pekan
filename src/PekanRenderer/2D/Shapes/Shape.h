@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RenderObject.h"
+#include "Camera2D.h"
 
 #include <glm/glm.hpp>
 
@@ -18,6 +19,8 @@ namespace Renderer
 		void destroy();
 
 		void render() const;
+		// Renders shape using the given camera
+		void render(const Camera2D& camera);
 
 		inline glm::vec2 getPosition() const { return m_position; }
 

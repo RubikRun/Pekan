@@ -11,10 +11,16 @@ namespace Renderer
     {
     public:
 
-        Camera2D(float width, float height);
+        void setSize(float width, float height);
 
-        void setPosition(const glm::vec2& position);
+        inline glm::vec2 getPosition() const { return m_position; }
+        void setPosition(glm::vec2 position);
+        void move(glm::vec2 deltaPosition);
+
+        inline float getZoom() const { return m_zoom; }
         void setZoom(float zoom);
+        void zoomIn(float factor);
+        void zoomOut(float factor);
 
         const glm::mat4& getViewProjectionMatrix() const;
 
@@ -28,8 +34,8 @@ namespace Renderer
         glm::vec2 m_position = { 0.0f, 0.0f };
         float m_zoom = 1.0f;
 
-        float m_width;
-        float m_height;
+        float m_width = -1.0f;
+        float m_height = -1.0f;
 
         glm::mat4 m_viewMatrix = glm::mat4(1.0f);
         glm::mat4 m_projectionMatrix = glm::mat4(1.0f);

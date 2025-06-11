@@ -14,14 +14,15 @@ using Pekan::Renderer::CircleShapeStatic;
 using Pekan::Renderer::TriangleShape;
 using Pekan::Renderer::PolygonShape;
 using Pekan::Renderer::LineShape;
+using Pekan::Renderer::Camera2D;
 using Pekan::Utils::getRandomFloat;
 using Pekan::Utils::getRandomVec2;
+using Pekan::Utils::getRandomColor;
 
 static const char* vertexShaderFilePath = "resources/06_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/06_fragment_shader.glsl";
 
 static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
-static float BBOX_SCALE = 0.15f;
 
 namespace Demo
 {
@@ -32,6 +33,7 @@ namespace Demo
 		m_perShapeTypeCount = shapesCount / 5;
 
 		createBbox();
+		createCamera();
 		createShapes();
 
         return true;
@@ -41,16 +43,19 @@ namespace Demo
 	{
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
 		m_perShapeTypeCount = shapesCount / 5;
+
+		m_camera.move({ 0.2f, 0.3f });
+		m_camera.zoomOut(1.0005f);
 	}
 
 	void Demo06_Scene::render()
 	{
+		PekanRenderer::clear();
+
 		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_rectangles[i].render();
+			m_rectangles[i].render(m_camera);
 		}
-
-        PekanRenderer::clear();
 	}
 
 	void Demo06_Scene::exit()
@@ -68,10 +73,16 @@ namespace Demo
 		m_bbox.min = BBOX_MIN;
 		m_bbox.max =
 		{
-			m_bbox.min.x + windowResolution.x * BBOX_SCALE,
-			m_bbox.min.y + windowResolution.y + BBOX_SCALE
+			m_bbox.min.x + windowResolution.x,
+			m_bbox.min.y + windowResolution.y
 		};
 		m_bbox.size = m_bbox.max - m_bbox.min;
+	}
+
+	void Demo06_Scene::createCamera()
+	{
+		m_camera.setSize(m_bbox.size.x, m_bbox.size.y);
+		m_camera.setPosition(m_bbox.min + (m_bbox.max - m_bbox.min) / 2.0f);
 	}
 
 	void Demo06_Scene::createShapes()
@@ -105,6 +116,7 @@ namespace Demo
 		{
 			m_rectangles[i].create(getRandomFloat(widthRange), getRandomFloat(heightRange));
 			m_rectangles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
+			m_rectangles[i].setColor(getRandomColor());
 		}
 	}
 

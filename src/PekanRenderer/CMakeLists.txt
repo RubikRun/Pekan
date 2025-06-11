@@ -90,7 +90,7 @@ SOURCE_GROUP("Header Files\\2D" FILES
 )
 
 # Set include directories for PekanRenderer
-target_include_directories(PekanRenderer PUBLIC . RenderComponents 2D/Shapes)
+target_include_directories(PekanRenderer PUBLIC . RenderComponents 2D 2D/Shapes)
 
 # Set link libraries for PekanRenderer
 target_link_libraries(PekanRenderer PRIVATE PekanCore glad glm opengl32.lib)

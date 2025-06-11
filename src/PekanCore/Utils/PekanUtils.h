@@ -28,5 +28,11 @@ namespace Utils
     // Generates a random ivec2 (2 int values) in a given range
     glm::vec2 getRandomIVec2(glm::ivec2 xRange, glm::ivec2 yRange);
 
+    // Generates a random color in RGBA format using a [0, 1] range
+    // @param[in] randomizeAlpha - specifies if alpha value should be random as well.
+    //                             If this parameter is false, you'll get a random solid color.
+    //                             If this parameter is true, you'll get a random color with a random opacity.
+    glm::vec4 getRandomColor(bool randomizeAlpha = false);
+
 } // namespace Utils
 } // namespace Pekan

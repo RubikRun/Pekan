@@ -7,23 +7,41 @@ namespace Pekan
 namespace Renderer
 {
 
-    Camera2D::Camera2D(float width, float height)
-        : m_width(width)
-        , m_height(height)
+    void Camera2D::setSize(float width, float height)
     {
+        m_width = width;
+        m_height = height;
         recalculateProjection();
         recalculateView();
     }
 
-    void Camera2D::setPosition(const glm::vec2& position)
+    void Camera2D::setPosition(glm::vec2 position)
     {
         m_position = position;
+        recalculateView();
+    }
+
+    void Camera2D::move(glm::vec2 deltaPosition)
+    {
+        m_position += deltaPosition;
         recalculateView();
     }
 
     void Camera2D::setZoom(float zoom)
     {
         m_zoom = zoom;
+        recalculateProjection();
+    }
+
+    void Camera2D::zoomIn(float factor)
+    {
+        m_zoom *= factor;
+        recalculateProjection();
+    }
+
+    void Camera2D::zoomOut(float factor)
+    {
+        m_zoom /= factor;
         recalculateProjection();
     }
 

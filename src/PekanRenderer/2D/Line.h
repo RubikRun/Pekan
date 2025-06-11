@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RenderObject.h"
+#include "Camera2D.h"
 
 #include <glm/glm.hpp>
 
@@ -24,7 +25,9 @@ namespace Renderer
 
 		void destroy();
 
-		void render();
+		void render() const;
+		// Renders line using the given camera
+		void render(const Camera2D& camera);
 
 		void setPointA(glm::vec2 pointA);
 		void setPointB(glm::vec2 pointB);

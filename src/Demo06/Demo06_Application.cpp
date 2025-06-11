@@ -19,6 +19,8 @@ namespace Demo
 		windowProperties.height = 980;
 		PekanEngine::createWindow(windowProperties);
 
+		setFPS(60.0);
+
 		// Create demo scene and demo GUI window
 		Demo06_Scene* demoScene = new Demo06_Scene(this);
 		Demo06_GUIWindow* demoGuiWindow = new Demo06_GUIWindow(this);
