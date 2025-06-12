@@ -49,6 +49,9 @@ namespace Demo
 		void createShapes();
 		void createRectangles();
 
+		bool onMouseMoved(Pekan::MouseMovedEvent& event) override;
+		bool onMouseScrolled(Pekan::MouseScrolledEvent& event) override;
+
 	private: /* variables */
 
 		std::vector<Pekan::Renderer::RectangleShape> m_rectangles;
@@ -63,6 +66,8 @@ namespace Demo
 		BoundingBox2D m_bbox;
 
 		int m_perShapeTypeCount = -1;
+
+		glm::vec2 m_mousePos = glm::vec2(0.0f, 0.0f);
 
 		const Demo06_GUIWindow* m_guiWindow = nullptr;
 	};

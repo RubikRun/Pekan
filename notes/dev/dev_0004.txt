@@ -2298,4 +2298,21 @@ Tried using a camera in Demo06. Rectangles appear on the window now.
 Also tried to move and zoom out the camera in Demo06's update() function.
 It works!
 
+Before continuing with other shape types let's allow the camera to be moved by user input.
+That's the important thing now. Having different shape types will be needed later when we do batch rendering
+to make sure that all shape types can be batched together.
+
+So how do we make camera move with user input?
+Well, we can do it as application logic inside of Demo06
+by overriding these 2 functions
+    bool onMouseMoved(Pekan::MouseMovedEvent& event) override;
+    bool onMouseScrolled(Pekan::MouseScrolledEvent& event) override;
+in class Demo06_Scene.
+Implementing them to move the camera in a standard way is easy, nothing much to say there.
+It works like that.
+
+However, this logic should NOT be application logic.
+It should be defined in the engine, and the applications should only "enable camera controller" or something like that.
+
+
 }

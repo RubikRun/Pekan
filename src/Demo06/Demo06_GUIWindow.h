@@ -25,7 +25,7 @@ namespace Demo
 
 	private: /* variables */
 
-		int m_numberOfShapes = 100;
+		int m_numberOfShapes = 500;
 	};
 
 } // namespace Demo

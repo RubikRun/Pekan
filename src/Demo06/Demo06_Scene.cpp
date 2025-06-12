@@ -2,27 +2,17 @@
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
 
-using Pekan::PekanEngine;
-using Pekan::Renderer::PekanRenderer;
-using Pekan::Renderer::ShaderDataType;
-using Pekan::Renderer::DrawMode;
-using Pekan::Renderer::BufferDataUsage;
-using Pekan::Renderer::Shader;
-using Pekan::Renderer::RectangleShape;
-using Pekan::Renderer::CircleShape;
-using Pekan::Renderer::CircleShapeStatic;
-using Pekan::Renderer::TriangleShape;
-using Pekan::Renderer::PolygonShape;
-using Pekan::Renderer::LineShape;
-using Pekan::Renderer::Camera2D;
-using Pekan::Utils::getRandomFloat;
-using Pekan::Utils::getRandomVec2;
-using Pekan::Utils::getRandomColor;
+#include "Events/MouseEvent.h"
+
+using namespace Pekan;
+using namespace Pekan::Renderer;
+using namespace Pekan::Utils;
 
 static const char* vertexShaderFilePath = "resources/06_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/06_fragment_shader.glsl";
 
 static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
+static const float ZOOM_SPEED = 1.1f;
 
 namespace Demo
 {
@@ -43,9 +33,6 @@ namespace Demo
 	{
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
 		m_perShapeTypeCount = shapesCount / 5;
-
-		m_camera.move({ 0.2f, 0.3f });
-		m_camera.zoomOut(1.0005f);
 	}
 
 	void Demo06_Scene::render()
@@ -118,6 +105,35 @@ namespace Demo
 			m_rectangles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
 			m_rectangles[i].setColor(getRandomColor());
 		}
+	}
+
+	bool Demo06_Scene::onMouseMoved(MouseMovedEvent& event)
+	{
+		const glm::vec2 newMousePos = { event.getX(), event.getY() };
+		const glm::vec2 mouseDelta = newMousePos - m_mousePos;
+		m_mousePos = newMousePos;
+
+		if (PekanEngine::isMouseButtonPressed(MouseButton::Left))
+		{
+			m_camera.move(glm::vec2(-mouseDelta.x, mouseDelta.y) / m_camera.getZoom());
+		}
+
+		return true;
+	}
+
+	bool Demo06_Scene::onMouseScrolled(MouseScrolledEvent& event)
+	{
+		const float scrollAmount = event.getYOffset();
+		if (scrollAmount > 0.0f)
+		{
+			m_camera.zoomIn(ZOOM_SPEED);
+		}
+		else if (scrollAmount < 0.0f)
+		{
+			m_camera.zoomOut(ZOOM_SPEED);
+		}
+
+		return true;
 	}
 
 } // namespace Demo
