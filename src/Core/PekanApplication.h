@@ -3,10 +3,12 @@
 #include "Events/Event.h"
 #include "Events/KeyEvent_Enums.h"
 #include "Events/MouseEvent_Enums.h"
+#include "Events/EventListener.h"
 #include "LayerStack.h"
 #include "Time/DeltaTimer.h"
 
 #include <string>
+#include <memory>
 
 namespace Pekan
 {
@@ -30,6 +32,9 @@ namespace Pekan
 		void exit();
 
 		virtual std::string getName() const { return ""; }
+
+		void registerEventListener(const std::shared_ptr<EventListener>& eventListener);
+		void unregisterEventListener(const std::shared_ptr<EventListener>& eventListener);
 
 	protected: /* functions */
 
@@ -75,6 +80,9 @@ namespace Pekan
 
 		// Event queue where events are pushed if they are not handled by any layer
 		EventQueue m_eventQueue;
+
+		// List of registered event listeners that need to be notified when an event occurs
+		std::vector<std::weak_ptr<EventListener>> m_eventListeners;
 
 		// Delta timer used to keep track of time passed since last frame was rendered
 		DeltaTimer m_deltaTimer;

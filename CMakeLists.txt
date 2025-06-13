@@ -79,6 +79,7 @@ add_library(Core STATIC
     src/Core/Events/KeyEvent_Enums.h
     src/Core/Events/MouseEvent_Enums.h
     src/Core/Events/MouseEvent.h
+    src/Core/Events/EventListener.h
     src/Core/Time/FpsLimiter.h
     src/Core/Time/FpsLimiter.cpp
     src/Core/Time/DeltaTimer.h
@@ -99,6 +100,7 @@ SOURCE_GROUP("Header Files\\Events" FILES
     src/Core/Events/KeyEvent_Enums.h
     src/Core/Events/MouseEvent.h
     src/Core/Events/MouseEvent_Enums.h
+    src/Core/Events/EventListener.h
 )
 # Group Time files under a virtual folder called "Time"
 SOURCE_GROUP("Source Files\\Time" FILES src/Core/Time/FpsLimiter.cpp src/Core/Time/DeltaTimer.cpp)
