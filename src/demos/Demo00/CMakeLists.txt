@@ -14,8 +14,8 @@ add_executable(Demo00
 
 # Set link libraries for Demo00
 target_link_libraries(Demo00 PRIVATE
-    PekanCore
-    PekanRenderer
+    Core
+    Renderer
     glm
     imgui
 )

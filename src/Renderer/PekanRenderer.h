@@ -123,7 +123,7 @@ namespace Renderer
 	};
 
 	// This is a singleton/static class containing common rendering functionality,
-	// not specific to any graphics object, but just for the general rendering context.
+	// not specific to any render object/component, but just for the general rendering context.
 	class PekanRenderer
 	{
 		friend class VertexArray;

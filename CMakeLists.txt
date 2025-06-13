@@ -13,16 +13,16 @@ project(Pekan)
 
 if(WITH_DEMO_PROJECTS)
     # Add Demos subdirectories
-    add_subdirectory(src/Demo00)
-    add_subdirectory(src/Demo01)
-    add_subdirectory(src/Demo02)
-    add_subdirectory(src/Demo03)
-    add_subdirectory(src/Demo04)
-    add_subdirectory(src/Demo05)
-    add_subdirectory(src/Demo06)
+    add_subdirectory(src/demos/Demo00)
+    add_subdirectory(src/demos/Demo01)
+    add_subdirectory(src/demos/Demo02)
+    add_subdirectory(src/demos/Demo03)
+    add_subdirectory(src/demos/Demo04)
+    add_subdirectory(src/demos/Demo05)
+    add_subdirectory(src/demos/Demo06)
 endif()
-# Add PekanRenderer subdirectory
-add_subdirectory(src/PekanRenderer)
+# Add Renderer subdirectory
+add_subdirectory(src/Renderer)
 
 # Add GLFW subdirectory
 set(GLFW_BUILD_DOCS OFF)
@@ -52,60 +52,60 @@ if(WITH_DEMO_PROJECTS)
     set_target_properties(Demo06 PROPERTIES FOLDER "Demos")
 endif()
 
-# Add a static library PekanCore, compiling the following source files
-add_library(PekanCore STATIC
-    src/PekanCore/Logger/PekanLogger.h
-    src/PekanCore/Logger/PekanLogger.cpp
-    src/PekanCore/PekanEngine.h
-    src/PekanCore/PekanEngine.cpp
-    src/PekanCore/PekanApplication.h
-    src/PekanCore/PekanApplication.cpp
-    src/PekanCore/PekanGUIWindow.h
-    src/PekanCore/PekanGUIWindow.cpp
-    src/PekanCore/Window.h
-    src/PekanCore/Window.cpp
-    src/PekanCore/Layer.h
-    src/PekanCore/Layer.cpp
-    src/PekanCore/LayerStack.h
-    src/PekanCore/LayerStack.cpp
-    src/PekanCore/Utils/PekanUtils.h
-    src/PekanCore/Utils/PekanUtils.cpp
-    src/PekanCore/Utils/FileUtils.h
-    src/PekanCore/Utils/FileUtils.cpp
-    src/PekanCore/Utils/stb.cpp
-    src/PekanCore/Events/Event.h
-    src/PekanCore/Events/WindowEvent.h
-    src/PekanCore/Events/KeyEvent.h
-    src/PekanCore/Events/KeyEvent_Enums.h
-    src/PekanCore/Events/MouseEvent_Enums.h
-    src/PekanCore/Events/MouseEvent.h
-    src/PekanCore/Time/FpsLimiter.h
-    src/PekanCore/Time/FpsLimiter.cpp
-    src/PekanCore/Time/DeltaTimer.h
-    src/PekanCore/Time/DeltaTimer.cpp
+# Add a static library Core, compiling the following source files
+add_library(Core STATIC
+    src/Core/Logger/PekanLogger.h
+    src/Core/Logger/PekanLogger.cpp
+    src/Core/PekanEngine.h
+    src/Core/PekanEngine.cpp
+    src/Core/PekanApplication.h
+    src/Core/PekanApplication.cpp
+    src/Core/PekanGUIWindow.h
+    src/Core/PekanGUIWindow.cpp
+    src/Core/Window.h
+    src/Core/Window.cpp
+    src/Core/Layer.h
+    src/Core/Layer.cpp
+    src/Core/LayerStack.h
+    src/Core/LayerStack.cpp
+    src/Core/Utils/PekanUtils.h
+    src/Core/Utils/PekanUtils.cpp
+    src/Core/Utils/FileUtils.h
+    src/Core/Utils/FileUtils.cpp
+    src/Core/Utils/stb.cpp
+    src/Core/Events/Event.h
+    src/Core/Events/WindowEvent.h
+    src/Core/Events/KeyEvent.h
+    src/Core/Events/KeyEvent_Enums.h
+    src/Core/Events/MouseEvent_Enums.h
+    src/Core/Events/MouseEvent.h
+    src/Core/Time/FpsLimiter.h
+    src/Core/Time/FpsLimiter.cpp
+    src/Core/Time/DeltaTimer.h
+    src/Core/Time/DeltaTimer.cpp
 )
 
 # Group Logger files under a virtual folder called "Logger"
-SOURCE_GROUP("Source Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.cpp)
-SOURCE_GROUP("Header Files\\Logger" FILES src/PekanCore/Logger/PekanLogger.h)
+SOURCE_GROUP("Source Files\\Logger" FILES src/Core/Logger/PekanLogger.cpp)
+SOURCE_GROUP("Header Files\\Logger" FILES src/Core/Logger/PekanLogger.h)
 # Group Utils files under a virtual folder called "Utils"
-SOURCE_GROUP("Source Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.cpp src/PekanCore/Utils/FileUtils.cpp src/PekanCore/Utils/stb.cpp)
-SOURCE_GROUP("Header Files\\Utils" FILES src/PekanCore/Utils/PekanUtils.h src/PekanCore/Utils/FileUtils.h)
+SOURCE_GROUP("Source Files\\Utils" FILES src/Core/Utils/PekanUtils.cpp src/Core/Utils/FileUtils.cpp src/Core/Utils/stb.cpp)
+SOURCE_GROUP("Header Files\\Utils" FILES src/Core/Utils/PekanUtils.h src/Core/Utils/FileUtils.h)
 # Group Events files under a virtual folder called "Events"
 SOURCE_GROUP("Header Files\\Events" FILES
-    src/PekanCore/Events/Event.h
-    src/PekanCore/Events/WindowEvent.h
-    src/PekanCore/Events/KeyEvent.h
-    src/PekanCore/Events/KeyEvent_Enums.h
-    src/PekanCore/Events/MouseEvent.h
-    src/PekanCore/Events/MouseEvent_Enums.h
+    src/Core/Events/Event.h
+    src/Core/Events/WindowEvent.h
+    src/Core/Events/KeyEvent.h
+    src/Core/Events/KeyEvent_Enums.h
+    src/Core/Events/MouseEvent.h
+    src/Core/Events/MouseEvent_Enums.h
 )
 # Group Time files under a virtual folder called "Time"
-SOURCE_GROUP("Source Files\\Time" FILES src/PekanCore/Time/FpsLimiter.cpp src/PekanCore/Time/DeltaTimer.cpp)
-SOURCE_GROUP("Header Files\\Time" FILES src/PekanCore/Time/FpsLimiter.h src/PekanCore/Time/DeltaTimer.h)
+SOURCE_GROUP("Source Files\\Time" FILES src/Core/Time/FpsLimiter.cpp src/Core/Time/DeltaTimer.cpp)
+SOURCE_GROUP("Header Files\\Time" FILES src/Core/Time/FpsLimiter.h src/Core/Time/DeltaTimer.h)
 
-# Set link libraries for PekanCore
-target_link_libraries(PekanCore PRIVATE
+# Set link libraries for Core
+target_link_libraries(Core PRIVATE
     imgui
     glfw
     glm
@@ -113,9 +113,9 @@ target_link_libraries(PekanCore PRIVATE
     opengl32.lib
 )
 
-# Set include directories for PekanCore
-target_include_directories(PekanCore PUBLIC src/PekanCore)
-target_include_directories(PekanCore PRIVATE dep)
+# Set include directories for Core
+target_include_directories(Core PUBLIC src/Core)
+target_include_directories(Core PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)
     # Set Demo06 to be the startup project by default
@@ -123,4 +123,4 @@ if(WITH_DEMO_PROJECTS)
 endif()
 
 # Set PEKAN_ROOT_DIR macro to be the path to current source directory
-target_compile_definitions(PekanCore PRIVATE PEKAN_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_definitions(Core PRIVATE PEKAN_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")

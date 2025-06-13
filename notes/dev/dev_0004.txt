@@ -2314,5 +2314,65 @@ It works like that.
 However, this logic should NOT be application logic.
 It should be defined in the engine, and the applications should only "enable camera controller" or something like that.
 
+----------
+12.06.2025
+----------
+
+We have a major design problem now.
+It's good to implement this logic for controlling the camera with user input to a separate class
+    CameraController2D
+and then let the engine directly send events to the currently registered CameraController2D
+(there will be only 1 camera controller registered at a time, and users will be able to provide their own controllers)
+instead of CameraController2D having to get the events from a layer of the layer stack.
+More specifically the function
+    _dispatchEvent()    (PekanApplication.cpp)
+that currently sends events to all layers of the layer stack,
+needs to also send events to the camera controller.
+The problem with this is: Where do we put CameraController2D ?
+Conceptually it doesn't belong in Renderer because it's not render-specific, it's a user input mechanism.
+However, we also can't put it in Core because it needs to know about Camera2D which is a Renderer concept.
+(Remember, Core is not supposed to depend on Renderer)
+So how can we send events from Core to CameraController2D AND let CameraController2D know about Camera2D?
+
+Well, we need 2 things:
+- EventListener class in Core
+- A new module, call it
+    Tools
+
+This new Tools module will contain the CameraController2D class.
+It will depend on both Core and Renderer.
+Conceptually it will contain tools that are often used in game development
+but not strictly needed.
+
+What about the EventListener class?
+It will contain functions
+    virtual bool onKeyPressed(KeyPressedEvent& event) { return false; }
+    virtual bool onKeyReleased(KeyReleasedEvent& event) { return false; }
+    ...
+that are currently in class Layer.
+We will make class Layer and class CameraController2D both derive from EventListener.
+Then, we'll have a mechanism for register/unregister of EventListeners in PekanApplication.
+So PekanApplication will have a list of EventListeners
+and whenever an event occurs, the function
+    _dispatchEvent()
+will dispatch that event both to the layer stack AND the registered event listeners.
+
+The Tools module will have a static function for enabling the CameraController2D for a given camera and a given application.
+Importantly, there will be only one CameraController2D active at a time.
+I think this makes sense, because you basically never want to control more than 1 camera at a time.
+Do we need to have multiple instances of CameraController2D? Not really. Data-wise it contains just a pointer to a Camera2D.
+If an application has multiple cameras and wants to switch view from one to another, then it will have to just call
+    enableCameraController2D(...)
+with the newly controlled camera. Internally we'll keep the same CameraController2D instance but just change the Camera2D pointer.
+
+Makes sense.
+Let's do it!
+
+Implementation plan:
+0. Rename PekanCore to Core and PekanRenderer to Renderer
+1. Create class EventListener in Core + register/unregister mechanism + handling in _dispatchEvent()
+2. Create Tools module
+3. Create class CameraController2D in Tools + enable/disable functionality that registers/unregisters the controller as an event listener
+4. Test with 2 different cameras in Demo06, having a key for switching between cameras
 
 }
