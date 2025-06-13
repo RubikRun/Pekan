@@ -8,7 +8,7 @@ namespace Demo
 	class Demo05_Application : public Pekan::PekanApplication
 	{
 		bool _init(Pekan::LayerStack& layerStack) override;
-		std::string getName() const override { return "Rectangle Gradient"; }
+		std::string getName() const override { return "Mandelbrot Times Table"; }
 	};
 
 } // namespace Demo

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Events/Event.h"
-#include "Events/KeyEvent_Enums.h"
-#include "Events/MouseEvent_Enums.h"
+#include "Events/KeyEvents_Enums.h"
+#include "Events/MouseEvents_Enums.h"
 #include "Events/EventListener.h"
 #include "LayerStack.h"
 #include "Time/DeltaTimer.h"

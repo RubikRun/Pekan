@@ -4,9 +4,9 @@
 #include "Time/FpsLimiter.h"
 #include "Window.h"
 
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Events/WindowEvent.h"
+#include "Events/KeyEvents.h"
+#include "Events/MouseEvents.h"
+#include "Events/WindowEvents.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -162,7 +162,7 @@ namespace Pekan
         LayerStack& layerStack,
         std::vector<std::weak_ptr<EventListener>> eventListeners,
         EventQueue& eventQueue,
-        bool (EventListener::*onEventFunc)(EventT&)
+        bool (EventListener::*onEventFunc)(const EventT&)
     )
     {
         // Call the onEventFunc on all layers of the layer stack

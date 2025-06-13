@@ -16,24 +16,20 @@ namespace Pekan
 	{
 		friend class PekanApplication;
 
-
-	protected: // TODO: find out why not protected
-
-
-
+	protected:
 
 		// Functions that are automatically called when an event occurs in an application.
 		// Each of these functions can be overriden by a derived class to handle the specific type of event when it occurs.
 		// If an event is successfully handled in one of these functions, then that function must return true
 		// to indicate to Pekan that the event is handled.
-		virtual bool onKeyPressed(KeyPressedEvent& event) { return false; }
-		virtual bool onKeyReleased(KeyReleasedEvent& event) { return false; }
-		virtual bool onMouseMoved(MouseMovedEvent& event) { return false; }
-		virtual bool onMouseScrolled(MouseScrolledEvent& event) { return false; }
-		virtual bool onMouseButtonPressed(MouseButtonPressedEvent& event) { return false; }
-		virtual bool onMouseButtonReleased(MouseButtonReleasedEvent& event) { return false; }
-		virtual bool onWindowResized(WindowResizedEvent& event) { return false; }
-		virtual bool onWindowClosed(WindowClosedEvent& event) { return false; }
+		virtual bool onKeyPressed(const KeyPressedEvent& event) { return false; }
+		virtual bool onKeyReleased(const KeyReleasedEvent& event) { return false; }
+		virtual bool onMouseMoved(const MouseMovedEvent& event) { return false; }
+		virtual bool onMouseScrolled(const MouseScrolledEvent& event) { return false; }
+		virtual bool onMouseButtonPressed(const MouseButtonPressedEvent& event) { return false; }
+		virtual bool onMouseButtonReleased(const MouseButtonReleasedEvent& event) { return false; }
+		virtual bool onWindowResized(const WindowResizedEvent& event) { return false; }
+		virtual bool onWindowClosed(const WindowClosedEvent& event) { return false; }
 	};
 
 } // namespace Pekan

@@ -1,12 +1,15 @@
 #include "Demo06_Scene.h"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
+#include "PekanTools.h"
 
-#include "Events/MouseEvent.h"
+#include "Events/MouseEvents.h"
+#include "Events/KeyEvents.h"
 
 using namespace Pekan;
 using namespace Pekan::Renderer;
 using namespace Pekan::Utils;
+using namespace Pekan::Tools;
 
 static const char* vertexShaderFilePath = "resources/06_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/06_fragment_shader.glsl";
@@ -23,7 +26,7 @@ namespace Demo
 		m_perShapeTypeCount = shapesCount / 5;
 
 		createBbox();
-		createCamera();
+		createCameras();
 		createShapes();
 
         return true;
@@ -39,9 +42,11 @@ namespace Demo
 	{
 		PekanRenderer::clear();
 
+		Camera2D& camera = (m_currentCameraIdx == 0) ? *m_cameraFirst : *m_cameraSecond;
+
 		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_rectangles[i].render(m_camera);
+			m_rectangles[i].render(camera);
 		}
 	}
 
@@ -66,10 +71,17 @@ namespace Demo
 		m_bbox.size = m_bbox.max - m_bbox.min;
 	}
 
-	void Demo06_Scene::createCamera()
+	void Demo06_Scene::createCameras()
 	{
-		m_camera.setSize(m_bbox.size.x, m_bbox.size.y);
-		m_camera.setPosition(m_bbox.min + (m_bbox.max - m_bbox.min) / 2.0f);
+		m_cameraFirst = std::make_shared<Camera2D>();
+		m_cameraFirst->setSize(m_bbox.size.x, m_bbox.size.y);
+		m_cameraFirst->setPosition(m_bbox.min + (m_bbox.max - m_bbox.min) / 2.0f);
+
+		m_cameraSecond = std::make_shared<Camera2D>();
+		m_cameraSecond->setSize(m_bbox.size.x, m_bbox.size.y);
+		m_cameraSecond->setPosition(m_bbox.min + (m_bbox.max - m_bbox.min) / 2.0f);
+
+		PekanTools::enableCameraController2D(m_cameraFirst);
 	}
 
 	void Demo06_Scene::createShapes()
@@ -107,33 +119,22 @@ namespace Demo
 		}
 	}
 
-	bool Demo06_Scene::onMouseMoved(MouseMovedEvent& event)
+	bool Demo06_Scene::onKeyPressed(const Pekan::KeyPressedEvent& event)
 	{
-		const glm::vec2 newMousePos = { event.getX(), event.getY() };
-		const glm::vec2 mouseDelta = newMousePos - m_mousePos;
-		m_mousePos = newMousePos;
-
-		if (PekanEngine::isMouseButtonPressed(MouseButton::Left))
+		if (event.getKeyCode() == KeyCode::KEY_C)
 		{
-			m_camera.move(glm::vec2(-mouseDelta.x, mouseDelta.y) / m_camera.getZoom());
+			m_currentCameraIdx = (m_currentCameraIdx + 1) % 2;
+			if (m_currentCameraIdx == 0)
+			{
+				PekanTools::enableCameraController2D(m_cameraFirst);
+			}
+			else
+			{
+				PekanTools::enableCameraController2D(m_cameraSecond);
+			}
+			return true;
 		}
-
-		return true;
-	}
-
-	bool Demo06_Scene::onMouseScrolled(MouseScrolledEvent& event)
-	{
-		const float scrollAmount = event.getYOffset();
-		if (scrollAmount > 0.0f)
-		{
-			m_camera.zoomIn(ZOOM_SPEED);
-		}
-		else if (scrollAmount < 0.0f)
-		{
-			m_camera.zoomOut(ZOOM_SPEED);
-		}
-
-		return true;
+		return false;
 	}
 
 } // namespace Demo

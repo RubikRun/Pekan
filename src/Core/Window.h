@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Events/KeyEvent_Enums.h"
-#include "Events/MouseEvent_Enums.h"
+#include "Events/KeyEvents_Enums.h"
+#include "Events/MouseEvents_Enums.h"
 
 #include <string>
 #include <glm/glm.hpp>

@@ -23,6 +23,8 @@ if(WITH_DEMO_PROJECTS)
 endif()
 # Add Renderer subdirectory
 add_subdirectory(src/Renderer)
+# Add Tools subdirectory
+add_subdirectory(src/Tools)
 
 # Add GLFW subdirectory
 set(GLFW_BUILD_DOCS OFF)
@@ -74,11 +76,11 @@ add_library(Core STATIC
     src/Core/Utils/FileUtils.cpp
     src/Core/Utils/stb.cpp
     src/Core/Events/Event.h
-    src/Core/Events/WindowEvent.h
-    src/Core/Events/KeyEvent.h
-    src/Core/Events/KeyEvent_Enums.h
-    src/Core/Events/MouseEvent_Enums.h
-    src/Core/Events/MouseEvent.h
+    src/Core/Events/WindowEvents.h
+    src/Core/Events/KeyEvents.h
+    src/Core/Events/KeyEvents_Enums.h
+    src/Core/Events/MouseEvents_Enums.h
+    src/Core/Events/MouseEvents.h
     src/Core/Events/EventListener.h
     src/Core/Time/FpsLimiter.h
     src/Core/Time/FpsLimiter.cpp
@@ -95,11 +97,11 @@ SOURCE_GROUP("Header Files\\Utils" FILES src/Core/Utils/PekanUtils.h src/Core/Ut
 # Group Events files under a virtual folder called "Events"
 SOURCE_GROUP("Header Files\\Events" FILES
     src/Core/Events/Event.h
-    src/Core/Events/WindowEvent.h
-    src/Core/Events/KeyEvent.h
-    src/Core/Events/KeyEvent_Enums.h
-    src/Core/Events/MouseEvent.h
-    src/Core/Events/MouseEvent_Enums.h
+    src/Core/Events/WindowEvents.h
+    src/Core/Events/KeyEvents.h
+    src/Core/Events/KeyEvents_Enums.h
+    src/Core/Events/MouseEvents.h
+    src/Core/Events/MouseEvents_Enums.h
     src/Core/Events/EventListener.h
 )
 # Group Time files under a virtual folder called "Time"
@@ -110,10 +112,10 @@ SOURCE_GROUP("Header Files\\Time" FILES src/Core/Time/FpsLimiter.h src/Core/Time
 target_link_libraries(Core PRIVATE
     imgui
     glfw
-    glm
     glad
     opengl32.lib
 )
+target_link_libraries(Core PUBLIC glm)
 
 # Set include directories for Core
 target_include_directories(Core PUBLIC src/Core)

@@ -28,6 +28,8 @@ namespace Demo
 
 	class Demo06_Scene : public Pekan::Layer
 	{
+		using CameraPtr = std::shared_ptr<Pekan::Renderer::Camera2D>;
+
 	public:
 
 		Demo06_Scene(Pekan::PekanApplication* application) : Layer("scene_layer", application) {}
@@ -45,12 +47,11 @@ namespace Demo
 	private: /* functions */
 
 		void createBbox();
-		void createCamera();
+		void createCameras();
 		void createShapes();
 		void createRectangles();
 
-		bool onMouseMoved(Pekan::MouseMovedEvent& event) override;
-		bool onMouseScrolled(Pekan::MouseScrolledEvent& event) override;
+		bool onKeyPressed(const Pekan::KeyPressedEvent& event) override;
 
 	private: /* variables */
 
@@ -61,7 +62,10 @@ namespace Demo
 		std::vector<Pekan::Renderer::PolygonShape> m_polygons;
 		std::vector<Pekan::Renderer::LineShape> m_lines;
 
-		Pekan::Renderer::Camera2D m_camera;
+		CameraPtr m_cameraFirst;
+		CameraPtr m_cameraSecond;
+
+		int m_currentCameraIdx = 0;
 
 		BoundingBox2D m_bbox;
 

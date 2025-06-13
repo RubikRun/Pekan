@@ -24,7 +24,7 @@ namespace Demo
 
 	private: /* functions */
 
-		bool onKeyPressed(Pekan::KeyPressedEvent& event) override;
+		bool onKeyPressed(const Pekan::KeyPressedEvent& event) override;
 
 	private: /* variables */
 

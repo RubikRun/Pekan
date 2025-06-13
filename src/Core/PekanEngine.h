@@ -2,8 +2,8 @@
 
 #include "Logger/PekanLogger.h"
 #include "Window.h"
-#include "Events/KeyEvent_Enums.h"
-#include "Events/MouseEvent_Enums.h"
+#include "Events/KeyEvents_Enums.h"
+#include "Events/MouseEvents_Enums.h"
 
 #include <string>
 #include <glm/glm.hpp>
@@ -47,7 +47,11 @@ namespace Pekan
 		// so this function must be called at most once by an application.
 		static bool createWindow(WindowProperties properties);
 
-		static Window& getWindow() { return s_window; }
+		// Returns a reference to the window where the current application is running
+		inline static Window& getWindow() { return s_window; }
+
+		// Returns a pointer to the current application
+		inline static PekanApplication* getApplication() { return s_application; }
 
 		///////////////////
 		// INPUT POLLING //

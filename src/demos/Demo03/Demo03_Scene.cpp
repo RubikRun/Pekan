@@ -1,7 +1,7 @@
 #include "Demo03_Scene.h"
 
 #include "PekanApplication.h"
-#include "Events/KeyEvent.h"
+#include "Events/KeyEvents.h"
 
 using Pekan::Renderer::PekanRenderer;
 using Pekan::KeyPressedEvent;
@@ -43,7 +43,7 @@ namespace Demo
 		m_apple.destroy();
 	}
 
-	bool Demo03_Scene::onKeyPressed(Pekan::KeyPressedEvent& event)
+	bool Demo03_Scene::onKeyPressed(const Pekan::KeyPressedEvent& event)
 	{
 		// Make application close if escape key is pressed
 		if (event.getKeyCode() == KeyCode::KEY_ESCAPE)

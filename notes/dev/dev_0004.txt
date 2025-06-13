@@ -2375,4 +2375,6 @@ Implementation plan:
 3. Create class CameraController2D in Tools + enable/disable functionality that registers/unregisters the controller as an event listener
 4. Test with 2 different cameras in Demo06, having a key for switching between cameras
 
+Done.
+It works!
 }

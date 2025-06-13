@@ -122,7 +122,7 @@ namespace Renderer
 		ClampToBorder = 3
 	};
 
-	// This is a singleton/static class containing common rendering functionality,
+	// A singleton/static class containing common rendering functionality,
 	// not specific to any render object/component, but just for the general rendering context.
 	class PekanRenderer
 	{

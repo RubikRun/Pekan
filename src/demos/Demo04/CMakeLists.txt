@@ -16,7 +16,6 @@ add_executable(Demo04
 target_link_libraries(Demo04 PRIVATE
     Core
     Renderer
-    glm
     imgui
 )
 

@@ -93,7 +93,7 @@ SOURCE_GROUP("Header Files\\2D" FILES
 target_include_directories(Renderer PUBLIC . RenderComponents 2D 2D/Shapes)
 
 # Set link libraries for Renderer
-target_link_libraries(Renderer PRIVATE Core glad glm opengl32.lib)
+target_link_libraries(Renderer PRIVATE Core glad opengl32.lib)
 
 target_compile_definitions(Renderer PRIVATE
     # Set PEKAN_RENDERER_ROOT_DIR definition to be the path to current source directory

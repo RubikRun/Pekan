@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-#include "MouseEvent_Enums.h"
+#include "MouseEvents_Enums.h"
 
 #include <sstream>
 
