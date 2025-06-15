@@ -77,10 +77,12 @@
 
 0030 27.05.2025 (DONE): Create a 2D camera that can be moved with mouse and/or with WASD keys
 
-0031 27.05.2025 (TODO): Create a world space and a resolution-independent way to render 2D shapes
+0031 27.05.2025 (DONE): Create a world space and a resolution-independent way to render 2D shapes
 
 0032 28.05.2025 (TODO): Implement triangulation algorithm in PolygonShape to support non-convex polygons
 
 0033 11.06.2025 (TODO): Add support for rotation of 2D shapes
 
 0034 11.06.2025 (TODO): Think about maybe removing the overload of Shape::render() that doesn't take in a camera parameter
+
+0035 15.06.2025 (TODO): Make CameraController2D zoom at the direction of the mouse instead of towards the center

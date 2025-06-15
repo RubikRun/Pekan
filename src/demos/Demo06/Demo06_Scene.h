@@ -62,6 +62,9 @@ namespace Demo
 		std::vector<Pekan::Renderer::PolygonShape> m_polygons;
 		std::vector<Pekan::Renderer::LineShape> m_lines;
 
+		// A square in the center of the bounding box, just to make sure that coordinates are resolution-independent
+		Pekan::Renderer::RectangleShape m_centerSquare;
+
 		CameraPtr m_cameraFirst;
 		CameraPtr m_cameraSecond;
 

@@ -34,8 +34,11 @@ namespace Demo
 
 	void Demo06_Scene::update(double dt)
 	{
-		const int shapesCount = m_guiWindow->getNumberOfShapes();
-		m_perShapeTypeCount = shapesCount / 5;
+		if (m_guiWindow != nullptr)
+		{
+			const int shapesCount = m_guiWindow->getNumberOfShapes();
+			m_perShapeTypeCount = shapesCount / 5;
+		}
 	}
 
 	void Demo06_Scene::render()
@@ -48,6 +51,8 @@ namespace Demo
 		{
 			m_rectangles[i].render(camera);
 		}
+
+		m_centerSquare.render(camera);
 	}
 
 	void Demo06_Scene::exit()
@@ -56,6 +61,7 @@ namespace Demo
 		{
 			m_rectangles[i].destroy();
 		}
+		m_centerSquare.destroy();
 	}
 
 	void Demo06_Scene::createBbox()
@@ -75,45 +81,41 @@ namespace Demo
 	{
 		m_cameraFirst = std::make_shared<Camera2D>();
 		m_cameraFirst->setSize(m_bbox.size.x, m_bbox.size.y);
-		m_cameraFirst->setPosition(m_bbox.min + (m_bbox.max - m_bbox.min) / 2.0f);
+		m_cameraFirst->setPosition(m_bbox.min + m_bbox.size / 2.0f);
 
 		m_cameraSecond = std::make_shared<Camera2D>();
 		m_cameraSecond->setSize(m_bbox.size.x, m_bbox.size.y);
-		m_cameraSecond->setPosition(m_bbox.min + (m_bbox.max - m_bbox.min) / 2.0f);
+		m_cameraSecond->setPosition(m_bbox.min + m_bbox.size / 2.0f);
 
 		PekanTools::enableCameraController2D(m_cameraFirst);
 	}
 
 	void Demo06_Scene::createShapes()
 	{
-		if (m_guiWindow == nullptr)
-		{
-			PK_LOG_ERROR("GUI window is null", "Demo06");
-		}
-
 		createRectangles();
+
+		m_centerSquare.create(100.0f, 100.0f);
+		m_centerSquare.setPosition(m_bbox.min + m_bbox.size / 2.0f - glm::vec2(50.0f, 50.0f));
+		m_centerSquare.setColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	}
 
 	void Demo06_Scene::createRectangles()
 	{
-		const glm::vec2 widthRange =
+		const float minWidthHeight = std::min(m_bbox.size.x, m_bbox.size.y);
+		const glm::vec2 widthHeightRange =
 		{
-			m_bbox.size.x * 0.02f,
-			m_bbox.size.x * 0.08f
+			minWidthHeight * 0.02f,
+			minWidthHeight * 0.08f
 		};
-		const glm::vec2 heightRange =
-		{
-			m_bbox.size.y * 0.02f,
-			m_bbox.size.y * 0.08f
-		};
-		const glm::vec2 positionXRange = { m_bbox.min.x, m_bbox.max.x - widthRange.y };
-		const glm::vec2 positionYRange = { m_bbox.min.y, m_bbox.max.y - heightRange.y };
+
+		const glm::vec2 positionXRange = { m_bbox.min.x, m_bbox.max.x - widthHeightRange.y };
+		const glm::vec2 positionYRange = { m_bbox.min.y, m_bbox.max.y - widthHeightRange.y };
 
 		m_rectangles.resize(m_perShapeTypeCount);
 
 		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_rectangles[i].create(getRandomFloat(widthRange), getRandomFloat(heightRange));
+			m_rectangles[i].create(getRandomFloat(widthHeightRange), getRandomFloat(widthHeightRange));
 			m_rectangles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
 			m_rectangles[i].setColor(getRandomColor());
 		}

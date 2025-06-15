@@ -2377,4 +2377,15 @@ Implementation plan:
 
 Done.
 It works!
+
+----------
+15.06.2025
+----------
+
+Did we accidentially solve this other TO-DO item as well?
+    Create a world space and a resolution-independent way to render 2D shapes
+Created a square (same width and height in world space) that always sits at the center of the bounding box.
+Tried it with different resolutions. It's always a square.
+So yes, it works.
+Done.
 }
