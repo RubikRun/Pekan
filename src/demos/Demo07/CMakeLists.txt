@@ -16,6 +16,7 @@ add_executable(Demo07
 target_link_libraries(Demo07 PRIVATE
     Core
     Renderer
+    Tools
     imgui
 )
 

@@ -4,11 +4,17 @@
 
 #include "Demo07_GUIWindow.h"
 
+#include "Camera2D.h"
+#include "LineShape.h"
+#include <vector>
+
 namespace Demo
 {
 
 	class Demo07_Scene : public Pekan::Layer
 	{
+		using CameraPtr = std::shared_ptr<Pekan::Renderer::Camera2D>;
+
 	public:
 
 		Demo07_Scene(Pekan::PekanApplication* application) : Layer("scene_layer", application) {}
@@ -26,6 +32,9 @@ namespace Demo
 	private: /* variables */
 
 		const Demo07_GUIWindow* m_guiWindow = nullptr;
+
+		CameraPtr m_camera;
+		std::vector<Pekan::Renderer::LineShape> m_coordSys;
 	};
 
 } // namespace Demo
