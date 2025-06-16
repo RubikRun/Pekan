@@ -2389,3 +2389,20 @@ Tried it with different resolutions. It's always a square.
 So yes, it works.
 Done.
 }
+
+----------
+16.06.2025
+----------
+
+{
+Next TO-DO item
+    Add support for rotation of 2D shapes
+
+We'll also need to add support for scaling of 2D shapes so let's do it together.
+
+Let's create a new demo
+    Demo07
+and render a coordinate system in application code.
+Later we can move it to engine code.
+
+}
