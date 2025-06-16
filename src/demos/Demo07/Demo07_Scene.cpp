@@ -20,6 +20,8 @@ namespace Demo
 
     bool Demo07_Scene::init()
 	{
+		PekanRenderer::enableMultisampleAntiAliasing();
+
 		/////////
 		// CAMERA
 		/////////

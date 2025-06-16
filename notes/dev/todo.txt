@@ -90,5 +90,5 @@
 0036 16.06.2025 (TODO): Add overload of Camera2D's setSize() function that takes in a single float - the scale,
                         and automatically calculates width and height with the same ratio as window's resolution.
 
-0037 16.06.2025 (TODO): Fix bug in CameraController2D - when camera's size is different from window's resolution
+0037 16.06.2025 (DONE): Fix bug in CameraController2D - when camera's size is different from window's resolution
                         the translation speed is wrong. We need to take into acount the ratio of camera's size to window's resolution.

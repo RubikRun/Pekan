@@ -49,8 +49,12 @@ namespace Tools
 
             if (PekanEngine::isMouseButtonPressed(MouseButton::Left))
             {
-                // Move camera by the amount that the mouse has moved, divided by the zoom level
-                camera->move(glm::vec2(-mouseDelta.x, mouseDelta.y) / camera->getZoom());
+                // Mouse coordinates are in window space, we need them in camera space.
+                // We can divide the camera's size by the window's resolution to get a vector
+                // that can be used to multiply any window-space coordinate to get a camera-space coordinate.
+                const glm::vec2 windowToCameraFactor = camera->getSize() / glm::vec2(PekanEngine::getWindowResolution());
+                // Move camera by the amount that the mouse has moved in camera space, divided by the zoom level
+                camera->move(glm::vec2(-mouseDelta.x, mouseDelta.y) * windowToCameraFactor / camera->getZoom());
             }
 
             return true;

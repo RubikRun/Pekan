@@ -11,6 +11,7 @@ namespace Renderer
     {
     public:
 
+        inline glm::vec2 getSize() const { return glm::vec2(m_width, m_height); }
         void setSize(float width, float height);
 
         inline glm::vec2 getPosition() const { return m_position; }
