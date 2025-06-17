@@ -6,6 +6,7 @@
 
 #include "Camera2D.h"
 #include "LineShape.h"
+#include "RectangleShape.h"
 #include <vector>
 
 namespace Demo
@@ -29,12 +30,19 @@ namespace Demo
 		
 		void attachGUIWindow(const Demo07_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
 
+	private: /* functions */
+
+		void createCamera();
+		void createCoordSys();
+
 	private: /* variables */
 
 		const Demo07_GUIWindow* m_guiWindow = nullptr;
 
 		CameraPtr m_camera;
 		std::vector<Pekan::Renderer::LineShape> m_coordSys;
+
+		Pekan::Renderer::RectangleShape m_rectangle;
 	};
 
 } // namespace Demo

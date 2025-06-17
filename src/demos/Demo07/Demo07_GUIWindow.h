@@ -4,6 +4,7 @@
 using Pekan::PekanGUIWindow;
 
 #include "imgui.h"
+#include <glm/glm.hpp>
 
 namespace Demo
 {
@@ -14,6 +15,8 @@ namespace Demo
 
 		Demo07_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
 
+		inline glm::vec2 getRectanglePosition() const { return m_rectanglePosition; }
+
 	private: /* functions */
 
 		void _render() override;
@@ -21,6 +24,8 @@ namespace Demo
 		bool init() override;
 
 	private: /* variables */
+
+		glm::vec2 m_rectanglePosition = glm::vec2(1.5f, 1.0f);
 	};
 
 } // namespace Demo

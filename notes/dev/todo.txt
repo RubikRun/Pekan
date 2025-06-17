@@ -92,3 +92,6 @@
 
 0037 16.06.2025 (DONE): Fix bug in CameraController2D - when camera's size is different from window's resolution
                         the translation speed is wrong. We need to take into acount the ratio of camera's size to window's resolution.
+
+0038 16.06.2025 (TODO): Fix bug with CameraController2D receiving events from ImGui layer.
+                        For example, when you move an ImGui slider left and right, the camera behind it also moves left and right.

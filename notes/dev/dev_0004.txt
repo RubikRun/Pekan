@@ -2404,5 +2404,10 @@ Let's create a new demo
     Demo07
 and render a coordinate system in application code.
 Later we can move it to engine code.
+Done, we have a coordinate system now.
+
+Let's create a rectangle together with position parameter in GUI.
+Done.
+It works. Looks good.
 
 }

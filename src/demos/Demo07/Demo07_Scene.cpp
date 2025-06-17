@@ -22,10 +22,42 @@ namespace Demo
 	{
 		PekanRenderer::enableMultisampleAntiAliasing();
 
-		/////////
-		// CAMERA
-		/////////
+		createCamera();
+		createCoordSys();
 
+		m_rectangle.create(1.0f, 1.5f);
+		m_rectangle.setPosition({ 1.5f, 1.0f });
+		m_rectangle.setColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+
+		return true;
+	}
+
+	void Demo07_Scene::update(double dt)
+	{
+		m_rectangle.setPosition(m_guiWindow->getRectanglePosition());
+	}
+
+	void Demo07_Scene::render()
+	{
+		PekanRenderer::clear();
+		m_rectangle.render(*m_camera);
+		for (LineShape& csLine : m_coordSys)
+		{
+			csLine.render(*m_camera);
+		}
+	}
+
+	void Demo07_Scene::exit()
+	{
+		for (LineShape& csLine : m_coordSys)
+		{
+			csLine.destroy();
+		}
+		m_rectangle.destroy();
+	}
+
+	void Demo07_Scene::createCamera()
+	{
 		m_camera = std::make_shared<Camera2D>();
 		// TODO: cleanup this logic into an overload of Camera2D::setSize()
 		const glm::ivec2 winRes = PekanEngine::getWindowResolution();
@@ -38,14 +70,13 @@ namespace Demo
 			m_camera->setSize(CAMERA_SIZE, CAMERA_SIZE * float(winRes.y) / float(winRes.x));
 		}
 		PekanTools::enableCameraController2D(m_camera);
+	}
 
-		////////////////////
-		// COORDINATE SYSTEM
-		////////////////////
-
+	void Demo07_Scene::createCoordSys()
+	{
 		// Number of divisions rendered on the coordinate system
 		// in each of the 4 directions, starting from the center
-		const int divsCount = int(CAMERA_SIZE);
+		const int divsCount = int(CAMERA_SIZE) * 10;
 
 		m_coordSys.resize(divsCount * 4 + 2);
 		// Create horizontal and vertical line
@@ -73,29 +104,6 @@ namespace Demo
 		{
 			csLine.setColor(COORD_SYS_COLOR);
 			csLine.setThickness(COORD_SYS_THICKNESS);
-		}
-
-        return true;
-	}
-
-	void Demo07_Scene::update(double dt)
-	{
-	}
-
-	void Demo07_Scene::render()
-	{
-		PekanRenderer::clear();
-		for (LineShape& csLine : m_coordSys)
-		{
-			csLine.render(*m_camera);
-		}
-	}
-
-	void Demo07_Scene::exit()
-	{
-		for (LineShape& csLine : m_coordSys)
-		{
-			csLine.destroy();
 		}
 	}
 
