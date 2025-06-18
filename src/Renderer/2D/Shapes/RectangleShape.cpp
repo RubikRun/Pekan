@@ -15,8 +15,6 @@ namespace Renderer
         bool dynamic
     )
 	{
-        Shape::create();
-
         m_width = width;
         m_height = height;
 
@@ -28,12 +26,17 @@ namespace Renderer
         Shape::createRenderObject(dynamic);
 	}
 
+    void RectangleShape::destroy()
+    {
+        Shape::destroyRenderObject();
+    }
+
     void RectangleShape::setWidth(float width)
     {
         m_width = width;
         m_vertices[1].x = width + m_position.x;
         m_vertices[2].x = width + m_position.x;
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void RectangleShape::setHeight(float height)
@@ -41,7 +44,7 @@ namespace Renderer
         m_height = height;
         m_vertices[2].y = height + m_position.y;
         m_vertices[3].y = height + m_position.y;
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void RectangleShape::_moveVertices(glm::vec2 deltaPosition)
@@ -50,7 +53,7 @@ namespace Renderer
         m_vertices[1] += deltaPosition;
         m_vertices[2] += deltaPosition;
         m_vertices[3] += deltaPosition;
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
 } // namespace Renderer

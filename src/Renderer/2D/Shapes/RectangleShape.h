@@ -21,6 +21,7 @@ namespace Renderer
 			float width, float height,
 			bool dynamic = true
 		);
+		void destroy();
 
 		void setWidth(float width);
 		void setHeight(float height);

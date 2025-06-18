@@ -22,6 +22,7 @@ namespace Renderer
 			const std::vector<glm::vec2>& vertices,
 			bool dynamic = true
 		);
+		void destroy();
 
 		void setVertices(const std::vector<glm::vec2>& vertices);
 		void setVertex(int index, glm::vec2 vertex);

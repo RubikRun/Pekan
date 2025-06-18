@@ -5,7 +5,6 @@
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/VertexShader_2D.glsl"
 #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/FragmentShader_SolidColor.glsl"
 
-static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 static constexpr unsigned FLOAT_SIZE = sizeof(float);
 static constexpr unsigned VERTICES_SIZE = 6 * FLOAT_SIZE;
 
@@ -13,18 +12,6 @@ namespace Pekan
 {
 namespace Renderer
 {
-
-    void Shape::create()
-    {
-        m_position = { 0.0f, 0.0f };
-        m_color = DEFAULT_COLOR;
-    }
-
-    void Shape::destroy()
-    {
-        PK_ASSERT(isValid(), "Trying to destroy a Shape that is not yet created.", "Pekan");
-        m_renderObject.destroy();
-    }
 
     void Shape::render() const
     {
@@ -87,7 +74,7 @@ namespace Renderer
         {
             PK_LOG_WARNING("Creating a 2D shape, but this Shape instance has been created before,"
                 " there is a valid render object inside. This old render object will be destroyed.", "Pekan");
-            destroy();
+            destroyRenderObject();
         }
 
         const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
@@ -113,6 +100,12 @@ namespace Renderer
         m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
 
         setColor(m_color);
+    }
+
+    void Shape::destroyRenderObject()
+    {
+        PK_ASSERT(isValid(), "Trying to destroy a Shape that is not yet created.", "Pekan");
+        m_renderObject.destroy();
     }
 
     void Shape::updateRenderObject()

@@ -21,6 +21,7 @@ namespace Renderer
 			glm::vec2 pointA, glm::vec2 pointB, float thickness = 0.002f,
 			bool dynamic = true
 		);
+		void destroy();
 
 		void setPointA(glm::vec2 pointA);
 		void setPointB(glm::vec2 pointB);

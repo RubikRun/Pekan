@@ -26,6 +26,7 @@ namespace Renderer
 			float radius,
 			bool dynamic = true
 		);
+		void destroy();
 
 		void setRadius(float radius);
 

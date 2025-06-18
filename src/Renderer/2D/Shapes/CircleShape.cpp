@@ -17,8 +17,6 @@ namespace Renderer
         bool dynamic
     )
 	{
-        Shape::create();
-
         m_radius = radius;
         m_segmentsCount = DEFAULT_SEGMENTS_COUNT;
 
@@ -27,18 +25,23 @@ namespace Renderer
         Shape::createRenderObject(dynamic);
 	}
 
+    void CircleShape::destroy()
+    {
+        Shape::destroyRenderObject();
+    }
+
     void CircleShape::setRadius(float radius)
     {
         m_radius = radius;
         generateVertices();
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void CircleShape::setSegmentsCount(int segmentsCount)
     {
         m_segmentsCount = segmentsCount;
         generateVertices();
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void CircleShape::_moveVertices(glm::vec2 deltaPosition)
@@ -48,7 +51,7 @@ namespace Renderer
             m_vertices[i] += deltaPosition;
         }
 
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void CircleShape::generateVertices()

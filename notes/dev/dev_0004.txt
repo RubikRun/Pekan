@@ -2410,4 +2410,20 @@ Let's create a rectangle together with position parameter in GUI.
 Done.
 It works. Looks good.
 
+----------
+18.06.2025
+----------
+
+Now that we have the demo ready for us, let's implement rotation and scaling in class Shape.
+
+First, I did a small change in how 2D shapes derive from class Shape.
+I removed the create() function in Shape - it didn't do anythin beside set default values to some member variables.
+Instead I just set them where the member variables are declared, easier.
+I also removed the destroy() function and replaced it with this new function
+    void destroyRenderObject();
+matching the
+    void createRenderObject();
+function. Now derived classes can provide their own create() and destroy() functions
+and call createRenderObject() and destroyRenderObject() from them.
+
 }

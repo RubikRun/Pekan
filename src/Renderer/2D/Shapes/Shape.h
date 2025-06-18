@@ -14,21 +14,16 @@ namespace Renderer
 	{
 	public:
 
-		void create();
-
-		void destroy();
-
 		void render() const;
 		// Renders shape using the given camera
 		void render(const Camera2D& camera);
 
-		inline glm::vec2 getPosition() const { return m_position; }
-
 		void setPosition(glm::vec2 position);
 		void move(glm::vec2 deltaPosition);
-
-		inline glm::vec4 getColor() const { return m_color; }
 		void setColor(glm::vec4 color);
+
+		inline glm::vec2 getPosition() const { return m_position; }
+		inline glm::vec4 getColor() const { return m_color; }
 
 		virtual int getNumberOfVertices() const = 0;
 
@@ -58,6 +53,7 @@ namespace Renderer
 		// Creates the underlying render object
 		// @param[in] dynamic - Specifies if shape is going to be moved often. Used for optimization.
 		void createRenderObject(bool dynamic);
+		void destroyRenderObject();
 
 		// Updates the underlying render object with current vertex data
 		void updateRenderObject();
@@ -77,7 +73,7 @@ namespace Renderer
 
 		RenderObject m_renderObject;
 
-		glm::vec4 m_color;
+		glm::vec4 m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		bool m_usingIndices = false;
 	};

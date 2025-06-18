@@ -15,8 +15,6 @@ namespace Renderer
         bool dynamic
     )
 	{
-        Shape::create();
-
         m_pointA = pointA;
         m_pointB = pointB;
         m_thickness = thickness;
@@ -26,25 +24,30 @@ namespace Renderer
         Shape::createRenderObject(dynamic);
 	}
 
+    void LineShape::destroy()
+    {
+        Shape::destroyRenderObject();
+    }
+
     void LineShape::setPointA(glm::vec2 pointA)
     {
         m_pointA = pointA;
         generateVertices();
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void LineShape::setPointB(glm::vec2 pointB)
     {
         m_pointB = pointB;
         generateVertices();
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void LineShape::setThickness(float thickness)
     {
         m_thickness = thickness;
         generateVertices();
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void LineShape::_moveVertices(glm::vec2 deltaPosition)
@@ -53,7 +56,7 @@ namespace Renderer
         m_vertices[1] += deltaPosition;
         m_vertices[2] += deltaPosition;
         m_vertices[3] += deltaPosition;
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     void LineShape::generateVertices()

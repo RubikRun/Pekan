@@ -12,8 +12,6 @@ namespace Renderer
         bool dynamic
     )
 	{
-        Shape::create();
-
         m_radius = radius;
         generateVertices();
 
@@ -21,11 +19,17 @@ namespace Renderer
 	}
 
     template <unsigned NSegments>
+    void CircleShapeStatic<NSegments>::destroy()
+    {
+        Shape::destroyRenderObject();
+    }
+
+    template <unsigned NSegments>
     void CircleShapeStatic<NSegments>::setRadius(float radius)
     {
         m_radius = radius;
         generateVertices();
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     template <unsigned NSegments>
@@ -36,7 +40,7 @@ namespace Renderer
             m_vertices[i] += deltaPosition;
         }
 
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     template <unsigned NSegments>

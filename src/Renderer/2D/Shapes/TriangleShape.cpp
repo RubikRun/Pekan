@@ -22,8 +22,6 @@ namespace Renderer
         bool dynamic
     )
 	{
-        Shape::create();
-
         m_vertices[0] = vertexA;
         m_vertices[1] = vertexB;
         m_vertices[2] = vertexC;
@@ -35,14 +33,19 @@ namespace Renderer
         Shape::createRenderObject(dynamic);
 	}
 
+    void TriangleShape::destroy()
+    {
+        Shape::destroyRenderObject();
+    }
+
     void TriangleShape::setVertexA(glm::vec2 vertexA)
     {
         m_vertices[0] = vertexA + m_position;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        updateRenderObject(m_indices);
+        Shape::updateRenderObject(m_indices);
 #else
-        updateRenderObject();
+        Shape::updateRenderObject();
 #endif
     }
 
@@ -51,9 +54,9 @@ namespace Renderer
         m_vertices[1] = vertexB + m_position;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        updateRenderObject(m_indices);
+        Shape::updateRenderObject(m_indices);
 #else
-        updateRenderObject();
+        Shape::updateRenderObject();
 #endif
     }
 
@@ -62,9 +65,9 @@ namespace Renderer
         m_vertices[2] = vertexC + m_position;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        updateRenderObject(m_indices);
+        Shape::updateRenderObject(m_indices);
 #else
-        updateRenderObject();
+        Shape::updateRenderObject();
 #endif
     }
 
@@ -75,9 +78,9 @@ namespace Renderer
         m_vertices[2] = vertexC + m_position;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        updateRenderObject(m_indices);
+        Shape::updateRenderObject(m_indices);
 #else
-        updateRenderObject();
+        Shape::updateRenderObject();
 #endif
     }
 
@@ -86,7 +89,7 @@ namespace Renderer
         m_vertices[0] += deltaPosition;
         m_vertices[1] += deltaPosition;
         m_vertices[2] += deltaPosition;
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING

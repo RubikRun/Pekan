@@ -22,7 +22,6 @@ namespace Renderer
         bool dynamic
     )
 	{
-        Shape::create();
         m_vertices = vertices;
 
 #ifndef NDEBUG
@@ -41,6 +40,11 @@ namespace Renderer
 
         Shape::createRenderObject(dynamic);
 	}
+
+    void PolygonShape::destroy()
+    {
+        Shape::destroyRenderObject();
+    }
 
     void PolygonShape::setVertices(const std::vector<glm::vec2>& vertices)
     {
@@ -86,7 +90,7 @@ namespace Renderer
         }
 #endif
 
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
     glm::vec2 PolygonShape::getVertex(int index) const
@@ -105,7 +109,7 @@ namespace Renderer
         {
             vertex += deltaPosition;
         }
-        updateRenderObject();
+        Shape::updateRenderObject();
     }
 
 #ifndef NDEBUG

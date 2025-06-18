@@ -21,6 +21,7 @@ namespace Renderer
 			glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC,
 			bool dynamic = true
 		);
+		void destroy();
 
 		void setVertexA(glm::vec2 vertexA);
 		void setVertexB(glm::vec2 vertexB);
