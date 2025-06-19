@@ -31,17 +31,24 @@ namespace Renderer
 
 		int getNumberOfVertices() const override { return 4; }
 
+	protected: /* functions */
+
+		void updateTransformedVertices() override;
+
 	private: /* functions */
 
-		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		const glm::vec2* getVertexData() const override { return m_vertices; };
+		const glm::vec2* getVertexData() const override { return m_verticesWorld; };
 		const unsigned* getIndexData() const override { return s_indices; }
+
+		// (Re)calculates local vertices from current width and height
+		void calculateVerticesLocal();
 
 	private: /* variables */
 
+		// The 4 vertices of the rectangle, in local space
+		glm::vec2 m_verticesLocal[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
 		// The 4 vertices of the rectangle, in world space
-		glm::vec2 m_vertices[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+		glm::vec2 m_verticesWorld[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
 
 		float m_width = 0.0f;
 		float m_height = 0.0f;

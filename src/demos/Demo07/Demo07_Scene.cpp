@@ -29,18 +29,73 @@ namespace Demo
 		m_rectangle.setPosition({ 1.5f, 1.0f });
 		m_rectangle.setColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 
+		m_circle.create(0.6f);
+		m_circle.setPosition({ -1.5f, 1.0f });
+		m_circle.setColor({ 0.0f, 1.0f, 0.0f, 1.0f });
+
+		m_circleStatic.create(0.6f);
+		m_circleStatic.setPosition({ 0.0f, 0.0f });
+		m_circleStatic.setColor({ 1.0f, 0.0f, 1.0f, 1.0f });
+
+		m_triangle.create(glm::vec2(-0.5, -0.5f),glm::vec2(0.5f, -0.5f), glm::vec2(0.0f, 0.5f));
+		m_triangle.setPosition({ 1.5f, -1.0f });
+		m_triangle.setColor({ 0.0f, 0.0f, 1.0f, 1.0f });
+
+		m_polygon.create
+		({
+			{  0.3f,  0.6f },
+			{  0.1f,  0.9f },
+			{ -0.3f,  0.8f },
+			{ -0.5f,  0.3f },
+			{ -0.1f, -0.2f },
+			{  0.5f,  0.0f }
+		});
+		m_polygon.setPosition({ -1.5f, -2.0f });
+		m_polygon.setColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+
+		m_line.create({ -2.0f, -1.2f }, { 1.2f, 2.0f }, 0.02f);
+		m_line.setPosition({ 0.5f, 0.5f });
+		m_line.setColor({ 0.0f, 1.0f, 1.0f, 1.0f });
+
 		return true;
 	}
 
 	void Demo07_Scene::update(double dt)
 	{
 		m_rectangle.setPosition(m_guiWindow->getRectanglePosition());
+		m_rectangle.setRotation(m_guiWindow->getRectangleRotation());
+		m_rectangle.setScale(m_guiWindow->getRectangleScale());
+
+		m_circle.setPosition(m_guiWindow->getCirclePosition());
+		m_circle.setRotation(m_guiWindow->getCircleRotation());
+		m_circle.setScale(m_guiWindow->getCircleScale());
+
+		m_circleStatic.setPosition(m_guiWindow->getCircleStaticPosition());
+		m_circleStatic.setRotation(m_guiWindow->getCircleStaticRotation());
+		m_circleStatic.setScale(m_guiWindow->getCircleStaticScale());
+
+		m_triangle.setPosition(m_guiWindow->getTrianglePosition());
+		m_triangle.setRotation(m_guiWindow->getTriangleRotation());
+		m_triangle.setScale(m_guiWindow->getTriangleScale());
+
+		m_polygon.setPosition(m_guiWindow->getPolygonPosition());
+		m_polygon.setRotation(m_guiWindow->getPolygonRotation());
+		m_polygon.setScale(m_guiWindow->getPolygonScale());
+
+		m_line.setPosition(m_guiWindow->getLinePosition());
+		m_line.setRotation(m_guiWindow->getLineRotation());
+		m_line.setScale(m_guiWindow->getLineScale());
 	}
 
 	void Demo07_Scene::render()
 	{
 		PekanRenderer::clear();
 		m_rectangle.render(*m_camera);
+		m_circle.render(*m_camera);
+		m_circleStatic.render(*m_camera);
+		m_triangle.render(*m_camera);
+		m_polygon.render(*m_camera);
+		m_line.render(*m_camera);
 		for (LineShape& csLine : m_coordSys)
 		{
 			csLine.render(*m_camera);
@@ -54,6 +109,11 @@ namespace Demo
 			csLine.destroy();
 		}
 		m_rectangle.destroy();
+		m_circle.destroy();
+		m_circleStatic.destroy();
+		m_triangle.destroy();
+		m_polygon.destroy();
+		m_line.destroy();
 	}
 
 	void Demo07_Scene::createCamera()

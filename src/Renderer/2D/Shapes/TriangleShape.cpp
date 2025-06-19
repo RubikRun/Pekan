@@ -22,9 +22,12 @@ namespace Renderer
         bool dynamic
     )
 	{
-        m_vertices[0] = vertexA;
-        m_vertices[1] = vertexB;
-        m_vertices[2] = vertexC;
+        m_verticesLocal[0] = vertexA;
+        m_verticesLocal[1] = vertexB;
+        m_verticesLocal[2] = vertexC;
+        m_verticesWorld[0] = m_verticesLocal[0];
+        m_verticesWorld[1] = m_verticesLocal[1];
+        m_verticesWorld[2] = m_verticesLocal[2];
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
@@ -40,56 +43,62 @@ namespace Renderer
 
     void TriangleShape::setVertexA(glm::vec2 vertexA)
     {
-        m_vertices[0] = vertexA + m_position;
+        m_verticesLocal[0] = vertexA;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        Shape::updateRenderObject(m_indices);
-#else
-        Shape::updateRenderObject();
 #endif
+
+        updateTransformedVertices();
     }
 
     void TriangleShape::setVertexB(glm::vec2 vertexB)
     {
-        m_vertices[1] = vertexB + m_position;
+        m_verticesLocal[1] = vertexB;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        Shape::updateRenderObject(m_indices);
-#else
-        Shape::updateRenderObject();
 #endif
+
+        updateTransformedVertices();
     }
 
     void TriangleShape::setVertexC(glm::vec2 vertexC)
     {
-        m_vertices[2] = vertexC + m_position;
+        m_verticesLocal[2] = vertexC;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
-        Shape::updateRenderObject(m_indices);
-#else
-        Shape::updateRenderObject();
 #endif
+
+        updateTransformedVertices();
     }
 
     void TriangleShape::setVertices(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC)
     {
-        m_vertices[0] = vertexA + m_position;
-        m_vertices[1] = vertexB + m_position;
-        m_vertices[2] = vertexC + m_position;
+        m_verticesLocal[0] = vertexA;
+        m_verticesLocal[1] = vertexB;
+        m_verticesLocal[2] = vertexC;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         updateIndicesOrientation();
+#endif
+
+        updateTransformedVertices();
+    }
+
+    void TriangleShape::updateTransformedVertices()
+    {
+        // Multiply local vertices by transform matrix to get world vertices.
+        // NOTE: Local vertices are 2D, world vertices are also 2D,
+        //       but the transform matrix is 3x3, so we need to convert a local vertex to 3D
+        //       by adding a 3rd component of 1.0, then multiply it by the matrix, and then cut out the 3rd component,
+        //       to get the final 2D world vertex.
+        m_verticesWorld[0] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
+        m_verticesWorld[1] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
+        m_verticesWorld[2] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+
+#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
         Shape::updateRenderObject(m_indices);
 #else
         Shape::updateRenderObject();
 #endif
-    }
-
-    void TriangleShape::_moveVertices(glm::vec2 deltaPosition)
-    {
-        m_vertices[0] += deltaPosition;
-        m_vertices[1] += deltaPosition;
-        m_vertices[2] += deltaPosition;
-        Shape::updateRenderObject();
     }
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
@@ -99,7 +108,7 @@ namespace Renderer
         {
             return;
         }
-        if (isOrientationCCW(m_vertices[0], m_vertices[1], m_vertices[2]))
+        if (isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
         {
             m_indices[0] = 0;
             m_indices[2] = 2;

@@ -19,10 +19,15 @@ namespace Renderer
 		void render(const Camera2D& camera);
 
 		void setPosition(glm::vec2 position);
-		void move(glm::vec2 deltaPosition);
+		void setRotation(float rotation); // in radians
+		void setScale(glm::vec2 scale);
 		void setColor(glm::vec4 color);
 
+		void move(glm::vec2 deltaPosition);
+
 		inline glm::vec2 getPosition() const { return m_position; }
+		inline float getRotation() const { return m_rotation; }
+		inline glm::vec2 getScale() const { return m_scale; }
 		inline glm::vec4 getColor() const { return m_color; }
 
 		virtual int getNumberOfVertices() const = 0;
@@ -31,15 +36,35 @@ namespace Renderer
 		// meaning it has been created and not yet destroyed.
 		//
 		// NOTE: Derived classes have the responsibility to create the underlying render object
-		//       in their create() functions and that's when a shape becomes valid,
-		//       NOT when Shape::create() is called.
+		//       in their own create() function and that's when a shape becomes valid.
 		inline bool isValid() const { return m_renderObject.isValid(); }
+
+	protected: /* functions */
+
+		// Creates the underlying render object.
+		// To be called by derived classes in their create() function
+		// once they have setup their vertex data and their index data (if present).
+		// @param[in] dynamic - Specifies if shape is going to be moved often. Used for optimization.
+		void createRenderObject(bool dynamic);
+		void destroyRenderObject();
+
+		// Updates the underlying render object with current vertex data.
+		// To be called by derived classes whenever vertex data changes.
+		void updateRenderObject();
+
+		// Updates the underlying render object with current vertex data and given index data.
+		// To be called by derived classes whenever vertex data and index data change.
+		void updateRenderObject(const void* indexData);
+
+		// To be implemented by derived classes to update their transformed (world) vertices
+		// with the current transform matrix and current local vertices, and then update the underlying render object.
+		virtual void updateTransformedVertices() = 0;
 
 	private: /* functions */
 
-		virtual void _moveVertices(glm::vec2 deltaPosition) = 0;
-
+		// To be implemented by derived classes to return their vertex data in world space.
 		virtual const glm::vec2* getVertexData() const = 0;
+		// Can be overriden by derived classes to return their index data, if indices are used at all.
 		virtual const unsigned* getIndexData() const { return nullptr; }
 
 		// Can be overriden by derived classes to return the desired draw mode to be used for rendering the shape
@@ -48,26 +73,18 @@ namespace Renderer
 		inline int getVertexDataSize() const { return getNumberOfVertices() * sizeof(float) * 2; }
 		inline int getIndexDataSize() const { return (getNumberOfVertices() - 2) * 3 * sizeof(unsigned); }
 
-	protected: /* functions */
-
-		// Creates the underlying render object
-		// @param[in] dynamic - Specifies if shape is going to be moved often. Used for optimization.
-		void createRenderObject(bool dynamic);
-		void destroyRenderObject();
-
-		// Updates the underlying render object with current vertex data
-		void updateRenderObject();
-
-		// Updates the underlying render object with current vertex data and given index data
-		void updateRenderObject(const void* indexData);
+		// Updates the transform matrix with current position, rotation and scale,
+		// and then updates the transformed vertices calling updateTransformedVertices().
+		void updateTransformMatrix();
 
 	protected: /* variables*/
 
-		// Shape's position (origin) in world space.
-		// 
-		// Vertices will be relative to this position
-		// so that the whole shape can be moved by changing the position.
 		glm::vec2 m_position = glm::vec2(0.0f, 0.0f);
+		float m_rotation = 0.0f; // in radians
+		glm::vec2 m_scale = glm::vec2(1.0f, 1.0f);
+
+		// Full 2D transform matrix, containing position, rotation and scale
+		glm::mat3 m_transformMatrix = glm::mat3(1.0f);
 
 	private: /* variables */
 

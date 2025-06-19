@@ -19,7 +19,11 @@ namespace Renderer
         m_pointB = pointB;
         m_thickness = thickness;
 
-        generateVertices();
+        generateVerticesLocal();
+        m_verticesWorld[0] = m_verticesLocal[0];
+        m_verticesWorld[1] = m_verticesLocal[1];
+        m_verticesWorld[2] = m_verticesLocal[2];
+        m_verticesWorld[3] = m_verticesLocal[3];
 
         Shape::createRenderObject(dynamic);
 	}
@@ -32,34 +36,40 @@ namespace Renderer
     void LineShape::setPointA(glm::vec2 pointA)
     {
         m_pointA = pointA;
-        generateVertices();
-        Shape::updateRenderObject();
+        generateVerticesLocal();
+        updateTransformedVertices();
     }
 
     void LineShape::setPointB(glm::vec2 pointB)
     {
         m_pointB = pointB;
-        generateVertices();
-        Shape::updateRenderObject();
+        generateVerticesLocal();
+        updateTransformedVertices();
     }
 
     void LineShape::setThickness(float thickness)
     {
         m_thickness = thickness;
-        generateVertices();
-        Shape::updateRenderObject();
+        generateVerticesLocal();
+        updateTransformedVertices();
     }
 
-    void LineShape::_moveVertices(glm::vec2 deltaPosition)
+    void LineShape::updateTransformedVertices()
     {
-        m_vertices[0] += deltaPosition;
-        m_vertices[1] += deltaPosition;
-        m_vertices[2] += deltaPosition;
-        m_vertices[3] += deltaPosition;
+        // Multiply local vertices by transform matrix to get world vertices.
+        // NOTE: Local vertices are 2D, world vertices are also 2D,
+        //       but the transform matrix is 3x3, so we need to convert a local vertex to 3D
+        //       by adding a 3rd component of 1.0, then multiply it by the matrix, and then cut out the 3rd component,
+        //       to get the final 2D world vertex.
+        m_verticesWorld[0] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
+        m_verticesWorld[1] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
+        m_verticesWorld[2] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+        m_verticesWorld[3] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
+
         Shape::updateRenderObject();
     }
 
-    void LineShape::generateVertices()
+    void LineShape::generateVerticesLocal()
     {
         // Calculate the normal offset vector.
         // We'll use that vector to "thicken" the line to the required thickness.
@@ -77,10 +87,10 @@ namespace Renderer
             (m_thickness / 2.0f) * dir.x
         );
         // To get the 4 vertices of the line we can add and subtract the normal offset vector to A and B.
-        m_vertices[0] = m_pointA + normalOffset;
-        m_vertices[1] = m_pointA - normalOffset;
-        m_vertices[2] = m_pointB - normalOffset;
-        m_vertices[3] = m_pointB + normalOffset;
+        m_verticesLocal[0] = m_pointA + normalOffset;
+        m_verticesLocal[1] = m_pointA - normalOffset;
+        m_verticesLocal[2] = m_pointB - normalOffset;
+        m_verticesLocal[3] = m_pointB + normalOffset;
     }
 
 } // namespace Renderer

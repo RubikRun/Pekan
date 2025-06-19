@@ -50,15 +50,29 @@ namespace Renderer
     void Shape::setPosition(glm::vec2 position)
     {
         PK_ASSERT(isValid(), "Trying to set position of a Shape that is not yet created.", "Pekan");
-        _moveVertices(position - m_position);
         m_position = position;
+        updateTransformMatrix();
+    }
+
+    void Shape::setRotation(float rotation)
+    {
+        PK_ASSERT(isValid(), "Trying to set rotation of a Shape that is not yet created.", "Pekan");
+        m_rotation = rotation;
+        updateTransformMatrix();
+    }
+
+    void Shape::setScale(glm::vec2 scale)
+    {
+        PK_ASSERT(isValid(), "Trying to set position of a Shape that is not yet created.", "Pekan");
+        m_scale = scale;
+        updateTransformMatrix();
     }
 
     void Shape::move(glm::vec2 deltaPosition)
     {
         PK_ASSERT(isValid(), "Trying to move a Shape that is not yet created.", "Pekan");
-        _moveVertices(deltaPosition);
         m_position += deltaPosition;
+        updateTransformMatrix();
     }
 
     void Shape::setColor(glm::vec4 color)
@@ -117,6 +131,38 @@ namespace Renderer
     {
         m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
         m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::DynamicDraw);
+    }
+
+    void Shape::updateTransformMatrix()
+    {
+        const float cosRot = cos(m_rotation);
+        const float sinRot = sin(m_rotation);
+
+        const glm::mat3 scaleMatrix = glm::mat3
+        (
+            glm::vec3(m_scale.x,  0.0f,       0.0f),
+            glm::vec3(0.0f,       m_scale.y,  0.0f),
+            glm::vec3(0.0f,       0.0f,       1.0f)
+        );
+        const glm::mat3 rotationMatrix = glm::mat3
+        (
+            glm::vec3(cosRot,  -sinRot,  0.0f),
+            glm::vec3(sinRot,  cosRot,   0.0f),
+            glm::vec3(0.0f,    0.0f,     1.0f)
+        );
+        const glm::mat3 translationMatrix = glm::mat3
+        (
+            glm::vec3(1.0f,          0.0f,          0.0f),
+            glm::vec3(0.0f,          1.0f,          0.0f),
+            glm::vec3(m_position.x,  m_position.y,  1.0f)
+        );
+
+        // Multiply translation, rotation and scale matrices to get the combined action in a single transform matrix
+        // NOTE: Order of multiplication is important!
+        m_transformMatrix = translationMatrix * rotationMatrix * scaleMatrix;
+
+        // Update derived class's transformed vertices
+        updateTransformedVertices();
     }
 
 } // namespace Renderer

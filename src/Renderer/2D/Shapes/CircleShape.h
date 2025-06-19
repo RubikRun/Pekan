@@ -35,23 +35,27 @@ namespace Renderer
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return m_segmentsCount; }
 
-		int getNumberOfVertices() const override { return m_vertices.size(); }
+		int getNumberOfVertices() const override { return m_verticesLocal.size(); }
+
+	protected: /* functions */
+
+		void updateTransformedVertices() override;
 
 	private: /* functions */
 
-		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		const glm::vec2* getVertexData() const override { return m_vertices.data(); };
+		const glm::vec2* getVertexData() const override { return m_verticesWorld.data(); };
 
 		virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
 
-		// Generates (or regenerates) circle's vertices based on current radius and current number of segments
-		void generateVertices();
+		// (Re)generates circle's local vertices based on current radius and current number of segments
+		void generateVerticesLocal();
 
 	private: /* variables */
 
+		// Vertices making up the circle, in local space
+		std::vector<glm::vec2> m_verticesLocal;
 		// Vertices making up the circle, in world space
-		std::vector<glm::vec2> m_vertices;
+		std::vector<glm::vec2> m_verticesWorld;
 
 		float m_radius = 0.0f;
 

@@ -2426,4 +2426,51 @@ matching the
 function. Now derived classes can provide their own create() and destroy() functions
 and call createRenderObject() and destroyRenderObject() from them.
 
+----------
+19.06.2025
+----------
+
+Let's implement rotation and scale now.
+A few hours later... Did it!
+What I did in conclusion:
+Added these 2 new members in class Shape
+    float m_rotation = 0.0f; // in radians
+    glm::vec2 m_scale = glm::vec2(1.0f, 1.0f);
+together with getters and setters for them
+    void setRotation(float rotation); // in radians
+    void setScale(glm::vec2 scale);
+    inline float getRotation() const { return m_rotation; }
+    inline glm::vec2 getScale() const { return m_scale; }
+Also added a member which is a transform matrix containing the position, rotation and scale combined in one transform
+    glm::mat3 m_transformMatrix = glm::mat3(1.0f);
+together with this function
+    void updateTransformMatrix();
+that updates the transform matrix based on current position, rotation and scale.
+This function updateTransformMatrix() is called in each of the setters of position, rotation and scale.
+Then derived classes can use the transform matrix to transform vertices from local space to world space.
+How exactly will they do this?
+Well, I introduced this new pure virtual function
+    virtual void updateTransformedVertices() = 0;
+The idea is that derived classes will have 2 copies of the vertices, one in local space and one in world space.
+Whenever something about the shape in local space changes, for example width or height of a rectangle, the local vertices will be changed,
+and the world vertices will have to be changed as well to reflect that.
+Whenever the position, rotation or scale of a shape is changed, the local vertices remain the same,
+but the world vertices need to be updated with the new transform matrix.
+That's when this function updateTransformedVertices() will be called automatically from Shape.
+Basically whenever the transform matrix is updated, this function updateTransformedVertices() gets called
+to update the world space vertices.
+Each derived class should implement its own way of keeping the 2 copies of the vertices,
+and its own way of updating the world vertices in updateTransformedVertices(), that's why the function is pure virtual.
+Obviously, the vertices that end up on the GPU will be the world vertices, so this is the "official" vertex data of a shape.
+It's the one that needs to be returned from getVertexData(),
+and that's why at the end of each implementation of updateTransformedVertices() we need to call
+    Shape::updateRenderObject();
+to update the underlying render object, because we just changed the vertex data.
+That's about it.
+
+In Demo07 I tested the position, rotation and scale of each shape type.
+Everything works, except LineShape.
+There is a weird bug with it - it appears as a very thin isosceles triangle, instead of a rectangle.
+Not sure why.
+
 }

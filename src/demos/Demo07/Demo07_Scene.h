@@ -7,6 +7,10 @@
 #include "Camera2D.h"
 #include "LineShape.h"
 #include "RectangleShape.h"
+#include "CircleShape.h"
+#include "CircleShapeStatic.h"
+#include "TriangleShape.h"
+#include "PolygonShape.h"
 #include <vector>
 
 namespace Demo
@@ -43,6 +47,11 @@ namespace Demo
 		std::vector<Pekan::Renderer::LineShape> m_coordSys;
 
 		Pekan::Renderer::RectangleShape m_rectangle;
+		Pekan::Renderer::CircleShape m_circle;
+		Pekan::Renderer::CircleShapeStatic<> m_circleStatic;
+		Pekan::Renderer::TriangleShape m_triangle;
+		Pekan::Renderer::PolygonShape m_polygon;
+		Pekan::Renderer::LineShape m_line;
 	};
 
 } // namespace Demo

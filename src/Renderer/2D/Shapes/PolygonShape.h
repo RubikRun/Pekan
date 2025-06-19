@@ -24,19 +24,25 @@ namespace Renderer
 		);
 		void destroy();
 
+		// Sets local space vertices of polygon
 		void setVertices(const std::vector<glm::vec2>& vertices);
+		// Sets a specific local space vertex of polygon
 		void setVertex(int index, glm::vec2 vertex);
 
-		inline const std::vector<glm::vec2>& getVertices() const { return m_vertices; }
+		// Returns vertices in local space
+		inline const std::vector<glm::vec2>& getVertices() const { return m_verticesLocal; }
+		// Returns the requested vertex in local space
 		glm::vec2 getVertex(int index) const;
 
-		int getNumberOfVertices() const override { return m_vertices.size(); }
+		int getNumberOfVertices() const override { return m_verticesLocal.size(); }
+
+	protected: /* functions */
+
+		void updateTransformedVertices() override;
 
 	private: /* functions */
 
-		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		const glm::vec2* getVertexData() const override { return m_vertices.data(); };
+		const glm::vec2* getVertexData() const override { return m_verticesWorld.data(); };
 
 		virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
 
@@ -47,8 +53,10 @@ namespace Renderer
 
 	private: /* variables */
 
+		// The vertices of the polygon, in local space
+		std::vector<glm::vec2> m_verticesLocal;
 		// The vertices of the polygon, in world space
-		std::vector<glm::vec2> m_vertices;
+		std::vector<glm::vec2> m_verticesWorld;
 	};
 
 } // namespace Renderer

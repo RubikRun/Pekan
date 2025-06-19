@@ -23,30 +23,38 @@ namespace Renderer
 		);
 		void destroy();
 
+		// Sets point A/B of the line, in local space
 		void setPointA(glm::vec2 pointA);
 		void setPointB(glm::vec2 pointB);
+		// Sets line's thickness
 		void setThickness(float thickness);
 
-		inline glm::vec2 getPointA() const { return m_vertices[0]; }
-		inline glm::vec2 getPointB() const { return m_vertices[1]; }
+		// Returns point A/B of the line, in local space
+		inline glm::vec2 getPointA() const { return m_verticesLocal[0]; }
+		inline glm::vec2 getPointB() const { return m_verticesLocal[1]; }
+		// Returns line's thickness
 		inline float getThickness() const { return m_thickness; }
 
 		int getNumberOfVertices() const override { return 4; }
 
+	protected: /* functions */
+
+		void updateTransformedVertices() override;
+
 	private: /* functions */
 
-		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		const glm::vec2* getVertexData() const override { return m_vertices; };
+		const glm::vec2* getVertexData() const override { return m_verticesWorld; };
 		const unsigned* getIndexData() const override { return s_indices; }
 
-		// Generates (or regenerates) line's vertices based on current point A, point B and thickness
-		void generateVertices();
+		// (Re)generates line's local vertices based on current point A, point B and thickness
+		void generateVerticesLocal();
 
 	private: /* variables */
 
+		// The 4 vertices of the line, in local space
+		glm::vec2 m_verticesLocal[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
 		// The 4 vertices of the line, in world space
-		glm::vec2 m_vertices[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+		glm::vec2 m_verticesWorld[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
 
 		glm::vec2 m_pointA = glm::vec2(0.0f, 0.0f);
 		glm::vec2 m_pointB = glm::vec2(0.0f, 0.0f);

@@ -22,7 +22,8 @@ namespace Renderer
         bool dynamic
     )
 	{
-        m_vertices = vertices;
+        m_verticesLocal = vertices;
+        m_verticesWorld = m_verticesLocal;
 
 #ifndef NDEBUG
         if (!isConvex())
@@ -30,8 +31,8 @@ namespace Renderer
             PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you are creating a non-convex one. "
                 "It might not be rendered correctly", "Pekan");
         }
-        if (PekanRenderer::isEnabledFaceCulling() && m_vertices.size() > 2
-            && !isOrientationCCW(m_vertices[0], m_vertices[1], m_vertices[2]))
+        if (PekanRenderer::isEnabledFaceCulling() && m_verticesLocal.size() > 2
+            && !isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
         {
             PK_LOG_WARNING("Trying to create a PolygonShape with CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
                 " so your polygon will NOT be visible.", "Pekan");
@@ -48,7 +49,7 @@ namespace Renderer
 
     void PolygonShape::setVertices(const std::vector<glm::vec2>& vertices)
     {
-        m_vertices = vertices;
+        m_verticesLocal = vertices;
 
 #ifndef NDEBUG
         if (!isConvex())
@@ -56,25 +57,25 @@ namespace Renderer
             PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you have a non-convex one.  "
                 "It might not be rendered correctly", "Pekan");
         }
-        if (PekanRenderer::isEnabledFaceCulling() && m_vertices.size() > 2
-            && !isOrientationCCW(m_vertices[0], m_vertices[1], m_vertices[2]))
+        if (PekanRenderer::isEnabledFaceCulling() && m_verticesLocal.size() > 2
+            && !isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
         {
             PK_LOG_WARNING("Trying to set vertices of a PolygonShape resulting in CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
                 " so your polygon will NOT be visible.", "Pekan");
         }
 #endif
 
-        _moveVertices(m_position);
+        updateTransformedVertices();
     }
 
     void PolygonShape::setVertex(int index, glm::vec2 vertex)
     {
-        if (index < 0 || index >= m_vertices.size())
+        if (index < 0 || index >= m_verticesLocal.size())
         {
             PK_LOG_ERROR("Trying to set a vertex with an invalid index to a PolygonShape.", "Pekan");
             return;
         }
-        m_vertices[index] = vertex + m_position;
+        m_verticesLocal[index] = vertex;
 
 #ifndef NDEBUG
         if (!isConvex())
@@ -82,53 +83,59 @@ namespace Renderer
             PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you have a non-convex one.  "
                 "It might not be rendered correctly", "Pekan");
         }
-        if (PekanRenderer::isEnabledFaceCulling() && m_vertices.size() > 2
-            && !isOrientationCCW(m_vertices[0], m_vertices[1], m_vertices[2]))
+        if (PekanRenderer::isEnabledFaceCulling() && m_verticesLocal.size() > 2
+            && !isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
         {
             PK_LOG_WARNING("Trying to set a vertex of a PolygonShape resulting in CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
                 " so your polygon will NOT be visible.", "Pekan");
         }
 #endif
 
-        Shape::updateRenderObject();
+        updateTransformedVertices();
     }
 
     glm::vec2 PolygonShape::getVertex(int index) const
     {
-        if (index < 0 || index >= m_vertices.size())
+        if (index < 0 || index >= m_verticesLocal.size())
         {
             PK_LOG_ERROR("Trying to get a vertex with an invalid index from a PolygonShape.", "Pekan");
             return glm::vec2(0.0f, 0.0f);
         }
-        return m_vertices[index] - m_position;
+        return m_verticesLocal[index];
     }
 
-    void PolygonShape::_moveVertices(glm::vec2 deltaPosition)
+    void PolygonShape::updateTransformedVertices()
     {
-        for (glm::vec2& vertex : m_vertices)
+        // Multiply local vertices by transform matrix to get world vertices.
+        // NOTE: Local vertices are 2D, world vertices are also 2D,
+        //       but the transform matrix is 3x3, so we need to convert a local vertex to 3D
+        //       by adding a 3rd component of 1.0, then multiply it by the matrix, and then cut out the 3rd component,
+        //       to get the final 2D world vertex.
+        for (size_t i = 0; i < m_verticesLocal.size(); i++)
         {
-            vertex += deltaPosition;
+            m_verticesWorld[i] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
         }
+
         Shape::updateRenderObject();
     }
 
 #ifndef NDEBUG
     bool PolygonShape::isConvex() const
     {
-        if (m_vertices.size() < 3)
+        if (m_verticesLocal.size() < 3)
             return false;
 
         bool gotPositive = false;
         bool gotNegative = false;
 
         // Traverse polygon's vertices
-        const int n = int(m_vertices.size());
+        const int n = int(m_verticesLocal.size());
         for (int i = 0; i < n; ++i)
         {
             // Reference the current 3 consecutive vertices A, B, C
-            const glm::vec2& a = m_vertices[i];
-            const glm::vec2& b = m_vertices[(i + 1) % n];
-            const glm::vec2& c = m_vertices[(i + 2) % n];
+            const glm::vec2& a = m_verticesLocal[i];
+            const glm::vec2& b = m_verticesLocal[(i + 1) % n];
+            const glm::vec2& c = m_verticesLocal[(i + 2) % n];
             // Calculate the vectors A->B and B->C
             const glm::vec2 ab = b - a;
             const glm::vec2 bc = c - b;

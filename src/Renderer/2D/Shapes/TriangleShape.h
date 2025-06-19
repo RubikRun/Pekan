@@ -23,22 +23,27 @@ namespace Renderer
 		);
 		void destroy();
 
+		// Sets vertex A/B/C of the triangle, in local space
 		void setVertexA(glm::vec2 vertexA);
 		void setVertexB(glm::vec2 vertexB);
 		void setVertexC(glm::vec2 vertexC);
+		// Sets vertices A, B and C of the triangle, in local space
 		void setVertices(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC);
 
-		inline glm::vec2 getVertexA() const { return m_vertices[0]; }
-		inline glm::vec2 getVertexB() const { return m_vertices[1]; }
-		inline glm::vec2 getVertexC() const { return m_vertices[2]; }
+		// Returns vertex A/B/C of the triangle, in local space
+		inline glm::vec2 getVertexA() const { return m_verticesLocal[0]; }
+		inline glm::vec2 getVertexB() const { return m_verticesLocal[1]; }
+		inline glm::vec2 getVertexC() const { return m_verticesLocal[2]; }
 
 		int getNumberOfVertices() const override { return 3; }
 
+	protected: /* functions */
+
+		void updateTransformedVertices() override;
+
 	private: /* functions */
 
-		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		const glm::vec2* getVertexData() const override { return m_vertices; };
+		const glm::vec2* getVertexData() const override { return m_verticesWorld; };
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
 		const unsigned* getIndexData() const override { return m_indices; }
@@ -50,8 +55,10 @@ namespace Renderer
 
 	private: /* variables */
 
+		// The 3 vertices of the triangle, in local space
+		glm::vec2 m_verticesLocal[3] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
 		// The 3 vertices of the triangle, in world space
-		glm::vec2 m_vertices[3] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+		glm::vec2 m_verticesWorld[3] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
 		// Indices of the 3 vertices of the triangle, determining the order in which they will be drawn

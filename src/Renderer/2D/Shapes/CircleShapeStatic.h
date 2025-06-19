@@ -35,11 +35,13 @@ namespace Renderer
 
 		int getNumberOfVertices() const override { return NSegments + 2; }
 
+	protected: /* functions */
+
+		void updateTransformedVertices() override;
+
 	private: /* functions */
 
-		void _moveVertices(glm::vec2 deltaPosition) override;
-
-		const glm::vec2* getVertexData() const override { return m_vertices; };
+		const glm::vec2* getVertexData() const override { return m_verticesWorld; };
 
 		virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
 
@@ -48,8 +50,10 @@ namespace Renderer
 
 	private: /* variables */
 
+		// Vertices making up the circle, in local space
+		glm::vec2 m_verticesLocal[NSegments + 2];
 		// Vertices making up the circle, in world space
-		glm::vec2 m_vertices[NSegments + 2];
+		glm::vec2 m_verticesWorld[NSegments + 2];
 
 		float m_radius = 0.0f;
 	};
