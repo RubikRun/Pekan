@@ -133,6 +133,7 @@ namespace Renderer
 			m_vertexDataUsage = DEFAULT_VERTEX_DATA_USAGE;
 		}
 
+		m_vertexArray.bind();
 		m_vertexBuffer.setData(data, size, m_vertexDataUsage);
 	}
 
@@ -140,6 +141,7 @@ namespace Renderer
 	{
 		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
 
+		m_vertexArray.bind();
 		m_vertexBuffer.setData(data, size, dataUsage);
 		m_vertexDataUsage = dataUsage;
 	}
@@ -147,6 +149,7 @@ namespace Renderer
 	void RenderObject::setVertexSubData(const void* data, long long offset, long long size)
 	{
 		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+		m_vertexArray.bind();
 		m_vertexBuffer.setSubData(data, offset, size);
 	}
 
@@ -159,6 +162,7 @@ namespace Renderer
 			m_indexDataUsage = DEFAULT_INDEX_DATA_USAGE;
 		}
 
+		m_vertexArray.bind();
 		m_indexBuffer.setData(data, size, m_indexDataUsage);
 	}
 
@@ -166,6 +170,7 @@ namespace Renderer
 	{
 		PK_ASSERT_QUICK(m_indexBuffer.isValid());
 
+		m_vertexArray.bind();
 		m_indexBuffer.setData(data, size, dataUsage);
 		m_indexDataUsage = dataUsage;
 	}
@@ -173,6 +178,7 @@ namespace Renderer
 	void RenderObject::setIndexSubData(const void* data, long long offset, long long size)
 	{
 		PK_ASSERT_QUICK(m_indexBuffer.isValid());
+		m_vertexArray.bind();
 		m_indexBuffer.setSubData(data, offset, size);
 	}
 

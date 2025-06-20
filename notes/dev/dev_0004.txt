@@ -2473,4 +2473,42 @@ Everything works, except LineShape.
 There is a weird bug with it - it appears as a very thin isosceles triangle, instead of a rectangle.
 Not sure why.
 
+After a lot of debugging, and asking ChatGPT, I found the bug.
+It's a very sneaky one.
+Basically the problem is in RenderObject's setIndexData() function.
+The way it currently works is this:
+    void RenderObject::setIndexData(const void* data, long long size, BufferDataUsage dataUsage)
+    {
+        PK_ASSERT_QUICK(m_indexBuffer.isValid());
+
+        m_indexBuffer.setData(data, size, dataUsage);
+        m_indexDataUsage = dataUsage;
+    }
+This line
+    m_indexBuffer.setData(data, size, dataUsage);
+calls IndexBuffer's setData() function, which binds the index buffer and sets the data.
+However, binding an index buffer is relative to the currently bound vertex array.
+And in Demo07 it so happens that the currently bound vertex array is LineShape's one,
+so the line
+    m_triangle.setPosition(...);
+leads to modifying m_line's index buffer, if done immediately after doing something with m_line, which is absurd.
+
+The solution is, of course, to just bind the correct vertex array before this line
+    m_indexBuffer.setData(data, size, dataUsage);
+So RenderObject's setIndexData() function now becomes this:
+    void RenderObject::setIndexData(const void* data, long long size, BufferDataUsage dataUsage)
+    {
+        PK_ASSERT_QUICK(m_indexBuffer.isValid());
+
+        m_vertexArray.bind();
+        m_indexBuffer.setData(data, size, dataUsage);
+        m_indexDataUsage = dataUsage;
+    }
+For the exactly same reason we should do the same in these functions:
+    setVertexData
+    setVertexSubData
+    setIndexSubData
+basically binding the vertex array before using the vertex buffer or the index buffer.
+
+With that, we are done with Shape's rotation and scale.
 }
