@@ -2512,3 +2512,17 @@ basically binding the vertex array before using the vertex buffer or the index b
 
 With that, we are done with Shape's rotation and scale.
 }
+
+----------
+20.06.2025
+----------
+
+{
+Let's look at this TO-DO item
+    Think about maybe removing the overload of Shape::render() that doesn't take in a camera parameter
+
+I actually think it's better to leave this overload.
+It's perfectly valid to not use a camera and just render on the default [-1, 1] range.
+It could even be a bit faster, if you don't have any camera movements.
+So, leaving it for now.
+}

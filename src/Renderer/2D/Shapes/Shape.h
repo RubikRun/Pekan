@@ -14,9 +14,10 @@ namespace Renderer
 	{
 	public:
 
-		void render() const;
 		// Renders shape using the given camera
 		void render(const Camera2D& camera);
+		// Renders shape in default [-1, 1] space
+		void render() const;
 
 		void setPosition(glm::vec2 position);
 		void setRotation(float rotation); // in radians
