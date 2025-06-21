@@ -95,7 +95,7 @@ namespace Demo
 		createRectangles();
 
 		m_centerSquare.create(100.0f, 100.0f);
-		m_centerSquare.setPosition(m_bbox.min + m_bbox.size / 2.0f - glm::vec2(50.0f, 50.0f));
+		m_centerSquare.setPosition(m_bbox.min + m_bbox.size / 2.0f);
 		m_centerSquare.setColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 	}
 
@@ -108,8 +108,8 @@ namespace Demo
 			minWidthHeight * 0.08f
 		};
 
-		const glm::vec2 positionXRange = { m_bbox.min.x, m_bbox.max.x - widthHeightRange.y };
-		const glm::vec2 positionYRange = { m_bbox.min.y, m_bbox.max.y - widthHeightRange.y };
+		const glm::vec2 positionXRange = { m_bbox.min.x + widthHeightRange.y / 2.0f, m_bbox.max.x - widthHeightRange.y / 2.0f };
+		const glm::vec2 positionYRange = { m_bbox.min.y + widthHeightRange.y / 2.0f, m_bbox.max.y - widthHeightRange.y / 2.0f };
 
 		m_rectangles.resize(m_perShapeTypeCount);
 

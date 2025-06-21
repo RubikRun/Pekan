@@ -90,7 +90,7 @@ namespace Demo
         m_rectangleInitialHeight = 0.4f;
         m_rectangle.create(m_rectangleInitialWidth, m_rectangleInitialHeight);
 
-        m_rectangleInitialPosition = { -0.8f, -0.8f };
+        m_rectangleInitialPosition = { -0.7f, -0.7f };
         m_rectangle.setPosition(m_rectangleInitialPosition);
 
         m_circleInitialRadius = 0.3f;

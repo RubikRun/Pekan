@@ -14,6 +14,10 @@ namespace Renderer
         inline glm::vec2 getSize() const { return glm::vec2(m_width, m_height); }
         void setSize(float width, float height);
 
+        // Sets camera's size, in the smaller dimension, to be equal to the given scale.
+        // The bigger dimension is automatically adjusted to match the window's aspect ratio.
+        void setSize(float scale);
+
         inline glm::vec2 getPosition() const { return m_position; }
         void setPosition(glm::vec2 position);
         void move(glm::vec2 deltaPosition);

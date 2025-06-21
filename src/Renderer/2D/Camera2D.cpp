@@ -17,6 +17,19 @@ namespace Renderer
         recalculateView();
     }
 
+    void Camera2D::setSize(float scale)
+    {
+        const glm::ivec2 windowSize = PekanEngine::getWindowSize();
+        if (windowSize.x > windowSize.y)
+        {
+            setSize(scale * float(windowSize.x) / float(windowSize.y), scale);
+        }
+        else
+        {
+            setSize(scale, scale * float(windowSize.y) / float(windowSize.x));
+        }
+    }
+
     void Camera2D::setPosition(glm::vec2 position)
     {
         m_position = position;

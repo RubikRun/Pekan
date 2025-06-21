@@ -10,7 +10,7 @@ using namespace Pekan;
 using namespace Pekan::Renderer;
 using namespace Pekan::Tools;
 
-static const float CAMERA_SIZE = 10.0f;
+static const float CAMERA_SCALE = 10.0f;
 static const float DIVS_LENGTH = 0.1f;
 static const glm::vec4 COORD_SYS_COLOR = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
 static const float COORD_SYS_THICKNESS = 0.02f;
@@ -119,16 +119,7 @@ namespace Demo
 	void Demo07_Scene::createCamera()
 	{
 		m_camera = std::make_shared<Camera2D>();
-		// TODO: cleanup this logic into an overload of Camera2D::setSize()
-		const glm::ivec2 winSize = PekanEngine::getWindowSize();
-		if (winSize.x > winSize.y)
-		{
-			m_camera->setSize(CAMERA_SIZE * float(winSize.x) / float(winSize.y), CAMERA_SIZE);
-		}
-		else
-		{
-			m_camera->setSize(CAMERA_SIZE, CAMERA_SIZE * float(winSize.y) / float(winSize.x));
-		}
+		m_camera->setSize(CAMERA_SCALE);
 		PekanTools::enableCameraController2D(m_camera);
 	}
 
@@ -136,7 +127,7 @@ namespace Demo
 	{
 		// Number of divisions rendered on the coordinate system
 		// in each of the 4 directions, starting from the center
-		const int divsCount = int(CAMERA_SIZE) * 10;
+		const int divsCount = int(CAMERA_SCALE) * 10;
 
 		m_coordSys.resize(divsCount * 4 + 2);
 		// Create horizontal and vertical line

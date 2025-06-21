@@ -2585,3 +2585,18 @@ So let's implement it.
 Done.
 Demo06 works fine now.
 }
+
+{
+Let's quickly do this TO-DO item as well
+    Add overload of Camera2D's setSize() function that takes in a single float - the scale,
+    and automatically calculates width and height with the same ratio as window's resolution.
+
+Pretty easy, nothing to say.
+Done.
+
+By the way, I noticed that 2 of the demos don't work fully correctly regarding their rectangles,
+because recently, when we added rotation and scale to all shapes, we changed the center of all rectangles
+to be at their actual center, and not at their lower-left corner.
+So now I just changed the 2 demos to account for the fact that a rectangle's position is its center.
+Done.
+}
