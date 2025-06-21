@@ -120,14 +120,14 @@ namespace Demo
 	{
 		m_camera = std::make_shared<Camera2D>();
 		// TODO: cleanup this logic into an overload of Camera2D::setSize()
-		const glm::ivec2 winRes = PekanEngine::getWindowResolution();
-		if (winRes.x > winRes.y)
+		const glm::ivec2 winSize = PekanEngine::getWindowSize();
+		if (winSize.x > winSize.y)
 		{
-			m_camera->setSize(CAMERA_SIZE * float(winRes.x) / float(winRes.y), CAMERA_SIZE);
+			m_camera->setSize(CAMERA_SIZE * float(winSize.x) / float(winSize.y), CAMERA_SIZE);
 		}
 		else
 		{
-			m_camera->setSize(CAMERA_SIZE, CAMERA_SIZE * float(winRes.y) / float(winRes.x));
+			m_camera->setSize(CAMERA_SIZE, CAMERA_SIZE * float(winSize.y) / float(winSize.x));
 		}
 		PekanTools::enableCameraController2D(m_camera);
 	}

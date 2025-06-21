@@ -35,7 +35,7 @@ namespace Demo
 
 	bool Snake::create()
 	{
-        m_resolution = PekanEngine::getWindowResolution();
+        m_resolution = PekanEngine::getWindowSize();
 
         m_speedIdx = 0;
 

@@ -50,9 +50,9 @@ namespace Tools
             if (PekanEngine::isMouseButtonPressed(MouseButton::Left))
             {
                 // Mouse coordinates are in window space, we need them in camera space.
-                // We can divide the camera's size by the window's resolution to get a vector
+                // We can divide the camera's size by the window's size to get a vector
                 // that can be used to multiply any window-space coordinate to get a camera-space coordinate.
-                const glm::vec2 windowToCameraFactor = camera->getSize() / glm::vec2(PekanEngine::getWindowResolution());
+                const glm::vec2 windowToCameraFactor = camera->getSize() / glm::vec2(PekanEngine::getWindowSize());
                 // Move camera by the amount that the mouse has moved in camera space, divided by the zoom level
                 camera->move(glm::vec2(-mouseDelta.x, mouseDelta.y) * windowToCameraFactor / camera->getZoom());
             }
@@ -74,6 +74,8 @@ namespace Tools
                 return false;
             }
 
+            const glm::vec2 mousePosWorldBefore = camera->screenToWorld(m_mousePos);
+
             // NOTE: Scroll amount will be mostly 1.0 or -1.0.
             //       If scrolled really fast it could sometimes be 2.0 or -2.0.
             //       We could multiply the zoom speed by this scroll amount to achieve faster zoom when scrolling faster,
@@ -87,6 +89,13 @@ namespace Tools
             {
                 camera->zoomOut(ZOOM_SPEED);
             }
+
+            // Use the difference between mouse position in world space before zooming,
+            // and mouse position in world space after zooming,
+            // to move the camera, so that zooming is done in the direction of the mouse, NOT towards the center.
+            const glm::vec2 mousePosWorldAfter = camera->screenToWorld(m_mousePos);
+            const glm::vec2 cameraPosDelta = mousePosWorldBefore - mousePosWorldAfter;
+            camera->move(cameraPosDelta);
 
             return true;
         }

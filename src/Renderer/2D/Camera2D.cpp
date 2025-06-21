@@ -1,5 +1,7 @@
 #include "Camera2D.h"
 
+#include "PekanEngine.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Pekan
@@ -65,9 +67,22 @@ namespace Renderer
         m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
     }
 
-    const glm::mat4& Camera2D::getViewProjectionMatrix() const
+    glm::vec2 Camera2D::screenToWorld(glm::vec2 screenPos) const
     {
-        return m_viewProjectionMatrix;
+        const glm::ivec2 windowSize = PekanEngine::getWindowSize();
+
+        // Convert screen position to NDC (-1 to 1)
+        const glm::vec2 ndc =
+        {
+            (screenPos.x / windowSize.x) * 2.0f - 1.0f,
+            1.0f - (screenPos.y / windowSize.y) * 2.0f
+        };
+
+        // Multiply NDC position by half camera's size, effectively scaling it to camera space,
+        // then divide by zoom level to reverse the effect of the zoom,
+        // then add camera's position to get the final position in world space.
+        const glm::vec2 worldPos = (ndc * (glm::vec2(m_width, m_height) * 0.5f)) / m_zoom + m_position;
+        return worldPos;
     }
 
 } // namespace Renderer

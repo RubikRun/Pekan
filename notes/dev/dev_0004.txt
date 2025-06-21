@@ -2526,3 +2526,36 @@ It's perfectly valid to not use a camera and just render on the default [-1, 1] 
 It could even be a bit faster, if you don't have any camera movements.
 So, leaving it for now.
 }
+
+----------
+21.06.2025
+----------
+
+{
+Let's do this TO-DO item
+    Make CameraController2D zoom at the direction of the mouse instead of towards the center
+
+We basically need to keep track of mouse's position in world space before zooming,
+and mouse's position in world space after zooming,
+and then use the difference between the two to move the camera.
+This will ensure that the world position at the mouse will remain the same,
+effectively "zooming towards it".
+
+For that to work, we'll need a helper function in Camera2D
+    glm::vec2 screenToWorld(glm::vec2 screenPos) const;
+that converts a given position from screen space to world space.
+
+Then in CameraController2D's onMouseScrolled() function we can do this before applying the zoom
+    const glm::vec2 mousePosWorldBefore = camera->screenToWorld(m_mousePos);
+and this after applying the zoom
+    const glm::vec2 mousePosWorldAfter = camera->screenToWorld(m_mousePos);
+and then use the difference between those two
+    const glm::vec2 cameraPosDelta = mousePosWorldBefore - mousePosWorldAfter;
+to move the camera
+    camera->move(cameraPosDelta);
+
+That's it.
+Looks pretty good. Works fine in both Demo06 and Demo07.
+Done.
+}
+

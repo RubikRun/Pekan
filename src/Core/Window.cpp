@@ -146,7 +146,7 @@ namespace Pekan
         return glfwGetMouseButton(m_glfwWindow, int(button)) == GLFW_RELEASE;
     }
 
-    glm::ivec2 Window::getResolution() const
+    glm::ivec2 Window::getSize() const
     {
         int width, height;
         glfwGetWindowSize(m_glfwWindow, &width, &height);

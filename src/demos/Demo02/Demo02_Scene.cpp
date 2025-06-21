@@ -34,7 +34,7 @@ namespace Demo
         PekanRenderer::enableMultisampleAntiAliasing();
         PekanRenderer::enableFaceCulling();
 
-        m_resolution = PekanEngine::getWindowResolution();
+        m_resolution = PekanEngine::getWindowSize();
 
         // Set default colors of cube's sides
         m_colors =

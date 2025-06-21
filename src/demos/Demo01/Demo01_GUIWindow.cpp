@@ -97,7 +97,7 @@ namespace Demo
 
 	bool Demo01_GUIWindow::init()
 	{
-        m_resolution = PekanEngine::getWindowResolution();
+        m_resolution = PekanEngine::getWindowSize();
         return true;
 	}
 

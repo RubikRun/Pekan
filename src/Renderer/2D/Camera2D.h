@@ -23,7 +23,10 @@ namespace Renderer
         void zoomIn(float factor);
         void zoomOut(float factor);
 
-        const glm::mat4& getViewProjectionMatrix() const;
+        inline const glm::mat4& getViewProjectionMatrix() const { return m_viewProjectionMatrix; };
+
+        // Converts a given position from screen space to world space, using the camera.
+        glm::vec2 screenToWorld(glm::vec2 screenPos) const;
 
     private: /* functions */
 

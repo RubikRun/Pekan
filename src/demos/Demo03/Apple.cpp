@@ -17,7 +17,7 @@ namespace Demo
 
     bool Apple::create(const Snake& snake)
     {
-        m_resolution = PekanEngine::getWindowResolution();
+        m_resolution = PekanEngine::getWindowSize();
 
         m_size = int(APPLE_SIZE * float(m_resolution.y));
         do

@@ -67,8 +67,8 @@ namespace Pekan
 		// Checks if mouse button is currently pressed/released.
 		static bool isMouseButtonPressed(MouseButton button);
 		static bool isMouseButtonReleased(MouseButton button);
-		// Returns window's current resolution
-		static glm::ivec2 getWindowResolution();
+		// Returns window's current size (resolution)
+		static glm::ivec2 getWindowSize();
 
 	private: /* functions */
 

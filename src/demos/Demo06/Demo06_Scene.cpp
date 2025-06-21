@@ -66,13 +66,13 @@ namespace Demo
 
 	void Demo06_Scene::createBbox()
 	{
-		const glm::vec2 windowResolution = PekanEngine::getWindowResolution();
+		const glm::vec2 windowSize = PekanEngine::getWindowSize();
 
 		m_bbox.min = BBOX_MIN;
 		m_bbox.max =
 		{
-			m_bbox.min.x + windowResolution.x,
-			m_bbox.min.y + windowResolution.y
+			m_bbox.min.x + windowSize.x,
+			m_bbox.min.y + windowSize.y
 		};
 		m_bbox.size = m_bbox.max - m_bbox.min;
 	}

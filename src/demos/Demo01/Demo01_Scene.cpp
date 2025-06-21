@@ -22,7 +22,7 @@ namespace Demo
 	{
         PekanRenderer::enableMultisampleAntiAliasing();
 
-        m_resolution = PekanEngine::getWindowResolution();
+        m_resolution = PekanEngine::getWindowSize();
 
         // Enable and configure blending
         PekanRenderer::enableBlending();
