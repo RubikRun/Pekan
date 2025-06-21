@@ -2559,3 +2559,29 @@ Looks pretty good. Works fine in both Demo06 and Demo07.
 Done.
 }
 
+{
+Let look at this TO-DO item now
+    Fix bug with CameraController2D receiving events from ImGui layer.
+    For example, when you move an ImGui slider left and right, the camera behind it also moves left and right.
+
+First of all, I noticed that this bug happens in Demo06 but NOT in Demo07.
+Why could that be?
+Well, it's because in Demo07 the ImGui window is bigger (higher) than the GLFW window,
+so it cannot be fully contained inside.
+It's when the ImGui window is fully contained inside the GLFW window,
+when GLFW, and hence Pekan, starts receiving events from ImGui.
+A bit weird, but yeah, keep it in mind.
+
+So, obviously if the ImGui window is outside of the main window, there is no problem.
+Let's look at the case when the ImGui window is fully contained inside the main window.
+
+ImGui reacts to events in its own way, so it DOES work properly - all the sliders, buttons, etc. work fine.
+The problem is only that ImGui does NOT inform Pekan that it has handled an event.
+We can solve this by overriding all "on event" functions in PekanGUIWindow (except window ones)
+and checking if ImGui wants to consume this event.
+Luckily, there are functions inside of ImGui for checking exactly that.
+So let's implement it.
+
+Done.
+Demo06 works fine now.
+}

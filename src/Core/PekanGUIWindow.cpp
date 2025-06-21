@@ -41,4 +41,39 @@ namespace Pekan
         }
 	}
 
+    bool PekanGUIWindow::onKeyPressed(const KeyPressedEvent& event)
+    {
+        const ImGuiIO& io = ImGui::GetIO();
+        return io.WantCaptureKeyboard;
+    }
+
+    bool PekanGUIWindow::onKeyReleased(const KeyReleasedEvent& event)
+    {
+        const ImGuiIO& io = ImGui::GetIO();
+        return io.WantCaptureKeyboard;
+    }
+    bool PekanGUIWindow::onMouseMoved(const MouseMovedEvent& event)
+    {
+        const ImGuiIO& io = ImGui::GetIO();
+        return io.WantCaptureMouse;
+    }
+
+    bool PekanGUIWindow::onMouseScrolled(const MouseScrolledEvent& event)
+    {
+        const ImGuiIO& io = ImGui::GetIO();
+        return io.WantCaptureMouse;
+    }
+
+    bool PekanGUIWindow::onMouseButtonPressed(const MouseButtonPressedEvent& event)
+    {
+        const ImGuiIO& io = ImGui::GetIO();
+        return io.WantCaptureMouse;
+    }
+
+    bool PekanGUIWindow::onMouseButtonReleased(const MouseButtonReleasedEvent& event)
+    {
+        const ImGuiIO& io = ImGui::GetIO();
+        return io.WantCaptureMouse;
+    }
+
 } // namespace Pekan

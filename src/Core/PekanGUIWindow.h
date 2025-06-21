@@ -19,6 +19,13 @@ namespace Pekan
 	private: /* functions*/
 
 		virtual void _render() = 0;
+
+		bool onKeyPressed(const KeyPressedEvent& event) override;
+		bool onKeyReleased(const KeyReleasedEvent& event) override;
+		bool onMouseMoved(const MouseMovedEvent& event) override;
+		bool onMouseScrolled(const MouseScrolledEvent& event) override;
+		bool onMouseButtonPressed(const MouseButtonPressedEvent& event) override;
+		bool onMouseButtonReleased(const MouseButtonReleasedEvent& event) override;
 	};
 
 } // namespace Pekan
