@@ -46,10 +46,8 @@ namespace Renderer
 
 		virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
 
-#ifndef NDEBUG
 		// Checks if polygon is convex
 		bool isConvex() const;
-#endif
 
 	private: /* variables */
 

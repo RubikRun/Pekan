@@ -2600,3 +2600,22 @@ to be at their actual center, and not at their lower-left corner.
 So now I just changed the 2 demos to account for the fact that a rectangle's position is its center.
 Done.
 }
+
+{
+There is one final TO-DO item in the list, so let's do it!
+    Implement triangulation algorithm in PolygonShape to support non-convex polygons
+
+First, let's create an example concave polygon and make it quite complicated, in Demo04.
+Done.
+It's not rendered correctly, as expected.
+
+Before we proceed to implementing the algorithm let's create new files
+    MathUtils.h
+    MathUtils.cpp
+in Core with some helper functions for maths and 2D geometry.
+For now I can see myself needing these 3 functions
+    bool isPointInTriangle(glm::vec2 p, glm::vec2 a, glm::vec2 b, glm::vec2 c);
+    bool isOrientationCCW(glm::vec2 a, glm::vec2 b, glm::vec2 c);
+    float getDeterminant(glm::vec2 a, glm::vec2 b, glm::vec2 c);
+
+}

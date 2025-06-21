@@ -31,8 +31,43 @@ static const char* FRAGMENT_SHADER_FILEPATHS[] =
 static const char* IMAGE0_FILEPATH = "resources/tmnt.png";
 static const char* IMAGE1_FILEPATH = "resources/powerpuff.png";
 
-static const int POLYGON_VERTICES_COUNT = 7;
-static const float POLYGON_RADIUS = 0.2f;
+static const int POLYGON1_VERTICES_COUNT = 7;
+static const float POLYGON1_RADIUS = 0.2f;
+static const std::vector<glm::vec2> POLYGON2_VERTICES =
+{
+    { 0.20040983606557375, 0.14385245901639346 },
+    { 0.1081967213114754, 0.11987704918032788 },
+    { 0.03688524590163935, 0.1653688524590164 },
+    { 0.06147540983606554, 0.11741803278688524 },
+    { -0.0264344262295082, 0.1112704918032787 },
+    { 0.0049180327868852515, 0.09651639344262294 },
+    { -0.023360655737704926, 0.06516393442622949 },
+    { -0.0540983606557377, 0.1014344262295082 },
+    { -0.04795081967213115, 0.14323770491803275 },
+    { 0.04057377049180331, 0.1413934426229508 },
+    { 0.03995901639344259, 0.14692622950819673 },
+    { -0.04795081967213115, 0.21454918032786885 },
+    { -0.10573770491803276, 0.08114754098360655 },
+    { -0.1875, 0.1973360655737705 },
+    { -0.21577868852459015, 0.003073770491803274 },
+    { -0.2723360655737705, -0.07438524590163935 },
+    { -0.21024590163934423, -0.16045081967213115 },
+    { -0.10020491803278687, -0.1930327868852459 },
+    { -0.0110655737704918, -0.0737704918032787 },
+    { -0.014139344262295073, -0.07069672131147539 },
+    { -0.10020491803278687, -0.15799180327868848 },
+    { -0.15061475409836064, -0.1444672131147541 },
+    { -0.09098360655737704, -0.027663934426229497 },
+    { -0.1069672131147541, -0.12540983606557374 },
+    { 0.030737704918032804, 0.05655737704918032 },
+    { 0.0805327868852459, -0.08545081967213115 },
+    { 0.07315573770491805, -0.0055327868852459 },
+    { 0.21209016393442626, -0.094672131147541 },
+    { 0.22622950819672127, 0.08790983606557377 },
+    { 0.1641393442622951, 0.007377049180327877 },
+    { 0.15799180327868848, 0.09713114754098359 },
+    { 0.1875, 0.06823770491803277 }
+};
 
 namespace Demo
 {
@@ -105,11 +140,15 @@ namespace Demo
         m_circleStaticInitialPosition = { 0.0f, 0.0f };
         m_circleStatic.setPosition(m_circleStaticInitialPosition);
 
-        m_polygonInitialPosition = { 0.7f, -0.7f };
-        m_polygon.create({ glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f),
+        m_polygon1InitialPosition = { 0.7f, -0.7f };
+        m_polygon1.create({ glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f),
             glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) });
-        PK_ASSERT_QUICK(m_polygon.getVertices().size() == POLYGON_VERTICES_COUNT);
-        m_polygon.setPosition(m_polygonInitialPosition);
+        PK_ASSERT_QUICK(m_polygon1.getVertices().size() == POLYGON1_VERTICES_COUNT);
+        m_polygon1.setPosition(m_polygon1InitialPosition);
+
+        m_polygon2InitialPosition = { -0.7f, 0.7f };
+        m_polygon2.create(POLYGON2_VERTICES);
+        m_polygon2.setPosition(m_polygon2InitialPosition);
 
         if (m_guiWindow != nullptr)
         {
@@ -211,7 +250,8 @@ namespace Demo
         m_circleStatic.setColor({ osc(t / 7.0f + 1.0f), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
         m_circleStatic.setRadius(osc(t / 2.0f, m_circleStaticInitialRadius * 0.4f, m_circleStaticInitialRadius * 1.0f));
 
-        updatePolygon();
+        updatePolygon1();
+        updatePolygon2();
 
         t += float(dt) * 5.0f;
     }
@@ -241,7 +281,8 @@ namespace Demo
             m_rectangle.render();
             m_circle.render();
             m_circleStatic.render();
-            m_polygon.render();
+            m_polygon1.render();
+            m_polygon2.render();
         }
     }
 
@@ -252,29 +293,36 @@ namespace Demo
         m_rectangle.destroy();
         m_circle.destroy();
         m_circleStatic.destroy();
-        m_polygon.destroy();
+        m_polygon1.destroy();
+        m_polygon2.destroy();
     }
 
-    void Demo04_Scene::updatePolygon()
+    void Demo04_Scene::updatePolygon1()
     {
         const bool reverseOrientation = (m_guiWindow != nullptr && m_guiWindow->getReversePolygonOrientation());
         const float reverseFactor = reverseOrientation ? -1.0f : 1.0f;
         std::vector<glm::vec2> vertices(7, glm::vec2(0.0f, 0.0f));
-        const float baseArc = reverseFactor * 2.0f * PI / float(POLYGON_VERTICES_COUNT);
-        for (int i = 0; i < POLYGON_VERTICES_COUNT; i++)
+        const float baseArc = reverseFactor * 2.0f * PI / float(POLYGON1_VERTICES_COUNT);
+        for (int i = 0; i < POLYGON1_VERTICES_COUNT; i++)
         {
-            const int iRev = reverseOrientation ? (POLYGON_VERTICES_COUNT - i) % POLYGON_VERTICES_COUNT : i;
+            const int iRev = reverseOrientation ? (POLYGON1_VERTICES_COUNT - i) % POLYGON1_VERTICES_COUNT : i;
             const float arc = baseArc * float(i);
             vertices[i] = glm::vec2
             (
-                cos(arc) * POLYGON_RADIUS + osc(t / float(iRev + 1), 0.0f, float(iRev + 1) / 190.0f),
-                sin(arc) * POLYGON_RADIUS + osc(t / float(POLYGON_VERTICES_COUNT - iRev), 0.0f, float(POLYGON_VERTICES_COUNT - iRev) / 190.0f)
+                cos(arc) * POLYGON1_RADIUS + osc(t / float(iRev + 1), 0.0f, float(iRev + 1) / 190.0f),
+                sin(arc) * POLYGON1_RADIUS + osc(t / float(POLYGON1_VERTICES_COUNT - iRev), 0.0f, float(POLYGON1_VERTICES_COUNT - iRev) / 190.0f)
             );
         }
-        m_polygon.setVertices(vertices);
+        m_polygon1.setVertices(vertices);
 
-        m_polygon.setPosition(m_polygonInitialPosition + glm::vec2(sin(t / 8.0f) * 0.07f, sin(t / 6.0f) * 0.04f));
-        m_polygon.setColor({ osc(t / 2.0f), osc(t / 5.0f + 2.0f), osc(t / 11.0f), osc(t / 15.0f, 0.6f, 1.0f) });
+        m_polygon1.setPosition(m_polygon1InitialPosition + glm::vec2(sin(t / 8.0f) * 0.07f, sin(t / 6.0f) * 0.04f));
+        m_polygon1.setColor({ osc(t / 2.0f), osc(t / 5.0f + 2.0f), osc(t / 11.0f), osc(t / 15.0f, 0.6f, 1.0f) });
+    }
+
+    void Demo04_Scene::updatePolygon2()
+    {
+        m_polygon2.setPosition(m_polygon2InitialPosition + glm::vec2(sin(t / 8.0f) * 0.07f, sin(t / 6.0f) * 0.04f));
+        m_polygon2.setColor({ osc(t / 3.0f), osc(t / 2.0f + 5.0f), osc(t / 8.0f), osc(t / 11.0f, 0.6f, 1.0f) });
     }
 
 } // namespace Demo

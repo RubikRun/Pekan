@@ -76,6 +76,8 @@ add_library(Core STATIC
     src/Core/Utils/PekanUtils.cpp
     src/Core/Utils/FileUtils.h
     src/Core/Utils/FileUtils.cpp
+    src/Core/Utils/MathUtils.h
+    src/Core/Utils/MathUtils.cpp
     src/Core/Utils/stb.cpp
     src/Core/Events/Event.h
     src/Core/Events/WindowEvents.h
@@ -94,8 +96,8 @@ add_library(Core STATIC
 SOURCE_GROUP("Source Files\\Logger" FILES src/Core/Logger/PekanLogger.cpp)
 SOURCE_GROUP("Header Files\\Logger" FILES src/Core/Logger/PekanLogger.h)
 # Group Utils files under a virtual folder called "Utils"
-SOURCE_GROUP("Source Files\\Utils" FILES src/Core/Utils/PekanUtils.cpp src/Core/Utils/FileUtils.cpp src/Core/Utils/stb.cpp)
-SOURCE_GROUP("Header Files\\Utils" FILES src/Core/Utils/PekanUtils.h src/Core/Utils/FileUtils.h)
+SOURCE_GROUP("Source Files\\Utils" FILES src/Core/Utils/PekanUtils.cpp src/Core/Utils/FileUtils.cpp src/Core/Utils/MathUtils.cpp src/Core/Utils/stb.cpp)
+SOURCE_GROUP("Header Files\\Utils" FILES src/Core/Utils/PekanUtils.h src/Core/Utils/FileUtils.h src/Core/Utils/MathUtils.h)
 # Group Events files under a virtual folder called "Events"
 SOURCE_GROUP("Header Files\\Events" FILES
     src/Core/Events/Event.h

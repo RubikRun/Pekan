@@ -1,20 +1,12 @@
 #include "PolygonShape.h"
 
 #include "Utils/PekanUtils.h"
+#include "Utils/MathUtils.h"
 
 namespace Pekan
 {
 namespace Renderer
 {
-
-#ifndef NDEBUG
-    // Checks if the orientation of 3 given vertices is CCW (counter-clockwise)
-    static bool isOrientationCCW(const glm::vec2& a, const glm::vec2& b, const glm::vec2& c)
-    {
-        const float det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-        return (det >= 0.0f);
-    }
-#endif
 
 	void PolygonShape::create
     (
@@ -24,20 +16,6 @@ namespace Renderer
 	{
         m_verticesLocal = vertices;
         m_verticesWorld = m_verticesLocal;
-
-#ifndef NDEBUG
-        if (!isConvex())
-        {
-            PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you are creating a non-convex one. "
-                "It might not be rendered correctly", "Pekan");
-        }
-        if (PekanRenderer::isEnabledFaceCulling() && m_verticesLocal.size() > 2
-            && !isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
-        {
-            PK_LOG_WARNING("Trying to create a PolygonShape with CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
-                " so your polygon will NOT be visible.", "Pekan");
-        }
-#endif
 
         Shape::createRenderObject(dynamic);
 	}
@@ -51,20 +29,6 @@ namespace Renderer
     {
         m_verticesLocal = vertices;
 
-#ifndef NDEBUG
-        if (!isConvex())
-        {
-            PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you have a non-convex one.  "
-                "It might not be rendered correctly", "Pekan");
-        }
-        if (PekanRenderer::isEnabledFaceCulling() && m_verticesLocal.size() > 2
-            && !isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
-        {
-            PK_LOG_WARNING("Trying to set vertices of a PolygonShape resulting in CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
-                " so your polygon will NOT be visible.", "Pekan");
-        }
-#endif
-
         updateTransformedVertices();
     }
 
@@ -76,20 +40,6 @@ namespace Renderer
             return;
         }
         m_verticesLocal[index] = vertex;
-
-#ifndef NDEBUG
-        if (!isConvex())
-        {
-            PK_LOG_ERROR("Class PolygonShape supports only convex polygons, but you have a non-convex one.  "
-                "It might not be rendered correctly", "Pekan");
-        }
-        if (PekanRenderer::isEnabledFaceCulling() && m_verticesLocal.size() > 2
-            && !isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
-        {
-            PK_LOG_WARNING("Trying to set a vertex of a PolygonShape resulting in CW (clockwise) orientation, but face culling is enabled in PekanRenderer,"
-                " so your polygon will NOT be visible.", "Pekan");
-        }
-#endif
 
         updateTransformedVertices();
     }
@@ -119,14 +69,13 @@ namespace Renderer
         Shape::updateRenderObject();
     }
 
-#ifndef NDEBUG
     bool PolygonShape::isConvex() const
     {
         if (m_verticesLocal.size() < 3)
             return false;
 
-        bool gotPositive = false;
-        bool gotNegative = false;
+        bool foundCW = false;
+        bool foundCCW = false;
 
         // Traverse polygon's vertices
         const int n = int(m_verticesLocal.size());
@@ -136,30 +85,26 @@ namespace Renderer
             const glm::vec2& a = m_verticesLocal[i];
             const glm::vec2& b = m_verticesLocal[(i + 1) % n];
             const glm::vec2& c = m_verticesLocal[(i + 2) % n];
-            // Calculate the vectors A->B and B->C
-            const glm::vec2 ab = b - a;
-            const glm::vec2 bc = c - b;
-            // Calculate cross product of A->B and B->C
-            const float cross = ab.x * bc.y - ab.y * bc.x;
+            // Compute determinant of ABC
+            const float detABC = MathUtils::getDeterminant(a, b, c);
 
-            if (cross > 0) gotPositive = true;
-            else if (cross < 0) gotNegative = true;
+            if (detABC > 0) foundCW = true;
+            else if (detABC < 0) foundCCW = true;
 
-            // If there are both positive and negative cross products,
+            // If there are both positive and negative determinants,
             // this means that the polygon's sides sometimes turn left and sometimes right,
-            // which means that it's concave, hence not convex
-            if (gotPositive && gotNegative)
+            // which means that it's concave, hence not convex.
+            if (foundCW && foundCCW)
             {
                 return false;
             }
         }
 
-        // At this point all cross products have been either positive or negative,
+        // At this point all determinants have been either positive or negative,
         // so all sides are turning either to the left or to the right,
         // which means that the polygon is convex
         return true;
     }
-#endif
 
 } // namespace Renderer
 } // namespace Renderer

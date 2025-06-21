@@ -33,7 +33,8 @@ namespace Demo
 
 	private: /* functions */
 
-		void updatePolygon();
+		void updatePolygon1();
+		void updatePolygon2();
 
 	private: /* variables */
 
@@ -43,7 +44,8 @@ namespace Demo
 		Pekan::Renderer::RectangleShape m_rectangle;
 		Pekan::Renderer::CircleShape m_circle;
 		Pekan::Renderer::CircleShapeStatic<> m_circleStatic;
-		Pekan::Renderer::PolygonShape m_polygon;
+		Pekan::Renderer::PolygonShape m_polygon1;
+		Pekan::Renderer::PolygonShape m_polygon2;
 
 		glm::vec2 m_rectangleInitialPosition;
 		float m_rectangleInitialWidth;
@@ -54,7 +56,8 @@ namespace Demo
 		float m_circleInitialRadius;
 		float m_circleStaticInitialRadius;
 
-		glm::vec2 m_polygonInitialPosition;
+		glm::vec2 m_polygon1InitialPosition;
+		glm::vec2 m_polygon2InitialPosition;
 
 		int m_shaderIdx = -1;
 
