@@ -122,15 +122,21 @@ namespace Renderer
         m_renderObject.destroy();
     }
 
-    void Shape::updateRenderObject()
+    void Shape::updateRenderObject(bool doUpdateVertices, bool doUpdateIndices)
     {
-        m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
-    }
-
-    void Shape::updateRenderObject(const void* indexData)
-    {
-        m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
-        m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::DynamicDraw);
+        if (doUpdateVertices)
+        {
+            m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
+        }
+        if (doUpdateIndices)
+        {
+            const unsigned* indexData = getIndexData();
+            m_usingIndices = (indexData != nullptr);
+            if (m_usingIndices)
+            {
+                m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::DynamicDraw);
+            }
+        }
     }
 
     void Shape::updateTransformMatrix()

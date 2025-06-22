@@ -13,12 +13,13 @@ namespace Renderer
         const std::vector<glm::vec2>& vertices,
         bool dynamic
     )
-	{
+    {
         m_verticesLocal = vertices;
         m_verticesWorld = m_verticesLocal;
 
+        handleNewVerticesLocal();
         Shape::createRenderObject(dynamic);
-	}
+    }
 
     void PolygonShape::destroy()
     {
@@ -28,7 +29,9 @@ namespace Renderer
     void PolygonShape::setVertices(const std::vector<glm::vec2>& vertices)
     {
         m_verticesLocal = vertices;
+        m_verticesWorld.resize(m_verticesLocal.size());
 
+        handleNewVerticesLocal();
         updateTransformedVertices();
     }
 
@@ -41,6 +44,7 @@ namespace Renderer
         }
         m_verticesLocal[index] = vertex;
 
+        handleNewVerticesLocal();
         updateTransformedVertices();
     }
 
@@ -69,41 +73,47 @@ namespace Renderer
         Shape::updateRenderObject();
     }
 
-    bool PolygonShape::isConvex() const
+    void PolygonShape::triangulate()
     {
-        if (m_verticesLocal.size() < 3)
-            return false;
-
-        bool foundCW = false;
-        bool foundCCW = false;
-
-        // Traverse polygon's vertices
-        const int n = int(m_verticesLocal.size());
-        for (int i = 0; i < n; ++i)
+        m_indices.clear();
+        if (!MathUtils::triangulatePolygon(m_verticesLocal, m_indices))
         {
-            // Reference the current 3 consecutive vertices A, B, C
-            const glm::vec2& a = m_verticesLocal[i];
-            const glm::vec2& b = m_verticesLocal[(i + 1) % n];
-            const glm::vec2& c = m_verticesLocal[(i + 2) % n];
-            // Compute determinant of ABC
-            const float detABC = MathUtils::getDeterminant(a, b, c);
+            PK_LOG_ERROR("Failed to triangulate a polygon. It's probably a badly defined polygon, possibly self-intersecting.", "Pekan");
+        }
+    }
 
-            if (detABC > 0) foundCW = true;
-            else if (detABC < 0) foundCCW = true;
-
-            // If there are both positive and negative determinants,
-            // this means that the polygon's sides sometimes turn left and sometimes right,
-            // which means that it's concave, hence not convex.
-            if (foundCW && foundCCW)
+    void PolygonShape::handleNewVerticesLocal()
+    {
+        // If given vertices form a non-convex polygon, we will need to triangulate it manually.
+        if (!MathUtils::isPolygonConvex(m_verticesLocal))
+        {
+            // If given vertices form a CW polygon, reverse them, to ensure that we have a CCW polygon.
+            if (!MathUtils::isPolygonCCW(m_verticesLocal))
             {
-                return false;
+                std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
+            }
+            triangulate();
+        }
+        // Otherwise we can leave the indices empty, and then a triangle fan primitive will be used,
+        // which automatically triangulates the polygon.
+        else
+        {
+            m_indices.clear();
+
+            // If given vertices form a CW polygon, reverse them, to ensure that we have a CCW polygon,
+            // but only if face culling is enabled - otherwise CW polygons are ok.
+            if
+            (
+                PekanRenderer::isEnabledFaceCulling()
+                && m_verticesLocal.size() > 2
+                // We already know that the polygon is convex here, so checking if it's CW can be done
+                // by just checking the first 3 vertices, no need to waste performance on the rest.
+                && !MathUtils::isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2])
+            )
+            {
+                std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
             }
         }
-
-        // At this point all determinants have been either positive or negative,
-        // so all sides are turning either to the left or to the right,
-        // which means that the polygon is convex
-        return true;
     }
 
 } // namespace Renderer

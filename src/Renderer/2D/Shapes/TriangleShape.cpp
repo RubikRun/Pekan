@@ -94,11 +94,7 @@ namespace Renderer
         m_verticesWorld[1] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
         m_verticesWorld[2] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
 
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-        Shape::updateRenderObject(m_indices);
-#else
         Shape::updateRenderObject();
-#endif
     }
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING

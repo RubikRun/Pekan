@@ -44,10 +44,36 @@ namespace Renderer
 
 		const glm::vec2* getVertexData() const override { return m_verticesWorld.data(); };
 
-		virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
+		const unsigned* getIndexData() const override
+		{
+			// If indices are empty, this means that polygon is convex,
+			// so it didn't need triangulation - that's why we don't have indices.
+			if (m_indices.empty())
+			{
+				return nullptr;
+			}
+			return m_indices.data();
+		}
 
-		// Checks if polygon is convex
-		bool isConvex() const;
+		DrawMode getDrawMode() const override
+		{
+			// If indices are empty, this means that polygon is convex,
+			// so use triangle fan primitive.
+			if (m_indices.empty())
+			{
+				return DrawMode::TriangleFan;
+			}
+			// Otherwise use triangle primitive + indices
+			return DrawMode::Triangles;
+		}
+
+		// Triangulates polygon, updating the indices list
+		// with indices for the current vertices
+		void triangulate();
+
+		// Handles newly set local vertices, checking if they form a convex polygon,
+		// triangulating if needed, checking if they go in CCW order, reversing them if needed.
+		void handleNewVerticesLocal();
 
 	private: /* variables */
 
@@ -55,6 +81,10 @@ namespace Renderer
 		std::vector<glm::vec2> m_verticesLocal;
 		// The vertices of the polygon, in world space
 		std::vector<glm::vec2> m_verticesWorld;
+
+		// Indices into the vertices list, making up the triangles of the triangulated polygon.
+		// Used only if polygon is non-convex. 
+		std::vector<unsigned> m_indices;
 	};
 
 } // namespace Renderer

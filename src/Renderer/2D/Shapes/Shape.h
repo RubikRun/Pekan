@@ -51,11 +51,7 @@ namespace Renderer
 
 		// Updates the underlying render object with current vertex data.
 		// To be called by derived classes whenever vertex data changes.
-		void updateRenderObject();
-
-		// Updates the underlying render object with current vertex data and given index data.
-		// To be called by derived classes whenever vertex data and index data change.
-		void updateRenderObject(const void* indexData);
+		void updateRenderObject(bool doUpdateVertices = true, bool doUpdateIndices = true);
 
 		// To be implemented by derived classes to update their transformed (world) vertices
 		// with the current transform matrix and current local vertices, and then update the underlying render object.

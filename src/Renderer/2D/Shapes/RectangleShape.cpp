@@ -58,7 +58,7 @@ namespace Renderer
         m_verticesWorld[2] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
         m_verticesWorld[3] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
 
-        Shape::updateRenderObject();
+        Shape::updateRenderObject(true, false);
     }
 
     void RectangleShape::calculateVerticesLocal()

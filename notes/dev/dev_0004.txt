@@ -2618,4 +2618,91 @@ For now I can see myself needing these 3 functions
     bool isOrientationCCW(glm::vec2 a, glm::vec2 b, glm::vec2 c);
     float getDeterminant(glm::vec2 a, glm::vec2 b, glm::vec2 c);
 
+Time to implement the actual triangulation.
+Implemented the "Ear Clipping" algorithm in MathUtils in this new function
+    bool triangulatePolygon(const std::vector<glm::vec2>& vertices, std::vector<unsigned>& indices);
+Not going to go into details of the actual implementation, it's pretty standard.
+The important thing is that you can give it a list of 2D vertices,
+and it will give you back a list of indices into the vertices, forming a bunch of triangles
+that combine to the shape of the whole polygon.
+
+How can we use that in PolygonShape?
+Fairly straightforward, we just need to use an IndexBuffer in the underlying render object,
+so to do that we can have a new member variable
+    std::vector<unsigned> m_indices;
+that will contain the indices, and then to enable the use of indices we need to override this function
+    const unsigned* getIndexData() const override { return m_indices.data(); }
+to return a pointer to the indices data.
+Then obviously we can fill this indices vector with the correct indices
+by calling the new triangulation function from MathUtils, like that:
+    MathUtils::triangulatePolygon(m_verticesLocal, m_indices)
+I'll have a new function in PolygonShape that wraps this call, together with error checking, and clearing m_indices before the call
+    void PolygonShape::triangulate()
+    {
+        m_indices.clear();
+        if (!MathUtils::triangulatePolygon(m_verticesLocal, m_indices))
+        {
+            PK_LOG_ERROR("Failed to triangulate a polygon. It's probably a badly defined polygon, possibly self-intersecting.", "Pekan");
+        }
+    }
+So now we just need to call this triangulate() function every time that m_verticesLocal changes, which happens in
+    create()
+    setVertices()
+    setVertex()
+
+Another thing, the triangulatePolygon() function in MathUtils expects the vertices in CCW order,
+so in PolygonShape we can check if the vertices trace the polygon in CCW order,
+and if not, we can reverse them
+    if (!MathUtils::isPolygonCCW(m_verticesLocal))
+    {
+        std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
+    }
+where this isPolygonCCW() function is also a new function in MathUtils,
+checking if the vertices form a CCW polygon.
+NOTE: This does NOT mean that every triplet of vertices turns CCW.
+      If the polygon is concave, there will definitely be triplets of CCW and triplets of CW.
+      What we need is the total turning of all vertices to be in CCW.
+
+That's pretty much it.
+Oh one more thing, in case of a convex polygon we will NOT use the Ear Clipping algorithm for triangulation,
+we don't need to do triangulation manually, we can just use a triangle fan primitive as before.
+(Ear Clipping is not very fast for big polygons (it's O(n^2)) so it's better to avoid it if we don't need it)
+So whenever m_verticesLocal is changed we also need to check if the new polygon is convex.
+If it is, we can keep indices empty, and then react to empty indices in
+    getIndexData()
+    getDrawMode()
+as follows
+    const unsigned* getIndexData() const override
+    {
+        // If indices are empty, this means that polygon is convex,
+        // so it didn't need triangulation - that's why we don't have indices.
+        if (m_indices.empty())
+        {
+            return nullptr;
+        }
+        return m_indices.data();
+    }
+
+    DrawMode getDrawMode() const override
+    {
+        // If indices are empty, this means that polygon is convex,
+        // so use triangle fan primitive.
+        if (m_indices.empty())
+        {
+            return DrawMode::TriangleFan;
+        }
+        // Otherwise use triangle primitive + indices
+        return DrawMode::Triangles;
+    }
+so that if polygon is convex, we return NULL index data and we return DrawMode::TriangleFan as the primitive.
+Otherwise if polygon is concave, we triangulate it and use indices, so we return non-null index data
+and we return DrawMode::Triangle as the primitive.
+I encapsulated all this logic in a new function in PolygonShape
+    void handleNewVerticesLocal();
+so basically this function needs to be called whenever m_verticesLocal changes.
+That's it.
+
+It works!
+Both the convex and concave polygons in Demo04 are rendered correctly.
+Done.
 }

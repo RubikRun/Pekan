@@ -141,9 +141,7 @@ namespace Demo
         m_circleStatic.setPosition(m_circleStaticInitialPosition);
 
         m_polygon1InitialPosition = { 0.7f, -0.7f };
-        m_polygon1.create({ glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f),
-            glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) });
-        PK_ASSERT_QUICK(m_polygon1.getVertices().size() == POLYGON1_VERTICES_COUNT);
+        m_polygon1.create({ {0.0f, 0.0f} });
         m_polygon1.setPosition(m_polygon1InitialPosition);
 
         m_polygon2InitialPosition = { -0.7f, 0.7f };
@@ -301,7 +299,7 @@ namespace Demo
     {
         const bool reverseOrientation = (m_guiWindow != nullptr && m_guiWindow->getReversePolygonOrientation());
         const float reverseFactor = reverseOrientation ? -1.0f : 1.0f;
-        std::vector<glm::vec2> vertices(7, glm::vec2(0.0f, 0.0f));
+        std::vector<glm::vec2> vertices(POLYGON1_VERTICES_COUNT, glm::vec2(0.0f, 0.0f));
         const float baseArc = reverseFactor * 2.0f * PI / float(POLYGON1_VERTICES_COUNT);
         for (int i = 0; i < POLYGON1_VERTICES_COUNT; i++)
         {
@@ -321,7 +319,7 @@ namespace Demo
 
     void Demo04_Scene::updatePolygon2()
     {
-        m_polygon2.setPosition(m_polygon2InitialPosition + glm::vec2(sin(t / 8.0f) * 0.07f, sin(t / 6.0f) * 0.04f));
+        m_polygon2.setPosition(m_polygon2InitialPosition + glm::vec2(sin(t / 8.0f) * 0.02f, sin(t / 6.0f) * 0.03f));
         m_polygon2.setColor({ osc(t / 3.0f), osc(t / 2.0f + 5.0f), osc(t / 8.0f), osc(t / 11.0f, 0.6f, 1.0f) });
     }
 

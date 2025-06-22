@@ -17,5 +17,22 @@ namespace MathUtils
     // More precisely returns the determinant of vector AB and vector AC.
     float getDeterminant(glm::vec2 a, glm::vec2 b, glm::vec2 c);
 
+    // Triangulates a polygon formed by the given vertices,
+    // using the "Ear Clipping" algorithm.
+    //
+    // NOTE: Expects that the given vertices will be in CCW order
+    //
+    // @param[out] indices - Fills list with indices into the vertices
+    // such that every 3 consecutive indices form a triangle,
+    // and all those triangles combine to the exact same shape as the polygon.
+    // @return true on success
+    bool triangulatePolygon(const std::vector<glm::vec2>& vertices, std::vector<unsigned>& indices);
+
+    // Checks if given vertices form a convex polygon
+    bool isPolygonConvex(const std::vector<glm::vec2>& vertices);
+
+    // Checks if given vertices form a CCW (counter-clockwise) polygon
+    bool isPolygonCCW(const std::vector<glm::vec2>& vertices);
+
 } // namespace MathUtils
 } // namespace Pekan
