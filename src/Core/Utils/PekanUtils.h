@@ -32,7 +32,10 @@ namespace Utils
     // @param[in] randomizeAlpha - specifies if alpha value should be random as well.
     //                             If this parameter is false, you'll get a random solid color.
     //                             If this parameter is true, you'll get a random color with a random opacity.
+    // @param[in] rgbLowerBound - Minimum allowed value for the R, G and B components
+    // @param[in] rgbUpperBound - Maximum allowed value for the R, G and B components
     glm::vec4 getRandomColor(bool randomizeAlpha = false);
+    glm::vec4 getRandomColor(float rgbLowerBound, float rgbUpperBound, bool randomizeAlpha = false);
 
 } // namespace Utils
 } // namespace Pekan

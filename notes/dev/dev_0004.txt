@@ -2650,6 +2650,10 @@ So now we just need to call this triangulate() function every time that m_vertic
     setVertices()
     setVertex()
 
+----------
+22.06.2025
+----------
+
 Another thing, the triangulatePolygon() function in MathUtils expects the vertices in CCW order,
 so in PolygonShape we can check if the vertices trace the polygon in CCW order,
 and if not, we can reverse them
@@ -2728,4 +2732,23 @@ In Demo06 I want the zoom to happen slower, so we can test the new function ther
     PekanTools::setCameraController2DZoomSpeed(1.05f);
 It works!
 Done.
+}
+
+{
+All TO-DO items are done now.
+We have 1 more feature to complete v0.2 and that is
+    Batch Rendering
+
+This is probably the most complicated feature so far.
+
+Before starting to implement batch rendering, let's first finish Demo06.
+I've been meaning to generate all types of shapes there, not just rectangles.
+So let's do that now.
+
+Okay, finished work on Demo06.
+It now contains all shape types. All of them move, rotate and scale randomly, and have random properties.
+I also added checkboxes in GUI for hiding each shape type.
+It looks good, and FPS very quickly drops when you increase the number of shapes.
+I think it's a perfect target for Batch Rendering optimization.
+
 }

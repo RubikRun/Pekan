@@ -80,5 +80,16 @@ namespace Utils
         };
     }
 
+    glm::vec4 getRandomColor(float rgbLowerBound, float rgbUpperBound, bool randomizeAlpha)
+    {
+        return
+        {
+            getRandomFloat(rgbLowerBound, rgbUpperBound),
+            getRandomFloat(rgbLowerBound, rgbUpperBound),
+            getRandomFloat(rgbLowerBound, rgbUpperBound),
+            randomizeAlpha ? getRandomFloat(0.0f, 1.0f) : 1.0f
+        };
+    }
+
 } // namespace Utils
 } // namespace Pekan

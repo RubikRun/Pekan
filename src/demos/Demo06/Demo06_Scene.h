@@ -24,6 +24,7 @@ namespace Demo
 		glm::vec2 min = glm::vec2(0.0f, 0.0f);
 		glm::vec2 max = glm::vec2(0.0f, 0.0f);
 		glm::vec2 size = glm::vec2(0.0f, 0.0f);
+		glm::vec2 center = glm::vec2(0.0f, 0.0f);
 	};
 
 	class Demo06_Scene : public Pekan::Layer
@@ -48,8 +49,23 @@ namespace Demo
 
 		void createBbox();
 		void createCameras();
+
 		void createShapes();
 		void createRectangles();
+		void createCircles();
+		void createCirclesStatic();
+		void createTriangles();
+		void createPolygons();
+		void createLines();
+		void createCenterSquare();
+
+		void updateShapes(float dt);
+		void updateRectangles(float dt);
+		void updateCircles(float dt);
+		void updateCirclesStatic(float dt);
+		void updateTriangles(float dt);
+		void updatePolygons(float dt);
+		void updateLines(float dt);
 
 		bool onKeyPressed(const Pekan::KeyPressedEvent& event) override;
 
@@ -74,9 +90,9 @@ namespace Demo
 
 		int m_perShapeTypeCount = -1;
 
-		glm::vec2 m_mousePos = glm::vec2(0.0f, 0.0f);
-
 		const Demo06_GUIWindow* m_guiWindow = nullptr;
+
+		float t = 0.0f;
 	};
 
 } // namespace Demo

@@ -42,6 +42,7 @@ namespace Renderer
     {
         m_segmentsCount = segmentsCount;
         generateVerticesLocal();
+        m_verticesWorld.resize(m_verticesLocal.size());
         updateTransformedVertices();
     }
 
