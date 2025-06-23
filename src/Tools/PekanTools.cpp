@@ -5,7 +5,7 @@
 #include "PekanApplication.h"
 #include "Events/EventListener.h"
 
-static const float ZOOM_SPEED = 1.1f;
+static const float DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED = 1.1f;
 
 namespace Pekan
 {
@@ -83,11 +83,11 @@ namespace Tools
             const float scrollAmount = event.getYOffset();
             if (scrollAmount > 0.0f)
             {
-                camera->zoomIn(ZOOM_SPEED);
+                camera->zoomIn(m_zoomSpeed);
             }
             else if (scrollAmount < 0.0f)
             {
-                camera->zoomOut(ZOOM_SPEED);
+                camera->zoomOut(m_zoomSpeed);
             }
 
             // Use the difference between mouse position in world space before zooming,
@@ -106,6 +106,9 @@ namespace Tools
         // Sets a new camera to be controlled by the camera controller
         inline void setCamera(const CameraSharedPtr& camera) { m_camera = camera; }
 
+        // Sets zoom speed for the 2D camera controller
+        inline void setZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
+
     private:
 
         // A pointer to the camera being controlled by the camera controller.
@@ -116,6 +119,8 @@ namespace Tools
         glm::vec2 m_mousePos = glm::vec2(-1.0f, -1.0f);
 
         bool m_enabled = true;
+
+        float m_zoomSpeed = DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED;
     };
 
     // A global static 2D camera controller.
@@ -156,6 +161,11 @@ namespace Tools
 	{
         s_cameraController2D->setEnabled(false);
 	}
+
+    void PekanTools::setCameraController2DZoomSpeed(float zoomSpeed)
+    {
+        s_cameraController2D->setZoomSpeed(zoomSpeed);
+    }
 
 } // namespace Tools
 } // namespace Pekan

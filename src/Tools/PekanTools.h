@@ -28,6 +28,9 @@ namespace Tools
 
         // Disables camera controller for the currently controlled 2D camera
         static void disableCameraController2D();
+
+        // Sets zoom speed for the 2D camera controller
+        static void setCameraController2DZoomSpeed(float zoomSpeed);
     };
 
 } // namespace Tools

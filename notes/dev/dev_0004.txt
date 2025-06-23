@@ -2706,3 +2706,26 @@ It works!
 Both the convex and concave polygons in Demo04 are rendered correctly.
 Done.
 }
+
+----------
+23.06.2025
+----------
+
+{
+Let's do a small side quest.
+Allowing control of zoom speed in CameraController2D.
+Created this new function in PekanTools
+    static void setCameraController2DZoomSpeed(float zoomSpeed);
+What it does is it calls this new function of CameraController2D
+    s_cameraController2D->setZoomSpeed(zoomSpeed);
+    inline void setZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
+that just sets this new member variable of CameraController2D
+    float m_zoomSpeed = DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED;
+which is set by default to the default value of the zoom level which is
+    static const float DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED = 1.1f;
+
+In Demo06 I want the zoom to happen slower, so we can test the new function there like that
+    PekanTools::setCameraController2DZoomSpeed(1.05f);
+It works!
+Done.
+}

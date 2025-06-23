@@ -88,6 +88,7 @@ namespace Demo
 		m_cameraSecond->setPosition(m_bbox.min + m_bbox.size / 2.0f);
 
 		PekanTools::enableCameraController2D(m_cameraFirst);
+		PekanTools::setCameraController2DZoomSpeed(1.05f);
 	}
 
 	void Demo06_Scene::createShapes()
