@@ -1,11 +1,13 @@
 #include "Demo05_Scene.h"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
+#include "RenderCommands.h"
 
 #include <glm/gtc/constants.hpp>
 static const float PI = glm::pi<float>();
 
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderCommands;
+using Pekan::Renderer::RenderState;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BufferDataUsage;
@@ -25,10 +27,10 @@ namespace Demo
 
     bool Demo05_Scene::init()
     {
-        PekanRenderer::enableMultisampleAntiAliasing();
+        RenderState::enableMultisampleAntiAliasing();
         // Enable and configure blending
-        PekanRenderer::enableBlending();
-        PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
+        RenderState::enableBlending();
+        RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
         for (int i = 0; i < MTT0_SUBDIVS; i++)
         {
@@ -71,13 +73,13 @@ namespace Demo
         if (m_guiWindow != nullptr)
         {
             const ImVec4& clearColor = m_guiWindow->getClearColor();
-            PekanRenderer::setBackgroundColor(glm::vec4(clearColor.x, clearColor.y, clearColor.z, clearColor.w));
-            PekanRenderer::clear();
+            RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+            RenderCommands::clear();
         }
         else
         {
             // If there is no GUI window attached, just clear background with default color
-            PekanRenderer::clear();
+            RenderCommands::clear();
         }
 
         for (int i = 0; i < MTT0_SUBDIVS; i++)

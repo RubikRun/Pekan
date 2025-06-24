@@ -100,7 +100,7 @@ namespace Renderer
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
     void TriangleShape::updateIndicesOrientation()
     {
-        if (!PekanRenderer::isEnabledFaceCulling())
+        if (!RenderState::isEnabledFaceCulling())
         {
             return;
         }

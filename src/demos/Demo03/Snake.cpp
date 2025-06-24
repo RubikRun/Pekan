@@ -1,7 +1,9 @@
 #include "Snake.h"
 #include "Utils/PekanUtils.h"
+#include "RenderCommands.h"
 
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderCommands;
+using Pekan::Renderer::RenderState;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::PekanEngine;
@@ -131,7 +133,7 @@ namespace Demo
         m_renderObject.bind();
 
         // Draw snake
-        PekanRenderer::drawIndexed(m_indices.size());
+        RenderCommands::drawIndexed(m_indices.size());
 
         m_renderObject.unbind();
     }

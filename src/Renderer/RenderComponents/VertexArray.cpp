@@ -1,6 +1,6 @@
 #include "VertexArray.h"
 #include "Logger/PekanLogger.h"
-#include "PekanRenderer.h"
+#include "RenderState.h"
 
 #include <glad/glad.h>
 
@@ -48,12 +48,12 @@ namespace Renderer
 			const VertexBufferElement& element = layoutElements[i];
 			// For each element, enable and configure a vertex attribute
 			GLCall(glEnableVertexAttribArray(i));
-			if (PekanRenderer::isShaderDataTypeInt(layoutElements[i].type))
+			if (RenderState::isShaderDataTypeInt(layoutElements[i].type))
 			{
 				GLCall(glVertexAttribIPointer(
 					i,
 					element.getComponentsCount(),
-					PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+					RenderState::getShaderDataTypeOpenGLBaseType(element.type),
 					layout.getStride(),
 					reinterpret_cast<GLvoid*>((long long)(element.getOffset()))
 				));
@@ -63,7 +63,7 @@ namespace Renderer
 				GLCall(glVertexAttribPointer(
 					i,
 					element.getComponentsCount(),
-					PekanRenderer::getShaderDataTypeOpenGLBaseType(element.type),
+					RenderState::getShaderDataTypeOpenGLBaseType(element.type),
 					element.normalized ? GL_TRUE : GL_FALSE,
 					layout.getStride(),
 					reinterpret_cast<GLvoid*>((long long)(element.getOffset()))

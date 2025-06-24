@@ -1,11 +1,13 @@
 #include "Demo04_Scene.h"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
+#include "RenderCommands.h"
 
 #include <glm/gtc/constants.hpp>
 static const float PI = glm::pi<float>();
 
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderCommands;
+using Pekan::Renderer::RenderState;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BufferDataUsage;
@@ -74,10 +76,10 @@ namespace Demo
 
     bool Demo04_Scene::init()
     {
-        PekanRenderer::enableMultisampleAntiAliasing();
+        RenderState::enableMultisampleAntiAliasing();
         // Enable and configure blending
-        PekanRenderer::enableBlending();
-        PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
+        RenderState::enableBlending();
+        RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
         // Set up vertex data and configure vertex attributes
         const float vertices[] =
@@ -153,11 +155,11 @@ namespace Demo
             m_enabledFaceCulling = m_guiWindow->getEnabledFaceCulling();
             if (m_enabledFaceCulling)
             {
-                PekanRenderer::enableFaceCulling();
+                RenderState::enableFaceCulling();
             }
             else
             {
-                PekanRenderer::disableFaceCulling();
+                RenderState::disableFaceCulling();
             }
         }
 
@@ -205,11 +207,11 @@ namespace Demo
                 m_enabledFaceCulling = !m_enabledFaceCulling;
                 if (m_enabledFaceCulling)
                 {
-                    PekanRenderer::enableFaceCulling();
+                    RenderState::enableFaceCulling();
                 }
                 else
                 {
-                    PekanRenderer::disableFaceCulling();
+                    RenderState::disableFaceCulling();
                 }
             }
 
@@ -260,17 +262,17 @@ namespace Demo
         if (m_guiWindow != nullptr)
         {
             const ImVec4& clearColor = m_guiWindow->getClearColor();
-            PekanRenderer::setBackgroundColor(glm::vec4(clearColor.x, clearColor.y, clearColor.z, clearColor.w));
-            PekanRenderer::clear();
+            RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+            RenderCommands::clear();
         }
         else
         {
             // If there is no GUI window attached, just clear background with default color
-            PekanRenderer::clear();
+            RenderCommands::clear();
         }
 
         m_renderObject.bind();
-        PekanRenderer::drawIndexed(6);
+        RenderCommands::drawIndexed(6);
         m_renderObject.unbind();
 
         if (m_guiWindow != nullptr && m_guiWindow->isEnabledShapes())

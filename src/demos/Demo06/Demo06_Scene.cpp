@@ -2,6 +2,7 @@
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "PekanTools.h"
+#include "RenderCommands.h"
 
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"
@@ -65,7 +66,7 @@ namespace Demo
 
     bool Demo06_Scene::init()
 	{
-		PekanRenderer::enableMultisampleAntiAliasing();
+		RenderState::enableMultisampleAntiAliasing();
 
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
 		m_perShapeTypeCount = shapesCount / 5;
@@ -92,7 +93,7 @@ namespace Demo
 
 	void Demo06_Scene::render()
 	{
-		PekanRenderer::clear();
+		RenderCommands::clear();
 
 		Camera2D& camera = (m_currentCameraIdx == 0) ? *m_cameraFirst : *m_cameraSecond;
 

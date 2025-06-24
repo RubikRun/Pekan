@@ -2,8 +2,10 @@
 
 #include "PekanApplication.h"
 #include "Events/KeyEvents.h"
+#include "RenderCommands.h"
 
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderState;
+using Pekan::Renderer::RenderCommands;
 using Pekan::KeyPressedEvent;
 using Pekan::KeyCode;
 
@@ -32,7 +34,7 @@ namespace Demo
 
 	void Demo03_Scene::render()
 	{
-		PekanRenderer::clear();
+		RenderCommands::clear();
 		m_apple.render();
 		m_snake.render();
 	}

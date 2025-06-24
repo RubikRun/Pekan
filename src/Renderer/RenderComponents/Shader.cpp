@@ -1,6 +1,6 @@
 #include "Shader.h"
 #include "Logger/PekanLogger.h"
-#include "PekanRenderer.h"
+#include "RenderState.h"
 
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>

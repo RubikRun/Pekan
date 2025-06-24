@@ -23,7 +23,7 @@ namespace Renderer
 	void IndexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
 		bind();
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage)));
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, RenderState::getBufferDataUsageOpenGLEnum(dataUsage)));
 	}
 
 	void IndexBuffer::setSubData(const void* data, long long offset, long long size)

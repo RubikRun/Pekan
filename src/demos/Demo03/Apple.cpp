@@ -1,9 +1,12 @@
 #include "Apple.h"
-#include "Utils/PekanUtils.h"
 #include "Snake.h"
 
+#include "Utils/PekanUtils.h"
+#include "RenderCommands.h"
+
 using Pekan::PekanEngine;
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderCommands;
+using Pekan::Renderer::RenderState;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::Utils::getRandomInt;
@@ -68,7 +71,7 @@ namespace Demo
         m_renderObject.bind();
 
         // Draw apple
-        PekanRenderer::drawIndexed(6);
+        RenderCommands::drawIndexed(6);
 
         m_renderObject.unbind();
     }

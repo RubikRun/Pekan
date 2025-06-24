@@ -49,7 +49,7 @@ namespace Renderer
 		const unsigned* getIndexData() const override { return m_indices; }
 
 		// Updates indices so that the orientation of the 3 vertices is CCW.
-		// This is done only if face culling is enabled in PekanRenderer, otherwise there's no point.
+		// This is done only if face culling is enabled in RenderState, otherwise there's no point.
 		void updateIndicesOrientation();
 #endif
 

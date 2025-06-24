@@ -1,4 +1,4 @@
-#include "PekanRenderer.h"
+#include "RenderState.h"
 #include "Logger/PekanLogger.h"
 
 #include <glad/glad.h>
@@ -10,56 +10,34 @@ namespace Pekan
 {
 namespace Renderer
 {
-	bool PekanRenderer::s_isEnabledFaceCulling = false;
+	bool RenderState::s_isEnabledFaceCulling = false;
 
-	void PekanRenderer::draw(unsigned elementsCount, DrawMode mode)
+	void RenderState::setBackgroundColor(float r, float g, float b, float a)
 	{
-		GLCall(glDrawArrays(getDrawModeOpenGLEnum(mode), 0, elementsCount));
+		GLCall(glClearColor(r, g, b, a));
 	}
 
-	void PekanRenderer::drawIndexed(unsigned elementsCount, DrawMode mode)
-	{
-		GLCall(glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0));
-	}
-
-	void PekanRenderer::clear(bool clearDepthBuffer)
-	{
-		if (clearDepthBuffer)
-		{
-			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT))
-		}
-		else
-		{
-			GLCall(glClear(GL_COLOR_BUFFER_BIT));
-		}
-	}
-
-	void PekanRenderer::setBackgroundColor(const glm::vec4& backgroundColor)
-	{
-		GLCall(glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w));
-	}
-
-	void PekanRenderer::enableBlending()
+	void RenderState::enableBlending()
 	{
 		GLCall(glEnable(GL_BLEND));
 	}
 
-	void PekanRenderer::setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor)
+	void RenderState::setBlendFunction(BlendFactor sourceFactor, BlendFactor destinationFactor)
 	{
 		GLCall(glBlendFunc(getBlendFactorOpenGLEnum(sourceFactor), getBlendFactorOpenGLEnum(destinationFactor)));
 	}
 
-	void PekanRenderer::enableDepthTest()
+	void RenderState::enableDepthTest()
 	{
 		GLCall(glEnable(GL_DEPTH_TEST));
 	}
 
-	void PekanRenderer::enableMultisampleAntiAliasing()
+	void RenderState::enableMultisampleAntiAliasing()
 	{
 		GLCall(glEnable(GL_MULTISAMPLE));
 	}
 
-	void PekanRenderer::enableFaceCulling()
+	void RenderState::enableFaceCulling()
 	{
 		GLCall(glEnable(GL_CULL_FACE));
 		GLCall(glCullFace(GL_BACK));
@@ -67,13 +45,13 @@ namespace Renderer
 		s_isEnabledFaceCulling = true;
 	}
 
-	void PekanRenderer::disableFaceCulling()
+	void RenderState::disableFaceCulling()
 	{
 		GLCall(glDisable(GL_CULL_FACE));
 		s_isEnabledFaceCulling = false;
 	}
 
-	unsigned PekanRenderer::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
+	unsigned RenderState::getShaderDataTypeOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -93,28 +71,7 @@ namespace Renderer
 		return 0;
 	}
 
-	unsigned PekanRenderer::getDrawModeOpenGLEnum(DrawMode drawMode)
-	{
-		switch (drawMode)
-		{
-			case DrawMode::Points:                    return GL_POINTS;
-			case DrawMode::LineStrip:                 return GL_LINE_STRIP;
-			case DrawMode::LineLoop:                  return GL_LINE_LOOP;
-			case DrawMode::Lines:                     return GL_LINES;
-			case DrawMode::LineStripAdjacency:        return GL_LINE_STRIP_ADJACENCY;
-			case DrawMode::LinesAdjacency:            return GL_LINES_ADJACENCY;
-			case DrawMode::TriangleStrip:             return GL_TRIANGLE_STRIP;
-			case DrawMode::TriangleFan:               return GL_TRIANGLE_FAN;
-			case DrawMode::Triangles:                 return GL_TRIANGLES;
-			case DrawMode::TriangleStripAdjacency:    return GL_TRIANGLE_STRIP_ADJACENCY;
-			case DrawMode::TrianglesAdjacency:        return GL_TRIANGLES_ADJACENCY;
-			case DrawMode::Patches:                   return GL_PATCHES;
-		}
-		PK_ASSERT(false, "Unknown DrawMode, cannot determine OpenGL enum.", "Pekan");
-		return 0;
-	}
-
-	unsigned PekanRenderer::getBlendFactorOpenGLEnum(BlendFactor blendFactor)
+	unsigned RenderState::getBlendFactorOpenGLEnum(BlendFactor blendFactor)
 	{
 		switch (blendFactor)
 		{
@@ -137,7 +94,7 @@ namespace Renderer
 		return 0;
 	}
 
-	unsigned PekanRenderer::getBufferDataUsageOpenGLEnum(BufferDataUsage dataUsage)
+	unsigned RenderState::getBufferDataUsageOpenGLEnum(BufferDataUsage dataUsage)
 	{
 		switch (dataUsage)
 		{
@@ -155,7 +112,7 @@ namespace Renderer
 		return 0;
 	}
 
-	unsigned PekanRenderer::getShaderDataTypeSize(ShaderDataType type)
+	unsigned RenderState::getShaderDataTypeSize(ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -175,7 +132,7 @@ namespace Renderer
 		return 0;
 	}
 
-	unsigned PekanRenderer::getShaderDataTypeComponentsCount(ShaderDataType type)
+	unsigned RenderState::getShaderDataTypeComponentsCount(ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -195,7 +152,7 @@ namespace Renderer
 		return 0;
 	}
 
-	bool PekanRenderer::isShaderDataTypeInt(ShaderDataType type)
+	bool RenderState::isShaderDataTypeInt(ShaderDataType type)
 	{
 		return
 		(
@@ -206,7 +163,7 @@ namespace Renderer
 		);
 	}
 
-	unsigned PekanRenderer::getTextureSlotOpenGLEnum(unsigned slot)
+	unsigned RenderState::getTextureSlotOpenGLEnum(unsigned slot)
 	{
 		switch (slot)
 		{
@@ -247,7 +204,7 @@ namespace Renderer
 		return 0;
 	}
 
-	int PekanRenderer::getMaxTextureSlots()
+	int RenderState::getMaxTextureSlots()
 	{
 		static int maxTextureSlots = -1;
 		if (maxTextureSlots == -1)
@@ -257,7 +214,7 @@ namespace Renderer
 		return maxTextureSlots;
 	}
 
-	unsigned PekanRenderer::getTextureMinifyFunctionOpenGLEnum(TextureMinifyFunction function)
+	unsigned RenderState::getTextureMinifyFunctionOpenGLEnum(TextureMinifyFunction function)
 	{
 		switch (function)
 		{
@@ -272,7 +229,7 @@ namespace Renderer
 		return 0;
 	}
 
-	unsigned PekanRenderer::getTextureMagnifyFunctionOpenGLEnum(TextureMagnifyFunction function)
+	unsigned RenderState::getTextureMagnifyFunctionOpenGLEnum(TextureMagnifyFunction function)
 	{
 		switch (function)
 		{
@@ -283,7 +240,7 @@ namespace Renderer
 		return 0;
 	}
 
-	unsigned PekanRenderer::getTextureWrapModeOpenGLEnum(TextureWrapMode wrapMode)
+	unsigned RenderState::getTextureWrapModeOpenGLEnum(TextureWrapMode wrapMode)
 	{
 		switch (wrapMode)
 		{

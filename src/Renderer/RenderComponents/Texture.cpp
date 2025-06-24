@@ -76,7 +76,7 @@ namespace Renderer {
 
 	void Texture::activateSlot(unsigned slot)
 	{
-		const unsigned slotEnumValue = PekanRenderer::getTextureSlotOpenGLEnum(slot);
+		const unsigned slotEnumValue = RenderState::getTextureSlotOpenGLEnum(slot);
 		GLCall(glActiveTexture(slotEnumValue));
 	}
 
@@ -84,28 +84,28 @@ namespace Renderer {
 	{
 		bind();
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			PekanRenderer::getTextureMinifyFunctionOpenGLEnum(function)));
+			RenderState::getTextureMinifyFunctionOpenGLEnum(function)));
 	}
 
 	void Texture::setMagnifyFunction(TextureMagnifyFunction function)
 	{
 		bind();
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-			PekanRenderer::getTextureMagnifyFunctionOpenGLEnum(function)));
+			RenderState::getTextureMagnifyFunctionOpenGLEnum(function)));
 	}
 
 	void Texture::setWrapModeX(TextureWrapMode wrapMode)
 	{
 		bind();
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-			PekanRenderer::getTextureWrapModeOpenGLEnum(wrapMode)));
+			RenderState::getTextureWrapModeOpenGLEnum(wrapMode)));
 	}
 
 	void Texture::setWrapModeY(TextureWrapMode wrapMode)
 	{
 		bind();
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-			PekanRenderer::getTextureWrapModeOpenGLEnum(wrapMode)));
+			RenderState::getTextureWrapModeOpenGLEnum(wrapMode)));
 	}
 
 	void Texture::setBorderColor(glm::vec4 color)

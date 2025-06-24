@@ -1,6 +1,7 @@
 #include "Line.h"
 
 #include "Utils/PekanUtils.h"
+#include "RenderCommands.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/VertexShader_2D.glsl"
 #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/FragmentShader_SolidColor.glsl"
@@ -46,7 +47,7 @@ namespace Renderer
 	{
 		PK_ASSERT(m_renderObject.isValid(), "Trying to render a Line that is not yet created.", "Pekan");
 		m_renderObject.bind();
-		PekanRenderer::draw(2, DrawMode::Lines);
+		RenderCommands::draw(2, DrawMode::Lines);
 	}
 
 	void Line::render(const Camera2D& camera)
@@ -58,7 +59,7 @@ namespace Renderer
 		const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
 		m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", viewProjectionMatrix);
 
-		PekanRenderer::draw(2, DrawMode::Lines);
+		RenderCommands::draw(2, DrawMode::Lines);
 	}
 
 	void Line::setPointA(glm::vec2 pointA)

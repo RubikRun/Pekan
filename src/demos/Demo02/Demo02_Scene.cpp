@@ -1,10 +1,12 @@
 #include "Demo02_Scene.h"
 #include "Utils/PekanUtils.h"
+#include "RenderCommands.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderCommands;
+using Pekan::Renderer::RenderState;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::PekanEngine;
@@ -31,8 +33,8 @@ namespace Demo
 
     bool Demo02_Scene::init()
 	{
-        PekanRenderer::enableMultisampleAntiAliasing();
-        PekanRenderer::enableFaceCulling();
+        RenderState::enableMultisampleAntiAliasing();
+        RenderState::enableFaceCulling();
 
         m_resolution = PekanEngine::getWindowSize();
 
@@ -87,7 +89,7 @@ namespace Demo
             {{-0.5f, -0.5f,  0.5f}, m_colors[5]}
         };
 
-        PekanRenderer::enableDepthTest();
+        RenderState::enableDepthTest();
 
         m_renderObject.create
         (
@@ -154,7 +156,7 @@ namespace Demo
 
 	void Demo02_Scene::render()
 	{
-        PekanRenderer::clear(true);
+        RenderCommands::clear(true);
 
         m_renderObject.bind();
 
@@ -163,7 +165,7 @@ namespace Demo
         m_renderObject.getShader().setUniformMatrix4fv("u_MVP", mvpMatrix);
 
         // Draw cube
-        PekanRenderer::drawIndexed(36);
+        RenderCommands::drawIndexed(36);
 
         m_renderObject.unbind();
 	}

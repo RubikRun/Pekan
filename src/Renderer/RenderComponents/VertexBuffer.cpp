@@ -11,14 +11,14 @@ namespace Renderer
 	VertexBufferElement::VertexBufferElement(ShaderDataType type, const std::string& name, bool normalized)
 		: name(name)
 		, type(type)
-		, m_size(PekanRenderer::getShaderDataTypeSize(type))
+		, m_size(RenderState::getShaderDataTypeSize(type))
 		, m_offset(0)
 		, normalized(normalized)
 	{}
 
 	unsigned VertexBufferElement::getComponentsCount() const
 	{
-		return PekanRenderer::getShaderDataTypeComponentsCount(type);
+		return RenderState::getShaderDataTypeComponentsCount(type);
 	}
 
 	VertexBufferLayout::VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements)
@@ -63,7 +63,7 @@ namespace Renderer
 	void VertexBuffer::setData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
 		bind();
-		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, PekanRenderer::getBufferDataUsageOpenGLEnum(dataUsage)));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, RenderState::getBufferDataUsageOpenGLEnum(dataUsage)));
 	}
 
 	void VertexBuffer::setSubData(const void* data, long long offset, long long size)

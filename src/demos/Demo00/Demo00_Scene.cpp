@@ -1,8 +1,10 @@
 #include "Demo00_Scene.h"
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
+#include "RenderCommands.h"
 
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderCommands;
+using Pekan::Renderer::RenderState;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
 using Pekan::Renderer::BufferDataUsage;
@@ -60,17 +62,17 @@ namespace Demo
         if (m_guiWindow != nullptr)
         {
             const ImVec4& clearColor = m_guiWindow->getClearColor();
-            PekanRenderer::setBackgroundColor(glm::vec4(clearColor.x, clearColor.y, clearColor.z, clearColor.w));
-            PekanRenderer::clear();
+            RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+            RenderCommands::clear();
         }
         else
         {
             // If there is no GUI window attached, just clear background with default color
-            PekanRenderer::clear();
+            RenderCommands::clear();
         }
 
         m_renderObject.bind();
-        PekanRenderer::drawIndexed(6, DrawMode::Triangles);
+        RenderCommands::drawIndexed(6, DrawMode::Triangles);
         m_renderObject.unbind();
 	}
 

@@ -2751,4 +2751,26 @@ I also added checkboxes in GUI for hiding each shape type.
 It looks good, and FPS very quickly drops when you increase the number of shapes.
 I think it's a perfect target for Batch Rendering optimization.
 
+----------
+24.06.2025
+----------
+
+Let's start with Batch Rendering.
+First, I will need a new class called
+    Renderer2D
+but I already have a class
+    PekanRenderer
+so it becomes a bit confusing.
+I thought about it for a while and I think it's better to separate PekanRenderer into 2 new classes
+    RenderState
+    RenderCommands
+First one will contain functions that change the global rendering state, for example
+    enableBlending()
+    enableMultisampleAntiAliasing()
+    etc.
+Second one will contain render commands that directly translate to a GPU operation. In Pekan's case only
+    draw()
+    clear()
+...Separated them. All functions that were previously in PekanRenderer are now in RenderState and RenderCommands.
+
 }

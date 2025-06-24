@@ -5,8 +5,10 @@ option(PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING "Disable orientation checkin
 
 # Add a static library Renderer, compiling the following source files
 add_library(Renderer STATIC
-    PekanRenderer.h
-    PekanRenderer.cpp
+    RenderState.h
+    RenderState.cpp
+    RenderCommands.h
+    RenderCommands.cpp
     RenderObject.h
     RenderObject.cpp
     RenderComponents/RenderComponent.h

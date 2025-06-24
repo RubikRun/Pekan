@@ -2,7 +2,8 @@
 
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
-#include "PekanRenderer.h"
+#include "RenderCommands.h"
+#include "RenderState.h"
 #include "PekanEngine.h"
 #include "PekanTools.h"
 
@@ -20,7 +21,7 @@ namespace Demo
 
     bool Demo07_Scene::init()
 	{
-		PekanRenderer::enableMultisampleAntiAliasing();
+		RenderState::enableMultisampleAntiAliasing();
 
 		createCamera();
 		createCoordSys();
@@ -89,7 +90,7 @@ namespace Demo
 
 	void Demo07_Scene::render()
 	{
-		PekanRenderer::clear();
+		RenderCommands::clear();
 		m_rectangle.render(*m_camera);
 		m_circle.render(*m_camera);
 		m_circleStatic.render(*m_camera);

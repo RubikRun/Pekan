@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include "PekanEngine.h"
 
 namespace Pekan
@@ -14,23 +12,6 @@ namespace Renderer
 	enum class ShaderDataType
 	{
 		None = 0, Float = 1, Float2 = 2, Float3 = 3, Float4 = 4, Mat3 = 5, Mat4 = 6, Int = 7, Int2 = 8, Int3 = 9, Int4 = 10, Bool = 11
-	};
-
-	// Enum for different types of draw modes. Each mode specifies a kind of primitive to render.
-	enum class DrawMode
-	{
-		Points = 0,
-		LineStrip = 1,
-		LineLoop = 2,
-		Lines = 3,
-		LineStripAdjacency = 4,
-		LinesAdjacency = 5,
-		TriangleStrip = 6,
-		TriangleFan = 7,
-		Triangles = 8,
-		TriangleStripAdjacency = 9,
-		TrianglesAdjacency = 10,
-		Patches = 11
 	};
 
 	// Enum for different types of blending factors
@@ -122,9 +103,8 @@ namespace Renderer
 		ClampToBorder = 3
 	};
 
-	// A singleton/static class containing common rendering functionality,
-	// not specific to any render object/component, but just for the general rendering context.
-	class PekanRenderer
+	// A singleton/static class for configuring the global render state
+	class RenderState
 	{
 		friend class VertexArray;
 		friend class VertexBufferElement;
@@ -135,19 +115,8 @@ namespace Renderer
 
 	public:
 
-		// Draws elements from currently bound vertex buffer in the order that they appear
-		static void draw(unsigned elementsCount, DrawMode mode = DrawMode::Triangles);
-
-		// Draws elements from currently bound vertex buffer.
-		// Uses currently bound index buffer to determine which elements to draw and in what order.
-		static void drawIndexed(unsigned elementsCount, DrawMode mode = DrawMode::Triangles);
-
-		// Clears everything rendered on window.
-		// @param[in] clearDepthBuffer - Optional parameter to clear depth buffer as well
-		static void clear(bool clearDepthBuffer = false);
-
 		// Sets background's color, used to clear window
-		static void setBackgroundColor(const glm::vec4& backgroundColor);
+		static void setBackgroundColor(float r, float g, float b, float a);
 
 		// Enables blending capability
 		static void enableBlending();
@@ -181,9 +150,6 @@ namespace Renderer
 		// Here "base type" means that the given shader data type can be multi-component
 		// and the function will return the type of a single component of that type.
 		static unsigned getShaderDataTypeOpenGLBaseType(ShaderDataType type);
-
-		// Returns the OpenGL enum value corresponding to the given draw mode
-		static unsigned getDrawModeOpenGLEnum(DrawMode drawMode);
 
 		// Returns the OpenGL enum value corresponding to the given blend factor
 		static unsigned getBlendFactorOpenGLEnum(BlendFactor blendFactor);

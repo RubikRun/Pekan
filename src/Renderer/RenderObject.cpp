@@ -194,10 +194,10 @@ namespace Renderer
 		PK_ASSERT_QUICK(m_shader.isValid());
 
 		// Check if requested slot is available on current hardware
-		if (int(slot) >= PekanRenderer::getMaxTextureSlots())
+		if (int(slot) >= RenderState::getMaxTextureSlots())
 		{
 			PK_LOG_ERROR("Requested texture slot " << slot << " is not available on current hardware."
-				" Maximum available texture slot is " << PekanRenderer::getMaxTextureSlots(), "Pekan");
+				" Maximum available texture slot is " << RenderState::getMaxTextureSlots(), "Pekan");
 			return;
 		}
 

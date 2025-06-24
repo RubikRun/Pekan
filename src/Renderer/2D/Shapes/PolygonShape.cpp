@@ -104,7 +104,7 @@ namespace Renderer
             // but only if face culling is enabled - otherwise CW polygons are ok.
             if
             (
-                PekanRenderer::isEnabledFaceCulling()
+                RenderState::isEnabledFaceCulling()
                 && m_verticesLocal.size() > 2
                 // We already know that the polygon is convex here, so checking if it's CW can be done
                 // by just checking the first 3 vertices, no need to waste performance on the rest.

@@ -2,8 +2,10 @@
 #include "Logger/PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "PekanEngine.h"
+#include "RenderCommands.h"
 
-using Pekan::Renderer::PekanRenderer;
+using Pekan::Renderer::RenderCommands;
+using Pekan::Renderer::RenderState;
 using Pekan::Renderer::BufferDataUsage;
 using Pekan::Renderer::ShaderDataType;
 using Pekan::Renderer::DrawMode;
@@ -20,13 +22,13 @@ namespace Demo
 
     bool Demo01_Scene::init()
 	{
-        PekanRenderer::enableMultisampleAntiAliasing();
+        RenderState::enableMultisampleAntiAliasing();
 
         m_resolution = PekanEngine::getWindowSize();
 
         // Enable and configure blending
-        PekanRenderer::enableBlending();
-        PekanRenderer::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
+        RenderState::enableBlending();
+        RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
         m_renderObject.create
         (
@@ -109,10 +111,10 @@ namespace Demo
 
 	void Demo01_Scene::render()
 	{
-        PekanRenderer::clear();
+        RenderCommands::clear();
 
         m_renderObject.bind();
-        PekanRenderer::draw(m_vertices.size() / 6);
+        RenderCommands::draw(m_vertices.size() / 6);
         m_renderObject.unbind();
 	}
 

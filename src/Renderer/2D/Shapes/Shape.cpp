@@ -20,11 +20,11 @@ namespace Renderer
 
         if (m_usingIndices)
         {
-            PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
+            RenderCommands::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
         }
         else
         {
-            PekanRenderer::draw(getNumberOfVertices(), getDrawMode());
+            RenderCommands::draw(getNumberOfVertices(), getDrawMode());
         }
     }
 
@@ -39,11 +39,11 @@ namespace Renderer
 
         if (m_usingIndices)
         {
-            PekanRenderer::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
+            RenderCommands::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
         }
         else
         {
-            PekanRenderer::draw(getNumberOfVertices(), getDrawMode());
+            RenderCommands::draw(getNumberOfVertices(), getDrawMode());
         }
     }
 
