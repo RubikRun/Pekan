@@ -6,6 +6,7 @@
 #include "RenderState.h"
 #include "PekanEngine.h"
 #include "PekanTools.h"
+#include "Renderer2D.h"
 
 using namespace Pekan;
 using namespace Pekan::Renderer;
@@ -91,15 +92,15 @@ namespace Demo
 	void Demo07_Scene::render()
 	{
 		RenderCommands::clear();
-		m_rectangle.render(*m_camera);
-		m_circle.render(*m_camera);
-		m_circleStatic.render(*m_camera);
-		m_triangle.render(*m_camera);
-		m_polygon.render(*m_camera);
-		m_line.render(*m_camera);
+		m_rectangle.render();
+		m_circle.render();
+		m_circleStatic.render();
+		m_triangle.render();
+		m_polygon.render();
+		m_line.render();
 		for (LineShape& csLine : m_coordSys)
 		{
-			csLine.render(*m_camera);
+			csLine.render();
 		}
 	}
 
@@ -121,6 +122,7 @@ namespace Demo
 	{
 		m_camera = std::make_shared<Camera2D>();
 		m_camera->setSize(CAMERA_SCALE);
+		Renderer2D::setCamera(m_camera);
 		PekanTools::enableCameraController2D(m_camera);
 	}
 

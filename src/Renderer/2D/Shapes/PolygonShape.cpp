@@ -8,82 +8,64 @@ namespace Pekan
 namespace Renderer
 {
 
-	void PolygonShape::create
-    (
-        const std::vector<glm::vec2>& vertices,
-        bool dynamic
-    )
+    void PolygonShape::create(const std::vector<glm::vec2>& vertices)
     {
+        Shape::create();
+
         m_verticesLocal = vertices;
-        m_verticesWorld = m_verticesLocal;
-
-        handleNewVerticesLocal();
-        Shape::createRenderObject(dynamic);
-    }
-
-    void PolygonShape::destroy()
-    {
-        Shape::destroyRenderObject();
+        m_isReversedVerticesLocal = false;
+        m_needUpdateVerticesLocal = true;
     }
 
     void PolygonShape::setVertices(const std::vector<glm::vec2>& vertices)
     {
-        m_verticesLocal = vertices;
-        m_verticesWorld.resize(m_verticesLocal.size());
+        PK_ASSERT(isValid(), "Trying to set vertices of a PolygonShape that is not yet created.", "Pekan");
 
-        handleNewVerticesLocal();
-        updateTransformedVertices();
+        m_verticesLocal = vertices;
+        m_isReversedVerticesLocal = false;
+        m_needUpdateVerticesLocal = true;
     }
 
     void PolygonShape::setVertex(int index, glm::vec2 vertex)
     {
-        if (index < 0 || index >= m_verticesLocal.size())
+        PK_ASSERT(isValid(), "Trying to set vertex of a PolygonShape that is not yet created.", "Pekan");
+        if (index < 0 || index >= int(m_verticesLocal.size()))
         {
-            PK_LOG_ERROR("Trying to set a vertex with an invalid index to a PolygonShape.", "Pekan");
+            PK_LOG_ERROR("Trying to set a vertex out of bounds to a PolygonShape.", "Pekan");
             return;
         }
-        m_verticesLocal[index] = vertex;
 
-        handleNewVerticesLocal();
-        updateTransformedVertices();
-    }
-
-    glm::vec2 PolygonShape::getVertex(int index) const
-    {
-        if (index < 0 || index >= m_verticesLocal.size())
+        if (m_isReversedVerticesLocal)
         {
-            PK_LOG_ERROR("Trying to get a vertex with an invalid index from a PolygonShape.", "Pekan");
-            return glm::vec2(0.0f, 0.0f);
+            m_verticesLocal[m_verticesLocal.size() - 1 - index] = vertex;
         }
-        return m_verticesLocal[index];
-    }
-
-    void PolygonShape::updateTransformedVertices()
-    {
-        // Multiply local vertices by transform matrix to get world vertices.
-        // NOTE: Local vertices are 2D, world vertices are also 2D,
-        //       but the transform matrix is 3x3, so we need to convert a local vertex to 3D
-        //       by adding a 3rd component of 1.0, then multiply it by the matrix, and then cut out the 3rd component,
-        //       to get the final 2D world vertex.
-        for (size_t i = 0; i < m_verticesLocal.size(); i++)
+        else
         {
-            m_verticesWorld[i] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
+            m_verticesLocal[index] = vertex;
         }
 
-        Shape::updateRenderObject();
+        m_needUpdateVerticesLocal = true;
     }
 
-    void PolygonShape::triangulate()
+    const ShapeVertex* PolygonShape::getVertices() const
     {
-        m_indices.clear();
-        if (!MathUtils::triangulatePolygon(m_verticesLocal, m_indices))
+        PK_ASSERT(isValid(), "Trying to get vertices of a PolygonShape that is not yet created.", "Pekan");
+
+        if (m_needUpdateVerticesLocal)
         {
-            PK_LOG_ERROR("Failed to triangulate a polygon. It's probably a badly defined polygon, possibly self-intersecting.", "Pekan");
+            updateVerticesLocal();
         }
+        if (m_needUpdateVerticesWorld)
+        {
+            updateVerticesWorld();
+        }
+        return m_verticesWorld.data();
     }
 
-    void PolygonShape::handleNewVerticesLocal()
+    void PolygonShape::updateVerticesLocal() const
     {
+        m_isReversedVerticesLocal = false;
+
         // If given vertices form a non-convex polygon, we will need to triangulate it manually.
         if (!MathUtils::isPolygonConvex(m_verticesLocal))
         {
@@ -91,8 +73,15 @@ namespace Renderer
             if (!MathUtils::isPolygonCCW(m_verticesLocal))
             {
                 std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
+                m_isReversedVerticesLocal = true;
             }
-            triangulate();
+            // Triangulate polygon,
+            // filling the indices list with indices of triangles ready to be rendered.
+            m_indices.clear();
+            if (!MathUtils::triangulatePolygon(m_verticesLocal, m_indices))
+            {
+                PK_LOG_ERROR("Failed to triangulate a polygon. It's probably a badly defined polygon, possibly self-intersecting.", "Pekan");
+            }
         }
         // Otherwise we can leave the indices empty, and then a triangle fan primitive will be used,
         // which automatically triangulates the polygon.
@@ -112,8 +101,29 @@ namespace Renderer
             )
             {
                 std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
+                m_isReversedVerticesLocal = true;
             }
         }
+
+        m_needUpdateVerticesLocal = false;
+        m_needUpdateVerticesWorld = true;
+    }
+
+    void PolygonShape::updateVerticesWorld() const
+    {
+        PK_ASSERT(isValid(), "Trying to update world vertices of a PolygonShape that is not yet created.", "Pekan");
+
+        const glm::mat3& transformMatrix = getTransformMatrix();
+        m_verticesWorld.resize(m_verticesLocal.size());
+        for (size_t i = 0; i < m_verticesLocal.size(); i++)
+        {
+            // Calculate world vertex positions by applying the transform matrix to the local vertex positions
+            m_verticesWorld[i].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
+            // Set vertex colors equal to shape's color
+            m_verticesWorld[i].color = m_color;
+        }
+
+        m_needUpdateVerticesWorld = false;
     }
 
 } // namespace Renderer

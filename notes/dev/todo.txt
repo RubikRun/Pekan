@@ -95,3 +95,9 @@
 
 0038 16.06.2025 (DONE): Fix bug with CameraController2D receiving events from ImGui layer.
                         For example, when you move an ImGui slider left and right, the camera behind it also moves left and right.
+
+0039 25.06.2025 (TODO): Add "bool dynamic" parameter to create() functions of all shape types.
+                        It should do the same as before. I just removed it for a bit while restructuring shape classes.
+
+0040 30.06.2025 (TODO): Use a 1D texture for batch rendering of 2D shapes to pass colors to shader,
+                        instead of having a color attribute on each vertex (wasteful for memory)

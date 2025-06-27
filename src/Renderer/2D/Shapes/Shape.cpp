@@ -1,5 +1,6 @@
 #include "Shape.h"
 
+#include "Renderer2D.h"
 #include "Utils/PekanUtils.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/VertexShader_2D.glsl"
@@ -15,131 +16,85 @@ namespace Renderer
 
     void Shape::render() const
     {
-        PK_ASSERT(isValid(), "Trying to render a Shape that is not yet created.", "Pekan");
-        m_renderObject.bind();
+        PK_ASSERT(m_isValid, "Trying to render a Shape that is not yet created.", "Pekan");
 
-        if (m_usingIndices)
-        {
-            RenderCommands::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
-        }
-        else
-        {
-            RenderCommands::draw(getNumberOfVertices(), getDrawMode());
-        }
-    }
-
-    void Shape::render(const Camera2D& camera)
-    {
-        PK_ASSERT(isValid(), "Trying to render a Shape that is not yet created.", "Pekan");
-        m_renderObject.bind();
-
-        // Set shader's view projection matrix uniform
-        const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
-        m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", viewProjectionMatrix);
-
-        if (m_usingIndices)
-        {
-            RenderCommands::drawIndexed((getNumberOfVertices() - 2) * 3, getDrawMode());
-        }
-        else
-        {
-            RenderCommands::draw(getNumberOfVertices(), getDrawMode());
-        }
+        Renderer2D::render(*this);
     }
 
     void Shape::setPosition(glm::vec2 position)
     {
-        PK_ASSERT(isValid(), "Trying to set position of a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(m_isValid, "Trying to set position of a Shape that is not yet created.", "Pekan");
+
         m_position = position;
-        updateTransformMatrix();
+        m_needUpdateTransformMatrix = true;
+        m_needUpdateVerticesWorld = true;
     }
 
     void Shape::setRotation(float rotation)
     {
-        PK_ASSERT(isValid(), "Trying to set rotation of a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(m_isValid, "Trying to set rotation of a Shape that is not yet created.", "Pekan");
+
         m_rotation = rotation;
-        updateTransformMatrix();
+        m_needUpdateTransformMatrix = true;
+        m_needUpdateVerticesWorld = true;
     }
 
     void Shape::setScale(glm::vec2 scale)
     {
-        PK_ASSERT(isValid(), "Trying to set position of a Shape that is not yet created.", "Pekan");
-        m_scale = scale;
-        updateTransformMatrix();
-    }
+        PK_ASSERT(m_isValid, "Trying to set position of a Shape that is not yet created.", "Pekan");
 
-    void Shape::move(glm::vec2 deltaPosition)
-    {
-        PK_ASSERT(isValid(), "Trying to move a Shape that is not yet created.", "Pekan");
-        m_position += deltaPosition;
-        updateTransformMatrix();
+        m_scale = scale;
+        m_needUpdateTransformMatrix = true;
+        m_needUpdateVerticesWorld = true;
     }
 
     void Shape::setColor(glm::vec4 color)
     {
-        PK_ASSERT(isValid(), "Trying to set color of a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(m_isValid, "Trying to set color of a Shape that is not yet created.", "Pekan");
+
         m_color = color;
-        m_renderObject.getShader().setUniform4fv("uColor", color);
+        m_needUpdateVerticesWorld = true;
     }
 
-    void Shape::createRenderObject(bool dynamic)
+    void Shape::move(glm::vec2 deltaPosition)
     {
-        if (isValid())
-        {
-            PK_LOG_WARNING("Creating a 2D shape, but this Shape instance has been created before,"
-                " there is a valid render object inside. This old render object will be destroyed.", "Pekan");
-            destroyRenderObject();
-        }
+        PK_ASSERT(m_isValid, "Trying to move a Shape that is not yet created.", "Pekan");
 
-        const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
-
-        // Create render object with vertex data and shaders
-        m_renderObject.create
-        (
-            getVertexData(), getVertexDataSize(),
-            { { ShaderDataType::Float2, "position" } }, vertexDataUsage,
-            Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-            Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
-        );
-        // If derived class has index data, set index data as well
-        const unsigned* indexData = getIndexData();
-        m_usingIndices = (indexData != nullptr);
-        if (m_usingIndices)
-        {
-            m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::StaticDraw);
-        }
-
-        // Set shader's view projection matrix uniform to an identity matrix
-        static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-        m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
-
-        setColor(m_color);
+        m_position += deltaPosition;
+        m_needUpdateTransformMatrix = true;
+        m_needUpdateVerticesWorld = true;
     }
 
-    void Shape::destroyRenderObject()
+    void Shape::create()
     {
-        PK_ASSERT(isValid(), "Trying to destroy a Shape that is not yet created.", "Pekan");
-        m_renderObject.destroy();
+        PK_ASSERT(!isValid(), "Trying to create a Shape instance that is already created.", "Pekan");
+
+        m_position = glm::vec2(0.0f, 0.0f);
+        m_rotation = 0.0f;
+        m_scale = glm::vec2(1.0f, 1.0f);
+        m_isValid = true;
+        m_needUpdateVerticesWorld = true;
+        m_transformMatrix = glm::mat4(1.0f);
+        m_needUpdateTransformMatrix = false;
     }
 
-    void Shape::updateRenderObject(bool doUpdateVertices, bool doUpdateIndices)
+    void Shape::destroy()
     {
-        if (doUpdateVertices)
-        {
-            m_renderObject.setVertexData(getVertexData(), getVertexDataSize());
-        }
-        if (doUpdateIndices)
-        {
-            const unsigned* indexData = getIndexData();
-            m_usingIndices = (indexData != nullptr);
-            if (m_usingIndices)
-            {
-                m_renderObject.setIndexData(indexData, getIndexDataSize(), BufferDataUsage::DynamicDraw);
-            }
-        }
+        PK_ASSERT(isValid(), "Trying to destroy a Shape instance that is not yet created.", "Pekan");
+
+        m_isValid = false;
     }
 
-    void Shape::updateTransformMatrix()
+    const glm::mat3& Shape::getTransformMatrix() const
+    {
+        if (m_needUpdateTransformMatrix)
+        {
+            updateTransformMatrix();
+        }
+        return m_transformMatrix;
+    }
+
+    void Shape::updateTransformMatrix() const
     {
         const float cosRot = cos(m_rotation);
         const float sinRot = sin(m_rotation);
@@ -167,8 +122,8 @@ namespace Renderer
         // NOTE: Order of multiplication is important!
         m_transformMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 
-        // Update derived class's transformed vertices
-        updateTransformedVertices();
+        m_needUpdateTransformMatrix = false;
+        m_needUpdateVerticesWorld = true;
     }
 
 } // namespace Renderer

@@ -20,41 +20,37 @@ namespace Renderer
 	public:
 
 		// Creates a circle shape with given radius.
-		// @param[in] dynamic - Specifies if circle is going to be moved often. Used for optimization.
-		void create
-		(
-			float radius,
-			bool dynamic = true
-		);
-		void destroy();
+		void create(float radius);
+		void destroy() { Shape::destroy(); }
 
 		void setRadius(float radius);
 
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return NSegments; }
 
-		int getNumberOfVertices() const override { return NSegments + 2; }
-
-	protected: /* functions */
-
-		void updateTransformedVertices() override;
-
 	private: /* functions */
 
-		const glm::vec2* getVertexData() const override { return m_verticesWorld; };
+		const ShapeVertex* getVertices() const override;
+		int getVerticesCount() const override { return NSegments + 2; };
 
-		virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
+		DrawMode getDrawMode() const override { return DrawMode::TriangleFan; }
 
-		// Generates (or regenerates) circle's vertices based on current radius
-		void generateVertices();
+		// Updates local vertices from current radius
+		void updateVerticesLocal() const;
+		// Updates world vertices from current local vertices and current transform matrix
+		void updateVerticesWorld() const;
 
 	private: /* variables */
 
 		// Vertices making up the circle, in local space
-		glm::vec2 m_verticesLocal[NSegments + 2];
+		mutable glm::vec2 m_verticesLocal[NSegments + 2];
 		// Vertices making up the circle, in world space
-		glm::vec2 m_verticesWorld[NSegments + 2];
+		mutable ShapeVertex m_verticesWorld[NSegments + 2];
 
+		// Flag indicating if local vertices need to be updated before use
+		mutable bool m_needUpdateVerticesLocal = true;
+
+		// Radius of circle, in local space
 		float m_radius = 0.0f;
 	};
 

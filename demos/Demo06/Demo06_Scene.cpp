@@ -3,6 +3,7 @@
 #include "Utils/PekanUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
+#include "Renderer2D.h"
 
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"
@@ -95,13 +96,11 @@ namespace Demo
 	{
 		RenderCommands::clear();
 
-		Camera2D& camera = (m_currentCameraIdx == 0) ? *m_cameraFirst : *m_cameraSecond;
-
 		if (m_guiWindow->isEnabledRectangles())
 		{
 			for (int i = 0; i < m_perShapeTypeCount; i++)
 			{
-				m_rectangles[i].render(camera);
+				m_rectangles[i].render();
 			}
 		}
 
@@ -109,7 +108,7 @@ namespace Demo
 		{
 			for (int i = 0; i < m_perShapeTypeCount / 2; i++)
 			{
-				m_circles[i].render(camera);
+				m_circles[i].render();
 			}
 		}
 
@@ -117,7 +116,7 @@ namespace Demo
 		{
 			for (int i = 0; i < m_perShapeTypeCount / 2; i++)
 			{
-				m_circlesStatic[i].render(camera);
+				m_circlesStatic[i].render();
 			}
 		}
 
@@ -125,7 +124,7 @@ namespace Demo
 		{
 			for (int i = 0; i < m_perShapeTypeCount; i++)
 			{
-				m_triangles[i].render(camera);
+				m_triangles[i].render();
 			}
 		}
 
@@ -133,7 +132,7 @@ namespace Demo
 		{
 			for (int i = 0; i < m_perShapeTypeCount; i++)
 			{
-				m_polygons[i].render(camera);
+				m_polygons[i].render();
 			}
 		}
 
@@ -141,11 +140,11 @@ namespace Demo
 		{
 			for (int i = 0; i < m_perShapeTypeCount; i++)
 			{
-				m_lines[i].render(camera);
+				m_lines[i].render();
 			}
 		}
 
-		m_centerSquare.render(camera);
+		m_centerSquare.render();
 	}
 
 	void Demo06_Scene::exit()
@@ -201,6 +200,7 @@ namespace Demo
 		m_cameraSecond->setSize(m_bbox.size.x, m_bbox.size.y);
 		m_cameraSecond->setPosition(m_bbox.center);
 
+		Renderer2D::setCamera(m_cameraFirst);
 		PekanTools::enableCameraController2D(m_cameraFirst);
 		PekanTools::setCameraController2DZoomSpeed(1.1f);
 	}
@@ -492,10 +492,12 @@ namespace Demo
 			m_currentCameraIdx = (m_currentCameraIdx + 1) % 2;
 			if (m_currentCameraIdx == 0)
 			{
+				Renderer2D::setCamera(m_cameraFirst);
 				PekanTools::enableCameraController2D(m_cameraFirst);
 			}
 			else
 			{
+				Renderer2D::setCamera(m_cameraSecond);
 				PekanTools::enableCameraController2D(m_cameraSecond);
 			}
 			return true;

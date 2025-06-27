@@ -15,13 +15,8 @@ namespace Renderer
 	public:
 
 		// Creates a rectangle shape with given width and height.
-		// @param[in] dynamic - Specifies if rectangle is going to be moved often. Used for optimization.
-		void create
-		(
-			float width, float height,
-			bool dynamic = true
-		);
-		void destroy();
+		void create(float width, float height);
+		void destroy() { Shape::destroy(); }
 
 		void setWidth(float width);
 		void setHeight(float height);
@@ -29,29 +24,33 @@ namespace Renderer
 		inline float getWidth() const { return m_width; }
 		inline float getHeight() const { return m_height; }
 
-		int getNumberOfVertices() const override { return 4; }
-
-	protected: /* functions */
-
-		void updateTransformedVertices() override;
-
 	private: /* functions */
 
-		const glm::vec2* getVertexData() const override { return m_verticesWorld; };
-		const unsigned* getIndexData() const override { return s_indices; }
+		const ShapeVertex* getVertices() const override;
+		int getVerticesCount() const override { return 4; };
 
-		// (Re)calculates local vertices from current width and height
-		void calculateVerticesLocal();
+		const unsigned* getIndices() const override { return s_indices; }
+		int getIndicesCount() const override { return 6; };
+
+		// Updates local vertices from current width and height
+		void updateVerticesLocal() const;
+		// Updates world vertices from current local vertices and current transform matrix
+		void updateVerticesWorld() const;
 
 	private: /* variables */
 
-		// The 4 vertices of the rectangle, in local space
-		glm::vec2 m_verticesLocal[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
-		// The 4 vertices of the rectangle, in world space
-		glm::vec2 m_verticesWorld[4] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+		// The 4 vertices (vertex positions) of the rectangle, in local space.
+		mutable glm::vec2 m_verticesLocal[4] = {};
+		// The 4 vertices of the rectangle, in world space.
+		mutable ShapeVertex m_verticesWorld[4];
 
-		float m_width = 0.0f;
-		float m_height = 0.0f;
+		// Flag indicating if local vertices need to be updated before use
+		mutable bool m_needUpdateVerticesLocal = true;
+
+		// Width of rectangle, size across the X axis in local space
+		float m_width = -1.0f;
+		// Height of rectangle, size across the Y acis in local space
+		float m_height = -1.0f;
 
 		// Indices of vertices of the 2 triangles making up the rectangle
 		static const unsigned s_indices[6];

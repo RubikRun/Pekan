@@ -21,13 +21,8 @@ namespace Renderer
 	public:
 
 		// Creates a circle shape with given radius.
-		// @param[in] dynamic - Specifies if circle is going to be moved often. Used for optimization.
-		void create
-		(
-			float radius,
-			bool dynamic = true
-		);
-		void destroy();
+		void create(float radius);
+		void destroy() { Shape::destroy(); }
 
 		void setRadius(float radius);
 		void setSegmentsCount(int segmentsCount);
@@ -35,29 +30,30 @@ namespace Renderer
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return m_segmentsCount; }
 
-		int getNumberOfVertices() const override { return m_verticesLocal.size(); }
-
-	protected: /* functions */
-
-		void updateTransformedVertices() override;
-
 	private: /* functions */
 
-		const glm::vec2* getVertexData() const override { return m_verticesWorld.data(); };
+		const ShapeVertex* getVertices() const override;
+		int getVerticesCount() const override { return m_verticesLocal.size(); };
 
-		virtual DrawMode getDrawMode() const { return DrawMode::TriangleFan; }
+		DrawMode getDrawMode() const override { return DrawMode::TriangleFan; }
 
-		// (Re)generates circle's local vertices based on current radius and current number of segments
-		void generateVerticesLocal();
+		// Updates local vertices from current radius and segments count
+		void updateVerticesLocal() const;
+		// Updates world vertices from current local vertices and current transform matrix
+		void updateVerticesWorld() const;
 
 	private: /* variables */
 
-		// Vertices making up the circle, in local space
-		std::vector<glm::vec2> m_verticesLocal;
+		// Vertices (vertex positions) making up the circle, in local space
+		mutable std::vector<glm::vec2> m_verticesLocal;
 		// Vertices making up the circle, in world space
-		std::vector<glm::vec2> m_verticesWorld;
+		mutable std::vector<ShapeVertex> m_verticesWorld;
 
-		float m_radius = 0.0f;
+		// Flag indicating if local vertices need to be updated before use
+		mutable bool m_needUpdateVerticesLocal = true;
+
+		// Radius of circle, in local space
+		float m_radius = -1.0f;
 
 		// Number of segments used to approximate the circle
 		int m_segmentsCount = 0;

@@ -9,68 +9,60 @@ namespace Renderer
 
     const unsigned LineShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
 
-	void LineShape::create
-    (
-        glm::vec2 pointA, glm::vec2 pointB, float thickness,
-        bool dynamic
-    )
-	{
+    void LineShape::create(glm::vec2 pointA, glm::vec2 pointB, float thickness)
+    {
+        PK_ASSERT(thickness > 0.0f, "LineShape's thickness must be greater than 0.", "Pekan");
+
+        Shape::create();
+
         m_pointA = pointA;
         m_pointB = pointB;
         m_thickness = thickness;
-
-        generateVerticesLocal();
-        m_verticesWorld[0] = m_verticesLocal[0];
-        m_verticesWorld[1] = m_verticesLocal[1];
-        m_verticesWorld[2] = m_verticesLocal[2];
-        m_verticesWorld[3] = m_verticesLocal[3];
-
-        Shape::createRenderObject(dynamic);
-	}
-
-    void LineShape::destroy()
-    {
-        Shape::destroyRenderObject();
+        m_needUpdateVerticesLocal = true;
     }
 
     void LineShape::setPointA(glm::vec2 pointA)
     {
+        PK_ASSERT(isValid(), "Trying to set point A of a LineShape that is not yet created.", "Pekan");
         m_pointA = pointA;
-        generateVerticesLocal();
-        updateTransformedVertices();
+        m_needUpdateVerticesLocal = true;
     }
 
     void LineShape::setPointB(glm::vec2 pointB)
     {
+        PK_ASSERT(isValid(), "Trying to set point B of a LineShape that is not yet created.", "Pekan");
         m_pointB = pointB;
-        generateVerticesLocal();
-        updateTransformedVertices();
+        m_needUpdateVerticesLocal = true;
     }
 
     void LineShape::setThickness(float thickness)
     {
+        PK_ASSERT(isValid(), "Trying to set thickness of a LineShape that is not yet created.", "Pekan");
+        PK_ASSERT(thickness > 0.0f, "LineShape's thickness must be greater than 0.", "Pekan");
+
         m_thickness = thickness;
-        generateVerticesLocal();
-        updateTransformedVertices();
+        m_needUpdateVerticesLocal = true;
     }
 
-    void LineShape::updateTransformedVertices()
+    const ShapeVertex* LineShape::getVertices() const
     {
-        // Multiply local vertices by transform matrix to get world vertices.
-        // NOTE: Local vertices are 2D, world vertices are also 2D,
-        //       but the transform matrix is 3x3, so we need to convert a local vertex to 3D
-        //       by adding a 3rd component of 1.0, then multiply it by the matrix, and then cut out the 3rd component,
-        //       to get the final 2D world vertex.
-        m_verticesWorld[0] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
-        m_verticesWorld[1] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
-        m_verticesWorld[2] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
-        m_verticesWorld[3] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
+        PK_ASSERT(isValid(), "Trying to get vertices of a LineShape that is not yet created.", "Pekan");
 
-        Shape::updateRenderObject(true, false);
+        if (m_needUpdateVerticesLocal)
+        {
+            updateVerticesLocal();
+        }
+        if (m_needUpdateVerticesWorld)
+        {
+            updateVerticesWorld();
+        }
+        return m_verticesWorld;
     }
 
-    void LineShape::generateVerticesLocal()
+    void LineShape::updateVerticesLocal() const
     {
+        PK_ASSERT(isValid(), "Trying to update local vertices of a LineShape that is not yet created.", "Pekan");
+
         // Calculate the normal offset vector.
         // We'll use that vector to "thicken" the line to the required thickness.
         // 
@@ -91,6 +83,28 @@ namespace Renderer
         m_verticesLocal[1] = m_pointA - normalOffset;
         m_verticesLocal[2] = m_pointB - normalOffset;
         m_verticesLocal[3] = m_pointB + normalOffset;
+
+        m_needUpdateVerticesLocal = false;
+        m_needUpdateVerticesWorld = true;
+    }
+
+    void LineShape::updateVerticesWorld() const
+    {
+        PK_ASSERT(isValid(), "Trying to update world vertices of a LineShape that is not yet created.", "Pekan");
+
+        const glm::mat3& transformMatrix = getTransformMatrix();
+        // Calculate world vertex positions by applying the transform matrix to the local vertex positions
+        m_verticesWorld[0].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
+        m_verticesWorld[1].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
+        m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+        m_verticesWorld[3].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
+        // Set vertex colors equal to shape's color
+        m_verticesWorld[0].color = m_color;
+        m_verticesWorld[1].color = m_color;
+        m_verticesWorld[2].color = m_color;
+        m_verticesWorld[3].color = m_color;
+
+        m_needUpdateVerticesWorld = false;
     }
 
 } // namespace Renderer

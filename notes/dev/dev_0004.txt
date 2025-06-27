@@ -2773,4 +2773,131 @@ Second one will contain render commands that directly translate to a GPU operati
     clear()
 ...Separated them. All functions that were previously in PekanRenderer are now in RenderState and RenderCommands.
 
+Now let's create the new class
+    Renderer2D
+in files
+    Renderer2D.h
+    Renderer2D.cpp
+under
+    src/Renderer/2D
+
+For now we'll focus only on batch rendering shapes.
+Later we'll think about textures, custom geometries, custom shaders, etc.
+
+Renderer2D will be a static class.
+It will keep track of a "batch" containing vertices and indices of many shapes at once.
+This "batch" will be just a render object
+    static RenderObject s_batch;
+Then, adding a shape to the batch will happen when user requests to render a shape.
+So let's create a render function in Renderer2D
+    static void render(const Shape& shape);
+This function will not directly render the shape. It will just add it to the batch.
+The actual rendering of the batch will happen when all shapes are added to the batch.
+How do we know when that is?
+Well, not sure if there is a better way but for now I'll add these 2 functions in Renderer2D
+    static void beginFrame();
+    static void endFrame();
+that should be called at the beginning and end of application's render() function.
+Can't we let the engine do that automatically?
+Yes, we should definitely do that in the future, but now it's not so straightforward to do it
+because with current architecture it should be done in PekanApplication
+but PekanApplication is in Core so it doesn't know about Renderer2D.
+So, for now, clients will have to manually call
+    Renderer2D::beginFrame();
+    ...
+    Renderer2D::endFrame();
+in their render() function.
+The idea here is that beginFrame() will clear the batch, and endFrame() will render the batch.
+Between them shapes can be added to the batch with
+    Renderer2D::render(...)
+Also, currently each shape is drawn separately and the camera's view projection matrix is set as a uniform
+inside the shader each time. We don't need to do that anymore.
+We'll need to set this view projection matrix only once when we render the batch,
+so we'll need a new way of specifying a camera.
+Let's have a single static camera pointer inside of Renderer2D
+    static CameraWeakPtr s_camera;
+and a function for setting a camera
+    static inline void setCamera(const CameraSharedPtr& camera) { s_camera = camera; }
+Then in endFrame() when we draw the batch we'll set shader's uniform to the camera's view projection matrix.
+That's the general idea of Renderer2D for now.
+
+In order for all of this to work, we'll have to do some refactoring in class Shape and its derived classes.
+Specifically, we need every shape to be able to give Renderer2D its vertices and indices.
+Shape classes already have
+    virtual const glm::vec2* getVertexData() const = 0;
+    virtual const unsigned* getIndexData() const { return nullptr; }
+but now we'll need a vertex to contain position and color, not just position.
+That's because until now we used to set a shape's color to a uniform inside the shader,
+but we can't do that anymore because all shapes are drawn with a single draw call.
+(
+    We could actually do this with a uniform array or a 1D texture,
+    and it would probably be a better idea.
+    Created a TO-DO item for it.
+)
+So let's create a small struct for holding together the data of a single shape vertex
+    struct ShapeVertex
+    {
+        glm::vec2 position = glm::vec2(0.0f, 0.0f);
+        glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    };
+and now the function
+    getVertexData()
+will need to return a ShapeVertex array
+    virtual const ShapeVertex* getVertexData() const = 0;
+
+I want to rename and change these 4 functions a bit
+    virtual const ShapeVertex* getVertexData() const = 0;
+    virtual int getNumberOfVertices() const = 0;
+    virtual const unsigned* getIndexData() const { return nullptr; }
+    inline int getIndexDataSize() const;
+to be like that
+    virtual const ShapeVertex* getVertices() const = 0;
+    virtual int getVerticesCount() const = 0;
+    virtual const unsigned* getIndices() const { return nullptr; }
+    virtual int getIndicesCount() const { return 0; }
+
+Another thing. Obviously, we don't need an "underlying render object" for each shape anymore,
+so we can remove all the logic surrounding that and the actual m_renderObject member as well.
+
+Then I did some changes on WHEN things are calculated.
+Specifically, the transform matrix in base class Shape does NOT need to be computed
+until it is required by a derived class. Once it has been computed we don't need to recompute it
+unless position, scale or rotation is changed.
+To implement this behavior I used a flag
+    mutable bool m_needUpdateTransformMatrix = false;
+Similarly, in derived classes we don't need to calculate local vertices until they are needed.
+For example, in RectangleShape we can just keep the width and height and NOT have any vertices at all,
+until they are needed. When they are needed we will compute them.
+Then, we don't need to recompute them unless width and height are changed.
+To implement this behavior I used a flag
+    mutable bool m_needUpdateVerticesLocal = true;
+in all derived classes.
+Similarly, world vertices can be computed when they are needed, and they don't need to recomputed
+unless transform is changed in base class Shape ot properties are changed in the derived class.
+To implement this behavior I used a flag
+    mutable bool m_needUpdateVerticesWorld = true;
+
+Did a few other small things.
+It was a biiiiig refactor. Almost would've been easier to start over with shapes :D
+But that's okay.
+Now it looks pretty good, stable and optimized.
+
+To sum up, the high-level design of shapes for batch rendering is the following:
+- We have a base class Shape that keeps track of a shape's transform (position, rotation, scale)
+  and provides API for getting vertices (in world space) and indices.
+  It (re)calculates the transform matrix only when needed.
+- We have a few derived classes implementing a specific shape type (rectangle, circle, etc.)
+  Each of them consists of some properties that user can configure (e.g. width and height of a rectangle).
+  Local vertices are (re)calculated from properties only when needed.
+  World vertices are (re)calculated from local vertices using the transform matrix, only when needed
+  Indices are either constant, or (re)calculated from properties only when needed.
+- Renderer2D only cares about getting vertices (in world space) and indices from a shape.
+  How a shape is represented, what properties it has, at what point its local vertices are (re)calculated,
+  at what point its world vertices are (re)calculated - are all internal details of shapes,
+  they are not essential to how Renderer2D works, and how batch rendering works.
+
+So until now, we've literally done zero batch rendering.
+We only refactored shape classes so that they are convenient and make sense for batch rendering,
+and we have a skeleton for Renderer2D.
+
 }

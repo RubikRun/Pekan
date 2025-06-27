@@ -16,90 +16,88 @@ namespace Renderer
     }
 #endif
 
-	void TriangleShape::create
-    (
-        glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC,
-        bool dynamic
-    )
-	{
+    void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC)
+    {
+        Shape::create();
+
         m_verticesLocal[0] = vertexA;
         m_verticesLocal[1] = vertexB;
         m_verticesLocal[2] = vertexC;
-        m_verticesWorld[0] = m_verticesLocal[0];
-        m_verticesWorld[1] = m_verticesLocal[1];
-        m_verticesWorld[2] = m_verticesLocal[2];
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-        updateIndicesOrientation();
+        m_needUpdateIndices = true;
 #endif
-
-        Shape::createRenderObject(dynamic);
-	}
-
-    void TriangleShape::destroy()
-    {
-        Shape::destroyRenderObject();
+        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertexA(glm::vec2 vertexA)
     {
+        PK_ASSERT(isValid(), "Trying to set vertex A of a TriangleShape that is not yet created.", "Pekan");
+
         m_verticesLocal[0] = vertexA;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-        updateIndicesOrientation();
+        m_needUpdateIndices = true;
 #endif
-
-        updateTransformedVertices();
+        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertexB(glm::vec2 vertexB)
     {
+        PK_ASSERT(isValid(), "Trying to set vertex B of a TriangleShape that is not yet created.", "Pekan");
+
         m_verticesLocal[1] = vertexB;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-        updateIndicesOrientation();
+        m_needUpdateIndices = true;
 #endif
-
-        updateTransformedVertices();
+        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertexC(glm::vec2 vertexC)
     {
+        PK_ASSERT(isValid(), "Trying to set vertex C of a TriangleShape that is not yet created.", "Pekan");
+
         m_verticesLocal[2] = vertexC;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-        updateIndicesOrientation();
+        m_needUpdateIndices = true;
 #endif
-
-        updateTransformedVertices();
+        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertices(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC)
     {
+        PK_ASSERT(isValid(), "Trying to set vertex A of a TriangleShape that is not yet created.", "Pekan");
+
         m_verticesLocal[0] = vertexA;
         m_verticesLocal[1] = vertexB;
         m_verticesLocal[2] = vertexC;
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-        updateIndicesOrientation();
+        m_needUpdateIndices = true;
 #endif
-
-        updateTransformedVertices();
+        m_needUpdateVerticesWorld = true;
     }
 
-    void TriangleShape::updateTransformedVertices()
+    const ShapeVertex* TriangleShape::getVertices() const
     {
-        // Multiply local vertices by transform matrix to get world vertices.
-        // NOTE: Local vertices are 2D, world vertices are also 2D,
-        //       but the transform matrix is 3x3, so we need to convert a local vertex to 3D
-        //       by adding a 3rd component of 1.0, then multiply it by the matrix, and then cut out the 3rd component,
-        //       to get the final 2D world vertex.
-        m_verticesWorld[0] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
-        m_verticesWorld[1] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
-        m_verticesWorld[2] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+        PK_ASSERT(isValid(), "Trying to get vertices of a TriangleShape that is not yet created.", "Pekan");
 
-        Shape::updateRenderObject();
+#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+        if (m_needUpdateIndices)
+        {
+            updateIndices();
+        }
+#endif
+        if (m_needUpdateVerticesWorld)
+        {
+            updateVerticesWorld();
+        }
+        return m_verticesWorld;
     }
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-    void TriangleShape::updateIndicesOrientation()
+    void TriangleShape::updateIndices() const
     {
+        // If face culling is disabled it doesn't matter if triangle is CW or CCW
+        // so we can keep indices in whatever order they are.
         if (!RenderState::isEnabledFaceCulling())
         {
             return;
@@ -116,6 +114,23 @@ namespace Renderer
         }
     }
 #endif
+
+    void TriangleShape::updateVerticesWorld() const
+    {
+        PK_ASSERT(isValid(), "Trying to update world vertices of a TriangleShape that is not yet created.", "Pekan");
+
+        const glm::mat3& transformMatrix = getTransformMatrix();
+        // Calculate world vertex positions by applying the transform matrix to the local vertex positions
+        m_verticesWorld[0].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
+        m_verticesWorld[1].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
+        m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+        // Set vertex colors equal to shape's color
+        m_verticesWorld[0].color = m_color;
+        m_verticesWorld[1].color = m_color;
+        m_verticesWorld[2].color = m_color;
+
+        m_needUpdateVerticesWorld = false;
+    }
 
 } // namespace Renderer
 } // namespace Renderer

@@ -11,69 +11,83 @@ namespace Pekan
 namespace Renderer
 {
 
-	void CircleShape::create
-    (
-        float radius,
-        bool dynamic
-    )
-	{
+    void CircleShape::create(float radius)
+    {
+        PK_ASSERT(radius > 0.0f, "CircleShape's radius must be greater than 0.", "Pekan");
+
+        Shape::create();
+
         m_radius = radius;
         m_segmentsCount = DEFAULT_SEGMENTS_COUNT;
-
-        generateVerticesLocal();
-        m_verticesWorld = m_verticesLocal;
-
-        Shape::createRenderObject(dynamic);
+        m_needUpdateVerticesLocal = true;
 	}
-
-    void CircleShape::destroy()
-    {
-        Shape::destroyRenderObject();
-    }
 
     void CircleShape::setRadius(float radius)
     {
+        PK_ASSERT(isValid(), "Trying to set radius of a CircleShape that is not yet created.", "Pekan");
+        PK_ASSERT(radius > 0.0f, "CircleShape's radius must be greater than 0.", "Pekan");
+
         m_radius = radius;
-        generateVerticesLocal();
-        updateTransformedVertices();
+        m_needUpdateVerticesLocal = true;
     }
 
     void CircleShape::setSegmentsCount(int segmentsCount)
     {
+        PK_ASSERT(isValid(), "Trying to set segments count of a CircleShape that is not yet created.", "Pekan");
+        PK_ASSERT(segmentsCount > 2, "CircleShape's segments must be at least 3.", "Pekan");
+
         m_segmentsCount = segmentsCount;
-        generateVerticesLocal();
-        m_verticesWorld.resize(m_verticesLocal.size());
-        updateTransformedVertices();
+        m_needUpdateVerticesLocal = true;
     }
 
-    void CircleShape::updateTransformedVertices()
+    const ShapeVertex* CircleShape::getVertices() const
     {
-        // Multiply local vertices by transform matrix to get world vertices.
-        // NOTE: Local vertices are 2D, world vertices are also 2D,
-        //       but the transform matrix is 3x3, so we need to convert a local vertex to 3D
-        //       by adding a 3rd component of 1.0, then multiply it by the matrix, and then cut out the 3rd component,
-        //       to get the final 2D world vertex.
-        for (size_t i = 0; i < m_verticesLocal.size(); i++)
+        PK_ASSERT(isValid(), "Trying to get vertices of a CircleShape that is not yet created.", "Pekan");
+        if (m_needUpdateVerticesLocal)
         {
-            m_verticesWorld[i] = glm::vec2(m_transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
+            updateVerticesLocal();
         }
-
-        Shape::updateRenderObject();
+        if (m_needUpdateVerticesWorld)
+        {
+            updateVerticesWorld();
+        }
+        return m_verticesWorld.data();
     }
 
-    void CircleShape::generateVerticesLocal()
+    void CircleShape::updateVerticesLocal() const
     {
-        m_verticesLocal.clear();
-        m_verticesLocal.reserve(m_segmentsCount + 2);
-        m_verticesLocal.push_back(glm::vec2(0.0f, 0.0f));
+        PK_ASSERT(isValid(), "Trying to update local vertices of a CircleShape that is not yet created.", "Pekan");
 
+        m_verticesLocal.resize(m_segmentsCount + 2);
+        m_verticesLocal[0] = glm::vec2(0.0f, 0.0f);
+        // Use radius and segments count to compute the local vertex positions
         for (int i = 1; i <= m_segmentsCount + 1; i++)
         {
-            const float angle = i * 2.0f * PI / m_segmentsCount;
+            const float angle = float(i) * 2.0f * PI / m_segmentsCount;
             const float x = m_radius * cos(angle);
             const float y = m_radius * sin(angle);
-            m_verticesLocal.push_back({ x, y });
+            m_verticesLocal[i] = { x, y };
         }
+
+        m_needUpdateVerticesLocal = false;
+        m_needUpdateVerticesWorld = true;
+    }
+
+    void CircleShape::updateVerticesWorld() const
+    {
+        PK_ASSERT(isValid(), "Trying to update world vertices of a CircleShape that is not yet created.", "Pekan");
+
+        const glm::mat3& transformMatrix = getTransformMatrix();
+        m_verticesWorld.resize(m_verticesLocal.size());
+        for (size_t i = 0; i < m_verticesLocal.size(); i++)
+        {
+            // Calculate world vertex positions by applying the transform matrix to the local vertex positions
+            m_verticesWorld[i].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
+            // Set vertex colors equal to shape's color
+            m_verticesWorld[i].color = m_color;
+        }
+
+        m_needUpdateVerticesWorld = false;
     }
 
 } // namespace Renderer

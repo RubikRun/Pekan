@@ -15,13 +15,8 @@ namespace Renderer
 	public:
 
 		// Creates a triangle shape from given positions of 3 vertices.
-		// @param[in] dynamic - Specifies if triangle is going to be moved often. Used for optimization.
-		void create
-		(
-			glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC,
-			bool dynamic = true
-		);
-		void destroy();
+		void create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC);
+		void destroy() { Shape::destroy(); }
 
 		// Sets vertex A/B/C of the triangle, in local space
 		void setVertexA(glm::vec2 vertexA);
@@ -35,34 +30,36 @@ namespace Renderer
 		inline glm::vec2 getVertexB() const { return m_verticesLocal[1]; }
 		inline glm::vec2 getVertexC() const { return m_verticesLocal[2]; }
 
-		int getNumberOfVertices() const override { return 3; }
-
-	protected: /* functions */
-
-		void updateTransformedVertices() override;
-
 	private: /* functions */
 
-		const glm::vec2* getVertexData() const override { return m_verticesWorld; };
+		const ShapeVertex* getVertices() const override;
+		int getVerticesCount() const override { return 3; };
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
-		const unsigned* getIndexData() const override { return m_indices; }
+		const unsigned* getIndices() const override { return m_indices; }
+		int getIndicesCount() const override { return 3; };
 
 		// Updates indices so that the orientation of the 3 vertices is CCW.
 		// This is done only if face culling is enabled in RenderState, otherwise there's no point.
-		void updateIndicesOrientation();
+		void updateIndices() const;
 #endif
+
+		// Updates world vertices from current local vertices and current transform matrix
+		void updateVerticesWorld() const;
 
 	private: /* variables */
 
-		// The 3 vertices of the triangle, in local space
-		glm::vec2 m_verticesLocal[3] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+		// The 3 vertices (vertex positions) of the triangle, in local space
+		glm::vec2 m_verticesLocal[3] = {};
 		// The 3 vertices of the triangle, in world space
-		glm::vec2 m_verticesWorld[3] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };
+		mutable ShapeVertex m_verticesWorld[3];
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
 		// Indices of the 3 vertices of the triangle, determining the order in which they will be drawn
-		unsigned m_indices[3] = { 0, 1, 2 };
+		mutable unsigned m_indices[3] = { 0, 1, 2 };
+
+		// Flag indicating if indices need to be updated before use
+		bool m_needUpdateIndices = true;
 #endif
 	};
 
