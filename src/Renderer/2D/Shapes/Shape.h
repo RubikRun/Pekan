@@ -37,6 +37,16 @@ namespace Renderer
 		inline glm::vec2 getScale() const { return m_scale; }
 		inline glm::vec4 getColor() const { return m_color; }
 
+		// To be implemented by derived classes to return their vertex data in world space.
+		virtual const ShapeVertex* getVertices() const = 0;
+		// To be implemented by derived classes to return the number of their vertices.
+		virtual int getVerticesCount() const = 0;
+
+		// Can be overriden by derived classes to return their index data, if indices are used at all.
+		virtual const unsigned* getIndices() const { return nullptr; }
+		// Can be overriden by derived classes to return the number of their indices, if indices are used at all.
+		virtual int getIndicesCount() const { return 0; }
+
 	protected: /* functions */
 
 		void create();
@@ -48,19 +58,6 @@ namespace Renderer
 		const glm::mat3& getTransformMatrix() const;
 
 	private: /* functions */
-
-		// To be implemented by derived classes to return their vertex data in world space.
-		virtual const ShapeVertex* getVertices() const = 0;
-		// To be implemented by derived classes to return the number of their vertices.
-		virtual int getVerticesCount() const = 0;
-
-		// Can be overriden by derived classes to return their index data, if indices are used at all.
-		virtual const unsigned* getIndices() const { return nullptr; }
-		// Can be overriden by derived classes to return the number of their indices, if indices are used at all.
-		virtual int getIndicesCount() const { return 0; }
-
-		// Can be overriden by derived classes to return the desired draw mode to be used for rendering the shape
-		virtual DrawMode getDrawMode() const { return DrawMode::Triangles; }
 
 		// Updates the transform matrix with current position, rotation and scale.
 		void updateTransformMatrix() const;

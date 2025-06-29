@@ -34,5 +34,22 @@ namespace MathUtils
     // Checks if given vertices form a CCW (counter-clockwise) polygon
     bool isPolygonCCW(const std::vector<glm::vec2>& vertices);
 
+    // Updates a list of "triangle fan" indices for a given number of vertices.
+    // A list of "triangle fan" indices is of the form { 0, 1, 2, 0, 2, 3, 0, 3, 4, ... }.
+    // For example if number of vertices is 6, then indices will be { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5 }.
+    //
+    // NOTE: If the given "indices" list already contains some indices, they will be reused.
+    //       For example if it already contains { 0, 1, 2, 0, 2, 3 } and now we are requesting number of vertices 5,
+    //       then the function will only extend the indices list with { 0, 3, 4 } resulting in { 0, 1, 2, 0, 2, 3, 0, 3, 4 }.
+    //       If the given "indices" list contains more indices than needed, it will be shortened.
+    void updateTriangleFanIndices(std::vector<unsigned>& indices, int nVertices);
+
+    // Generates "triangle fan" indices in the form { 0, 1, 2, 0, 2, 3, 0, 3, 4, ... } for a given number of vertices.
+    // For example if number of vertices is 6, the indices will be { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5 }
+    // Resulting indices will be filled into the given "indices" array.
+    //
+    // WARNING: Indices array must be of size (nVertices - 2) * 3 to contain the nVertices - 2 triangles.
+    void generateTriangleFanIndices(unsigned* indices, int nVertices);
+
 } // namespace MathUtils
 } // namespace Pekan

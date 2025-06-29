@@ -2900,4 +2900,40 @@ So until now, we've literally done zero batch rendering.
 We only refactored shape classes so that they are convenient and make sense for batch rendering,
 and we have a skeleton for Renderer2D.
 
+----------
+28.06.2025
+----------
+
+I realized we can't use a triangle fan primitive for batch rendering,
+so I converted all shape types that use triangle fan to use triangles instead.
+
+I also noticed that the function
+    getIndices()
+in classes derived from Shape returns the indices data
+without making sure that it has been updated.
+In some shape types the indices data is updated together with local vertices.
+So before returning the indices data we need to check if
+    m_needUpdateVerticesLocal
+is true, and if so, call updateVerticesLocal().
+Or even better (for some shape types) could be to have a new flag
+    mutable bool m_needUpdateIndices = true;
+and a new function
+    void updateIndices() const;
+and then in getIndices() we can check if m_needUpdateIndices, and call updateIndices(), before returning the actual indices data.
+In class
+    CircleShapeStatic
+we don't need to do that because its indices will stay the same for the whole lifetime of an instance.
+(because the number of segments doesn't change)
+In class
+    PolygonShape
+we also don't need this because local vertices are updated very much together with indices.
+It doesn't make much sense to update them separately, so in getIndices() we can just do this
+    if (m_needUpdateVerticesLocal)
+    {
+        updateVerticesLocal();
+    }
+Actually, class
+    CircleShape
+is the only one that can benefit from having a separate flag m_needUpdateIndices and a separate function updateIndices().
+
 }

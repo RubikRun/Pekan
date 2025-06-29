@@ -62,6 +62,18 @@ namespace Renderer
         return m_verticesWorld.data();
     }
 
+    const unsigned* PolygonShape::getIndices() const
+    {
+        // Indices are updated together with local vertices,
+        // so update local vertices here if needed.
+        if (m_needUpdateVerticesLocal)
+        {
+            updateVerticesLocal();
+        }
+
+        return m_indices.data();
+    }
+
     void PolygonShape::updateVerticesLocal() const
     {
         m_isReversedVerticesLocal = false;
@@ -82,13 +94,12 @@ namespace Renderer
             {
                 PK_LOG_ERROR("Failed to triangulate a polygon. It's probably a badly defined polygon, possibly self-intersecting.", "Pekan");
             }
+            m_isIndicesTriangleFan = false;
         }
-        // Otherwise we can leave the indices empty, and then a triangle fan primitive will be used,
-        // which automatically triangulates the polygon.
+        // Otherwise we can generate triangle fan indices.
+        // (We can't use a triangle fan primitive because it would not work in Batch Rendering)
         else
         {
-            m_indices.clear();
-
             // If given vertices form a CW polygon, reverse them, to ensure that we have a CCW polygon,
             // but only if face culling is enabled - otherwise CW polygons are ok.
             if
@@ -103,6 +114,22 @@ namespace Renderer
                 std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
                 m_isReversedVerticesLocal = true;
             }
+
+            const size_t nVerts = m_verticesLocal.size();
+            // If we already have some triangle fan indices we just need to update them
+            // with the new number of vertices, extending/shortening the list as needed.
+            if (m_isIndicesTriangleFan)
+            {
+                MathUtils::updateTriangleFanIndices(m_indices, nVerts);
+            }
+            // Otherwise we don't have triangle fan indices, so we need to generate the whole list of indices anew.
+            else
+            {
+                m_indices.resize((nVerts - 2) * 3);
+                MathUtils::generateTriangleFanIndices(m_indices.data(), nVerts);
+            }
+
+            m_isIndicesTriangleFan = true;
         }
 
         m_needUpdateVerticesLocal = false;

@@ -205,5 +205,47 @@ namespace MathUtils
         return areaSum < 0.0f;
     }
 
+    void updateTriangleFanIndices(std::vector<unsigned>& indices, int nVertices)
+    {
+        PK_ASSERT
+        (
+            indices.size() == 0 || (indices.size() % 3 == 0 && indices.size() / 3 > 2),
+            "Trying to update a list of triangle fan indices but given list contains an invalid number of indices.",
+            "Pekan"
+        );
+        PK_DEBUG_CODE
+        (
+            for (size_t i = 0; i + 2 < indices.size(); i += 3)
+            {
+                PK_ASSERT
+                (
+                    indices[i] != 0 || indices[i + 1] != i / 3 + 1 || indices[i + 2] != i / 3 + 2,
+                    "Trying to update a list of triangle fan indices but indices in given list are not in correct triangle fan format.",
+                    "Pekan"
+                );
+            }
+        );
+
+
+        const size_t prevIndicesCount = indices.size();
+        indices.resize((nVertices - 2) * 3);
+        for (int i = prevIndicesCount; i + 2 < indices.size(); i += 3)
+        {
+            indices[i] = 0;
+            indices[i + 1] = i / 3 + 1;
+            indices[i + 2] = i / 3 + 2;
+        }
+    }
+
+    void generateTriangleFanIndices(unsigned* indices, int nVertices)
+    {
+        for (int i = 0; i + 2 < (nVertices - 2) * 3; i += 3)
+        {
+            indices[i] = 0;
+            indices[i + 1] = i / 3 + 1;
+            indices[i + 2] = i / 3 + 2;
+        }
+    }
+
 } // namespace MathUtils
 } // namespace Pekan

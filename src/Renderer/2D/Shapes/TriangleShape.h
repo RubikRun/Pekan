@@ -30,15 +30,17 @@ namespace Renderer
 		inline glm::vec2 getVertexB() const { return m_verticesLocal[1]; }
 		inline glm::vec2 getVertexC() const { return m_verticesLocal[2]; }
 
-	private: /* functions */
-
 		const ShapeVertex* getVertices() const override;
 		int getVerticesCount() const override { return 3; };
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
 		const unsigned* getIndices() const override { return m_indices; }
 		int getIndicesCount() const override { return 3; };
+#endif
 
+	private: /* functions */
+
+#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
 		// Updates indices so that the orientation of the 3 vertices is CCW.
 		// This is done only if face culling is enabled in RenderState, otherwise there's no point.
 		void updateIndices() const;

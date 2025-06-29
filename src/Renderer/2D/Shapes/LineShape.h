@@ -30,13 +30,13 @@ namespace Renderer
 		// Returns line's thickness
 		inline float getThickness() const { return m_thickness; }
 
-	private: /* functions */
-
 		const ShapeVertex* getVertices() const override;
 		int getVerticesCount() const override { return 4; };
 
 		const unsigned* getIndices() const override { return s_indices; }
 		int getIndicesCount() const override { return 6; };
+
+	private: /* functions */
 
 		// Updates local vertices from current point A, point B and thickness
 		void updateVerticesLocal() const;

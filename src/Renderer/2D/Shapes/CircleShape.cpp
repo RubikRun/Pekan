@@ -1,6 +1,7 @@
 #include "CircleShape.h"
 
 #include "Utils/PekanUtils.h"
+#include "Utils/MathUtils.h"
 #include <glm/gtc/constants.hpp>
 
 static const int DEFAULT_SEGMENTS_COUNT = 42;
@@ -20,6 +21,7 @@ namespace Renderer
         m_radius = radius;
         m_segmentsCount = DEFAULT_SEGMENTS_COUNT;
         m_needUpdateVerticesLocal = true;
+        m_needUpdateIndices = true;
 	}
 
     void CircleShape::setRadius(float radius)
@@ -38,6 +40,7 @@ namespace Renderer
 
         m_segmentsCount = segmentsCount;
         m_needUpdateVerticesLocal = true;
+        m_needUpdateIndices = true;
     }
 
     const ShapeVertex* CircleShape::getVertices() const
@@ -54,14 +57,24 @@ namespace Renderer
         return m_verticesWorld.data();
     }
 
+    const unsigned* CircleShape::getIndices() const
+    {
+        PK_ASSERT(isValid(), "Trying to get indices of a CircleShape that is not yet created.", "Pekan");
+
+        if (m_needUpdateIndices)
+        {
+            updateIndices();
+        }
+        return m_indices.data();
+    }
+
     void CircleShape::updateVerticesLocal() const
     {
         PK_ASSERT(isValid(), "Trying to update local vertices of a CircleShape that is not yet created.", "Pekan");
 
-        m_verticesLocal.resize(m_segmentsCount + 2);
-        m_verticesLocal[0] = glm::vec2(0.0f, 0.0f);
+        m_verticesLocal.resize(m_segmentsCount);
         // Use radius and segments count to compute the local vertex positions
-        for (int i = 1; i <= m_segmentsCount + 1; i++)
+        for (int i = 0; i < m_segmentsCount; i++)
         {
             const float angle = float(i) * 2.0f * PI / m_segmentsCount;
             const float x = m_radius * cos(angle);
@@ -88,6 +101,14 @@ namespace Renderer
         }
 
         m_needUpdateVerticesWorld = false;
+    }
+
+    void CircleShape::updateIndices() const
+    {
+        PK_ASSERT(isValid(), "Trying to update indices of a CircleShape that is not yet created.", "Pekan");
+
+        MathUtils::updateTriangleFanIndices(m_indices, m_segmentsCount);
+        m_needUpdateIndices = false;
     }
 
 } // namespace Renderer

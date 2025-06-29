@@ -1,6 +1,8 @@
 #include <glm/gtc/constants.hpp>
 #include "CircleShapeStatic.h"
 
+#include "Utils/MathUtils.h"
+
 namespace Pekan
 {
 namespace Renderer
@@ -75,6 +77,12 @@ namespace Renderer
         }
 
         m_needUpdateVerticesWorld = false;
+    }
+
+    template<unsigned NSegments>
+    inline void CircleShapeStatic<NSegments>::generateIndices()
+    {
+        MathUtils::generateTriangleFanIndices(m_indices, NSegments);
     }
 
 } // namespace Renderer

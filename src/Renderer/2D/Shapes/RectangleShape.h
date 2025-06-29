@@ -24,13 +24,13 @@ namespace Renderer
 		inline float getWidth() const { return m_width; }
 		inline float getHeight() const { return m_height; }
 
-	private: /* functions */
-
 		const ShapeVertex* getVertices() const override;
 		int getVerticesCount() const override { return 4; };
 
 		const unsigned* getIndices() const override { return s_indices; }
 		int getIndicesCount() const override { return 6; };
+
+	private: /* functions */
 
 		// Updates local vertices from current width and height
 		void updateVerticesLocal() const;

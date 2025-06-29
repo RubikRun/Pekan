@@ -93,3 +93,10 @@ namespace Pekan
 	};
 
 } // namespace Pekan
+
+#if !defined(NDEBUG)
+// Macro that can be used for debug-only code.
+#define PK_DEBUG_CODE(...) __VA_ARGS__
+#else
+#define PK_DEBUG_CODE(...)
+#endif
