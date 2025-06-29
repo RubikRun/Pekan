@@ -12,7 +12,7 @@ namespace Demo
 		ImGui::Begin("Pekan");
 
 		ImGui::Text("Number Of Shapes");
-		ImGui::SliderInt("##NumberOfShapes", &m_numberOfShapes, 5, 6000);
+		ImGui::SliderInt("##NumberOfShapes", &m_numberOfShapes, 5, 40000);
 
 		ImGui::Checkbox("Show Rectangles", &m_isEnabledRectangles);
 		ImGui::Checkbox("Show Circles", &m_isEnabledCircles);

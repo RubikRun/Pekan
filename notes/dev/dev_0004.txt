@@ -2936,4 +2936,141 @@ Actually, class
     CircleShape
 is the only one that can benefit from having a separate flag m_needUpdateIndices and a separate function updateIndices().
 
+----------
+29.06.2025
+----------
+
+We are finally ready to implement batch rendering.
+The way I'll do it is to have 2 vectors keeping all vertices and all indices of the shapes being rendered
+    static std::vector<ShapeVertex> s_vertices;
+    static std::vector<unsigned> s_indices;
+
+In
+    Renderer2D::render(const Shape& shape)
+(which is called when a shape is requested for rendering)
+we'll do that
+    const ShapeVertex* vertices = shape.getVertices();
+    const int verticesCount = shape.getVerticesCount();
+    const unsigned* localIndices = shape.getIndices();
+    const int indicesCount = shape.getIndicesCount();
+to get the vertices and indices of the shape.
+Then we'll just add the shape's vertices to the vertices list, easily like that
+    s_vertices.insert(s_vertices.end(), vertices, vertices + verticesCount);
+To add the indices to the indices list it won't be that simple,
+because we actually need to offset the indices before adding them to the list,
+so that they correctly reference the vertices in the vertices list.
+Because, you see, in a shape the indices are starting from 0 because the vertices are also starting from 0.
+However, in the batch, the indices need to reference the same vertices they are referencing in the shape
+but now these vertices have changed their indices, they no longer start at 0.
+TL;DR we need to add s_vertices.size() (size before adding the new vertices) to each index before adding it to the indices list.
+To do that we'll cache the size of vertices list before adding the new vertices
+    const unsigned oldVerticesSize = unsigned(s_vertices.size());
+We'll also cache the old size of indices list
+    const size_t oldIndicesSize = s_indices.size();
+(they are different types intentionally, not important)
+Then we'll just add each index + oldVertexSize to the indices list
+    for (size_t i = oldIndicesSize; i < s_indices.size(); i++)
+    {
+        s_indices[i] = localIndices[i - oldIndicesSize] + oldVerticesSize;
+    }
+That's it.
+Now we have the 2 lists in tact. They should correctly contain vertices and indices of batched shapes.
+    s_vertices
+    s_indices
+
+At the beginning of every frame, so in
+    Renderer2D::beginFrame()
+we'll clear the 2 lists
+    s_vertices.clear();
+    s_indices.clear();
+from vertices and indices of the previous frame.
+
+At the end of every frame, so in
+    Renderer2D::endFrame()
+we'll have to actually create the batch which is a render object
+    static RenderObject s_batch;
+and fill it with the vertices and indices from the 2 lists, and draw it.
+However, we don't need to create() and destroy() the batch on each frame.
+It'd be better to create() the batch once at the beginning of an application
+and destroy() it once at the end of an application.
+Then in endFrame() we can only update vertex data and index data in the already created batch.
+For that I will create functions
+    static void init();
+    static void exit();
+in Renderer2D that should be called when application is initialized and when application is exited.
+Ideally, these would be called automatically by the engine, but for now we'll require user to call them
+in the init() and exit() functions of their scenes. (If they have multiple scenes it would become messy)
+Same reason we had for beginFrame() and endFrame() - at some point they will be called by engine code,
+but for now we can't do that because it would need to happen in PekanApplication which is in module Core
+which does NOT know about Renderer2D.
+So,
+what will the 2 functions init() and exit() do exactly?
+Well, init() will create the batch with empty vertices and empty indices,
+but configuring the VertexBufferLayout and the 2 shaders
+    s_batch.create
+    (
+        s_vertices.data(),
+        0,
+        { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
+        BufferDataUsage::DynamicDraw,
+        FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+        FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+    );
+    s_batch.setIndexData(s_indices.data(), 0, BufferDataUsage::DynamicDraw);
+basically making sure that we have a batch that is ready to receive vertices and indices and then be drawn.
+Then obviously in exit() we'll make sure to destroy() the batch. We can also clear the 2 lists just in case
+    s_batch.destroy();
+    s_vertices.clear();
+    s_indices.clear();
+So now, we can finally get to the point - what happens in endFrame().
+We'll set batch's vertex data and index data to the data from the 2 lists that we've gathered from Renderer2D::render() calls
+    s_batch.setVertexData(s_vertices.data(), s_vertices.size() * sizeof(ShapeVertex));
+    s_batch.setIndexData(s_indices.data(), s_indices.size() * sizeof(unsigned));
+We will also set shader's view projection matrix uniform to the camera's view projection matrix
+    const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
+    s_batch.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", viewProjectionMatrix);
+That is if we have a camera at all
+    if (camera != nullptr)
+Otherwise we'll just set a default view projection matrix (a uniform matrix)
+    static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+    s_batch.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
+And finally we'll do a draw call, drawing all indices
+    RenderCommands::drawIndexed(s_indices.size());
+
+Then to sum up what should be done in client code to make it work:
+1.  Inside of your scene's init() function you should call
+        Renderer2D::init();
+    (If you have multiple scenes do this in only one of them)
+2.  Inside of your scene's exit() function you should call
+        Renderer2D::exit();
+    (If you have multiple scenes do this in only one of them)
+3.  At the beginning of your scene's render() function you should call
+        Renderer2D::beginFrame();
+    (If you have multiple scenes do this in each one of them)
+4.  At the end of your scene's render() function you should call
+        Renderer2D::endFrame();
+    (If you have multiple scenes do this in each one of them)
+5.  In your scene you can have as many shapes as you want
+    and you can render them like that:
+        m_rectangle.render();
+6.  In your scene you can have a Camera2D like that:
+        using CameraPtr = std::shared_ptr<Pekan::Renderer::Camera2D>;
+        ...
+        CameraPtr m_camera;
+    and you need to set it as "the camera" in Renderer2D like that:
+        Renderer2D::setCamera(m_camera);
+        (in your scene's init() function, after creating camera)
+    (Not related to changes here, but) if you want to control your camera with the mouse you can do this:
+        PekanTools::enableCameraController2D(m_camera);
+        (in your scene's init() function, after creating camera)
+
+That's it.
+Batch rendering works now!
+
+It massively increased performance of Demo06.
+Without batch rendering, Demo06 with 6k shapes works at 15 FPS.
+With batch rendering, Demo06 with 40k shapes works at 60 FPS.
+
+Calling it done here,
+BUT we need to cleanup code, maybe restructure a bit, and do the 3 TO-DO items that emerged.
 }

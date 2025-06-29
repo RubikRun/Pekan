@@ -1,6 +1,7 @@
 #include "Apple.h"
 #include "Snake.h"
 
+#include "Utils/FileUtils.h"
 #include "Utils/PekanUtils.h"
 #include "RenderCommands.h"
 
@@ -52,8 +53,8 @@ namespace Demo
             8 * sizeof(int),
             { { ShaderDataType::Int2, "position" } },
             BufferDataUsage::DynamicDraw,
-            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::FileUtils::readFileToString(vertexShaderFilePath).c_str(),
+            Pekan::FileUtils::readFileToString(fragmentShaderFilePath).c_str()
         );
         m_renderObject.setIndexData(indices, 6 * sizeof(int), BufferDataUsage::StaticDraw);
 

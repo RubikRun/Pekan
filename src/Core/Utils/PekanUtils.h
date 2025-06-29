@@ -2,17 +2,10 @@
 
 #include <glm/glm.hpp>
 
-#include <string>
-#include <random>
-#include <chrono>
-
 namespace Pekan
 {
 namespace Utils
 {
-
-    // Reads a text file's contents into a string
-    std::string readFileToString(const char* filePath);
 
     // Generates a random int in a given range
     int getRandomInt(int min, int max);

@@ -1,6 +1,6 @@
 #include "Demo04_Scene.h"
 #include "Logger/PekanLogger.h"
-#include "Utils/PekanUtils.h"
+#include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
 #include <glm/gtc/constants.hpp>
@@ -109,8 +109,8 @@ namespace Demo
             vertices, sizeof(vertices),
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "texCoord" } },
             BufferDataUsage::StaticDraw,
-            Pekan::Utils::readFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
-            Pekan::Utils::readFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
+            Pekan::FileUtils::readFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
+            Pekan::FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
         );
         m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
@@ -193,8 +193,8 @@ namespace Demo
                 // then set new shader's source code
                 m_renderObject.setShaderSource
                 (
-                    Pekan::Utils::readFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
-                    Pekan::Utils::readFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
+                    Pekan::FileUtils::readFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
+                    Pekan::FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
                 );
                 // We need to set textures again after changing the shader
                 m_renderObject.setTextureImage(m_image0, "uTex0", 0);

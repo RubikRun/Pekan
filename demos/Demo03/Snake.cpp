@@ -1,5 +1,5 @@
 #include "Snake.h"
-#include "Utils/PekanUtils.h"
+#include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
 using Pekan::Renderer::RenderCommands;
@@ -88,8 +88,8 @@ namespace Demo
             m_vertices.size() * sizeof(int),
             { { ShaderDataType::Int2, "position" } },
             BufferDataUsage::DynamicDraw,
-            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::FileUtils::readFileToString(vertexShaderFilePath).c_str(),
+            Pekan::FileUtils::readFileToString(fragmentShaderFilePath).c_str()
         );
         m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
 

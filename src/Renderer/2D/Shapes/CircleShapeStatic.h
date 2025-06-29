@@ -31,7 +31,7 @@ namespace Renderer
 		inline int getSegmentsCount() const { return NSegments; }
 
 		const ShapeVertex* getVertices() const override;
-		int getVerticesCount() const override { return NSegments + 2; };
+		int getVerticesCount() const override { return NSegments; };
 
 		const unsigned* getIndices() const override { return m_indices; }
 		int getIndicesCount() const override { return (NSegments - 2) * 3; };
@@ -51,9 +51,9 @@ namespace Renderer
 	private: /* variables */
 
 		// Vertices making up the circle, in local space
-		mutable glm::vec2 m_verticesLocal[NSegments + 2];
+		mutable glm::vec2 m_verticesLocal[NSegments];
 		// Vertices making up the circle, in world space
-		mutable ShapeVertex m_verticesWorld[NSegments + 2];
+		mutable ShapeVertex m_verticesWorld[NSegments];
 
 		// Indices into the vertices list, making up the triangles to be rendered
 		unsigned m_indices[(NSegments - 2) * 3];

@@ -49,8 +49,7 @@ namespace Renderer
     {
         PK_ASSERT(isValid(), "Trying to update local vertices of a CircleShape that is not yet created.", "Pekan");
 
-        m_verticesLocal[0] = glm::vec2(0.0f, 0.0f);
-        for (int i = 1; i <= NSegments + 1; i++)
+        for (int i = 0; i < NSegments; i++)
         {
             const float angle = i * 2.0f * glm::pi<float>() / NSegments;
             const float x = m_radius * cos(angle);
@@ -68,7 +67,7 @@ namespace Renderer
         PK_ASSERT(isValid(), "Trying to update world vertices of a CircleShape that is not yet created.", "Pekan");
 
         const glm::mat3& transformMatrix = getTransformMatrix();
-        for (size_t i = 0; i < size_t(NSegments + 2); i++)
+        for (size_t i = 0; i < size_t(NSegments); i++)
         {
             // Calculate world vertex positions by applying the transform matrix to the local vertex positions
             m_verticesWorld[i].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));

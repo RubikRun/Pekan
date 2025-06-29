@@ -8,13 +8,12 @@
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"
 
+#include <algorithm>
+
 using namespace Pekan;
 using namespace Pekan::Renderer;
 using namespace Pekan::Utils;
 using namespace Pekan::Tools;
-
-static const char* vertexShaderFilePath = "resources/06_vertex_shader.glsl";
-static const char* fragmentShaderFilePath = "resources/06_fragment_shader.glsl";
 
 static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
 static const float ZOOM_SPEED = 1.1f;
@@ -67,6 +66,7 @@ namespace Demo
 
     bool Demo06_Scene::init()
 	{
+		Renderer2D::init();
 		RenderState::enableMultisampleAntiAliasing();
 
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
@@ -94,6 +94,7 @@ namespace Demo
 
 	void Demo06_Scene::render()
 	{
+		Renderer2D::beginFrame();
 		RenderCommands::clear();
 
 		if (m_guiWindow->isEnabledRectangles())
@@ -145,10 +146,14 @@ namespace Demo
 		}
 
 		m_centerSquare.render();
+
+		Renderer2D::endFrame();
 	}
 
 	void Demo06_Scene::exit()
 	{
+		Renderer2D::exit();
+
 		for (int i = 0; i < m_rectangles.size(); i++)
 		{
 			m_rectangles[i].destroy();
@@ -221,8 +226,8 @@ namespace Demo
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
 		const glm::vec2 widthHeightRange =
 		{
-			minDim * 0.01f,
-			minDim * 0.05f
+			minDim * 0.001f,
+			minDim * 0.005f
 		};
 		const glm::vec2 positionXRange = { m_bbox.min.x + widthHeightRange.y / 2.0f, m_bbox.max.x - widthHeightRange.y / 2.0f };
 		const glm::vec2 positionYRange = { m_bbox.min.y + widthHeightRange.y / 2.0f, m_bbox.max.y - widthHeightRange.y / 2.0f };
@@ -240,7 +245,7 @@ namespace Demo
 	void Demo06_Scene::createCircles()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 radiusRange = { minDim * 0.005f, minDim * 0.02f };
+		const glm::vec2 radiusRange = { minDim * 0.001f, minDim * 0.006f };
 		const glm::vec2 positionXRange = { m_bbox.min.x + radiusRange.y, m_bbox.max.x - radiusRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y + radiusRange.y, m_bbox.max.y - radiusRange.y };
 
@@ -258,7 +263,7 @@ namespace Demo
 	void Demo06_Scene::createCirclesStatic()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 radiusRange = { minDim * 0.005f, minDim * 0.02f };
+		const glm::vec2 radiusRange = { minDim * 0.001f, minDim * 0.006f };
 		const glm::vec2 positionXRange = { m_bbox.min.x + radiusRange.y, m_bbox.max.x - radiusRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y + radiusRange.y, m_bbox.max.y - radiusRange.y };
 
@@ -275,8 +280,8 @@ namespace Demo
 	void Demo06_Scene::createTriangles()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 pointXRange ={ -minDim * 0.02f, minDim * 0.02f };
-		const glm::vec2 pointYRange = { -minDim * 0.02f, minDim * 0.02f };
+		const glm::vec2 pointXRange ={ -minDim * 0.003f, minDim * 0.003f };
+		const glm::vec2 pointYRange = { -minDim * 0.003f, minDim * 0.003f };
 		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y - pointYRange.x, m_bbox.max.y - pointYRange.y };
 
@@ -298,8 +303,8 @@ namespace Demo
 	void Demo06_Scene::createPolygons()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 pointXRange = { -minDim * 0.015f, minDim * 0.015f };
-		const glm::vec2 pointYRange = { -minDim * 0.015f, minDim * 0.015f };
+		const glm::vec2 pointXRange = { -minDim * 0.0025f, minDim * 0.0025f };
+		const glm::vec2 pointYRange = { -minDim * 0.0025f, minDim * 0.0025f };
 		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y + pointYRange.y, m_bbox.max.y - pointYRange.y };
 
@@ -316,8 +321,8 @@ namespace Demo
 	void Demo06_Scene::createLines()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 pointXRange = { -minDim * 0.06f, minDim * 0.06f };
-		const glm::vec2 pointYRange = { -minDim * 0.06f, minDim * 0.06f };
+		const glm::vec2 pointXRange = { -minDim * 0.004f, minDim * 0.004f };
+		const glm::vec2 pointYRange = { -minDim * 0.004f, minDim * 0.004f };
 		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y - pointYRange.x, m_bbox.max.y - pointYRange.y };
 
@@ -329,7 +334,7 @@ namespace Demo
 			(
 				getRandomVec2(pointXRange, pointYRange),
 				getRandomVec2(pointXRange, pointYRange),
-				getRandomFloat(0.8f, 1.5f)
+				getRandomFloat(0.1f, 0.6f)
 			);
 			m_lines[i].setPosition(getRandomVec2(positionXRange, positionYRange));
 			m_lines[i].setColor(getRandomColor(0.3f, 0.65f));
@@ -383,8 +388,8 @@ namespace Demo
 		{
 			m_rectangles[i].move(getRandomVec2
 			(
-				{ -float((i * 4 + 2) % 30) * 2.0f, float((i * 3 + 11) % 30) * 2.0f },
-				{ -float((i * 7 + 6) % 30) * 2.0f, float((i * 11 + 3) % 30) * 2.0f }
+				{ -float((i * 4 + 2) % 30) * 1.0f, float((i * 3 + 11) % 30) * 1.0f },
+				{ -float((i * 7 + 6) % 30) * 1.0f, float((i * 11 + 3) % 30) * 1.0f }
 			) * dt);
 			m_rectangles[i].setRotation(dt * sin(t * float(i % 7)) * float(i % 17) / 3.5f);
 			m_rectangles[i].setScale(m_rectangles[i].getScale() * getRandomVec2

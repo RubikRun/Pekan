@@ -1,5 +1,5 @@
 #include "Demo02_Scene.h"
-#include "Utils/PekanUtils.h"
+#include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -97,8 +97,8 @@ namespace Demo
             m_vertices.size() * sizeof(Vertex),
             { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "color" } },
             BufferDataUsage::DynamicDraw,
-            Pekan::Utils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::Utils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::FileUtils::readFileToString(vertexShaderFilePath).c_str(),
+            Pekan::FileUtils::readFileToString(fragmentShaderFilePath).c_str()
         );
         m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 

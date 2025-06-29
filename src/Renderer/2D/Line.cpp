@@ -1,10 +1,10 @@
 #include "Line.h"
 
-#include "Utils/PekanUtils.h"
+#include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/VertexShader_2D.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/FragmentShader_SolidColor.glsl"
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/2D_VertexShader.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/SolidColor_FragmentShader.glsl"
 
 static constexpr long long VERTEX_DATA_SIZE = 4 * sizeof(float);
 
@@ -26,8 +26,8 @@ namespace Renderer
 		(
 			m_vertices, VERTEX_DATA_SIZE,
 			{ { ShaderDataType::Float2, "position" } }, vertexDataUsage,
-			Utils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-			Utils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);
 
 		// Set shader's view projection matrix uniform to an identity matrix

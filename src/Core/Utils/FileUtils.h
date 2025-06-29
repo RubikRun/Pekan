@@ -1,9 +1,14 @@
 #pragma once
 
+#include <string>
+
 namespace Pekan
 {
 namespace FileUtils
 {
+
+	// Reads a text file's contents into a string
+	std::string readFileToString(const char* filePath);
 
 	// Reads an image file.
 	// Returns raw pixel data, where each byte is a component of a pixel.

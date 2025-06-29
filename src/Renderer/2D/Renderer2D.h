@@ -13,19 +13,31 @@ namespace Renderer
         using CameraSharedPtr = std::shared_ptr<Renderer::Camera2D>;
         using CameraWeakPtr = std::weak_ptr<Renderer::Camera2D>;
 
+        friend class Shape;
+
     public:
+
+        static void init();
+        static void exit();
 
         static void beginFrame();
         static void endFrame();
 
-        static void render(const Shape& shape);
-
         // Sets a camera to be used for rendering
         static inline void setCamera(const CameraSharedPtr& camera) { s_camera = camera; }
+
+    private: /* functions */
+
+        // Submits a shape for rendering.
+        // Actual rendering will happen when you call endFrame().
+        static void render(const Shape& shape);
 
     private:
 
         static RenderObject s_batch;
+
+        static std::vector<ShapeVertex> s_vertices;
+        static std::vector<unsigned> s_indices;
 
         // A pointer to the camera used for rendering.
         // NOTE: It's a weak pointer so the camera is NOT owned by Renderer2D.

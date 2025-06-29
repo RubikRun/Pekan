@@ -3,12 +3,6 @@
 #include "Renderer2D.h"
 #include "Utils/PekanUtils.h"
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/VertexShader_2D.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/FragmentShader_SolidColor.glsl"
-
-static constexpr unsigned FLOAT_SIZE = sizeof(float);
-static constexpr unsigned VERTICES_SIZE = 6 * FLOAT_SIZE;
-
 namespace Pekan
 {
 namespace Renderer
@@ -72,6 +66,7 @@ namespace Renderer
         m_position = glm::vec2(0.0f, 0.0f);
         m_rotation = 0.0f;
         m_scale = glm::vec2(1.0f, 1.0f);
+        m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         m_isValid = true;
         m_needUpdateVerticesWorld = true;
         m_transformMatrix = glm::mat4(1.0f);

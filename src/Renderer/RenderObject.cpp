@@ -18,7 +18,6 @@ namespace Renderer
 		const char* fragmentShaderSource
 	)
 	{
-		PK_ASSERT_QUICK(vertexData != nullptr); PK_ASSERT_QUICK(vertexDataSize >= 0);
 		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
 
 		if (isValid())

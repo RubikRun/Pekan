@@ -101,3 +101,7 @@
 
 0040 30.06.2025 (TODO): Use a 1D texture for batch rendering of 2D shapes to pass colors to shader,
                         instead of having a color attribute on each vertex (wasteful for memory)
+
+0041 01.07.2025 (TODO): Think about using more than 1 batch for batch rendering.
+                        Maybe having some reasonable limit of vertices/indices per batch,
+                        and when we reach it we can draw the batch and start a new one.
