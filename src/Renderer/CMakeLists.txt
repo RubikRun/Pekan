@@ -5,30 +5,14 @@ option(PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING "Disable orientation checkin
 
 # Add a static library Renderer, compiling the following source files
 add_library(Renderer STATIC
-    RenderState.h
-    RenderState.cpp
-    RenderCommands.h
-    RenderCommands.cpp
     RenderObject.h
     RenderObject.cpp
-    RenderComponents/RenderComponent.h
-    RenderComponents/RenderComponent.cpp
-    RenderComponents/VertexBuffer.h
-    RenderComponents/VertexBuffer.cpp
-    RenderComponents/IndexBuffer.h
-    RenderComponents/IndexBuffer.cpp
-    RenderComponents/VertexArray.h
-    RenderComponents/VertexArray.cpp
-    RenderComponents/Shader.h
-    RenderComponents/Shader.cpp
-    RenderComponents/Texture.h
-    RenderComponents/Texture.cpp
-    Image.h
-    Image.cpp
     2D/Renderer2D.h
     2D/Renderer2D.cpp
     2D/Camera2D.h
     2D/Camera2D.cpp
+    2D/Line.h
+    2D/Line.cpp
     2D/Shapes/Shape.h
     2D/Shapes/Shape.cpp
     2D/Shapes/TriangleShape.h
@@ -43,26 +27,18 @@ add_library(Renderer STATIC
     2D/Shapes/PolygonShape.cpp
     2D/Shapes/LineShape.h
     2D/Shapes/LineShape.cpp
-    2D/Line.h
-    2D/Line.cpp
 )
 
-# Group RenderComponents files under a virtual folder called "RenderComponents"
-SOURCE_GROUP("Source Files\\RenderComponents" FILES
-    RenderComponents/RenderComponent.cpp
-    RenderComponents/VertexBuffer.cpp
-    RenderComponents/IndexBuffer.cpp
-    RenderComponents/VertexArray.cpp
-    RenderComponents/Shader.cpp
-    RenderComponents/Texture.cpp
+# Group 2D files under a virtual folder called "2D"
+SOURCE_GROUP("Source Files\\2D" FILES
+    2D/Renderer2D.cpp
+    2D/Camera2D.cpp
+    2D/Line.cpp
 )
-SOURCE_GROUP("Header Files\\RenderComponents" FILES
-    RenderComponents/RenderComponent.h
-    RenderComponents/VertexBuffer.h
-    RenderComponents/IndexBuffer.h
-    RenderComponents/VertexArray.h
-    RenderComponents/Shader.h
-    RenderComponents/Texture.h
+SOURCE_GROUP("Header Files\\2D" FILES
+    2D/Renderer2D.h
+    2D/Camera2D.h
+    2D/Line.h
 )
 # Group 2D Shapes files under a virtual folder called "2D/Shapes"
 SOURCE_GROUP("Source Files\\2D\\Shapes" FILES
@@ -83,23 +59,12 @@ SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
     2D/Shapes/CircleShapeStatic_impl.h
     2D/Shapes/PolygonShape.h
 )
-# Group 2D files under a virtual folder called "2D"
-SOURCE_GROUP("Source Files\\2D" FILES
-    2D/Renderer2D.cpp
-    2D/Camera2D.cpp
-    2D/Line.cpp
-)
-SOURCE_GROUP("Header Files\\2D" FILES
-    2D/Renderer2D.h
-    2D/Camera2D.h
-    2D/Line.h
-)
 
 # Set include directories for Renderer
-target_include_directories(Renderer PUBLIC . RenderComponents 2D 2D/Shapes)
+target_include_directories(Renderer PUBLIC . 2D 2D/Shapes)
 
 # Set link libraries for Renderer
-target_link_libraries(Renderer PRIVATE Core glad opengl32.lib)
+target_link_libraries(Renderer PUBLIC Graphics)
 
 target_compile_definitions(Renderer PRIVATE
     # Set PEKAN_RENDERER_ROOT_DIR definition to be the path to current source directory

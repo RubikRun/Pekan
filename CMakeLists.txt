@@ -22,6 +22,8 @@ if(WITH_DEMO_PROJECTS)
     add_subdirectory(demos/Demo06)
     add_subdirectory(demos/Demo07)
 endif()
+# Add Graphics subdirectory
+add_subdirectory(src/Graphics)
 # Add Renderer subdirectory
 add_subdirectory(src/Renderer)
 # Add Tools subdirectory

@@ -3164,3 +3164,22 @@ Renderer2D is automatically initialized and exited when application is initializ
 
 Created a TO-DO item for core's redesign.
 }
+
+----------
+05.07.2025
+----------
+
+{
+Let's immediately start with the TO-DO item described above.
+We need to redesign the core architecture a little bit.
+
+First of all, we'll separate the Renderer module into 2 modules
+    Graphics
+    Renderer
+The Graphics module will consist only of abstractions over GPU objects and concepts.
+The Renderer module will use Graphics as a building block to build 2D shapes, 3D objects, cameras, etc.
+Done, separated them.
+Everything works as before, but now we have a new module
+    Graphics
+
+}
