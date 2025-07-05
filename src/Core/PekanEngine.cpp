@@ -1,7 +1,8 @@
 #include "PekanEngine.h"
 
-#include "PekanApplication.h"
 #include "Logger/PekanLogger.h"
+#include "PekanApplication.h"
+#include "SubsystemManager.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -88,6 +89,12 @@ namespace Pekan
         }
         s_application = application;
 
+        // TODO: we need to call
+        //     SubsystemManager::initAll();
+        // here, but currently we can't because to initialize Renderer2D we need a valid OpenGL context
+        // which we receive when creating the window, but currently creating the window is done in application code,
+        // specifically in the _init() function of each application.
+
         isInitialized = true;
         return true;
     }
@@ -105,6 +112,11 @@ namespace Pekan
             s_window.destroy();
             isWindowCreated = false;
         }
+
+        // TODO: we need to call
+        //     SubsystemManager::exitAll();
+        // here, but currently we can't. See explanation above in init() function.
+
         isInitialized = false;
     }
 

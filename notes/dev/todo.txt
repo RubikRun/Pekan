@@ -105,3 +105,11 @@
 0041 01.07.2025 (TODO): Think about using more than 1 batch for batch rendering.
                         Maybe having some reasonable limit of vertices/indices per batch,
                         and when we reach it we can draw the batch and start a new one.
+
+0042 03.07.2025 (TODO): Rename classes that have only pure virtual functions with the "I" prefix,
+                        for example EventListener -> IEventListener
+
+0043 05.07.2025 (TODO): Change core architecture so that window is not created by client code,
+                        or think of something else. Maybe also move all OpenGL and window logic into Renderer instead of Core,
+                        or better yet create a new module Graphics. Idk, many options, think about it.
+                        Problem is there isn't a good moment to initialize Renderer2D.

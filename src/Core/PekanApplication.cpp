@@ -4,6 +4,10 @@
 #include "Time/FpsLimiter.h"
 #include "Window.h"
 
+// TODO: remove this after changing architecture so that
+//       subsystem init/exit can be done in PekanEngine instead of here.
+#include "SubsystemManager.h"
+
 #include "Events/KeyEvents.h"
 #include "Events/MouseEvents.h"
 #include "Events/WindowEvents.h"
@@ -44,6 +48,10 @@ namespace Pekan
                 PK_LOG_WARNING("Null layer found when initializing application.", "Pekan");
             }
         }
+
+        // TODO: remove this after changing architecture so that
+        //       subsystem init/exit can be done in PekanEngine instead of here.
+        SubsystemManager::initAll();
 
         return true;
     }
@@ -113,6 +121,10 @@ namespace Pekan
                 layer->exit();
             }
         }
+        // TODO: remove this after changing architecture so that
+        //       subsystem init/exit can be done in PekanEngine instead of here.
+        SubsystemManager::exitAll();
+
         // Exit engine
         PekanEngine::exit();
     }

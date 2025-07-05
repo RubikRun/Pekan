@@ -1,6 +1,7 @@
 #include "Renderer2D.h"
 
 #include "Utils/FileUtils.h"
+#include "SubsystemManager.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/2D_BatchRendering_VertexShader.glsl"
 #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/SolidColor_BatchRendering_FragmentShader.glsl"
@@ -10,37 +11,19 @@ namespace Pekan
 namespace Renderer
 {
 
+	// Register Renderer2D as a subsystem in Pekan's SubsystemManager,
+	// so that it's automatically initialized and exited.
+	static Renderer2D g_Renderer2D;
+	static bool s_registered = []()
+	{
+		SubsystemManager::registerSubsystem(&g_Renderer2D);
+		return true;
+	}();
+
 	RenderObject Renderer2D::s_batch;
 	Renderer2D::CameraWeakPtr Renderer2D::s_camera;
 	std::vector<ShapeVertex> Renderer2D::s_vertices;
 	std::vector<unsigned> Renderer2D::s_indices;
-
-	void Renderer2D::init()
-	{
-		// Create shapes batch with empty vertex data
-		s_batch.create
-		(
-			s_vertices.data(),
-			0,
-			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
-			BufferDataUsage::DynamicDraw,
-			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
-		);
-		// Set empty index data to shapes batch
-		s_batch.setIndexData(s_indices.data(), 0, BufferDataUsage::DynamicDraw);
-
-		// Set shader's view projection matrix uniform to a default view projection matrix
-		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-		s_batch.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
-	}
-
-	void Renderer2D::exit()
-	{
-		s_batch.destroy();
-		s_vertices.clear();
-		s_indices.clear();
-	}
 
 	void Renderer2D::beginFrame()
 	{
@@ -68,6 +51,33 @@ namespace Renderer
 		}
 
 		RenderCommands::drawIndexed(s_indices.size());
+	}
+
+	void Renderer2D::init()
+	{
+		// Create shapes batch with empty vertex data
+		s_batch.create
+		(
+			s_vertices.data(),
+			0,
+			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
+			BufferDataUsage::DynamicDraw,
+			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+		);
+		// Set empty index data to shapes batch
+		s_batch.setIndexData(s_indices.data(), 0, BufferDataUsage::DynamicDraw);
+
+		// Set shader's view projection matrix uniform to a default view projection matrix
+		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+		s_batch.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
+	}
+
+	void Renderer2D::exit()
+	{
+		s_batch.destroy();
+		s_vertices.clear();
+		s_indices.clear();
 	}
 
 	void Renderer2D::render(const Shape& shape)

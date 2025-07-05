@@ -72,6 +72,9 @@ add_library(Core STATIC
     src/Core/Layer.cpp
     src/Core/LayerStack.h
     src/Core/LayerStack.cpp
+    src/Core/ISubsystem.h
+    src/Core/SubsystemManager.h
+    src/Core/SubsystemManager.cpp
     src/Core/Utils/PekanUtils.h
     src/Core/Utils/PekanUtils.cpp
     src/Core/Utils/FileUtils.h

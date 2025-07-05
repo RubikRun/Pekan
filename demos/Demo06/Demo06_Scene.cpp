@@ -66,7 +66,6 @@ namespace Demo
 
     bool Demo06_Scene::init()
 	{
-		Renderer2D::init();
 		RenderState::enableMultisampleAntiAliasing();
 
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
@@ -152,8 +151,6 @@ namespace Demo
 
 	void Demo06_Scene::exit()
 	{
-		Renderer2D::exit();
-
 		for (int i = 0; i < m_rectangles.size(); i++)
 		{
 			m_rectangles[i].destroy();

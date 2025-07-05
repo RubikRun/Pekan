@@ -3074,3 +3074,93 @@ With batch rendering, Demo06 with 40k shapes works at 60 FPS.
 Calling it done here,
 BUT we need to cleanup code, maybe restructure a bit, and do the 3 TO-DO items that emerged.
 }
+
+----------
+03.07.2025
+----------
+
+{
+Let's do some cleaning up today.
+I will start with automating the initialization and exiting of Renderer2D,
+so that client code doesn't have to manually call Renderer2D::init() and Renderer2D::exit().
+
+To do this, I will introduce this new concept in Pekan - a "subsystem".
+Conceptually a subsystem will be a building block of Pekan, which:
+- Is self-contained.
+    (Changes in one subsystem don't require changes in another)
+    (Can be easily plugged into another engine)
+- Is not part of the "core" engine.
+    (It makes sense to use the engine without it)
+
+In code, a subsystem will be just anything that needs to be initialized when engine is intialized,
+and exited when engine is exited.
+
+So I added this simple interface
+    class ISubsystem
+    {
+        friend class SubsystemManager;
+
+    public:
+        virtual ~ISubsystem() = default;
+    private:
+        virtual void init() = 0;
+        virtual void exit() = 0;
+    };
+( init() and exit() are private and class SubsystemManager is a friend to make sure that only SubsystemManager can call init() and exit() on a subsytem )
+in a new file in Core
+    ISubsystem.h
+together with this static class
+    class SubsystemManager
+in new files in Core
+    SubsystemManager.h
+    SubsystemManager.cpp
+What this SubsystemManager does is it allows subsystems to register themselves in Pekan
+    static void registerSubsystem(ISubsystem* subsystem);
+and allows Pekan to initialize all registered subsystems and exit all registered subsystems
+    static void initAll();
+    static void exitAll();
+The actual list of registered subsystems is a global static variable in
+    SubsystemManager.cpp
+and it looks like this
+    static std::vector<ISubsystem*> g_subsystems;
+That's pretty much it.
+
+Then, our first subsystem will be Renderer2D.
+Let's make it derive from ISubsystem
+    class Renderer2D : public ISubsystem
+and change its 2 functions
+    static void init();
+    static void exit();
+from being static to non-static and put "override" to make sure that they override the init() and exit() from ISubsystem
+    void init() override;
+    void exit() override;
+
+To register Renderer2D as a subsystem we'll have to first have an instance of it.
+Let's have a global static instance in Renderer2D.cpp
+    static Renderer2D g_Renderer2D;
+and we'll register it statically with a lambda, like that:
+    static bool s_registered = []()
+    {
+        SubsystemManager::registerSubsystem(&g_Renderer2D);
+        return true;
+    }();
+That's it.
+
+Now, at what point should we initialize all subsystems and exit all subsystems?
+It makes sense to do it in PekanEngine's init() and exit() functions.
+However, this does NOT work currently, because to initialize Renderer2D we need a valid OpenGL context,
+which is obtained when we create the window. The window is not created in PekanEngine's init() function,
+it's created manually by client code calling PekanEngine::createWindow() in their application's _init() function.
+That's not good.
+We need some redesign of the core architecture.
+For now, what I'll do as a workaround is to initialize subsystems in PekanApplication instead of PekanEngine,
+and do it, importantly, after calling _init() so after the window has been created.
+    SubsystemManager::initAll();
+Exiting could technically be done in PekanEngine, but just for consistency let's also do it in PekanApplication
+    SubsystemManager::exitAll();
+That's it.
+It works now.
+Renderer2D is automatically initialized and exited when application is initialized and exited.
+
+Created a TO-DO item for core's redesign.
+}

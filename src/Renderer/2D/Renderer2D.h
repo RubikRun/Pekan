@@ -2,13 +2,14 @@
 
 #include "Shape.h"
 #include "RenderObject.h"
+#include "ISubsystem.h"
 
 namespace Pekan
 {
 namespace Renderer
 {
 
-    class Renderer2D
+    class Renderer2D : public ISubsystem
     {
         using CameraSharedPtr = std::shared_ptr<Renderer::Camera2D>;
         using CameraWeakPtr = std::weak_ptr<Renderer::Camera2D>;
@@ -17,9 +18,6 @@ namespace Renderer
 
     public:
 
-        static void init();
-        static void exit();
-
         static void beginFrame();
         static void endFrame();
 
@@ -27,6 +25,9 @@ namespace Renderer
         static inline void setCamera(const CameraSharedPtr& camera) { s_camera = camera; }
 
     private: /* functions */
+
+        void init() override;
+        void exit() override;
 
         // Submits a shape for rendering.
         // Actual rendering will happen when you call endFrame().

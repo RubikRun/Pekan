@@ -22,7 +22,6 @@ namespace Demo
 
     bool Demo07_Scene::init()
 	{
-		Renderer2D::init();
 		RenderState::enableMultisampleAntiAliasing();
 
 		createCamera();
@@ -111,8 +110,6 @@ namespace Demo
 
 	void Demo07_Scene::exit()
 	{
-		Renderer2D::exit();
-
 		for (LineShape& csLine : m_coordSys)
 		{
 			csLine.destroy();
