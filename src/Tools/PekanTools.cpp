@@ -1,8 +1,9 @@
-#include "PekanEngine.h"
-#include "Events/MouseEvents.h"
 #include "PekanTools.h"
 
+#include "PekanLogger.h"
+#include "PekanEngine.h"
 #include "PekanApplication.h"
+#include "Events/MouseEvents.h"
 #include "Events/EventListener.h"
 
 static const float DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED = 1.1f;

@@ -2,9 +2,12 @@
 
 #include "Utils/FileUtils.h"
 #include "SubsystemManager.h"
+#include "Graphics.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/2D_BatchRendering_VertexShader.glsl"
 #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/SolidColor_BatchRendering_FragmentShader.glsl"
+
+using namespace Pekan::Graphics;
 
 namespace Pekan
 {
@@ -71,6 +74,8 @@ namespace Renderer
 		// Set shader's view projection matrix uniform to a default view projection matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
 		s_batch.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
+
+		m_isInitialized = true;
 	}
 
 	void Renderer2D::exit()
@@ -78,6 +83,13 @@ namespace Renderer
 		s_batch.destroy();
 		s_vertices.clear();
 		s_indices.clear();
+
+		m_isInitialized = false;
+	}
+
+	ISubsystem* Renderer2D::getParent()
+	{
+		return Graphics::Graphics::getInstance();
 	}
 
 	void Renderer2D::render(const Shape& shape)

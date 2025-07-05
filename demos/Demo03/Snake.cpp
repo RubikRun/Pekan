@@ -2,13 +2,6 @@
 #include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
-using Pekan::Renderer::RenderCommands;
-using Pekan::Renderer::RenderState;
-using Pekan::Renderer::ShaderDataType;
-using Pekan::Renderer::BufferDataUsage;
-using Pekan::PekanEngine;
-using Pekan::KeyCode;
-
 static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
 static const float THICKNESS = 0.05f;
@@ -22,6 +15,10 @@ static const int SPEED_MAP[] =
     6, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 };
+
+using Pekan::PekanEngine;
+using Pekan::KeyCode;
+using namespace Pekan::Graphics;
 
 namespace Demo
 {

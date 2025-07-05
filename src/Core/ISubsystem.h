@@ -13,9 +13,17 @@ namespace Pekan
 
 	public:
 		virtual ~ISubsystem() = default;
+
 	private:
 		virtual void init() = 0;
 		virtual void exit() = 0;
+
+		// Can be overridden by derived classes to return subsystem's parent.
+		// A subsystem depends on its parent, meaning that its parent must be initialized first.
+		// If a NULL parent is returned, subsystem's parent will be Core.
+		virtual ISubsystem* getParent() { return nullptr; }
+
+		virtual bool isInitialized() = 0;
 	};
 
 } // namespace Pekan

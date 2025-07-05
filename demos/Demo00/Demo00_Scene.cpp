@@ -1,17 +1,12 @@
 #include "Demo00_Scene.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
-using Pekan::Renderer::RenderCommands;
-using Pekan::Renderer::RenderState;
-using Pekan::Renderer::ShaderDataType;
-using Pekan::Renderer::DrawMode;
-using Pekan::Renderer::BufferDataUsage;
-using Pekan::Renderer::Shader;
-
 static const char* vertexShaderFilePath = "resources/00_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
+
+using namespace Pekan::Graphics;
 
 namespace Demo
 {

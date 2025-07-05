@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "PekanEngine.h"
 #include "PekanApplication.h"
 

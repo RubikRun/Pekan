@@ -9,9 +9,9 @@
 #include <unordered_map>
 
 namespace Pekan {
-namespace Renderer {
+namespace Graphics {
 
-	// A class representing a shader program in Pekan's renderer
+	// A class representing a shader program on the GPU.
 	class Shader : public RenderComponent
 	{
 	public:
@@ -72,4 +72,4 @@ namespace Renderer {
 	};
 
 } // namespace Pekan
-} // namespace Renderer
+} // namespace Graphics

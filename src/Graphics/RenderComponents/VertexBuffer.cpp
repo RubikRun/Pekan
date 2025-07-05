@@ -1,11 +1,11 @@
 #include "VertexBuffer.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
-#include <glad/glad.h>
+#include "GLCall.h"
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	VertexBufferElement::VertexBufferElement(ShaderDataType type, const std::string& name, bool normalized)
@@ -92,5 +92,5 @@ namespace Renderer
 		GLCall(glDeleteBuffers(1, &m_id));
 	}
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

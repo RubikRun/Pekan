@@ -3,14 +3,16 @@
 #include "RenderState.h"
 #include "RenderComponent.h"
 
+#include <memory>
+
 namespace Pekan {
-namespace Renderer {
+namespace Graphics {
 
 	class Image;
 
 
 
-	// A class representing a texture in Pekan's renderer
+	// A class representing a texture on the GPU.
 	class Texture : public RenderComponent
 	{
 	public:
@@ -60,4 +62,4 @@ namespace Renderer {
 	typedef std::shared_ptr<Texture> TexturePtr;
 
 } // namespace Pekan
-} // namespace Renderer
+} // namespace Graphics

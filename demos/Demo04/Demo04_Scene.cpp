@@ -1,18 +1,10 @@
 #include "Demo04_Scene.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
 #include <glm/gtc/constants.hpp>
 static const float PI = glm::pi<float>();
-
-using Pekan::Renderer::RenderCommands;
-using Pekan::Renderer::RenderState;
-using Pekan::Renderer::ShaderDataType;
-using Pekan::Renderer::DrawMode;
-using Pekan::Renderer::BufferDataUsage;
-using Pekan::Renderer::Shader;
-using Pekan::Renderer::BlendFactor;
 
 static const char* VERTEX_SHADER_FILEPATHS[] =
 {
@@ -70,6 +62,8 @@ static const std::vector<glm::vec2> POLYGON2_VERTICES =
     { 0.15799180327868848, 0.09713114754098359 },
     { 0.1875, 0.06823770491803277 }
 };
+
+using namespace Pekan::Graphics;
 
 namespace Demo
 {

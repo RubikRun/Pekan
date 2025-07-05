@@ -8,7 +8,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	// An element from a layout of a vertex buffer.
@@ -74,7 +74,7 @@ namespace Renderer
 		unsigned m_stride = 0;
 	};
 
-	// A class representing a vertex buffer in Pekan's renderer.
+	// A class representing a vertex buffer on the GPU.
 	// A vertex buffer simply holds a buffer of data that can be used as an array of vertices.
 	class VertexBuffer : public RenderComponent
 	{
@@ -117,5 +117,5 @@ namespace Renderer
 		VertexBufferLayout layout;
 	};
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

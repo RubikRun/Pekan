@@ -1,7 +1,9 @@
-#include <glm/gtc/constants.hpp>
 #include "CircleShapeStatic.h"
 
+#include "PekanLogger.h"
 #include "Utils/MathUtils.h"
+
+#include <glm/gtc/constants.hpp>
 
 namespace Pekan
 {

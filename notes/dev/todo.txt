@@ -113,3 +113,12 @@
                         or think of something else. Maybe also move all OpenGL and window logic into Renderer instead of Core,
                         or better yet create a new module Graphics. Idk, many options, think about it.
                         Problem is there isn't a good moment to initialize Renderer2D.
+
+0044 05.07.2025 (TODO): Why does this function in PekanEngine return a reference and not a const reference?
+                            inline static Window& getWindow() { return s_window; }
+
+0045 05.07.2025 (TODO): Fix Demo05 and Demo06, shapes are missing
+
+0046 05.07.2025 (TODO): Remove
+                            static glm::ivec2 getWindowSize();
+                        from PekanEngine

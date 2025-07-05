@@ -1,12 +1,13 @@
 #include "Shader.h"
-#include "Logger/PekanLogger.h"
+
+#include "PekanLogger.h"
+#include "GLCall.h"
 #include "RenderState.h"
 
-#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Pekan {
-namespace Renderer {
+namespace Graphics {
 
 	static const unsigned MAX_SHADERS_ATTACHED = 10;
 
@@ -173,4 +174,4 @@ namespace Renderer {
 	}
 
 } // namespace Pekan
-} // namespace Renderer
+} // namespace Graphics

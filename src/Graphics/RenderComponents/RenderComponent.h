@@ -4,10 +4,10 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
-	// A base class representing a render component in Pekan's renderer.
+	// A base class representing a render component.
 	// A render component is any type of object that exists on the GPU as part of the rendering process.
 	// (e.g. shaders, vertex buffers, vertex arrays)
 	class RenderComponent
@@ -38,5 +38,5 @@ namespace Renderer
 		unsigned m_id = 0;
 	};
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

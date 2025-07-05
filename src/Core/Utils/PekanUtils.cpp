@@ -1,5 +1,5 @@
 #include "Utils/PekanUtils.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
 #include <random>
 #include <chrono>

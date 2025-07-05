@@ -5,16 +5,13 @@
 #include "Utils/PekanUtils.h"
 #include "RenderCommands.h"
 
-using Pekan::PekanEngine;
-using Pekan::Renderer::RenderCommands;
-using Pekan::Renderer::RenderState;
-using Pekan::Renderer::ShaderDataType;
-using Pekan::Renderer::BufferDataUsage;
-using Pekan::Utils::getRandomInt;
-
 static const char* vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
 static const float APPLE_SIZE = 0.03f;
+
+using Pekan::PekanEngine;
+using Pekan::Utils::getRandomInt;
+using namespace Pekan::Graphics;
 
 namespace Demo
 {

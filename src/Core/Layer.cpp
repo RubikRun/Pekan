@@ -1,6 +1,6 @@
 #include "Layer.h"
 
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "PekanApplication.h"
 
 namespace Pekan

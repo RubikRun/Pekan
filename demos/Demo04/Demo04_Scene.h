@@ -61,8 +61,8 @@ namespace Demo
 
 		int m_shaderIdx = -1;
 
-		Pekan::Renderer::Image m_image0;
-		Pekan::Renderer::Image m_image1;
+		Pekan::Graphics::Image m_image0;
+		Pekan::Graphics::Image m_image1;
 
 		const Demo04_GUIWindow* m_guiWindow = nullptr;
 

@@ -1,5 +1,5 @@
 #include "Demo06_Scene.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
@@ -10,13 +10,14 @@
 
 #include <algorithm>
 
+static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
+static const float ZOOM_SPEED = 1.1f;
+
 using namespace Pekan;
+using namespace Pekan::Graphics;
 using namespace Pekan::Renderer;
 using namespace Pekan::Utils;
 using namespace Pekan::Tools;
-
-static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
-static const float ZOOM_SPEED = 1.1f;
 
 namespace Demo
 {

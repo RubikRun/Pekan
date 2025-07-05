@@ -29,6 +29,10 @@ namespace Renderer
         void init() override;
         void exit() override;
 
+        ISubsystem* getParent() override;
+
+        bool isInitialized() override { return m_isInitialized; }
+
         // Submits a shape for rendering.
         // Actual rendering will happen when you call endFrame().
         static void render(const Shape& shape);
@@ -44,6 +48,8 @@ namespace Renderer
         // NOTE: It's a weak pointer so the camera is NOT owned by Renderer2D.
         //       If the camera is destroyed at some point, Renderer2D will safely stop using it.
         static CameraWeakPtr s_camera;
+
+        bool m_isInitialized = false;
     };
 
 } // namespace Renderer

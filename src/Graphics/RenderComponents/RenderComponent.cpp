@@ -1,10 +1,10 @@
 #include "RenderComponent.h"
 
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
 namespace Pekan
 {
-	namespace Renderer
+	namespace Graphics
 	{
 
 		RenderComponent::~RenderComponent()
@@ -41,5 +41,5 @@ namespace Pekan
 			m_id = 0;
 		}
 
-	} // namespace Renderer
+	} // namespace Graphics
 } // namespace Pekan

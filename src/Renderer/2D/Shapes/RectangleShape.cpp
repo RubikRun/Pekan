@@ -1,5 +1,6 @@
 #include "RectangleShape.h"
 
+#include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 
 namespace Pekan

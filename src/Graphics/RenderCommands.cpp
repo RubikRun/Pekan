@@ -1,11 +1,11 @@
 #include "RenderCommands.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
-#include <glad/glad.h>
+#include "GLCall.h"
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	void RenderCommands::draw(unsigned elementsCount, DrawMode mode)
@@ -51,5 +51,5 @@ namespace Renderer
 		return 0;
 	}
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

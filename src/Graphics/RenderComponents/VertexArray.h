@@ -6,10 +6,10 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
-	// A class representing a vertex array in Pekan's renderer.
+	// A class representing a vertex array on the GPU.
 	// A vertex array consists of multiple vertex buffers and maintains the state of their layouts.
 	class VertexArray : public RenderComponent
 	{
@@ -37,5 +37,5 @@ namespace Renderer
 		std::vector<VertexBufferBinding> m_vertexBuffers;
 	};
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

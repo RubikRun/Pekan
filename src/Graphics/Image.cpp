@@ -1,11 +1,11 @@
 #include "Image.h"
 
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	bool Image::load(const char* filepath)
@@ -27,5 +27,5 @@ namespace Renderer
 		return true;
 	}
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

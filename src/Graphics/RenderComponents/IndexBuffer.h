@@ -5,10 +5,10 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
-	// A class representing an index buffer in Pekan's renderer.
+	// A class representing an index buffer on the GPU.
 	// An index buffer holds a buffer of data that can be used as indices into a vertex buffer.
 	class IndexBuffer : public RenderComponent
 	{
@@ -39,5 +39,5 @@ namespace Renderer
 		void _destroy() override;
 	};
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

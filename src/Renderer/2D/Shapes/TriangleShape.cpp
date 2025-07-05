@@ -1,6 +1,9 @@
 #include "TriangleShape.h"
 
+#include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
+
+using namespace Pekan::Graphics;
 
 namespace Pekan
 {

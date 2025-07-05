@@ -1,6 +1,6 @@
 #include "MathUtils.h"
 
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
 namespace Pekan
 {

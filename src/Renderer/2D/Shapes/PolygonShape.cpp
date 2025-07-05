@@ -1,7 +1,10 @@
 #include "PolygonShape.h"
 
+#include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "Utils/MathUtils.h"
+
+using namespace Pekan::Graphics;
 
 namespace Pekan
 {

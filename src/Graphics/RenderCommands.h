@@ -6,7 +6,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	// Enum for different types of draw modes. Each mode specifies a kind of primitive to render.
@@ -48,5 +48,5 @@ namespace Renderer
 		static unsigned getDrawModeOpenGLEnum(DrawMode drawMode);
 	};
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

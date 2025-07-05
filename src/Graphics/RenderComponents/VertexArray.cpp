@@ -1,12 +1,13 @@
 #include "VertexArray.h"
-#include "Logger/PekanLogger.h"
+
+#include "PekanLogger.h"
+#include "GLCall.h"
 #include "RenderState.h"
 
-#include <glad/glad.h>
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	VertexArray::~VertexArray()
@@ -86,5 +87,5 @@ namespace Renderer
 	}
 
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

@@ -1,4 +1,4 @@
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
 #include "Demo07_Application.h"
 using Demo::Demo07_Application;

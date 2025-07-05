@@ -1,5 +1,5 @@
 #include "FileUtils.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
 #include <stb/stb_image.h>
 

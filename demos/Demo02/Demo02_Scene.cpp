@@ -5,10 +5,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-using Pekan::Renderer::RenderCommands;
-using Pekan::Renderer::RenderState;
-using Pekan::Renderer::ShaderDataType;
-using Pekan::Renderer::BufferDataUsage;
+using Pekan::Graphics::RenderCommands;
+using Pekan::Graphics::RenderState;
+using Pekan::Graphics::ShaderDataType;
+using Pekan::Graphics::BufferDataUsage;
 using Pekan::PekanEngine;
 
 #define PI 3.14159265359f

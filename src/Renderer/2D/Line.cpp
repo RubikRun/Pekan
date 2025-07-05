@@ -1,5 +1,6 @@
 #include "Line.h"
 
+#include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 #include "RenderCommands.h"
 
@@ -9,6 +10,8 @@
 static constexpr long long VERTEX_DATA_SIZE = 4 * sizeof(float);
 
 static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+using namespace Pekan::Graphics;
 
 namespace Pekan
 {

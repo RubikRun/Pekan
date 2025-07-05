@@ -1,14 +1,14 @@
 #include "RenderState.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 
-#include <glad/glad.h>
+#include "GLCall.h"
 
 // Default number of samples to be used for Multisample Anti-Aliasing (MSAA)
 const int DEFAULT_NUMBER_OF_SAMPLES = 8;
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 	bool RenderState::s_isEnabledFaceCulling = false;
 
@@ -253,5 +253,5 @@ namespace Renderer
 		return 0;
 	}
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

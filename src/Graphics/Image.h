@@ -2,7 +2,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	class Image
@@ -35,5 +35,5 @@ namespace Renderer
 		int m_numChannels = -1;
 	};
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

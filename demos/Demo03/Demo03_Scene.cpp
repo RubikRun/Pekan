@@ -4,10 +4,10 @@
 #include "Events/KeyEvents.h"
 #include "RenderCommands.h"
 
-using Pekan::Renderer::RenderState;
-using Pekan::Renderer::RenderCommands;
 using Pekan::KeyPressedEvent;
 using Pekan::KeyCode;
+
+using namespace Pekan::Graphics;
 
 namespace Demo
 {

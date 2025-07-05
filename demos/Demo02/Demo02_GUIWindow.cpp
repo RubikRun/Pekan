@@ -1,5 +1,5 @@
 #include "Demo02_GUIWindow.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "Demo02_Scene.h"
 #include "PekanEngine.h"
 

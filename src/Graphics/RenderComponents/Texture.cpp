@@ -1,15 +1,15 @@
 #include "Texture.h"
 
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
+#include "GLCall.h"
 #include "Image.h"
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 static const unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
 
 namespace Pekan {
-namespace Renderer {
+namespace Graphics {
 
 	static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::LinearOnLinearMipmap;
 	static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Linear;
@@ -138,4 +138,4 @@ namespace Renderer {
 	}
 
 } // namespace Pekan
-} // namespace Renderer
+} // namespace Graphics

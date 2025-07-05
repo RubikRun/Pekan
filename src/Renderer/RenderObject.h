@@ -29,8 +29,8 @@ namespace Renderer
 		(
 			const void* vertexData,
 			long long vertexDataSize,
-			const VertexBufferLayout& layout,
-			BufferDataUsage vertexDataUsage,
+			const Graphics::VertexBufferLayout& layout,
+			Graphics::BufferDataUsage vertexDataUsage,
 			const char* vertexShaderSource,
 			const char* fragmentShaderSource
 		);
@@ -39,7 +39,7 @@ namespace Renderer
 		// Vertex data, index data and a texture can be set later.
 		void create
 		(
-			const VertexBufferLayout& layout,
+			const Graphics::VertexBufferLayout& layout,
 			const char* vertexShaderSource,
 			const char* fragmentShaderSource
 		);
@@ -54,35 +54,35 @@ namespace Renderer
 		void unbind() const;
 
 		void setVertexData(const void* data, long long size);
-		void setVertexData(const void* data, long long size, BufferDataUsage dataUsage);
+		void setVertexData(const void* data, long long size, Graphics::BufferDataUsage dataUsage);
 		void setVertexSubData(const void* data, long long offset, long long size);
 
 		void setIndexData(const void* data, long long size);
-		void setIndexData(const void* data, long long size, BufferDataUsage dataUsage);
+		void setIndexData(const void* data, long long size, Graphics::BufferDataUsage dataUsage);
 		void setIndexSubData(const void* data, long long offset, long long size);
 
 		void setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 
-		void setTextureImage(const Image& image, const char* uniformName, unsigned slot);
+		void setTextureImage(const Graphics::Image& image, const char* uniformName, unsigned slot);
 
-		Shader& getShader() { return m_shader; }
-		const Shader& getShader() const { return m_shader; }
+		Graphics::Shader& getShader() { return m_shader; }
+		const Graphics::Shader& getShader() const { return m_shader; }
 
 	private:
 
-		VertexArray m_vertexArray;
+		Graphics::VertexArray m_vertexArray;
 
-		VertexBuffer m_vertexBuffer;
+		Graphics::VertexBuffer m_vertexBuffer;
 
-		IndexBuffer m_indexBuffer;
+		Graphics::IndexBuffer m_indexBuffer;
 
-		Shader m_shader;
+		Graphics::Shader m_shader;
 
 		// A vector of textures, where the index of each texture is the slot where it will be bound
-		std::vector<TexturePtr> m_textures;
+		std::vector<Graphics::TexturePtr> m_textures;
 
-		BufferDataUsage m_vertexDataUsage = BufferDataUsage::None;
-		BufferDataUsage m_indexDataUsage = BufferDataUsage::None;
+		Graphics::BufferDataUsage m_vertexDataUsage = Graphics::BufferDataUsage::None;
+		Graphics::BufferDataUsage m_indexDataUsage = Graphics::BufferDataUsage::None;
 	};
 
 } // namespace Renderer

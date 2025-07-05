@@ -121,13 +121,11 @@ SOURCE_GROUP("Header Files\\Time" FILES src/Core/Time/FpsLimiter.h src/Core/Time
 target_link_libraries(Core PRIVATE
     imgui
     glfw
-    glad
-    opengl32.lib
 )
 target_link_libraries(Core PUBLIC glm)
 
 # Set include directories for Core
-target_include_directories(Core PUBLIC src/Core)
+target_include_directories(Core PUBLIC src/Core src/Core/Logger)
 target_include_directories(Core PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)

@@ -3182,4 +3182,42 @@ Done, separated them.
 Everything works as before, but now we have a new module
     Graphics
 
+Now, the hard part.
+We need to move all OpenGL related code to Graphics.
+Core needs to be agnostic of the graphics API.
+To do that I'll create a Graphics subsystem in the new Graphics module, in new files
+    Graphics.h
+    Graphics.cpp
+It will register itself in SubsystemManager the same way that Renderer2D does it.
+The main thing it will do is load OpenGL upon initialization.
+Okay, not too hard, got it working after a while.
+
+There is a problem now. The Renderer2D subsystem must always be initialized AFTER the Graphics subsystem.
+Currently we can't ensure that, because they both get registered statically in their own modules,
+we can't know which one will be the first to register itself.
+To handle this we'll add this function to ISubsystem
+    virtual ISubsystem* getParent() { return nullptr; }
+that can be overridden by a specific subsystem to return its "parent" subsystem,
+meaning a subsystem that needs to be initialized BEFORE the given subsystem.
+If a subsystem does not implement this, it will simply be a child to Core,
+meaning that it can be initialized whenever.
+We'll use that to say that Renderer2D's parent must be Graphics.
+In Renderer2D do this:
+    ISubsystem* getParent() override;
+    ...
+    ISubsystem* Renderer2D::getParent()
+    {
+        return Graphics::Graphics::getInstance();
+    }
+where this getInstance() function is a function in the Graphics subsystem:
+    Graphics* Graphics::getInstance()
+    {
+        return &g_graphics;
+    }
+returning a pointer to the global Graphics instance.
+Then finally, in SubsystemManager's initAll() function we can initialize all subsystems but in order from parent to leafs.
+Basically, for each subsystem X recursively initialize parents until there is no parent left, and then initialize X.
+That's it. Now we're sure that Graphics will be initialized before Renderer2D.
+It works!
+
 }

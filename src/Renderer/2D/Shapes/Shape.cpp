@@ -1,5 +1,6 @@
 #include "Shape.h"
 
+#include "PekanLogger.h"
 #include "Renderer2D.h"
 #include "Utils/PekanUtils.h"
 

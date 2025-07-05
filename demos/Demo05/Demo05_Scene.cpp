@@ -1,18 +1,10 @@
 #include "Demo05_Scene.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "RenderCommands.h"
 
 #include <glm/gtc/constants.hpp>
 static const float PI = glm::pi<float>();
-
-using Pekan::Renderer::RenderCommands;
-using Pekan::Renderer::RenderState;
-using Pekan::Renderer::ShaderDataType;
-using Pekan::Renderer::DrawMode;
-using Pekan::Renderer::BufferDataUsage;
-using Pekan::Renderer::Shader;
-using Pekan::Renderer::BlendFactor;
 
 // Parameters for Mandelbrot Times Table
 const glm::vec2 MTT0_CENTER = glm::vec2(-0.5f, 0.0f);
@@ -21,6 +13,8 @@ const float MTT0_RADIUS = 0.45f;
 const float MTT1_RADIUS = 0.45f;
 const float MTT0_SPEED = 0.05f;
 const float MTT1_SPEED = 0.05f;
+
+using namespace Pekan::Graphics;
 
 namespace Demo
 {

@@ -1,5 +1,5 @@
 #include "PekanApplication.h"
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "PekanEngine.h"
 #include "Time/FpsLimiter.h"
 #include "Window.h"
@@ -12,7 +12,6 @@
 #include "Events/MouseEvents.h"
 #include "Events/WindowEvents.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace Pekan
@@ -31,6 +30,10 @@ namespace Pekan
             return false;
         }
 
+        // TODO: remove this after changing architecture so that
+        //       subsystem init/exit can be done in PekanEngine instead of here.
+        SubsystemManager::initAll();
+
         // Initalize all layers
         for (Layer* layer : m_layerStack)
         {
@@ -48,10 +51,6 @@ namespace Pekan
                 PK_LOG_WARNING("Null layer found when initializing application.", "Pekan");
             }
         }
-
-        // TODO: remove this after changing architecture so that
-        //       subsystem init/exit can be done in PekanEngine instead of here.
-        SubsystemManager::initAll();
 
         return true;
     }

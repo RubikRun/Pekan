@@ -1,10 +1,10 @@
 #include "IndexBuffer.h"
 
-#include <glad/glad.h>
+#include "GLCall.h"
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 	IndexBuffer::~IndexBuffer()
 	{
@@ -52,5 +52,5 @@ namespace Renderer
 		GLCall(glDeleteBuffers(1, &m_id));
 	}
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

@@ -1,5 +1,9 @@
 #include "RenderObject.h"
 
+#include "PekanLogger.h"
+
+using namespace Pekan::Graphics;
+
 namespace Pekan
 {
 namespace Renderer

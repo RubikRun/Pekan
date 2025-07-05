@@ -4,7 +4,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Graphics
 {
 
 	// Enum for shader data types that we support in Pekan.
@@ -110,7 +110,6 @@ namespace Renderer
 		friend class VertexBufferElement;
 		friend class VertexBuffer;
 		friend class IndexBuffer;
-		friend class RenderObject;
 		friend class Texture;
 
 	public:
@@ -144,6 +143,9 @@ namespace Renderer
 		static void disableFaceCulling();
 		static inline bool isEnabledFaceCulling() { return s_isEnabledFaceCulling; }
 
+		// Returns the maximum number of texture slots supported on current hardware
+		static int getMaxTextureSlots();
+
 	private: /* functions */
 
 		// Returns the OpenGL base data type corresponding to the given shader data type.
@@ -169,9 +171,6 @@ namespace Renderer
 		// Returns the OpenGL enum value corresponding to the given texture slot
 		static unsigned getTextureSlotOpenGLEnum(unsigned slot);
 
-		// Returns the maximum number of texture slots supported on current hardware
-		static int getMaxTextureSlots();
-
 		// Returns the OpenGL enum value corresponding to the given texture minify function
 		static unsigned getTextureMinifyFunctionOpenGLEnum(TextureMinifyFunction function);
 
@@ -186,5 +185,5 @@ namespace Renderer
 		static bool s_isEnabledFaceCulling;
 	};
 
-} // namespace Renderer
+} // namespace Graphics
 } // namespace Pekan

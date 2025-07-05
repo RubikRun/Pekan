@@ -1,6 +1,6 @@
 #include "Demo07_Scene.h"
 
-#include "Logger/PekanLogger.h"
+#include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "RenderCommands.h"
 #include "RenderState.h"
@@ -9,6 +9,7 @@
 #include "Renderer2D.h"
 
 using namespace Pekan;
+using namespace Pekan::Graphics;
 using namespace Pekan::Renderer;
 using namespace Pekan::Tools;
 

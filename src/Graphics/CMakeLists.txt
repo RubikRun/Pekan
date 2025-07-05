@@ -3,6 +3,10 @@ project(Graphics)
 
 # Add a static library Graphics, compiling the following source files
 add_library(Graphics STATIC
+    Graphics.h
+    Graphics.cpp
+    GLCall.h
+    GLCall.cpp
     RenderState.h
     RenderState.cpp
     RenderCommands.h
@@ -46,4 +50,4 @@ target_include_directories(Graphics PUBLIC . RenderComponents)
 
 # Set link libraries for Graphics
 target_link_libraries(Graphics PUBLIC Core)
-target_link_libraries(Graphics PRIVATE glad opengl32.lib)
+target_link_libraries(Graphics PRIVATE glad glfw opengl32.lib)
