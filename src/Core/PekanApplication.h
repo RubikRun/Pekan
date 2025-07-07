@@ -11,7 +11,6 @@
 
 namespace Pekan
 {
-	class Layer;
 
 	// An application's properties, grouped together in a struct
 	struct ApplicationProperties
@@ -45,22 +44,27 @@ namespace Pekan
 
 		virtual std::string getName() const { return ""; }
 
+		// Registers an event listener to be notified when an event occurs in this application
 		void registerEventListener(const std::shared_ptr<EventListener>& eventListener);
+		// Unregisters an event listener. It will no longer be notified when an event occurs in this application.
 		void unregisterEventListener(const std::shared_ptr<EventListener>& eventListener);
 
 		// Can be overriden by derived classes to return specific application properties.
 		// If not overriden, default application properties will be used.
 		virtual ApplicationProperties getProperties() const { return {}; }
 
-		// Stops running the main loop and closes the window
+		// Stops running the application, and closes the window.
 		void stopRunning();
 
 	private: /* functions */
 
-		// Initializes the application.
-		//
+		// Can be implemented by derived classes with specific initialization logic.
+		// @return true on success
+		virtual bool _init() { return true; }
+
 		// To be implemented by derived classes to fill layer stack with application's layers.
-		virtual bool _init(LayerStack& layerStack) = 0;
+		// @return true on success
+		virtual bool _fillLayerStack(LayerStack& layerStack) = 0;
 
 		// Functions that are called when an event occurs.
 		// Each of these functions handles a specific type of event
@@ -77,6 +81,7 @@ namespace Pekan
 		// Handles the event queue.
 		//
 		// Can be implemented by derived classes with specific logic of handling the events from the event queue.
+		// NOTE: Make sure to pop all events from the queue, otherwise they will keep piling up.
 		virtual void handleEventQueue() { while (!m_eventQueue.empty()) { m_eventQueue.pop(); } }
 
 	private: /* variables */

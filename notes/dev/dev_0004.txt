@@ -3383,5 +3383,26 @@ Then we don't need this middle-man function
     stopRunningApplication()
 in class Layer and we don't need to make Layer and PekanApplication be friends.
 Easy.
+}
 
+{
+Still looking around.
+I see another thing.
+This function
+    virtual bool _fillLayerStack(LayerStack& layerStack) = 0;
+in PekanApplication doesn't make much sense.
+It doesn't make much sense the fact that an "init" function has to specifically fill a layer stack,
+and also might do other initialization code that the derived application might need.
+It would be cleaner to separate it into 2 functions like that
+    virtual bool _init() { return true; }   
+    virtual bool _fillLayerStack(LayerStack& layerStack) = 0;
+A derived application definitely has to fill the layer stack and they can do it in
+    _fillLayerStack()
+They might or might not have specific initialization logic. (That's why _init() is not pure virtual)
+If they do, they can override
+    _init()
+All of my demos do NOT have initialization logic so they will not override _init().
+They only need to implement _fillLayerStack() and they already do, they just call it _init(),
+so we just have to rename _init() to _fillLayerStack() in all demos.
+That's it. It works. Looks better.
 }

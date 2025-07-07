@@ -8,7 +8,7 @@ namespace Demo
 
 	class Demo03_Application : public PekanApplication
 	{
-		bool _init(Pekan::LayerStack& layerStack) override;
+		bool _fillLayerStack(Pekan::LayerStack& layerStack) override;
 		std::string getName() const override { return "Snake Game"; }
 		Pekan::ApplicationProperties getProperties() const override;
 	};

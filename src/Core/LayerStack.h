@@ -6,8 +6,9 @@
 namespace Pekan
 {
 
-	// A stack of layers determining the order in which they will be drawn,
-	// and the order in which they will receive events
+	// A stack of layers,
+	// used for storing the layers of an application in a specific order.
+	// Allows layers to be traversed forwards (for rendering) and backwards (for events).
 	class LayerStack
 	{
 	public:

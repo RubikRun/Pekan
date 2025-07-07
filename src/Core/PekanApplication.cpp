@@ -20,7 +20,11 @@ namespace Pekan
             return false;
         }
 
-        if (!_init(m_layerStack))
+        if (!_init())
+        {
+            return false;
+        }
+        if (!_fillLayerStack(m_layerStack))
         {
             return false;
         }

@@ -12,7 +12,7 @@ using Pekan::LayerStack;
 namespace Demo
 {
 
-	bool Demo07_Application::_init(LayerStack& layerStack)
+	bool Demo07_Application::_fillLayerStack(LayerStack& layerStack)
 	{
 		// Create demo scene and demo GUI window
 		std::shared_ptr<Demo07_Scene> demoScene = std::make_shared<Demo07_Scene>(this);

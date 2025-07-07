@@ -11,7 +11,7 @@ using Pekan::LayerStack;
 namespace Demo
 {
 
-	bool Demo03_Application::_init(LayerStack& layerStack)
+	bool Demo03_Application::_fillLayerStack(LayerStack& layerStack)
 	{
 		// Create demo scene
 		std::shared_ptr<Demo03_Scene> demoScene = std::make_shared<Demo03_Scene>(this);
