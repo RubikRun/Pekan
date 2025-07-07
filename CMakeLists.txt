@@ -71,7 +71,6 @@ add_library(Core STATIC
     src/Core/Window.h
     src/Core/Window.cpp
     src/Core/Layer.h
-    src/Core/Layer.cpp
     src/Core/LayerStack.h
     src/Core/LayerStack.cpp
     src/Core/ISubsystem.h

@@ -3363,3 +3363,25 @@ The way applications will set their FPS now will be in their getProperties() fun
     return props;
 That's it. It works.
 }
+
+{
+Still looking around.
+I see another thing that annoys me.
+Why do we need this function in class Layer?
+    void stopRunningApplication();
+We already have a protected member
+    PekanApplication* m_application = nullptr;
+so we should be able to call
+    m_application->stopRunning();
+The reason I created this function in the first place was because I made PekanApplication's stopRunning() function private
+and then made class Layer a friend to class PekanApplication so that only class Layer can stop running the application,
+but that's not necessary.
+We can easily have
+    stopRunning()
+be public. It's okay that an application can be stopped from any code.
+Then we don't need this middle-man function
+    stopRunningApplication()
+in class Layer and we don't need to make Layer and PekanApplication be friends.
+Easy.
+
+}

@@ -48,9 +48,9 @@ namespace Demo
 	bool Demo03_Scene::onKeyPressed(const Pekan::KeyPressedEvent& event)
 	{
 		// Make application close if escape key is pressed
-		if (event.getKeyCode() == KeyCode::KEY_ESCAPE)
+		if (event.getKeyCode() == KeyCode::KEY_ESCAPE && m_application != nullptr)
 		{
-			stopRunningApplication();
+			m_application->stopRunning();
 			return true;
 		}
 		return false;

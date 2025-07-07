@@ -26,11 +26,6 @@ namespace Pekan
 
 		inline const std::string& getName() const { return m_name; }
 
-	protected: /* functions */
-
-		// Can be used by derived classes to stop running the application.
-		void stopRunningApplication();
-
 	protected: /* variables */
 
 		// Application containing this layer

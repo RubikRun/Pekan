@@ -27,9 +27,11 @@ namespace Pekan
 	// A base class for all Pekan applications
 	class PekanApplication
 	{
-		friend class PekanEngine;
+		// We need class Window as a friend class
+		// because Window needs to send events to PekanApplication
+		// using the handleKeyEvent(), handleMouseMovedEvent(), etc. functions,
+		// and these functions are private because we don't want anyone else to be able to call them.
 		friend class Window;
-		friend class Layer;
 
 	public:
 
@@ -46,19 +48,19 @@ namespace Pekan
 		void registerEventListener(const std::shared_ptr<EventListener>& eventListener);
 		void unregisterEventListener(const std::shared_ptr<EventListener>& eventListener);
 
-	private: /* functions */
-
-		// Initializes the application.
-		// 
-		// To be implemented by derived classes to fill layer stack with application's layers.
-		virtual bool _init(LayerStack& layerStack) = 0;
-
 		// Can be overriden by derived classes to return specific application properties.
 		// If not overriden, default application properties will be used.
 		virtual ApplicationProperties getProperties() const { return {}; }
 
 		// Stops running the main loop and closes the window
 		void stopRunning();
+
+	private: /* functions */
+
+		// Initializes the application.
+		//
+		// To be implemented by derived classes to fill layer stack with application's layers.
+		virtual bool _init(LayerStack& layerStack) = 0;
 
 		// Functions that are called when an event occurs.
 		// Each of these functions handles a specific type of event
