@@ -18,14 +18,13 @@ namespace Demo
 		// Add scene to application's layers
 		layerStack.pushLayer(demoScene);
 
-		setFPS(60.0);
-
 		return true;
 	}
 
 	ApplicationProperties Demo03_Application::getProperties() const
 	{
 		ApplicationProperties props;
+		props.fps = 60.0;
 		props.windowProperties.fullScreen = true;
 		props.windowProperties.hideCursor = true;
 		return props;

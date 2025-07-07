@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Events/Event.h"
-#include "Events/KeyEvents_Enums.h"
-#include "Events/MouseEvents_Enums.h"
 #include "Events/EventListener.h"
 #include "LayerStack.h"
 #include "Time/DeltaTimer.h"
@@ -18,7 +16,12 @@ namespace Pekan
 	// An application's properties, grouped together in a struct
 	struct ApplicationProperties
 	{
+		// Properties of the window where application will run
 		WindowProperties windowProperties;
+
+		// Target frames per second.
+		// Value of 0.0 means use FPS equal to monitor's refresh rate (VSync)
+		double fps = 0.0;
 	};
 
 	// A base class for all Pekan applications
@@ -42,12 +45,6 @@ namespace Pekan
 
 		void registerEventListener(const std::shared_ptr<EventListener>& eventListener);
 		void unregisterEventListener(const std::shared_ptr<EventListener>& eventListener);
-
-	protected: /* functions */
-
-		// Set FPS (frames per second) to be used for running the application.
-		// If you don't manually set FPS your application will run with FPS equal to monitor's refresh rate (VSync)
-		inline void setFPS(double fps) { m_fps = fps; }
 
 	private: /* functions */
 
@@ -84,10 +81,6 @@ namespace Pekan
 
 		// Stack of layers making up the application
 		LayerStack m_layerStack;
-
-		// Frames per second.
-		// Value of 0.0 means use FPS equal to monitor's refresh rate (VSync)
-		double m_fps = 0.0;
 
 		// Event queue where events are pushed if they are not handled by any layer
 		EventQueue m_eventQueue;

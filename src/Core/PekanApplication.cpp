@@ -48,14 +48,16 @@ namespace Pekan
 
     void PekanApplication::run()
 	{
+        const double fps = getProperties().fps;
+
         // If this application doesn't have a specific FPS requirement,
         // then use VSync to automatically match FPS with monitor's refresh rate
-        const bool useVSync = (m_fps <= 0.0);
+        const bool useVSync = (fps <= 0.0);
         if (useVSync)
         {
             PekanEngine::getWindow().enableVSync();
         }
-        FpsLimiter fpsLimiter(m_fps);
+        FpsLimiter fpsLimiter(fps);
 
         Window& window = PekanEngine::getWindow();
         while (!window.shouldBeClosed())

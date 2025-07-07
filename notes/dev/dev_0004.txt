@@ -3340,3 +3340,26 @@ to use shared pointers.
 Done.
 Everything works as before.
 }
+
+{
+Still looking around.
+I see that this function in PekanApplication
+    inline void setFPS(double fps) { m_fps = fps; }
+doesn't really need to be a function.
+It would be better to have the FPS as a member of ApplicationProperties.
+Let's do that now.
+    struct ApplicationProperties
+    {
+        WindowProperties windowProperties;
+        double fps = 0.0;
+    };
+and then in PekanApplication's run() function we'll just do
+    const double fps = getProperties().fps;
+to get the FPS.
+The way applications will set their FPS now will be in their getProperties() function, like that
+    ApplicationProperties props;
+    props.fps = 60.0;
+    ...
+    return props;
+That's it. It works.
+}

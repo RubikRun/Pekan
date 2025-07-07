@@ -14,8 +14,6 @@ namespace Demo
 
 	bool Demo04_Application::_init(LayerStack& layerStack)
 	{
-		setFPS(60.0);
-
 		// Create demo scene and demo GUI window
 		std::shared_ptr<Demo04_Scene> demoScene = std::make_shared<Demo04_Scene>(this);
 		std::shared_ptr<Demo04_GUIWindow> demoGuiWindow = std::make_shared<Demo04_GUIWindow>(this);
@@ -32,6 +30,7 @@ namespace Demo
 	ApplicationProperties Demo04_Application::getProperties() const
 	{
 		ApplicationProperties props;
+		props.fps = 60.0;
 		props.windowProperties.title = getName();
 		props.windowProperties.width = 960;
 		props.windowProperties.height = 960;
