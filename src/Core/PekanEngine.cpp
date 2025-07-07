@@ -18,7 +18,6 @@ namespace Pekan
     Window PekanEngine::s_window;
     PekanApplication* PekanEngine::s_application = nullptr;
     bool PekanEngine::isInitialized = false;
-    bool PekanEngine::isWindowCreated = false;
 
     bool PekanEngine::init(PekanApplication* application)
     {
@@ -34,11 +33,17 @@ namespace Pekan
         }
         s_application = application;
 
-        // TODO: we need to call
-        //     SubsystemManager::initAll();
-        // here, but currently we can't because to initialize Renderer2D we need a valid OpenGL context
-        // which we receive when creating the window, but currently creating the window is done in application code,
-        // specifically in the _init() function of each application.
+        const ApplicationProperties properties = application->getProperties();
+        if (!s_window.create(properties.windowProperties))
+        {
+            return false;
+        }
+        if (!initImGui())
+        {
+            return false;
+        }
+
+        SubsystemManager::initAll();
 
         isInitialized = true;
         return true;
@@ -51,33 +56,12 @@ namespace Pekan
             PK_LOG_ERROR("Trying to exit engine but engine is not yet initialized.", "Pekan");
             return;
         }
-        if (isWindowCreated)
-        {
-            exitImGui();
-            s_window.destroy();
-            isWindowCreated = false;
-        }
+        exitImGui();
+        s_window.destroy();
 
-        // TODO: we need to call
-        //     SubsystemManager::exitAll();
-        // here, but currently we can't. See explanation above in init() function.
+        SubsystemManager::exitAll();
 
         isInitialized = false;
-    }
-
-    bool PekanEngine::createWindow(WindowProperties properties)
-    {
-        if (!s_window.create(properties))
-        {
-            return false;
-        }
-        if (!initImGui())
-        {
-            return false;
-        }
-
-        isWindowCreated = true;
-        return true;
     }
 
     bool PekanEngine::isKeyPressed(KeyCode key)
@@ -117,11 +101,6 @@ namespace Pekan
 
     bool PekanEngine::initImGui()
     {
-        if (!isInitialized)
-        {
-            PK_LOG_ERROR("Trying to initialize ImGui but engine is not yet initialized.", "Pekan");
-            return false;
-        }
         // Setup ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();

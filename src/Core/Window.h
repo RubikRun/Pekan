@@ -12,7 +12,7 @@ namespace Pekan
 {
 	class PekanEngine;
 
-	// A window's properties grouped together in a convenient struct with default values
+	// A window's properties grouped together in a struct with default values
 	struct WindowProperties
 	{
 		int width = 1280;

@@ -122,3 +122,9 @@
 0046 05.07.2025 (TODO): Remove
                             static glm::ivec2 getWindowSize();
                         from PekanEngine
+
+0047 05.07.2025 (TODO): Think about moving ImGui to its own module and subsystem called GUI, instead of having it in Core.
+
+0048 06.07.2025 (TODO): Rename project Renderer to Renderer2D. Let's have a single subsystem per module and their names to always match.
+
+0049 07.07.2025 (TODO): Move numberOfSamples member from WindowProperties to ApplicationProperties

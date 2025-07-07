@@ -4,6 +4,7 @@
 
 #include "PekanEngine.h"
 using Pekan::PekanEngine;
+using Pekan::ApplicationProperties;
 using Pekan::WindowProperties;
 using Pekan::LayerStack;
 
@@ -12,11 +13,6 @@ namespace Demo
 
 	bool Demo03_Application::_init(LayerStack& layerStack)
 	{
-		WindowProperties windowProperties;
-		windowProperties.fullScreen = true;
-		windowProperties.hideCursor = true;
-		PekanEngine::createWindow(windowProperties);
-
 		// Create demo scene
 		Demo03_Scene* demoScene = new Demo03_Scene(this);
 		// Add scene to application's layers
@@ -25,6 +21,14 @@ namespace Demo
 		setFPS(60.0);
 
 		return true;
+	}
+
+	ApplicationProperties Demo03_Application::getProperties() const
+	{
+		ApplicationProperties props;
+		props.windowProperties.fullScreen = true;
+		props.windowProperties.hideCursor = true;
+		return props;
 	}
 
 } // namespace Demo

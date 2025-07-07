@@ -16,7 +16,6 @@ add_executable(Demo05
 target_link_libraries(Demo05 PRIVATE
     Core
     Renderer
-    imgui
 )
 
 # Set Demo05's working directory to be Demo05's source directory

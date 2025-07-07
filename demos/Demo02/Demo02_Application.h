@@ -10,6 +10,7 @@ namespace Demo
 	{
 		bool _init(Pekan::LayerStack& layerStack) override;
 		std::string getName() const override { return "Rotating Cube"; }
+		Pekan::ApplicationProperties getProperties() const override;
 	};
 
 } // namespace Demo

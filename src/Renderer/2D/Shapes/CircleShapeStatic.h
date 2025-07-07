@@ -66,6 +66,6 @@ namespace Renderer
 	};
 
 } // namespace Renderer
-} // namespace Renderer
+} // namespace Pekan
 
 #include "CircleShapeStatic_impl.h"

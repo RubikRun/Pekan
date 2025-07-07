@@ -3220,4 +3220,98 @@ Basically, for each subsystem X recursively initialize parents until there is no
 That's it. Now we're sure that Graphics will be initialized before Renderer2D.
 It works!
 
+Next step is to create the window when engine is initialized instead of giving control to user to do it whenever they want.
+This is important, because we need the window at initialization time in order to load OpenGL
+in order to initialize subsystems like Graphics and Renderer2D.
+Okay, did it.
+What I did is added this new virtual function to class PekanApplication
+    virtual ApplicationProperties getProperties() const { return {}; }
+returning ApplicationProperties which is a new struct
+    struct ApplicationProperties
+	{
+		WindowProperties windowProperties;
+	};
+for now only containing window properties, in the future it might contain other stuff as well.
+Then in PekanEngine, instead of having a function createWindow() we'll always create a window in the init() function
+using the window properties retrieved from calling application's getProperties()
+    const ApplicationProperties properties = application->getProperties();
+    if (!s_window.create(properties.windowProperties))
+    {
+        return false;
+    }
+Together with that we'll also initialize ImGui right after creating the window, of course.
+To match this behavior, we can remove the isWindowCreated flag because now we'll always have a window created,
+and in the exit() function we can just directly destroy window and exit ImGui.
+That's pretty much it.
+Then, of course, all applications that want to have specific window properties will have to override the getProperties() function, like that:
+    Pekan::ApplicationProperties getProperties() const override;
+    ...
+    ApplicationProperties Demo00_Application::getProperties() const
+    {
+        ApplicationProperties props;
+        props.windowProperties.title = getName();
+        return props;
+    }
+
+Now that we have this new mechanism of creating the window, we can initialize all subsystems in PekanEngine
+instead of PekanApplication, because we are sure that we have a window, and hence a valid OpenGL context.
+So in PekanEngine's init() function, right after creating the window and initializing ImGui, we can do this
+    SubsystemManager::initAll();
+and in PekanEngine's exit() function, after destroying the window and exiting ImGui (not necessary), we can do this
+    SubsystemManager::exitAll();
+
+That's it. It works!
+And, of course, it's much better structuered now.
+
+But wait, there is a bug. Some demos crash.
+(It turned out the bug is not related to these last changes, but the changes before that)
+They crash because apparently OpenGL is not loaded.
+It's not loaded because the Graphics subsystem is not registered.
+Why is that?
+Well, currently we are registering the Graphics subsystem in Graphics.cpp like that
+    static bool s_registered = []()
+	{
+		SubsystemManager::registerSubsystem(&g_graphics);
+		return true;
+	}();
+with a static lambda, executed immediately.
+However, this does NOT work if we are not using any of the symbols in this .cpp file.
+The linker just ignores the .obj file generated for this .cpp file if we don't use any of the symbols.
+In some demos we don't use any of the symbols from Graphics.h and that's why we get the crash.
+The solution is to NOT do this static lambda thing.
+It's kind of weird, even if it worked.
+Soooo, what is a better way to do it?
+Well, I considered a few different ways, but at the end I decided to add this new static function to class Graphics
+    static void registerSubsystem();
+It will just register the subsystem to SubsystemManager
+    void Graphics::registerSubsystem()
+	{
+		SubsystemManager::registerSubsystem(&g_graphics);
+	}
+The question is who will call it?
+Well, I'll let the client code call it.
+Probably not the most user-friendly solution, but I'll let every subsystem define a macro for "including it in Pekan"
+    // Use this macro in your application's main function to include the Graphics subsystem of Pekan
+    #define PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS Pekan::Graphics::Graphics::registerSubsystem()
+and users will have to list the subsystems that they want to use, in their main function.
+That's fair, to be honest, in a finished game engine it would be normal to require from user
+to explicitly "include the Graphics subsystem" if they want graphics in their game,
+or "include the Networking subsystem" if they want networking in their game.
+This might be done with checkboxes in GUI when creating your projects, and/or in project settings.
+Of course, we might want some subsystems to be included by default, like Graphics for example.
+But for now we'll not worry about that.
+For now requiring that client code include the subsystems that it needs, is an okay solution.
+So, TL;DR client code will have to do something like that in their main function
+    #include "Graphics.h"
+    #include "Renderer2D.h"
+    ...
+    int main()
+    {
+        PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS;
+        PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D;
+        ...
+    }
+Of course, did the same thing for Renderer2D. They have to have matching interfaces.
+Okaaaay, it works now. The bug is fixed.
+
 }

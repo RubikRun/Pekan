@@ -5,6 +5,7 @@
 
 #include "PekanEngine.h"
 using Pekan::PekanEngine;
+using Pekan::ApplicationProperties;
 using Pekan::WindowProperties;
 using Pekan::LayerStack;
 
@@ -13,13 +14,6 @@ namespace Demo
 
 	bool Demo05_Application::_init(LayerStack& layerStack)
 	{
-		WindowProperties windowProperties;
-		windowProperties.title = getName();
-		windowProperties.width = 1000;
-		windowProperties.height = 1000;
-		windowProperties.numberOfSamples = 16;
-		PekanEngine::createWindow(windowProperties);
-
 		setFPS(60.0);
 
 		// Create demo scene and demo GUI window
@@ -33,6 +27,16 @@ namespace Demo
 		layerStack.pushLayer(demoGuiWindow);
 
 		return true;
+	}
+
+	ApplicationProperties Demo05_Application::getProperties() const
+	{
+		ApplicationProperties props;
+		props.windowProperties.title = getName();
+		props.windowProperties.width = 1000;
+		props.windowProperties.height = 1000;
+		props.windowProperties.numberOfSamples = 16;
+		return props;
 	}
 
 } // namespace Demo

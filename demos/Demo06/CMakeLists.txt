@@ -17,7 +17,6 @@ target_link_libraries(Demo06 PRIVATE
     Core
     Renderer
     Tools
-    imgui
 )
 
 # Set Demo06's working directory to be Demo06's source directory

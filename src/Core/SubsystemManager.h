@@ -8,7 +8,7 @@ namespace Pekan
     // A static class used for managing Pekan's subsystems
     class SubsystemManager
     {
-        friend class PekanApplication;
+        friend class PekanEngine;
 
     public:
 

@@ -28,9 +28,6 @@ namespace Pekan
 		// To be called once, at the end, after finished using the engine.
 		static void exit();
 
-		// TODO: write comment
-		static bool createWindow(WindowProperties properties);
-
 		// Returns a reference to the window where the current application is running
 		inline static Window& getWindow() { return s_window; }
 
@@ -69,8 +66,8 @@ namespace Pekan
 		// Application currently using Pekan
 		static PekanApplication* s_application;
 
+		// Flag indicating if engine is initialized
 		static bool isInitialized;
-		static bool isWindowCreated;
 	};
 
 } // namespace Pekan

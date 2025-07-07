@@ -14,14 +14,12 @@ namespace Pekan
 namespace Renderer
 {
 
-	// Register Renderer2D as a subsystem in Pekan's SubsystemManager,
-	// so that it's automatically initialized and exited.
-	static Renderer2D g_Renderer2D;
-	static bool s_registered = []()
+	static Renderer2D g_renderer2D;
+	
+	void Renderer2D::registerSubsystem()
 	{
-		SubsystemManager::registerSubsystem(&g_Renderer2D);
-		return true;
-	}();
+		SubsystemManager::registerSubsystem(&g_renderer2D);
+	}
 
 	RenderObject Renderer2D::s_batch;
 	Renderer2D::CameraWeakPtr Renderer2D::s_camera;

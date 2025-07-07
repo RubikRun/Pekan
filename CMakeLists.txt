@@ -118,11 +118,8 @@ SOURCE_GROUP("Source Files\\Time" FILES src/Core/Time/FpsLimiter.cpp src/Core/Ti
 SOURCE_GROUP("Header Files\\Time" FILES src/Core/Time/FpsLimiter.h src/Core/Time/DeltaTimer.h)
 
 # Set link libraries for Core
-target_link_libraries(Core PRIVATE
-    imgui
-    glfw
-)
-target_link_libraries(Core PUBLIC glm)
+target_link_libraries(Core PRIVATE glfw)
+target_link_libraries(Core PUBLIC glm imgui)
 
 # Set include directories for Core
 target_include_directories(Core PUBLIC src/Core src/Core/Logger)

@@ -6,18 +6,25 @@
 #include "Events/EventListener.h"
 #include "LayerStack.h"
 #include "Time/DeltaTimer.h"
+#include "Window.h"
 
 #include <string>
 #include <memory>
 
 namespace Pekan
 {
-	class Window;
 	class Layer;
+
+	// An application's properties, grouped together in a struct
+	struct ApplicationProperties
+	{
+		WindowProperties windowProperties;
+	};
 
 	// A base class for all Pekan applications
 	class PekanApplication
 	{
+		friend class PekanEngine;
 		friend class Window;
 		friend class Layer;
 
@@ -48,6 +55,10 @@ namespace Pekan
 		// 
 		// To be implemented by derived classes to fill layer stack with application's layers.
 		virtual bool _init(LayerStack& layerStack) = 0;
+
+		// Can be overriden by derived classes to return specific application properties.
+		// If not overriden, default application properties will be used.
+		virtual ApplicationProperties getProperties() const { return {}; }
 
 		// Stops running the main loop and closes the window
 		void stopRunning();

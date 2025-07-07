@@ -15,14 +15,12 @@ namespace Graphics
 	static void enableOpenGLDebugOutput();
 #endif
 
-	// Register Graphics as a subsystem in Pekan's SubsystemManager,
-	// so that it's automatically initialized and exited.
 	static Graphics g_graphics;
-	static bool s_registered = []()
+
+	void Graphics::registerSubsystem()
 	{
 		SubsystemManager::registerSubsystem(&g_graphics);
-		return true;
-	}();
+	}
 
 	Graphics* Graphics::getInstance()
 	{

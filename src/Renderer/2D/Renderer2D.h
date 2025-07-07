@@ -9,6 +9,9 @@ namespace Pekan
 namespace Renderer
 {
 
+// Use this macro in your application's main function to include the Renderer2D subsystem of Pekan
+#define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer::Renderer2D::registerSubsystem()
+
     class Renderer2D : public ISubsystem
     {
         using CameraSharedPtr = std::shared_ptr<Renderer::Camera2D>;
@@ -17,6 +20,10 @@ namespace Renderer
         friend class Shape;
 
     public:
+
+        // Registers Renderer2D as a subsystem in Pekan's SubsystemManager,
+        // so that it's automatically initialized and exited.
+        static void registerSubsystem();
 
         static void beginFrame();
         static void endFrame();
