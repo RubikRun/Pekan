@@ -15,8 +15,8 @@ namespace Demo
 	bool Demo01_Application::_init(LayerStack& layerStack)
 	{
 		// Create demo scene and demo GUI window
-		Demo01_Scene* demoScene = new Demo01_Scene(this);
-		Demo01_GUIWindow* demoGuiWindow = new Demo01_GUIWindow(this);
+		std::shared_ptr<Demo01_Scene> demoScene = std::make_shared<Demo01_Scene>(this);
+		std::shared_ptr<Demo01_GUIWindow> demoGuiWindow = std::make_shared<Demo01_GUIWindow>(this);
 		// Attach demo scene to demo GUI window and attach demo GUI window to demo scene
 		demoGuiWindow->attachScene(demoScene);
 		demoScene->attachGUIWindow(demoGuiWindow);

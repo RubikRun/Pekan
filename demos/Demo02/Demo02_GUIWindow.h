@@ -15,7 +15,7 @@ namespace Demo
 
 		Demo02_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
 
-		inline void attachScene(Demo02_Scene* scene) { m_scene = scene; }
+		inline void attachScene(std::shared_ptr<Demo02_Scene>& scene) { m_scene = scene; }
 
 	private: /* functions */
 
@@ -25,7 +25,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Demo02_Scene* m_scene = nullptr;
+		std::shared_ptr<Demo02_Scene> m_scene;
 
 		glm::ivec2 m_resolution;
 	};

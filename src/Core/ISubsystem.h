@@ -12,9 +12,11 @@ namespace Pekan
 		friend class SubsystemManager;
 
 	public:
+
 		virtual ~ISubsystem() = default;
 
 	private:
+
 		virtual void init() = 0;
 		virtual void exit() = 0;
 

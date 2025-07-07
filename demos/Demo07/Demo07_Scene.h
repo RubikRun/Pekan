@@ -32,7 +32,7 @@ namespace Demo
 
 		void exit() override;
 		
-		void attachGUIWindow(const Demo07_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<const Demo07_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -41,7 +41,7 @@ namespace Demo
 
 	private: /* variables */
 
-		const Demo07_GUIWindow* m_guiWindow = nullptr;
+		std::shared_ptr<const Demo07_GUIWindow> m_guiWindow;
 
 		CameraPtr m_camera;
 		std::vector<Pekan::Renderer::LineShape> m_coordSys;

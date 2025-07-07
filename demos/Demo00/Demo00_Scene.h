@@ -23,14 +23,14 @@ namespace Demo
 		void exit() override;
 		
 		// Attaches a GUI window for controlling background's color
-		void attachGUIWindow(const Demo00_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<const Demo00_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* variables */
 
 		Pekan::Renderer::RenderObject m_renderObject;
 
 		// GUI window for controlling background's color
-		const Demo00_GUIWindow* m_guiWindow = nullptr;
+		std::shared_ptr<const Demo00_GUIWindow> m_guiWindow;
 	};
 
 } // namespace Demo

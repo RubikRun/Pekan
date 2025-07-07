@@ -27,7 +27,7 @@ namespace Demo
 		void exit() override;
 		
 		// Attaches a GUI window for controlling background's color
-		void attachGUIWindow(const Demo05_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<const Demo05_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -40,7 +40,7 @@ namespace Demo
 		Pekan::Renderer::LineShape m_lineShapes[MTT1_SUBDIVS];
 
 		// GUI window for controlling background's color
-		const Demo05_GUIWindow* m_guiWindow = nullptr;
+		std::shared_ptr<const Demo05_GUIWindow> m_guiWindow;
 
 		// Multiplication factor of the 2 Mandelbrot Times Tables
 		float m_mtt0factor = 2.0f;

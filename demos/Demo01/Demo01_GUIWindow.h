@@ -16,7 +16,7 @@ namespace Demo
 
 		Demo01_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
 
-		inline void attachScene(Demo01_Scene* scene) { m_scene = scene; }
+		inline void attachScene(const std::shared_ptr<Demo01_Scene>& scene) { m_scene = scene; }
 
 		inline bool getMoveThirdSquare() const { return m_moveThirdSquare; }
 
@@ -28,9 +28,9 @@ namespace Demo
 
 	private: /* variables */
 
-		Demo01_Scene* m_scene = nullptr;
+		std::shared_ptr<Demo01_Scene> m_scene;
 
-		glm::ivec2 m_resolution;
+		glm::ivec2 m_resolution = glm::ivec2(0, 0);
 
 		bool m_moveThirdSquare = false;
 	};

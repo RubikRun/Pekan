@@ -39,13 +39,13 @@ namespace Demo
 		inline std::vector<Rectangle>& getSquares() { return m_squares; }
 
 		// Attaches a GUI window for controlling background's color
-		void attachGUIWindow(const Demo01_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<const Demo01_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* variables */
 
 		Pekan::Renderer::RenderObject m_renderObject;
 
-		const Demo01_GUIWindow* m_guiWindow = nullptr;
+		std::shared_ptr<const Demo01_GUIWindow> m_guiWindow;
 
 		// List holding currently existing squares
 		std::vector<Rectangle> m_squares;

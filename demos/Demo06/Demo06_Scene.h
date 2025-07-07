@@ -43,7 +43,7 @@ namespace Demo
 
 		void exit() override;
 		
-		void attachGUIWindow(const Demo06_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<const Demo06_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -90,7 +90,7 @@ namespace Demo
 
 		int m_perShapeTypeCount = -1;
 
-		const Demo06_GUIWindow* m_guiWindow = nullptr;
+		std::shared_ptr<const Demo06_GUIWindow> m_guiWindow;
 
 		float t = 0.0f;
 	};

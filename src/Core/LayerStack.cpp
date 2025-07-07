@@ -3,22 +3,12 @@
 namespace Pekan
 {
 
-	LayerStack::LayerStack() {}
-
-	LayerStack::~LayerStack()
-	{
-		for (Layer* layer : m_layers)
-		{
-			delete layer;
-		}
-	}
-
-	void LayerStack::pushLayer(Layer* layer)
+	void LayerStack::pushLayer(const LayerPtr& layer)
 	{
 		m_layers.push_back(layer);
 	}
 
-	void LayerStack::popLayer(Layer* layer)
+	void LayerStack::popLayer(const LayerPtr& layer)
 	{
 		auto it = std::find(m_layers.begin(), m_layers.end(), layer);
 		if (it != m_layers.end())

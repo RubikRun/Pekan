@@ -29,7 +29,7 @@ namespace Demo
 		void exit() override;
 		
 		// Attaches a GUI window for controlling background's color
-		void attachGUIWindow(const Demo04_GUIWindow* guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<const Demo04_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -64,7 +64,7 @@ namespace Demo
 		Pekan::Graphics::Image m_image0;
 		Pekan::Graphics::Image m_image1;
 
-		const Demo04_GUIWindow* m_guiWindow = nullptr;
+		std::shared_ptr<const Demo04_GUIWindow> m_guiWindow;
 
 		bool m_enabledFaceCulling = false;
 

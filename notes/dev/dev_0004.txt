@@ -3313,5 +3313,30 @@ So, TL;DR client code will have to do something like that in their main function
     }
 Of course, did the same thing for Renderer2D. They have to have matching interfaces.
 Okaaaay, it works now. The bug is fixed.
+}
 
+----------
+07.07.2025
+----------
+
+{
+Started to just look around in code to make sure everything looks good, especially in Core.
+Found a small thing that annoys me in
+    LayerStack
+Why do we use raw pointers there?
+    std::vector<Layer*> m_layers;
+Looked at old notes from when I was implementing this, and there is no mention of the raw pointers.
+We want LayerStack to own the layers but we also don't want to necessarily delete the layers when deleting the layer stack.
+They might be used somewhere else for debugging or whatever.
+Simply, use shared_ptr instead.
+    typedef std::shared_ptr<Layer> LayerPtr;
+    ...
+    std::vector<LayerPtr> m_layers;
+Then we don't need the destructor at all, and everything is simpler and safer.
+(Performance would not be an issue, because layers will always be just a few. At most 100 in a very extreme situation. A 100 is still nothing for performance)
+
+Of course, in order for this to work, we must change all places that use the layer stack
+to use shared pointers.
+Done.
+Everything works as before.
 }

@@ -26,9 +26,9 @@ namespace Pekan
         }
 
         // Initalize all layers
-        for (Layer* layer : m_layerStack)
+        for (LayerPtr& layer : m_layerStack)
         {
-            if (layer)
+            if (layer != nullptr)
             {
                 if (!layer->init())
                 {
@@ -73,17 +73,17 @@ namespace Pekan
             const double deltaTime = m_deltaTimer.getDeltaTime();
 
             // Update all layers
-            for (Layer* layer : m_layerStack)
+            for (LayerPtr layer : m_layerStack)
             {
-                if (layer)
+                if (layer != nullptr)
                 {
                     layer->update(deltaTime);
                 }
             }
             // Render all layers
-            for (Layer* layer : m_layerStack)
+            for (LayerPtr layer : m_layerStack)
             {
-                if (layer)
+                if (layer != nullptr)
                 {
                     layer->render();
                 }
@@ -104,9 +104,9 @@ namespace Pekan
     void PekanApplication::exit()
     {
         // Exit all layers
-        for (Layer* layer : m_layerStack)
+        for (LayerPtr layer : m_layerStack)
         {
-            if (layer)
+            if (layer != nullptr)
             {
                 layer->exit();
             }
@@ -167,7 +167,7 @@ namespace Pekan
         // Call the onEventFunc on all layers of the layer stack
         for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
         {
-            EventListener* layer = static_cast<EventListener*>(*it);
+            EventListener* layer = static_cast<EventListener*>((*it).get());
             if (layer && (layer->*onEventFunc)(*event.get()))
             {
                 return;

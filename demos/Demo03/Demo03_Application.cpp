@@ -14,7 +14,7 @@ namespace Demo
 	bool Demo03_Application::_init(LayerStack& layerStack)
 	{
 		// Create demo scene
-		Demo03_Scene* demoScene = new Demo03_Scene(this);
+		std::shared_ptr<Demo03_Scene> demoScene = std::make_shared<Demo03_Scene>(this);
 		// Add scene to application's layers
 		layerStack.pushLayer(demoScene);
 

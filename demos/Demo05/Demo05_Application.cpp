@@ -17,8 +17,8 @@ namespace Demo
 		setFPS(60.0);
 
 		// Create demo scene and demo GUI window
-		Demo05_Scene* demoScene = new Demo05_Scene(this);
-		Demo05_GUIWindow* demoGuiWindow = new Demo05_GUIWindow(this);
+		std::shared_ptr<Demo05_Scene> demoScene = std::make_shared<Demo05_Scene>(this);
+		std::shared_ptr<Demo05_GUIWindow> demoGuiWindow = std::make_shared<Demo05_GUIWindow>(this);
 		// Attach demo GUI window to demo scene
 		demoScene->attachGUIWindow(demoGuiWindow);
 
