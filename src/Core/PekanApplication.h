@@ -18,9 +18,14 @@ namespace Pekan
 		// Properties of the window where application will run
 		WindowProperties windowProperties;
 
-		// Target frames per second.
-		// Value of 0.0 means use FPS equal to monitor's refresh rate (VSync)
+		// Target FPS (frames per second)
 		double fps = 0.0;
+
+		// Flag indicating if application should use VSync,
+		// meaning to target FPS equal to monitor's refresh rate.
+		//
+		// NOTE: Only used if there is no target FPS set (see "fps" property)
+		bool useVSync = true;
 	};
 
 	// A base class for all Pekan applications
@@ -79,6 +84,7 @@ namespace Pekan
 		void handleWindowClosedEvent();
 
 		// Handles the event queue.
+		// The event queue is a queue of left-over events that were not handled by any layer or any event listener.
 		//
 		// Can be implemented by derived classes with specific logic of handling the events from the event queue.
 		// NOTE: Make sure to pop all events from the queue, otherwise they will keep piling up.
@@ -89,7 +95,7 @@ namespace Pekan
 		// Stack of layers making up the application
 		LayerStack m_layerStack;
 
-		// Event queue where events are pushed if they are not handled by any layer
+		// Event queue where events are pushed if they are not handled by any layer or any event listener.
 		EventQueue m_eventQueue;
 
 		// List of registered event listeners that need to be notified when an event occurs

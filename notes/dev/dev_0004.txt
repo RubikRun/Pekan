@@ -3406,3 +3406,45 @@ They only need to implement _fillLayerStack() and they already do, they just cal
 so we just have to rename _init() to _fillLayerStack() in all demos.
 That's it. It works. Looks better.
 }
+
+----------
+08.07.2025
+----------
+
+{
+Looking around again today.
+I see a small thing about FPS.
+It's not very nice that we use FPS of 0 to indicate "use VSync",
+instead of having a useVSync member in ApplicationProperties.
+So let's do that.
+Add "useVSync" member to ApplicationProperties
+    struct ApplicationProperties
+    {
+        WindowProperties windowProperties;
+        double fps = 0.0;
+        bool useVSync = true;
+    };
+Then in PekanApplication's run() function we'll enable VSync only if there is no target FPS and useVSync is true
+    if (fps <= 0.0 && useVSync)
+    {
+        PekanEngine::getWindow().enableVSync();
+    }
+and we'll manually wait using FpsLimiter only if there is a target FPS
+    if (fps > 0.0)
+    {
+        fpsLimiter.wait();
+    }
+Notice, this leaves the possibility of having fps = 0.0 and useVSync = false,
+in which case we'll just not limit FPS at all, we'll have maximum FPS, possibly more than monitor's refresh rate.
+Okay, looking better now. Works the same as before.
+
+Changed some other minor things as well. For example removed the "friendship" between Window and PekanEngine.
+It was needed only so that PekanEngine can access Window's underlying GLFW window in order to initialize ImGui.
+Soon we'll move ImGui to its own subsystem so it will be initialized there.
+We can just have a getter for the GLFW window
+    inline GLFWwindow* getGlfwWindow() { return m_glfwWindow; }
+That's fine. Works the same, of course.
+
+With that, Core is cleaned up.
+Everything looks perfect. Nothing more to do.
+}

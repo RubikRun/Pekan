@@ -172,44 +172,50 @@ namespace Pekan
 
     void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        if (PekanEngine::s_application)
+        PekanApplication* application = PekanEngine::getApplication();
+        if (application != nullptr)
         {
-            PekanEngine::s_application->handleKeyEvent(KeyCode(key), scancode, action, mods);
+            application->handleKeyEvent(KeyCode(key), scancode, action, mods);
         }
     }
     void Window::mouseMovedCallback(GLFWwindow* window, double xPos, double yPos)
     {
-        if (PekanEngine::s_application)
+        PekanApplication* application = PekanEngine::getApplication();
+        if (application != nullptr)
         {
-            PekanEngine::s_application->handleMouseMovedEvent(xPos, yPos);
+            application->handleMouseMovedEvent(xPos, yPos);
         }
     }
     void Window::mouseScrolledCallback(GLFWwindow* window, double xOffset, double yOffset)
     {
-        if (PekanEngine::s_application)
+        PekanApplication* application = PekanEngine::getApplication();
+        if (application != nullptr)
         {
-            PekanEngine::s_application->handleMouseScrolledEvent(xOffset, yOffset);
+            application->handleMouseScrolledEvent(xOffset, yOffset);
         }
     }
     void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
-        if (PekanEngine::s_application)
+        PekanApplication* application = PekanEngine::getApplication();
+        if (application != nullptr)
         {
-            PekanEngine::s_application->handleMouseButtonEvent(MouseButton(button), action, mods);
+            application->handleMouseButtonEvent(MouseButton(button), action, mods);
         }
     }
     void Window::windowResizedCallback(GLFWwindow* window, int width, int height)
     {
-        if (PekanEngine::s_application)
+        PekanApplication* application = PekanEngine::getApplication();
+        if (application != nullptr)
         {
-            PekanEngine::s_application->handleWindowResizedEvent(width, height);
+            application->handleWindowResizedEvent(width, height);
         }
     }
     void Window::windowClosedCallback(GLFWwindow* window)
     {
-        if (PekanEngine::s_application)
+        PekanApplication* application = PekanEngine::getApplication();
+        if (application != nullptr)
         {
-            PekanEngine::s_application->handleWindowClosedEvent();
+            application->handleWindowClosedEvent();
         }
     }
 

@@ -20,10 +20,12 @@ namespace Pekan
             return false;
         }
 
+        // Initialize derived application
         if (!_init())
         {
             return false;
         }
+        // Fill layer stack with derived application's layers
         if (!_fillLayerStack(m_layerStack))
         {
             return false;
@@ -39,11 +41,11 @@ namespace Pekan
                     PK_LOG_ERROR("Failed to initialize layer \"" << layer->getName() << "\"", "Pekan");
                 }
             }
-            // A null layer is not really a problem, but it's also not supposed to happen at all,
-            // so we can just log a warning.
             else
             {
-                PK_LOG_WARNING("Null layer found when initializing application.", "Pekan");
+                // A null layer is not really a problem, but it's also not supposed to happen at all,
+                // so we can just log a warning.
+                PK_LOG_WARNING("A null layer found when initializing application.", "Pekan");
             }
         }
 
@@ -52,12 +54,12 @@ namespace Pekan
 
     void PekanApplication::run()
 	{
-        const double fps = getProperties().fps;
+        const ApplicationProperties properties = getProperties();
+        const double fps = properties.fps;
+        const bool useVSync = properties.useVSync;
 
-        // If this application doesn't have a specific FPS requirement,
-        // then use VSync to automatically match FPS with monitor's refresh rate
-        const bool useVSync = (fps <= 0.0);
-        if (useVSync)
+        // If there is no target FPS and user wants to use VSync, then enable VSync
+        if (fps <= 0.0 && useVSync)
         {
             PekanEngine::getWindow().enableVSync();
         }
@@ -68,7 +70,7 @@ namespace Pekan
         {
             // Process all pending events, calling the handler function of each one.
             glfwPollEvents();
-            // Process all reamining events - those that were not handled by their handler function,
+            // Process all remaining events - those that were not handled by their handler function,
             // and instead were added to the event queue.
             handleEventQueue();
 
@@ -76,6 +78,7 @@ namespace Pekan
             const glm::ivec2 frameBufferSize = window.getFrameBufferSize();
             glViewport(0, 0, frameBufferSize.x, frameBufferSize.y);
 
+            // Get delta time - time passed since last frame
             const double deltaTime = m_deltaTimer.getDeltaTime();
 
             // Update all layers
@@ -97,10 +100,10 @@ namespace Pekan
 
             // Swap buffers to show the new frame on screen.
             // If we are using VSync this function will automatically wait
-            // the correct amount of time before the next screen update
+            // the correct amount of time before the next screen update.
             window.swapBuffers();
-            // If we are NOT using VSync then we need to manually wait some amount of time to reach our target FPS
-            if (!useVSync)
+            // If there is a target FPS, then we need to manually wait some amount of time
+            if (fps > 0.0)
             {
                 fpsLimiter.wait();
             }
@@ -151,13 +154,15 @@ namespace Pekan
 
     void PekanApplication::stopRunning()
     {
+        // Set window's "should be closed" state to true,
+        // so that the main loop is stopped on the next iteration.
         PekanEngine::getWindow().setShouldBeClosed(true);
     }
 
     // Sends an event of a given type to layers of the layer stack,
     // one by one, until a layer successfully handles the event.
     // If no layer successfully handles the event, then the event is sent to all registered event listeners.
-    // If event is still not handled, it will be pushed to the event queue
+    // If event is still not handled, it will be pushed to the event queue.
     //
     // WARNING: Leaves the original event object in an invalid state. Make sure you DON'T use it after calling this function.
     template<typename EventT>
@@ -174,7 +179,7 @@ namespace Pekan
         for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
         {
             EventListener* layer = static_cast<EventListener*>((*it).get());
-            if (layer && (layer->*onEventFunc)(*event.get()))
+            if (layer != nullptr && (layer->*onEventFunc)(*event.get()))
             {
                 return;
             }

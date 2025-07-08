@@ -8,8 +8,6 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include <GLFW/glfw3.h>
-
 #define PK_GLSL_VERSION "#version 330 core"
 
 namespace Pekan
@@ -21,6 +19,11 @@ namespace Pekan
 
     bool PekanEngine::init(PekanApplication* application)
     {
+        if (isInitialized)
+        {
+            PK_LOG_ERROR("Trying to initialize the engine more than once.", "Pekan");
+            return false;
+        }
         if (s_application != nullptr)
         {
             PK_LOG_ERROR("Multiple applications are trying to initialize the engine. Pekan supports only one application at a time.", "Pekan");
@@ -121,7 +124,7 @@ namespace Pekan
         }
 
         // Setup Platform/Renderer backends
-        ImGui_ImplGlfw_InitForOpenGL(s_window.m_glfwWindow, true);
+        ImGui_ImplGlfw_InitForOpenGL(s_window.getGlfwWindow(), true);
         ImGui_ImplOpenGL3_Init(PK_GLSL_VERSION);
 
         // Scale up widgets and font by a factor of 2

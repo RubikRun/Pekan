@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Window.h"
-#include "Events/KeyEvents_Enums.h"
-#include "Events/MouseEvents_Enums.h"
 
 #include <glm/glm.hpp>
 
@@ -12,26 +10,29 @@ namespace Pekan
 	class PekanApplication;
 
 	// Pekan Engine itself.
-	// This is a singleton/static class responsible for initializing and exiting the engine,
-	// managing the lifetime of a graphics window, and handling all external libraries.
+	// This is a singleton/static class responsible for initializing and exiting the engine.
+	// It is the central point of Pekan:
+	// - Manages all subsystems making up Pekan
+	// - Keeps track of current application
+	// - Manages the window where application is running
+	// - Sends events from window to application
 	class PekanEngine
 	{
-		friend class Window;
 
 	public:
 
-		// Initializes the engine
+		// Initializes the engine.
 		// To be called once, at the beginning, before using the engine.
 		static bool init(PekanApplication* application);
 
-		// Exits the engine
-		// To be called once, at the end, after finished using the engine.
+		// Exits the engine.
+		// To be called once, at the end, after having finished using the engine.
 		static void exit();
 
-		// Returns a reference to the window where the current application is running
+		// Returns (a reference to) the window where current application is running
 		inline static Window& getWindow() { return s_window; }
 
-		// Returns a pointer to the current application
+		// Returns (a pointer to) current application
 		inline static PekanApplication* getApplication() { return s_application; }
 
 		///////////////////
@@ -39,7 +40,7 @@ namespace Pekan
 		///////////////////
 
 		// Checks if a given key from the keyboard is currently pressed or released,
-		// or repeating which means that it had been pressed and held down for a bit, like half a second.
+		// or repeating which means that it had been pressed and held down for a bit (like half a second).
 		static bool isKeyPressed(KeyCode key);
 		static bool isKeyReleased(KeyCode key);
 		static bool isKeyRepeating(KeyCode key);
@@ -60,7 +61,7 @@ namespace Pekan
 
 	private: /* variables */
 
-		// Window for rendering graphics
+		// Window where current application is running
 		static Window s_window;
 
 		// Application currently using Pekan
