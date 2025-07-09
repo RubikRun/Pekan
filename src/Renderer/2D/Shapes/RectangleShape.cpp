@@ -10,12 +10,12 @@ namespace Renderer
 
     const unsigned RectangleShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
 
-    void RectangleShape::create(float width, float height)
+    void RectangleShape::create(float width, float height, bool dynamic)
     {
         PK_ASSERT(width > 0.0f, "RectangleShape's width must be greater than 0.", "Pekan");
         PK_ASSERT(height > 0.0f, "RectangleShape's height must be greater than 0.", "Pekan");
 
-        Shape::create();
+        Shape::create(dynamic);
 
         m_width = width;
         m_height = height;

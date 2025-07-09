@@ -21,7 +21,8 @@ namespace Renderer
 	public:
 
 		// Creates a circle shape with given radius.
-		void create(float radius);
+		// @param[in] dynamic - Indicates if circle will be changed/transformed often. Used for optimization.
+		void create(float radius, bool dynamic = true);
 		void destroy() { Shape::destroy(); }
 
 		void setRadius(float radius);

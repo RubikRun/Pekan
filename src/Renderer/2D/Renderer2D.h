@@ -46,16 +46,21 @@ namespace Renderer
 
     private:
 
-        static RenderObject s_batch;
+        static RenderObject s_batchDynamic;
+        static RenderObject s_batchStatic;
 
-        static std::vector<ShapeVertex> s_vertices;
-        static std::vector<unsigned> s_indices;
+        static std::vector<ShapeVertex> s_verticesDynamic;
+        static std::vector<ShapeVertex> s_verticesStatic;
+        static std::vector<unsigned> s_indicesDynamic;
+        static std::vector<unsigned> s_indicesStatic;
+
 
         // A pointer to the camera used for rendering.
         // NOTE: It's a weak pointer so the camera is NOT owned by Renderer2D.
         //       If the camera is destroyed at some point, Renderer2D will safely stop using it.
         static CameraWeakPtr s_camera;
 
+        // A flag indicating if the Renderer2D subsystem is initialized
         bool m_isInitialized = false;
     };
 

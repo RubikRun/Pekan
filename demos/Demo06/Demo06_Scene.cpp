@@ -341,7 +341,7 @@ namespace Demo
 
 	void Demo06_Scene::createCenterSquare()
 	{
-		m_centerSquare.create(100.0f, 100.0f);
+		m_centerSquare.create(100.0f, 100.0f, false);
 		m_centerSquare.setPosition(m_bbox.center);
 		m_centerSquare.setColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 	}

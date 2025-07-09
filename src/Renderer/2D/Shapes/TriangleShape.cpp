@@ -19,9 +19,9 @@ namespace Renderer
     }
 #endif
 
-    void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC)
+    void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC, bool dynamic)
     {
-        Shape::create();
+        Shape::create(dynamic);
 
         m_verticesLocal[0] = vertexA;
         m_verticesLocal[1] = vertexB;

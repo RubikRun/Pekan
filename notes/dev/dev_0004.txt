@@ -3448,3 +3448,59 @@ That's fine. Works the same, of course.
 With that, Core is cleaned up.
 Everything looks perfect. Nothing more to do.
 }
+
+{
+Let's continue now with TO-DO items, starting with this one
+    Add "bool dynamic" parameter to create() functions of all shape types.
+    It should do the same as before. I just removed it for a bit while restructuring shape classes.
+
+This "dynamic" parameter of shapes was used to determine whether to use
+    BufferDataUsage::DynamicDraw
+or
+    BufferDataUsage::StaticDraw
+for the underlying vertex buffer and index buffer of a shape.
+Now that we do Batch Rendering this is no longer valid.
+Shapes no longer have "an underlying vertex buffer and index buffer".
+Instead Renderer2D manages a batch that has an underlying vertex buffer and index buffer,
+and it contains the vertices and indices of all shapes.
+So how can we have some of the shapes using DynamicDraw buffers and others using StaticDraw buffers?
+Well, we can have 2 separate batches - a DynamicDraw one and a StaticDraw one,
+and add DynamicDraw shapes to the DynamicDraw batch and StaticDraw shapes to the StaticDraw batch.
+So each shape only needs to know if it's DynamicDraw or StaticDraw and provide API for that to Renderer2D.
+Let's add this new member to class Shape
+    bool m_isDynamic = true;
+and add a "dynamic" parameter to Shape's create() function
+    void create(bool dynamic);
+Inside of it we'll just set
+    m_isDynamic = dynamic;
+of course.
+Then, inside of each specific shape type, like RectangleShape, we also need a "dynamic" parameter in the create() function
+    void create(float width, float height, bool dynamic = true);
+and we'll just call Shape::create() passing this "dynamic" parameter along
+    Shape::create(dynamic);
+Finally, in class Shape we need a getter for this "isValid" state of the shape
+    inline bool isDynamic() const { return m_isDynamic; }
+That's it from Shape's side.
+Then in Renderer2D's side, we need to have 2 separate batches
+    static RenderObject s_batchDynamic;
+    static RenderObject s_batchStatic;
+Together with that, we'll need 2 separate lists of vertices and 2 separate lists of indices
+    static std::vector<ShapeVertex> s_verticesDynamic;
+    static std::vector<ShapeVertex> s_verticesStatic;
+    static std::vector<unsigned> s_indicesDynamic;
+    static std::vector<unsigned> s_indicesStatic;
+Then in the implementation of Renderer2D's functions, everywhere we use s_batch or s_vertices or s_indices,
+we'll have to use both the dynamic and static version.
+Interesting part is the render() function.
+There we need to check if the given shape is dynamic or static,
+and based on that add it to the dynamic batch or the static batch
+    if (shape.isDynamic())
+    ...
+    else
+    ...
+That's it.
+
+Tested it by making some of the shapes in Demo06 and Demo07 static and others dynamic.
+It always works.
+
+}

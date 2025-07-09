@@ -47,9 +47,15 @@ namespace Renderer
 		// Can be overriden by derived classes to return the number of their indices, if indices are used at all.
 		virtual int getIndicesCount() const { return 0; }
 
+		// Checks if shape is dynamic,
+		// meaning it will be changed/transformed often,
+		// and it's better to use dynamic buffers for its vertices and indices.
+		inline bool isDynamic() const { return m_isDynamic; }
+
 	protected: /* functions */
 
-		void create();
+		// @param[in] dynamic - Indicates if shape will be changed/transformed often. Used for optimization.
+		void create(bool dynamic);
 		void destroy();
 
 		// Checks if shape is valid, meaning that it has been created and not yet destroyed
@@ -77,6 +83,11 @@ namespace Renderer
 
 		// Flag indicating if shape is valid, meaning that it has been created and not yet destroyed
 		bool m_isValid = false;
+
+		// Flag indicating if dynamic buffers should be used for shape's vertices and indices.
+		// Set to true if shape's vertices/indices are going to be changed often.
+		// Used for optimization.
+		bool m_isDynamic = true;
 
 		// A 2D transform matrix, containing position, rotation and scale,
 		// used to transform vertices from local space to world space

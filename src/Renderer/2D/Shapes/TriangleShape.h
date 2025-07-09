@@ -15,7 +15,8 @@ namespace Renderer
 	public:
 
 		// Creates a triangle shape from given positions of 3 vertices.
-		void create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC);
+		// @param[in] dynamic - Indicates if triangle will be changed/transformed often. Used for optimization.
+		void create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC, bool dynamic = true);
 		void destroy() { Shape::destroy(); }
 
 		// Sets vertex A/B/C of the triangle, in local space
