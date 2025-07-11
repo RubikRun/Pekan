@@ -3498,9 +3498,62 @@ and based on that add it to the dynamic batch or the static batch
     ...
     else
     ...
+Also, in the init() function we need to create s_batchDynamic with BufferDataUsage::DynamicDraw
+and s_batchStatic with BufferDataUsage::StaticDraw, of course.
 That's it.
 
 Tested it by making some of the shapes in Demo06 and Demo07 static and others dynamic.
 It always works.
 
+----------
+09.07.2025
+----------
+
+Now let's refactor this a little bit because it's getting annoying manually managing
+2 batches and 2 lists of vertices and 2 lists of indices.
+It'd be better to have a class ShapesBatch that
+manages a list of vertices and a list of indices
+and it does all these things internally.
+Then in Renderer2D we'll just have to manage 2 ShapesBatch'es and use their API.
+Okay, did it.
+Created a class
+    ShapesBatch
+in 2 new files in Renderer/2D/Shapes/
+    ShapesBatch.h
+    ShapesBatch.cpp
+It consists of a list of vertices and a list of indices
+    std::vector<ShapeVertex> m_vertices;
+    std::vector<unsigned> m_indices;
+and has an underlying render object
+    RenderObject m_renderObject;
+that is used for actually putting together the vertices and indices into a renderable thing.
+It has create() and destroy() functions, of course
+    void create(Graphics::BufferDataUsage bufferDataUsage);
+    void destroy();
+The create() function takes in a
+    BufferDataUsage
+because the caller needs to specify if they want a "dynamic" batch or a "static" batch (or some other type of batch).
+It's basically just the data usage of the underlying vertex buffer and index buffer.
+Then we have this function
+    void addShape(const Shape& shape);
+that can be used to add a shape to the batch, adding its vertices and indices to the vertices and indices lists.
+Then we have 2 overloads of a render() function
+    void render(const Camera2DPtr& camera);
+    void render();
+used to render all shapes of the batch - all triangles making up all shapes, at once, with a single draw call.
+Finally, we have a function
+    void clear();
+used to clear the batch - removing all added shapes, removing their vertices and indices from the lists.
+That's it.
+
+Now in Renderer2D, instead of having 2 raw RenderObjects, 2 lists of vertices and 2 lists of indices,
+we can just have 2 ShapesBatch'es
+    static ShapesBatch s_batchDynamic;
+    static ShapesBatch s_batchStatic;
+The implementation of Renderer2D's functions becomes much simpler.
+
+It works!
+Same as before, but code is much nicer.
+
+Considering the TO-DO item done.
 }

@@ -27,6 +27,8 @@ add_library(Renderer STATIC
     2D/Shapes/PolygonShape.cpp
     2D/Shapes/LineShape.h
     2D/Shapes/LineShape.cpp
+    2D/Shapes/ShapesBatch.h
+    2D/Shapes/ShapesBatch.cpp
 )
 
 # Group 2D files under a virtual folder called "2D"
@@ -48,6 +50,7 @@ SOURCE_GROUP("Source Files\\2D\\Shapes" FILES
     2D/Shapes/LineShape.cpp
     2D/Shapes/CircleShape.cpp
     2D/Shapes/PolygonShape.cpp
+    2D/Shapes/ShapesBatch.cpp
 )
 SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
     2D/Shapes/Shape.h
@@ -58,6 +61,7 @@ SOURCE_GROUP("Header Files\\2D\\Shapes" FILES
     2D/Shapes/CircleShapeStatic.h
     2D/Shapes/CircleShapeStatic_impl.h
     2D/Shapes/PolygonShape.h
+    2D/Shapes/ShapesBatch.h
 )
 
 # Set include directories for Renderer

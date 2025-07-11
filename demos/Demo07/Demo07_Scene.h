@@ -18,7 +18,6 @@ namespace Demo
 
 	class Demo07_Scene : public Pekan::Layer
 	{
-		using CameraPtr = std::shared_ptr<Pekan::Renderer::Camera2D>;
 
 	public:
 
@@ -43,7 +42,7 @@ namespace Demo
 
 		std::shared_ptr<const Demo07_GUIWindow> m_guiWindow;
 
-		CameraPtr m_camera;
+		Pekan::Renderer::Camera2DPtr m_camera;
 		std::vector<Pekan::Renderer::LineShape> m_coordSys;
 
 		Pekan::Renderer::RectangleShape m_rectangle;

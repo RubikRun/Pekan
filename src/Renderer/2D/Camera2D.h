@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <memory>
 
 namespace Pekan
 {
@@ -49,6 +50,9 @@ namespace Renderer
         glm::mat4 m_projectionMatrix = glm::mat4(1.0f);
         glm::mat4 m_viewProjectionMatrix = glm::mat4(1.0f);
     };
+
+    typedef std::shared_ptr<Renderer::Camera2D> Camera2DPtr;
+    typedef std::weak_ptr<Renderer::Camera2D> Camera2DWeakPtr;
 
 } // namespace Renderer
 } // namespace Pekan
