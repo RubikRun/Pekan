@@ -214,6 +214,16 @@ namespace Graphics
 		return maxTextureSlots;
 	}
 
+	int RenderState::getMaxTextureSize()
+	{
+		static int maxTextureSize = -1;
+		if (maxTextureSize == -1)
+		{
+			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+		}
+		return maxTextureSize;
+	}
+
 	unsigned RenderState::getTextureMinifyFunctionOpenGLEnum(TextureMinifyFunction function)
 	{
 		switch (function)

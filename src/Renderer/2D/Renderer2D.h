@@ -26,7 +26,7 @@ namespace Renderer
         static void endFrame();
 
         // Sets a camera to be used for rendering
-        static inline void setCamera(const Camera2DPtr& camera) { s_camera = camera; }
+        static inline void setCamera(const Camera2D_ConstPtr& camera) { s_camera = camera; }
 
     private: /* functions */
 
@@ -41,6 +41,9 @@ namespace Renderer
         // Actual rendering will happen when you call endFrame().
         static void render(const Shape& shape);
 
+        // Renders all shapes from a given batch with current camera
+        static void renderBatch(ShapesBatch& batch);
+
     private:
 
         // A batch of dynamic (often moved/transformed) shapes
@@ -51,7 +54,7 @@ namespace Renderer
         // A pointer to the camera used for rendering.
         // NOTE: It's a weak pointer so the camera is NOT owned by Renderer2D.
         //       If the camera is destroyed at some point, Renderer2D will safely stop using it.
-        static Camera2DWeakPtr s_camera;
+        static Camera2D_ConstWeakPtr s_camera;
 
         // A flag indicating if the Renderer2D subsystem is initialized
         bool m_isInitialized = false;

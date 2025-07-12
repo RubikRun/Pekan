@@ -17,7 +17,7 @@ namespace Renderer
 		SubsystemManager::registerSubsystem(&g_renderer2D);
 	}
 
-	Camera2DWeakPtr Renderer2D::s_camera;
+	Camera2D_ConstWeakPtr Renderer2D::s_camera;
 	ShapesBatch Renderer2D::s_batchDynamic;
 	ShapesBatch Renderer2D::s_batchStatic;
 
@@ -29,18 +29,8 @@ namespace Renderer
 
 	void Renderer2D::endFrame()
 	{
-		Camera2DPtr camera = s_camera.lock();
-
-		if (camera != nullptr)
-		{
-			s_batchDynamic.render(camera);
-			s_batchStatic.render(camera);
-		}
-		else
-		{
-			s_batchDynamic.render();
-			s_batchStatic.render();
-		}
+		renderBatch(s_batchDynamic);
+		renderBatch(s_batchStatic);
 	}
 
 	void Renderer2D::init()
@@ -68,11 +58,37 @@ namespace Renderer
 	{
 		if (shape.isDynamic())
 		{
-			s_batchDynamic.addShape(shape);
+			// Add shape to dynamic batch.
+			// If batch is full, render it, and clear it, effectively starting a new one.
+			if (!s_batchDynamic.addShape(shape))
+			{
+				renderBatch(s_batchDynamic);
+				s_batchDynamic.clear();
+			}
 		}
 		else
 		{
-			s_batchStatic.addShape(shape);
+			// Add shape to static batch.
+			// If batch is full, render it, and clear it, effectively starting a new one.
+			if (!s_batchStatic.addShape(shape))
+			{
+				renderBatch(s_batchStatic);
+				s_batchStatic.clear();
+			}
+		}
+	}
+
+	void Renderer2D::renderBatch(ShapesBatch& batch)
+	{
+		Camera2D_ConstPtr camera = s_camera.lock();
+
+		if (camera != nullptr)
+		{
+			batch.render(camera);
+		}
+		else
+		{
+			batch.render();
 		}
 	}
 

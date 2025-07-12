@@ -11,7 +11,7 @@ namespace Graphics {
 	static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::Nearest;
 	static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Nearest;
 	static const TextureWrapMode DEFAULT_WRAP_MODE = TextureWrapMode::ClampToBorder;
-	static const glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(255, 0, 0, 255);
+	static const glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	Texture1D::~Texture1D()
 	{
@@ -42,8 +42,6 @@ namespace Graphics {
 
 	void Texture1D::setColors(const std::vector<glm::vec4>& colors)
 	{
-		PK_ASSERT_QUICK(!colors.empty());
-
 		bind();
 
 		// Set colors data to the texture object

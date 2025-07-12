@@ -24,11 +24,13 @@ namespace Renderer
 		void create(Graphics::BufferDataUsage bufferDataUsage);
 		void destroy();
 
-		// Adds a shape to the batch
-		void addShape(const Shape& shape);
+		// Adds a shape to the batch.
+		// @return true if we can continue adding shapes, not rendering yet.
+		//         false if we need to render the batch, and start a new one.
+		bool addShape(const Shape& shape);
 
 		// Renders all shapes from the batch
-		void render(const Camera2DPtr& camera);
+		void render(const Camera2D_ConstPtr& camera);
 		void render();
 
 		// Clears batch, removing all shapes, leaving it empty

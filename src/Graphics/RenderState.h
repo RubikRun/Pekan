@@ -147,6 +147,15 @@ namespace Graphics
 		// Returns the maximum number of texture slots supported on current hardware
 		static int getMaxTextureSlots();
 
+		// Returns the maximum supported size of a texture on current hardware.
+		//
+		// NOTE: This size is in texels, NOT bytes.
+		// It's the maximum number of texels per dimension.
+		// For example, if the maximum size is 1024,
+		// this means that a 1D texture can have at most 1024 texels,
+		// and a 2D texture can have at most 1024*1024 texels.
+		static int getMaxTextureSize();
+
 	private: /* functions */
 
 		// Returns the OpenGL base data type corresponding to the given shader data type.

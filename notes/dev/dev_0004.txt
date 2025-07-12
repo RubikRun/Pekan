@@ -3596,4 +3596,41 @@ Demo06 does NOT work if you have too many shapes (40000 doesn't work, 10000 does
 I found out it's because a 1D texture has some upper limit on how many texels it can have,
 and apparently 40000 is too many on my GPU.
 
+We can fix this and do this TO-DO item at the same time:
+    Think about using more than 1 batch for batch rendering.
+    Maybe having some reasonable limit of vertices/indices per batch,
+    and when we reach it we can draw the batch and start a new one.
+
+First of all, I'll create this function in RenderState
+for getting the max texture size supported on current hardware:
+    static int getMaxTextureSize();
+
+Then, of course, in Renderer2D and/or ShapesBatch we'll use this maximum.
+We'll not allow the number of colors in the 1D texture to exceed this maximum.
+It's even good to not be close to the maximum, let's keep it up to 80% or something like that.
+So whenever we reach 80% of the max texture size, we'll render the batch, and start a new one.
+
+In a similar fashion, it's good to have a maximum number of vertices and a maximum number of indices per batch,
+and whenever we exceed one of them, we'll render the batch, and start a new one.
+I changed ShapesBatch's function
+    bool addShape(const Shape& shape);
+to return bool, indicating if more shapes can be added after this one,
+or batch is full and needs to be rendered.
+The way it determined this is based on these 3 constants that I added
+    static const float MAX_TEXTURE_SIZE_FRACTION = 0.8f;
+    static constexpr size_t MAX_VERTICES_PER_BATCH = 10000;
+    static constexpr size_t MAX_INDICES_PER_BATCH = 15000;
+and, of course, the maximum texture size allowed - getMaxTextureSize().
+
+Then, in Renderer2D we'll look at addShape()'s return value,
+and if it's false, we'll render the batch there and then, clear it, and start a new one.
+Not too hard.
+Done.
+
+There were some minor bugs but I fixed them.
+
+It works!
+Demo06 is even faster now.
+
+Considering the 2 TO-DO items done now.
 }

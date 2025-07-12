@@ -42,7 +42,7 @@ namespace Demo
 
 		std::shared_ptr<const Demo07_GUIWindow> m_guiWindow;
 
-		Pekan::Renderer::Camera2DPtr m_camera;
+		Pekan::Renderer::Camera2D_Ptr m_camera;
 		std::vector<Pekan::Renderer::LineShape> m_coordSys;
 
 		Pekan::Renderer::RectangleShape m_rectangle;

@@ -32,7 +32,7 @@ namespace Demo
 
 	private: /* variables */
 
-		int m_numberOfShapes = 10000;
+		int m_numberOfShapes = 60000;
 
 		bool m_isEnabledRectangles = true;
 		bool m_isEnabledCircles = true;

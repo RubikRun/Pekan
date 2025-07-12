@@ -35,7 +35,7 @@ namespace Tools
                 return false;
             }
 
-            Camera2DPtr camera = m_camera.lock();
+            Camera2D_Ptr camera = m_camera.lock();
             // Check if camera still exists
             if (camera == nullptr)
             {
@@ -68,7 +68,7 @@ namespace Tools
                 return false;
             }
 
-            Camera2DPtr camera = m_camera.lock();
+            Camera2D_Ptr camera = m_camera.lock();
             // Check if camera still exists
             if (camera == nullptr)
             {
@@ -105,7 +105,7 @@ namespace Tools
         inline void setEnabled(bool enabled) { m_enabled = enabled; }
 
         // Sets a new camera to be controlled by the camera controller
-        inline void setCamera(const Camera2DPtr& camera) { m_camera = camera; }
+        inline void setCamera(const Camera2D_Ptr& camera) { m_camera = camera; }
 
         // Sets zoom speed for the 2D camera controller
         inline void setZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
@@ -115,7 +115,7 @@ namespace Tools
         // A pointer to the camera being controlled by the camera controller.
         // NOTE: It's a weak pointer so the camera is NOT owned by the camera controller.
         //       If the camera is destroyed at some point, the camera controller will safely stop operating on it.
-        Camera2DWeakPtr m_camera;
+        Camera2D_WeakPtr m_camera;
 
         glm::vec2 m_mousePos = glm::vec2(-1.0f, -1.0f);
 
@@ -140,7 +140,7 @@ namespace Tools
     /////////////////////////////////////////////////////////////////////////////////
 
 
-	void Tools::PekanTools::enableCameraController2D(const Camera2DPtr& camera)
+	void Tools::PekanTools::enableCameraController2D(const Camera2D_Ptr& camera)
 	{
         s_cameraController2D->setCamera(camera);
         s_cameraController2D->setEnabled(true);

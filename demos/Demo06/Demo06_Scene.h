@@ -80,8 +80,8 @@ namespace Demo
 		// A square in the center of the bounding box, just to make sure that coordinates are resolution-independent
 		Pekan::Renderer::RectangleShape m_centerSquare;
 
-		Pekan::Renderer::Camera2DPtr m_cameraFirst;
-		Pekan::Renderer::Camera2DPtr m_cameraSecond;
+		Pekan::Renderer::Camera2D_Ptr m_cameraFirst;
+		Pekan::Renderer::Camera2D_Ptr m_cameraSecond;
 
 		int m_currentCameraIdx = 0;
 

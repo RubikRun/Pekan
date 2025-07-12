@@ -99,10 +99,10 @@
 0039 25.06.2025 (DONE): Add "bool dynamic" parameter to create() functions of all shape types.
                         It should do the same as before. I just removed it for a bit while restructuring shape classes.
 
-0040 30.06.2025 (TODO): Use a 1D texture for batch rendering of 2D shapes to pass colors to shader,
+0040 30.06.2025 (DONE): Use a 1D texture for batch rendering of 2D shapes to pass colors to shader,
                         instead of having a color attribute on each vertex (wasteful for memory)
 
-0041 01.07.2025 (TODO): Think about using more than 1 batch for batch rendering.
+0041 01.07.2025 (DONE): Think about using more than 1 batch for batch rendering.
                         Maybe having some reasonable limit of vertices/indices per batch,
                         and when we reach it we can draw the batch and start a new one.
 
@@ -132,3 +132,14 @@
 0050 12.07.2025 (TODO): Is it a problem that RenderObject and ShapesBatch might use the same texture slots?
                         Probably not, because they do separate draw calls and have separate shaders.
                         Still, good to check.
+
+0051 12.07.2025 (TODO): Maybe rename the 2 shaders
+                            2D_BatchRendering_VertexShader.glsl
+                            SolidColor_BatchRendering_FragmentShader.glsl
+                        into something reflecting that they are specifically for shapes.
+                        Previously they were general-purpose - could be used for other objects as well,
+                        but now they are specific to batched shapes.
+                        If we use them for something else, it will probably be broken.
+                        Check if that's the case.
+                        If something is broken, we'll need to keep these 2 current shaders (but renamed)
+                        and bring back their older version as well.

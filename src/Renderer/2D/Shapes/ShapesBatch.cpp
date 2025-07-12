@@ -13,6 +13,15 @@ namespace Pekan
 namespace Renderer
 {
 
+	// Maximum allowed fraction of hardware's maximum texture size.
+	// For example, if this fraction is 80% and hardware's maximum texture size is 1024,
+	// then we'll allow up to 0.8 * 1024 texels.
+	static const float MAX_TEXTURE_SIZE_FRACTION = 0.8f;
+	// Maximum allowed number of vertices per batch.
+	static constexpr size_t MAX_VERTICES_PER_BATCH = 10000;
+	// Maximum allowed number of indices per batch.
+	static constexpr size_t MAX_INDICES_PER_BATCH = 15000;
+
 	void ShapesBatch::create(BufferDataUsage bufferDataUsage)
 	{
 		PK_ASSERT(!m_isValid, "Trying to create a ShapesBatch instance that is already created.", "Pekan");
@@ -37,6 +46,10 @@ namespace Renderer
 
 		// Create underlying texture object with empty data
 		m_texture.create();
+		// IMPORTANT: Set wrap mode to ClampToEdge, because for shader's calculations
+		//            we need 0.0 to mean the first color and 1.0 to mean the last color.
+		//            If we leave the default wrap mode (ClampToBorder) than 1.0 will be the border color instead.
+		m_texture.setWrapMode(TextureWrapMode::ClampToEdge);
 
 		m_shapesCount = 0;
 		m_isValid = true;
@@ -54,9 +67,13 @@ namespace Renderer
 		m_isValid = false;
 	}
 
-	void ShapesBatch::addShape(const Shape& shape)
+	bool ShapesBatch::addShape(const Shape& shape)
 	{
 		PK_ASSERT(m_isValid, "Trying to add a shape to a ShapesBatch that is not yet created.", "Pekan");
+
+		// A flag indicating if more shapes can be added after this one,
+		// or the batch needs to be rendered, and a new one started.
+		bool canAddMore = true;
 
 		const unsigned oldVerticesSize = unsigned(m_vertices.size());
 		const size_t oldIndicesSize = m_indices.size();
@@ -71,6 +88,11 @@ namespace Renderer
 		const int verticesCount = shape.getVerticesCount();
 		// Add shape's vertices to the batch
 		m_vertices.insert(m_vertices.end(), vertices, vertices + verticesCount);
+		// If we reach the maximum number of vertices, we can't add more shapes
+		if (m_vertices.size() >= MAX_VERTICES_PER_BATCH)
+		{
+			canAddMore = false;
+		}
 
 		// Get shape's indices
 		const unsigned* zeroBasedIndices = shape.getIndices();
@@ -87,16 +109,31 @@ namespace Renderer
 		{
 			m_indices[i] = zeroBasedIndices[i - oldIndicesSize] + oldVerticesSize;
 		}
+		// If we reach the maximum number of indices, we can't add more shapes
+		if (m_indices.size() >= MAX_INDICES_PER_BATCH)
+		{
+			canAddMore = false;
+		}
 
 		// Get shape's color
 		glm::vec4 color = shape.getColor();
 		// Add shape's color to the batch
 		m_colors.push_back(color);
 
+		// Max number of colors per batch that we'll allow on current hardware.
+		static size_t maxColors = size_t(float(RenderState::getMaxTextureSize()) * MAX_TEXTURE_SIZE_FRACTION);
+		// If we reach the maximum number of colors, we can't add more shapes
+		if (int(m_colors.size()) >= maxColors)
+		{
+			canAddMore = false;
+		}
+
 		m_shapesCount++;
+
+		return canAddMore;
 	}
 
-	void ShapesBatch::render(const Camera2DPtr& camera)
+	void ShapesBatch::render(const Camera2D_ConstPtr& camera)
 	{
 		PK_ASSERT(m_isValid, "Trying to render a ShapesBatch that is not yet created.", "Pekan");
 
