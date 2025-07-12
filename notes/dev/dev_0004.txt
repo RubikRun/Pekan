@@ -3557,3 +3557,43 @@ Same as before, but code is much nicer.
 
 Considering the TO-DO item done.
 }
+
+----------
+11.07.2025
+----------
+
+{
+Next TO-DO item
+    Use a 1D texture for batch rendering of 2D shapes to pass colors to shader,
+    instead of having a color attribute on each vertex (wasteful for memory)
+is a bit of a scary one, but it should be fine.
+Let's look at it in step by step.
+
+The general idea is:
+1. Remove the "color" vertex attribute from ShapeVertex.
+2. Add a "shapeIndex" vertex attribute to ShapeVertex.
+3. Set "shapeIndex" vertex attribute to each vertex.
+   Do this in ShapesBatch, because it requires knowing how many shapes are already in the batch.
+4. Keep track of a list of colors - the colors of all shapes in a ShapesBatch.
+5. Upon rendering of ShapesBatch create a 1D texture from the colors, bind it, and set a corresponding uniform in shader
+6. In the fragment shader sample the 1D texture based on shapeIndex
+
+Okay, did it.
+First had to create a class
+    Texture1D
+in new files under Graphics/RenderComponents/
+    Texture1D.h
+    Texture1D.cpp
+and rename class Texture to Texture2D.
+Texture1D is basically the same as Texture2D but it works on a list of colors, instead of an image
+
+Everything else was fairly straightforward, following the plan above.
+Not much to say.
+
+It works now (almost).
+Demo07 works perfectly fine.
+Demo06 does NOT work if you have too many shapes (40000 doesn't work, 10000 does).
+I found out it's because a 1D texture has some upper limit on how many texels it can have,
+and apparently 40000 is too many on my GPU.
+
+}

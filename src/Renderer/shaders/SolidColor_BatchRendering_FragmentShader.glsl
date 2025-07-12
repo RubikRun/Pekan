@@ -1,9 +1,12 @@
 #version 330 core
 
-in vec4 v_color;
+in float vShapeIndex;
 out vec4 FragColor;
+
+uniform sampler1D uShapesColorsTexture;
+uniform int uShapesCount;
 
 void main()
 {
-   FragColor = v_color;
+   FragColor = texture(uShapesColorsTexture, vShapeIndex / float(uShapesCount - 1));
 }

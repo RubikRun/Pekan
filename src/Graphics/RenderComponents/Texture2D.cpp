@@ -1,4 +1,4 @@
-#include "Texture.h"
+#include "Texture2D.h"
 
 #include "PekanLogger.h"
 #include "GLCall.h"
@@ -17,7 +17,7 @@ namespace Graphics {
 	static const TextureWrapMode DEFAULT_WRAP_MODE_Y = TextureWrapMode::ClampToBorder;
 	static const glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(255, 0, 0, 255);
 
-	Texture::~Texture()
+	Texture2D::~Texture2D()
 	{
 		if (isValid())
 		{
@@ -25,15 +25,9 @@ namespace Graphics {
 		}
 	}
 
-	void Texture::create(const Image& image)
+	void Texture2D::create()
 	{
-		RenderComponent::create(false);
-		setImage(image);
-	}
-
-	void Texture::setImage(const Image& image)
-	{
-		bind();
+		RenderComponent::create();
 
 		// Configure the default minify and magnify functions of the texture
 		setMinifyFunction(DEFAULT_TEXTURE_MINIFY_FUNCTION);
@@ -43,6 +37,17 @@ namespace Graphics {
 		setWrapModeX(DEFAULT_WRAP_MODE_X);
 		setWrapModeY(DEFAULT_WRAP_MODE_Y);
 		setBorderColor(DEFAULT_BORDER_COLOR);
+	}
+
+	void Texture2D::create(const Image& image)
+	{
+		create();
+		setImage(image);
+	}
+
+	void Texture2D::setImage(const Image& image)
+	{
+		bind();
 
 		// Set image data to the texture object
 		unsigned format = 0, internalFormat = 0;
@@ -52,78 +57,94 @@ namespace Graphics {
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 	}
 
-	void Texture::bind() const
+	void Texture2D::bind() const
 	{
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
 	}
 
-	void Texture::unbind() const
+	void Texture2D::unbind() const
 	{
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
-	void Texture::bind(unsigned slot) const
+	void Texture2D::bind(unsigned slot) const
 	{
 		activateSlot(slot);
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
 	}
 
-	void Texture::unbind(unsigned slot) const
+	void Texture2D::unbind(unsigned slot) const
 	{
 		activateSlot(slot);
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
-	void Texture::activateSlot(unsigned slot)
+	void Texture2D::activateSlot(unsigned slot)
 	{
 		const unsigned slotEnumValue = RenderState::getTextureSlotOpenGLEnum(slot);
 		GLCall(glActiveTexture(slotEnumValue));
 	}
 
-	void Texture::setMinifyFunction(TextureMinifyFunction function)
+	void Texture2D::setMinifyFunction(TextureMinifyFunction function)
 	{
 		bind();
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			RenderState::getTextureMinifyFunctionOpenGLEnum(function)));
+		GLCall(glTexParameteri
+		(
+			GL_TEXTURE_2D, 
+			GL_TEXTURE_MIN_FILTER,
+			RenderState::getTextureMinifyFunctionOpenGLEnum(function)
+		));
 	}
 
-	void Texture::setMagnifyFunction(TextureMagnifyFunction function)
+	void Texture2D::setMagnifyFunction(TextureMagnifyFunction function)
 	{
 		bind();
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-			RenderState::getTextureMagnifyFunctionOpenGLEnum(function)));
+		GLCall(glTexParameteri
+		(
+			GL_TEXTURE_2D,
+			GL_TEXTURE_MAG_FILTER,
+			RenderState::getTextureMagnifyFunctionOpenGLEnum(function)
+		));
 	}
 
-	void Texture::setWrapModeX(TextureWrapMode wrapMode)
+	void Texture2D::setWrapModeX(TextureWrapMode wrapMode)
 	{
 		bind();
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-			RenderState::getTextureWrapModeOpenGLEnum(wrapMode)));
+		GLCall(glTexParameteri
+		(
+			GL_TEXTURE_2D,
+			GL_TEXTURE_WRAP_S,
+			RenderState::getTextureWrapModeOpenGLEnum(wrapMode)
+		));
 	}
 
-	void Texture::setWrapModeY(TextureWrapMode wrapMode)
+	void Texture2D::setWrapModeY(TextureWrapMode wrapMode)
 	{
 		bind();
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-			RenderState::getTextureWrapModeOpenGLEnum(wrapMode)));
+		GLCall(glTexParameteri
+		(
+			GL_TEXTURE_2D,
+			GL_TEXTURE_WRAP_T,
+			RenderState::getTextureWrapModeOpenGLEnum(wrapMode)
+		));
 	}
 
-	void Texture::setBorderColor(glm::vec4 color)
+	void Texture2D::setBorderColor(glm::vec4 color)
 	{
 		bind();
 		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color.x));
 	}
 
-	void Texture::_create()
+	void Texture2D::_create()
 	{
 		GLCall(glGenTextures(1, &m_id));
 	}
-	void Texture::_destroy()
+	void Texture2D::_destroy()
 	{
 		GLCall(glDeleteTextures(1, &m_id));
 	}
 
-	void Texture::getFormat(const Image& image, unsigned& format, unsigned& internalFormat)
+	void Texture2D::getFormat(const Image& image, unsigned& format, unsigned& internalFormat)
 	{
 		PK_ASSERT_QUICK(image.getNumChannels() >= 0);
 

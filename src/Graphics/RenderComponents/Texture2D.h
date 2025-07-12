@@ -12,18 +12,20 @@ namespace Graphics {
 
 
 
-	// A class representing a texture on the GPU.
-	class Texture : public RenderComponent
+	// A class representing a 2D texture on the GPU.
+	class Texture2D : public RenderComponent
 	{
 	public:
 
-		~Texture();
+		~Texture2D();
 
-		// Make base class RenderComponent's version of create() be visible in this derived class
-		using RenderComponent::create;
+		// Creates an empty texture
+		void create();
 
+		// Creates a texture from a given image
 		void create(const Image& image);
 
+		// Sets a new image to the texture
 		void setImage(const Image& image);
 
 		// Binds/unbinds texture to currently active texture slot
@@ -59,7 +61,7 @@ namespace Graphics {
 		static void getFormat(const Image& image, unsigned& format, unsigned& internalFormat);
 	};
 
-	typedef std::shared_ptr<Texture> TexturePtr;
+	typedef std::shared_ptr<Texture2D> Texture2DPtr;
 
 } // namespace Pekan
 } // namespace Graphics

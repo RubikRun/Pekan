@@ -127,10 +127,10 @@ namespace Renderer
         m_verticesWorld[0].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
         m_verticesWorld[1].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
         m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
-        // Set vertex colors equal to shape's color
-        m_verticesWorld[0].color = m_color;
-        m_verticesWorld[1].color = m_color;
-        m_verticesWorld[2].color = m_color;
+        // Set "shapeIndex" attribute of each vertex to be shape's index
+        m_verticesWorld[0].shapeIndex = m_shapeIndex;
+        m_verticesWorld[1].shapeIndex = m_shapeIndex;
+        m_verticesWorld[2].shapeIndex = m_shapeIndex;
 
         m_needUpdateVerticesWorld = false;
     }

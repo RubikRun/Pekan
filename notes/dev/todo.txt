@@ -128,3 +128,7 @@
 0048 06.07.2025 (TODO): Rename project Renderer to Renderer2D. Let's have a single subsystem per module and their names to always match.
 
 0049 07.07.2025 (TODO): Move numberOfSamples member from WindowProperties to ApplicationProperties
+
+0050 12.07.2025 (TODO): Is it a problem that RenderObject and ShapesBatch might use the same texture slots?
+                        Probably not, because they do separate draw calls and have separate shaders.
+                        Still, good to check.

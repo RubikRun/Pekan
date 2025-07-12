@@ -83,7 +83,7 @@ namespace Renderer
 		m_vertexBuffer.destroy();
 		m_vertexArray.destroy();
 
-		for (const TexturePtr& texture : m_textures)
+		for (const Texture2DPtr& texture : m_textures)
 		{
 			if (texture != nullptr)
 			{
@@ -211,7 +211,7 @@ namespace Renderer
 		}
 
 		// Create texture with given image at the requested slot
-		m_textures[slot] = std::make_shared<Texture>();
+		m_textures[slot] = std::make_shared<Texture2D>();
 		m_textures[slot]->create(image);
 		// Set slot to shader's uniform
 		m_shader.bind();

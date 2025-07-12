@@ -22,7 +22,7 @@ namespace Renderer
 		(
 			nullptr,
 			0,
-			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
+			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float, "shapeIndex" } },
 			bufferDataUsage,
 			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
@@ -33,8 +33,12 @@ namespace Renderer
 
 		// Set shader's view projection matrix uniform to a default view projection matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-		m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
+		m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 
+		// Create underlying texture object with empty data
+		m_texture.create();
+
+		m_shapesCount = 0;
 		m_isValid = true;
 	}
 
@@ -43,9 +47,10 @@ namespace Renderer
 		PK_ASSERT(m_isValid, "Trying to destroy a ShapesBatch instance that is not yet created.", "Pekan");
 
 		m_renderObject.destroy();
-		m_vertices.clear();
-		m_indices.clear();
+		m_texture.destroy();
+		clear();
 
+		m_shapesCount = 0;
 		m_isValid = false;
 	}
 
@@ -55,6 +60,11 @@ namespace Renderer
 
 		const unsigned oldVerticesSize = unsigned(m_vertices.size());
 		const size_t oldIndicesSize = m_indices.size();
+
+		// Set shape's index,
+		// letting it know what its index is inside of the batch,
+		// so that it can set the "shapeIndex" attribute to its vertices.
+		shape.setShapeIndex(float(m_shapesCount));
 
 		// Get shape's vertices
 		const ShapeVertex* vertices = shape.getVertices();
@@ -77,6 +87,13 @@ namespace Renderer
 		{
 			m_indices[i] = zeroBasedIndices[i - oldIndicesSize] + oldVerticesSize;
 		}
+
+		// Get shape's color
+		glm::vec4 color = shape.getColor();
+		// Add shape's color to the batch
+		m_colors.push_back(color);
+
+		m_shapesCount++;
 	}
 
 	void ShapesBatch::render(const Camera2DPtr& camera)
@@ -96,9 +113,20 @@ namespace Renderer
 		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(ShapeVertex));
 		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
 
+		// Set underlying texture's colors to the list of shapes' colors
+		m_texture.setColors(m_colors);
+		// Bind texture to slot 0
+		m_texture.bind(0);
+
+		Shader& shader = m_renderObject.getShader();
+
+		// Set shader's "uShapesColorsTexture" uniform to be 0 - the slot where our texture is bound.
+		shader.setUniform1i("uShapesColorsTexture", 0);
+		// Set shader's "uShapesCount" uniform to be the number of shapes in the batch.
+		shader.setUniform1i("uShapesCount", m_shapesCount);
 		// Set shader's view projection matrix uniform to camera's transform
 		const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
-		m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", viewProjectionMatrix);
+		shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
 
 		// Draw all triangles making up all shapes from the batch
 		RenderCommands::drawIndexed(m_indices.size());
@@ -113,9 +141,20 @@ namespace Renderer
 		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(ShapeVertex));
 		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
 
+		// Set underlying texture's colors to the list of shapes' colors
+		m_texture.setColors(m_colors);
+		// Bind texture to slot 0
+		m_texture.bind(0);
+
+		Shader& shader = m_renderObject.getShader();
+
+		// Set shader's "uShapesColorsTexture" uniform to be 0 - the slot where our texture is bound.
+		shader.setUniform1i("uShapesColorsTexture", 0);
+		// Set shader's "uShapesCount" uniform to be the number of shapes in the batch.
+		shader.setUniform1i("uShapesCount", m_shapesCount);
 		// Set shader's view projection matrix uniform to a default view projection matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-		m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
+		shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 
 		// Draw all triangles making up all shapes from the batch
 		RenderCommands::drawIndexed(m_indices.size());
@@ -127,6 +166,8 @@ namespace Renderer
 
 		m_vertices.clear();
 		m_indices.clear();
+		m_colors.clear();
+		m_shapesCount = 0;
 	}
 
 } // namespace Renderer

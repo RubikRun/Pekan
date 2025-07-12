@@ -5,7 +5,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
-#include "Texture.h"
+#include "Texture2D.h"
 
 #include <vector>
 
@@ -79,7 +79,7 @@ namespace Renderer
 		Graphics::Shader m_shader;
 
 		// A vector of textures, where the index of each texture is the slot where it will be bound
-		std::vector<Graphics::TexturePtr> m_textures;
+		std::vector<Graphics::Texture2DPtr> m_textures;
 
 		Graphics::BufferDataUsage m_vertexDataUsage = Graphics::BufferDataUsage::None;
 		Graphics::BufferDataUsage m_indexDataUsage = Graphics::BufferDataUsage::None;

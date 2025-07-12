@@ -110,7 +110,8 @@ namespace Graphics
 		friend class VertexBufferElement;
 		friend class VertexBuffer;
 		friend class IndexBuffer;
-		friend class Texture;
+		friend class Texture1D;
+		friend class Texture2D;
 
 	public:
 

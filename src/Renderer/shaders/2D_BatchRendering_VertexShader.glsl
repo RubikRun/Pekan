@@ -1,12 +1,13 @@
 #version 330 core
-layout(location = 0) in vec2 a_position;
-layout(location = 1) in vec4 a_color;
-out vec4 v_color;
+layout(location = 0) in vec2 aPosition;
+layout(location = 1) in float aShapeIndex;
 
-uniform mat4 u_viewProjectionMatrix;
+out float vShapeIndex;
+
+uniform mat4 uViewProjectionMatrix;
 
 void main()
 {
-   v_color = a_color;
-   gl_Position = u_viewProjectionMatrix * vec4(a_position, 0.0, 1.0);
+   gl_Position = uViewProjectionMatrix * vec4(aPosition, 0.0, 1.0);
+   vShapeIndex = aShapeIndex;
 }

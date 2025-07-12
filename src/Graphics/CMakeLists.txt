@@ -21,8 +21,10 @@ add_library(Graphics STATIC
     RenderComponents/VertexArray.cpp
     RenderComponents/Shader.h
     RenderComponents/Shader.cpp
-    RenderComponents/Texture.h
-    RenderComponents/Texture.cpp
+    RenderComponents/Texture1D.h
+    RenderComponents/Texture1D.cpp
+    RenderComponents/Texture2D.h
+    RenderComponents/Texture2D.cpp
     Image.h
     Image.cpp
 )
@@ -34,7 +36,8 @@ SOURCE_GROUP("Source Files\\RenderComponents" FILES
     RenderComponents/IndexBuffer.cpp
     RenderComponents/VertexArray.cpp
     RenderComponents/Shader.cpp
-    RenderComponents/Texture.cpp
+    RenderComponents/Texture2D.cpp
+    RenderComponents/Texture2D.cpp
 )
 SOURCE_GROUP("Header Files\\RenderComponents" FILES
     RenderComponents/RenderComponent.h
@@ -42,7 +45,8 @@ SOURCE_GROUP("Header Files\\RenderComponents" FILES
     RenderComponents/IndexBuffer.h
     RenderComponents/VertexArray.h
     RenderComponents/Shader.h
-    RenderComponents/Texture.h
+    RenderComponents/Texture1D.h
+    RenderComponents/Texture2D.h
 )
 
 # Set include directories for Graphics

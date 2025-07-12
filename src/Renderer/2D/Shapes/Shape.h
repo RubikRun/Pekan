@@ -15,7 +15,7 @@ namespace Renderer
 	struct ShapeVertex
 	{
 		glm::vec2 position = glm::vec2(0.0f, 0.0f);
-		glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		float shapeIndex = -1.0f;
 	};
 
 	// A base class for 2D shapes
@@ -52,6 +52,10 @@ namespace Renderer
 		// and it's better to use dynamic buffers for its vertices and indices.
 		inline bool isDynamic() const { return m_isDynamic; }
 
+		// Sets shape's index inside of its batch.
+		// This index will determine the value of the "shapeIndex" attribute of shape's vertices
+		inline void setShapeIndex(float shapeIndex) const { m_shapeIndex = shapeIndex; }
+
 	protected: /* functions */
 
 		// @param[in] dynamic - Indicates if shape will be changed/transformed often. Used for optimization.
@@ -78,6 +82,19 @@ namespace Renderer
 
 		// Flag indicating if world vertices in derived class need to be updated before use
 		mutable bool m_needUpdateVerticesWorld = true;
+
+		// Shape's index inside of its batch.
+		// To be used by derived classes to set each vertex's "shapeIndex" attribute.
+		//
+		// NOTE: Marked as "mutable" because it doesn't reflect a shape's state exactly.
+		// It reflects the state of "a shape inside a batch".
+		// We want to be able to change a shape's index in a "const" way
+		// because it doesn't change the actual shape.
+		// This can, of course, be avoided by letting a Shape be "just a shape"
+		// and return only its actual vertices without any batch-related metadata,
+		// but it would be inefficient, because then a batch will have to copy all vertices
+		// in order to add the "shapeIndex" attribute to them.
+		mutable float m_shapeIndex = -1.0f;
 
 	private: /* variables */
 

@@ -35,7 +35,7 @@ namespace Renderer
 
 		// Set shader's view projection matrix uniform to an identity matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-		m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", defaultViewProjectionMatrix);
+		m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 
 		setColor(DEFAULT_COLOR);
 	}
@@ -60,7 +60,7 @@ namespace Renderer
 
 		// Set shader's view projection matrix uniform
 		const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
-		m_renderObject.getShader().setUniformMatrix4fv("u_viewProjectionMatrix", viewProjectionMatrix);
+		m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
 
 		RenderCommands::draw(2, DrawMode::Lines);
 	}
