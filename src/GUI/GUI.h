@@ -28,6 +28,11 @@ namespace GUI
 
 		bool isInitialized() override { return m_isInitialized; }
 
+		// Initializes ImGui library, and creates ImGui context
+		static bool initImGui();
+		// Exists ImGui library, and destroys ImGui context
+		static void exitImGui();
+
 	private: /* variables */
 
 		bool m_isInitialized = false;

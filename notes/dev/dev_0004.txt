@@ -3766,4 +3766,26 @@ Okay, it works.
 It correctly calls GUI's init() and exit() functions.
 We have a skeleton for GUI.
 
+Next step is to move ImGui's init and exit functions into the GUI submodule.
+We can just move the 2 functions
+    // Initializes ImGui library, and creates ImGui context
+    static bool initImGui();
+    // Exists ImGui library, and destroys ImGui context
+    static void exitImGui();
+from class PekanEngine to class GUI,
+and call them in GUI's init() and exit() functions.
+This almost worked.
+The only issue is that initImGui() needs to access the window in a non-const way,
+to get a non-const pointer to the underlying GLFW window.
+To do that, we'll need to declare class GUI as friend to PekanEngine,
+same way that PekanEngine is a friend to PekanEngine, for the same reason.
+It's a bit tricky though, because PekanEngine doesn't know about the existance of a GUI class,
+because it lives in a whole separate module.
+That's fine. We can forward declare class GUI in PekanEngine.h like this:
+    namespace Pekan { namespace GUI { class GUI; } }
+and then just say that this supposedly-existant class GUI is a friend
+    friend class Pekan::GUI::GUI;
+Okay, it worked.
+Now ImGui's init and exit logic is done in the GUI subsystem.
+
 }

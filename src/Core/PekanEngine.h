@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+namespace Pekan { namespace GUI { class GUI; } }
+
 namespace Pekan
 {
 
@@ -21,8 +23,13 @@ namespace Pekan
 
 		// PekanApplication is declared as a friend to PekanEngine
 		// because it needs private access to the window (to close it, enable VSync, etc.)
-		// and we don't want any other code to have this kind of access.
+		// and we don't want other code to have this kind of access.
 		friend class PekanApplication;
+
+		// GUI is declared as a friend to PekanEngine
+		// because it needs private access to the window (to act on its underlying GLFW window)
+		// and we don't want other code to have this kind of access.
+		friend class Pekan::GUI::GUI;
 
 	public:
 
@@ -54,13 +61,6 @@ namespace Pekan
 		// Checks if mouse button is currently pressed/released.
 		static bool isMouseButtonPressed(MouseButton button);
 		static bool isMouseButtonReleased(MouseButton button);
-
-	private: /* functions */
-
-		// Initializes ImGui library, and creates ImGui context
-		static bool initImGui();
-		// Exists ImGui library, and destroys ImGui context
-		static void exitImGui();
 
 	private: /* variables */
 
