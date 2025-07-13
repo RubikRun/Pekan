@@ -10,8 +10,6 @@ namespace Graphics {
 
 	class Image;
 
-
-
 	// A class representing a 2D texture on the GPU.
 	class Texture2D : public RenderComponent
 	{

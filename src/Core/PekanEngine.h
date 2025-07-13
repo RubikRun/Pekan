@@ -19,6 +19,11 @@ namespace Pekan
 	class PekanEngine
 	{
 
+		// PekanApplication is declared as a friend to PekanEngine
+		// because it needs private access to the window (to close it, enable VSync, etc.)
+		// and we don't want any other code to have this kind of access.
+		friend class PekanApplication;
+
 	public:
 
 		// Initializes the engine.
@@ -29,8 +34,8 @@ namespace Pekan
 		// To be called once, at the end, after having finished using the engine.
 		static void exit();
 
-		// Returns (a reference to) the window where current application is running
-		inline static Window& getWindow() { return s_window; }
+		// Returns (a const reference to) the window where current application is running
+		inline static const Window& getWindow() { return s_window; }
 
 		// Returns (a pointer to) current application
 		inline static PekanApplication* getApplication() { return s_application; }

@@ -106,15 +106,15 @@
                         Maybe having some reasonable limit of vertices/indices per batch,
                         and when we reach it we can draw the batch and start a new one.
 
-0042 03.07.2025 (TODO): Rename classes that have only pure virtual functions with the "I" prefix,
+0042 03.07.2025 (DONE): Rename classes that have only pure virtual functions with the "I" prefix,
                         for example EventListener -> IEventListener
 
-0043 05.07.2025 (TODO): Change core architecture so that window is not created by client code,
+0043 05.07.2025 (DONE): Change core architecture so that window is not created by client code,
                         or think of something else. Maybe also move all OpenGL and window logic into Renderer instead of Core,
                         or better yet create a new module Graphics. Idk, many options, think about it.
                         Problem is there isn't a good moment to initialize Renderer2D.
 
-0044 05.07.2025 (TODO): Why does this function in PekanEngine return a reference and not a const reference?
+0044 05.07.2025 (DONE): Why does this function in PekanEngine return a reference and not a const reference?
                             inline static Window& getWindow() { return s_window; }
 
 0045 05.07.2025 (TODO): Fix Demo05 and Demo06, shapes are missing

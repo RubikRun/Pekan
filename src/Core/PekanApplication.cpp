@@ -61,11 +61,11 @@ namespace Pekan
         // If there is no target FPS and user wants to use VSync, then enable VSync
         if (fps <= 0.0 && useVSync)
         {
-            PekanEngine::getWindow().enableVSync();
+            PekanEngine::s_window.enableVSync();
         }
         FpsLimiter fpsLimiter(fps);
 
-        Window& window = PekanEngine::getWindow();
+        Window& window = PekanEngine::s_window;
         while (!window.shouldBeClosed())
         {
             // Process all pending events, calling the handler function of each one.
@@ -156,7 +156,7 @@ namespace Pekan
     {
         // Set window's "should be closed" state to true,
         // so that the main loop is stopped on the next iteration.
-        PekanEngine::getWindow().setShouldBeClosed(true);
+        PekanEngine::s_window.setShouldBeClosed(true);
     }
 
     // Sends an event of a given type to layers of the layer stack,

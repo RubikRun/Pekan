@@ -3634,3 +3634,73 @@ Demo06 is even faster now.
 
 Considering the 2 TO-DO items done now.
 }
+
+----------
+13.07.2025
+----------
+
+{
+Next TO-DO item is
+    Rename classes that have only pure virtual functions with the "I" prefix,
+    for example EventListener -> IEventListener
+
+Looked through all classes. There is a single class that is a pure interface
+    ISubsystem
+and it already begins with "I".
+All other classes have some functions that are implementd and/or some data.
+So nothing to do here.
+Done.
+}
+
+{
+Next TO-DO item
+    Change core architecture so that window is not created by client code,
+    or think of something else. Maybe also move all OpenGL and window logic into Renderer instead of Core,
+    or better yet create a new module Graphics. Idk, many options, think about it.
+    Problem is there isn't a good moment to initialize Renderer2D.
+is already done, we should've marked it as done earlier.
+We no longer leave window creation to be a responsibility of client code.
+Instead we have this virtual function in PekanApplication
+    virtual ApplicationProperties getProperties() const { return {}; }
+that can be overriden by derived applications to return application properties,
+part of which are WindowProperties, and then the actual window creation is done by engine using those properties.
+Also, we moved OpenGL code to a separate module called Graphics.
+We did NOT move window logic to Renderer, because I thought about it and it doesn't make sense.
+The window logic SHOULD be in Core, because a window is not fundamentally about graphics or rendering,
+it's just where the application runs. Another big window thing is handling events,
+and we wouldn't want Renderer to handle events.
+So yeah, window logic remains in Core, not graphics-specific logic but window logic in general,
+then graphics-specific logic is in Graphics, and finally Renderer builds on top of Graphics
+to provide shapes, cameras, batch rendering, etc.
+
+As for the initialization of Renderer2D, we have a new subsystem architecture,
+handled by SubsystemManager - Renderer2D and Graphics are subsystems and are initialized
+by the engine AFTER creating the window (because they need the window).
+
+Soo, considering this done.
+}
+
+{
+Next TO-DO item is
+    Why does this function in PekanEngine return a reference and not a const reference?
+        inline static Window& getWindow() { return s_window; }
+
+Let's directly try to make it const and see if build will fail.
+Yep, it fails, but only for a single reason (well, a few reasons but in one place).
+Basically, class PekanApplication needs to access the window in a non-const way,
+to be able to close it, enable VSync, etc.
+That's fair, PekanApplication should be authorized to do that.
+However, it'd be good to NOT allow any other code to act in a non-const way on the window,
+so we can change the function to return a const reference
+    inline static Window& getWindow() { return s_window; }
+and then declare PekanApplication as a friend to PekanEngine
+    friend class PekanApplication;
+so that in PekanApplication we can directly access
+    PekanEngine::s_window
+I think this makes more sense.
+We grant private access only to PekanApplication, so that only PekanApplication can f with the window.
+
+Okay, looks good.
+Works same as before, of course.
+Done.
+}
