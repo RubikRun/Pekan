@@ -3746,3 +3746,24 @@ in all code.
 It works.
 Done.
 }
+
+{
+Next TO-DO item is fairly big
+    Think about moving ImGui to its own module and subsystem called GUI, instead of having it in Core.
+Yes, I 100% agree it's good to have a GUI subsystem containing ImGui and NOT call raw ImGui code anywhere,
+and NOT initialize ImGui in Core directly.
+
+To start this in a clean way, I'll copy the Graphics subsystem,
+delete everything graphics-related and leave only subsystem-related stuff,
+then replace "Graphics" with "GUI" everywhere.
+Then don't forget to add GUI subdirectory to the main CMake file.
+That's it - we have a skeleton for the GUI subsystem.
+We can try to use it in Demo00 by including it in Demo00's CMake file,
+then calling
+    PEKAN_INCLUDE_SUBSYSTEM_GUI;
+in Demo00's main() function.
+Okay, it works.
+It correctly calls GUI's init() and exit() functions.
+We have a skeleton for GUI.
+
+}

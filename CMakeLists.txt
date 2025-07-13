@@ -26,6 +26,8 @@ endif()
 add_subdirectory(src/Graphics)
 # Add Renderer subdirectory
 add_subdirectory(src/Renderer)
+# Add GUI subdirectory
+add_subdirectory(src/GUI)
 # Add Tools subdirectory
 add_subdirectory(src/Tools)
 
@@ -118,7 +120,16 @@ SOURCE_GROUP("Header Files\\Time" FILES src/Core/Time/FpsLimiter.h src/Core/Time
 
 # Set link libraries for Core
 target_link_libraries(Core PRIVATE glfw)
+
+
+
+
+
+# TODO: remove imgui from here after finished with GUI subsystem
 target_link_libraries(Core PUBLIC glm imgui)
+
+
+
 
 # Set include directories for Core
 target_include_directories(Core PUBLIC src/Core src/Core/Logger)
