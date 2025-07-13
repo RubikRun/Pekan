@@ -19,7 +19,7 @@ namespace Renderer
 
     void Camera2D::setSize(float scale)
     {
-        const glm::ivec2 windowSize = PekanEngine::getWindowSize();
+        const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
         if (windowSize.x > windowSize.y)
         {
             setSize(scale * float(windowSize.x) / float(windowSize.y), scale);
@@ -82,7 +82,7 @@ namespace Renderer
 
     glm::vec2 Camera2D::screenToWorld(glm::vec2 screenPos) const
     {
-        const glm::ivec2 windowSize = PekanEngine::getWindowSize();
+        const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
 
         // Convert screen position to NDC (-1 to 1)
         const glm::vec2 ndc =

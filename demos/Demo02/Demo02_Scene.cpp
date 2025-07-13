@@ -36,7 +36,7 @@ namespace Demo
         RenderState::enableMultisampleAntiAliasing();
         RenderState::enableFaceCulling();
 
-        m_resolution = PekanEngine::getWindowSize();
+        m_resolution = PekanEngine::getWindow().getSize();
 
         // Set default colors of cube's sides
         m_colors =

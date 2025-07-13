@@ -97,11 +97,6 @@ namespace Pekan
         return s_window.isMouseButtonReleased(button);
     }
 
-    glm::ivec2 PekanEngine::getWindowSize()
-    {
-        return s_window.getSize();
-    }
-
     bool PekanEngine::initImGui()
     {
         // Setup ImGui context

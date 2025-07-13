@@ -20,7 +20,7 @@ namespace Demo
 	{
         RenderState::enableMultisampleAntiAliasing();
 
-        m_resolution = PekanEngine::getWindowSize();
+        m_resolution = PekanEngine::getWindow().getSize();
 
         // Enable and configure blending
         RenderState::enableBlending();

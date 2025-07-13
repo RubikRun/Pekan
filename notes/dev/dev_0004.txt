@@ -3729,3 +3729,20 @@ That's it.
 Now Demo04 and Demo05 work fine.
 Done.
 }
+
+{
+Next TO-DO item is a simple one (I hope):
+    Remove
+        static glm::ivec2 getWindowSize();
+    from PekanEngine
+
+Yep, it was super simple.
+Literally just removed the function and replaced
+    PekanEngine::getWindowSize()
+with
+    PekanEngine::getWindow().getSize()
+in all code.
+
+It works.
+Done.
+}

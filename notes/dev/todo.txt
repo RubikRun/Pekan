@@ -119,7 +119,7 @@
 
 0045 05.07.2025 (DONE): Fix Demo05 and Demo06, shapes are missing
 
-0046 05.07.2025 (TODO): Remove
+0046 05.07.2025 (DONE): Remove
                             static glm::ivec2 getWindowSize();
                         from PekanEngine
 

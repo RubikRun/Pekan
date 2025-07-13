@@ -40,7 +40,7 @@ namespace Graphics
 		enableOpenGLDebugOutput();
 #endif
 		// Set OpenGL viewport's resolution to be the same as window's resolution
-		const glm::ivec2 windowSize = PekanEngine::getWindowSize();
+		const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
 		glViewport(0, 0, windowSize.x, windowSize.y);
 
 		// Log OpenGL version

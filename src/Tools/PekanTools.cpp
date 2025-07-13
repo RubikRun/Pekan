@@ -53,7 +53,7 @@ namespace Tools
                 // Mouse coordinates are in window space, we need them in camera space.
                 // We can divide the camera's size by the window's size to get a vector
                 // that can be used to multiply any window-space coordinate to get a camera-space coordinate.
-                const glm::vec2 windowToCameraFactor = camera->getSize() / glm::vec2(PekanEngine::getWindowSize());
+                const glm::vec2 windowToCameraFactor = camera->getSize() / glm::vec2(PekanEngine::getWindow().getSize());
                 // Move camera by the amount that the mouse has moved in camera space, divided by the zoom level
                 camera->move(glm::vec2(-mouseDelta.x, mouseDelta.y) * windowToCameraFactor / camera->getZoom());
             }
