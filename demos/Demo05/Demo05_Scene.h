@@ -3,11 +3,12 @@
 #include "Layer.h"
 #include "2D/Line.h"
 #include "2D/Shapes/LineShape.h"
+#include "Camera2D.h"
 
 #include "Demo05_GUIWindow.h"
 
 #define MTT0_SUBDIVS 200
-#define MTT1_SUBDIVS 200
+#define MTT1_SUBDIVS 400
 
 namespace Demo
 {
@@ -42,9 +43,11 @@ namespace Demo
 		// GUI window for controlling background's color
 		std::shared_ptr<const Demo05_GUIWindow> m_guiWindow;
 
+		Pekan::Renderer::Camera2D_Ptr m_camera;
+
 		// Multiplication factor of the 2 Mandelbrot Times Tables
-		float m_mtt0factor = 2.0f;
-		float m_mtt1factor = 2.0f;
+		float m_mtt0factor = 30.0f;
+		float m_mtt1factor = 90.0f;
 
 		float t = 0.0f;
 	};

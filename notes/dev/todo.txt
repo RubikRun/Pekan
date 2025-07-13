@@ -117,7 +117,7 @@
 0044 05.07.2025 (DONE): Why does this function in PekanEngine return a reference and not a const reference?
                             inline static Window& getWindow() { return s_window; }
 
-0045 05.07.2025 (TODO): Fix Demo05 and Demo06, shapes are missing
+0045 05.07.2025 (DONE): Fix Demo05 and Demo06, shapes are missing
 
 0046 05.07.2025 (TODO): Remove
                             static glm::ivec2 getWindowSize();

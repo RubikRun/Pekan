@@ -2,6 +2,8 @@
 #include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "RenderCommands.h"
+#include "Renderer2D.h"
+#include "PekanTools.h"
 
 #include <glm/gtc/constants.hpp>
 static const float PI = glm::pi<float>();
@@ -11,10 +13,14 @@ const glm::vec2 MTT0_CENTER = glm::vec2(-0.5f, 0.0f);
 const glm::vec2 MTT1_CENTER = glm::vec2(0.5f, 0.0f);
 const float MTT0_RADIUS = 0.45f;
 const float MTT1_RADIUS = 0.45f;
-const float MTT0_SPEED = 0.05f;
-const float MTT1_SPEED = 0.05f;
+const float MTT0_SPEED = 0.01f;
+const float MTT1_SPEED = 0.01f;
+
+static const float CAMERA_SCALE = MTT0_RADIUS * 5.0f;
 
 using namespace Pekan::Graphics;
+using namespace Pekan::Renderer;
+using namespace Pekan::Tools;
 
 namespace Demo
 {
@@ -37,6 +43,12 @@ namespace Demo
             m_lineShapes[i].setColor({ 0.9f, 0.9f, 0.9f, 1.0f });
             m_lineShapes[i].setThickness(0.001f);
         }
+
+        // Create camera
+        m_camera = std::make_shared<Camera2D>();
+        m_camera->setSize(CAMERA_SCALE);
+        Renderer2D::setCamera(m_camera);
+        PekanTools::enableCameraController2D(m_camera);
 
         t = 0.0f;
 
@@ -63,6 +75,8 @@ namespace Demo
 
     void Demo05_Scene::render()
     {
+        Renderer2D::beginFrame();
+
         // Clear background color
         if (m_guiWindow != nullptr)
         {
@@ -84,6 +98,8 @@ namespace Demo
         {
             m_lineShapes[i].render();
         }
+
+        Renderer2D::endFrame();
     }
 
     void Demo05_Scene::exit()

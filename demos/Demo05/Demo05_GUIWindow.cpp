@@ -15,7 +15,7 @@ namespace Demo
 		ImGui::ColorEdit3("##BackgroundColor", (float*)(&m_clearColor));
 
 		ImGui::Text("Line Thickness");
-		ImGui::SliderFloat("##LineThickness", &m_lineThickness, 0.0001f, 0.01f, "%.5f");
+		ImGui::SliderFloat("##LineThickness", &m_lineThickness, 0.00001f, 0.001f, "%.5f");
 
 		ImGui::End();
 	}

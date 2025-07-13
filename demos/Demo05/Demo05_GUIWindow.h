@@ -32,7 +32,7 @@ namespace Demo
 		ImVec4 m_clearColor = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
 
 		// Line thickness to be used for MTT's lines in Demo05
-		float m_lineThickness = 0.001f;
+		float m_lineThickness = 0.0005f;
 	};
 
 } // namespace Demo

@@ -209,7 +209,7 @@ namespace MathUtils
     {
         PK_ASSERT
         (
-            indices.size() == 0 || (indices.size() % 3 == 0 && indices.size() / 3 > 2),
+            indices.size() == 0 || (indices.size() % 3 == 0 && indices.size() > 0),
             "Trying to update a list of triangle fan indices but given list contains an invalid number of indices.",
             "Pekan"
         );
@@ -219,13 +219,12 @@ namespace MathUtils
             {
                 PK_ASSERT
                 (
-                    indices[i] != 0 || indices[i + 1] != i / 3 + 1 || indices[i + 2] != i / 3 + 2,
+                    indices[i] == 0 && indices[i + 1] == i / 3 + 1 && indices[i + 2] == i / 3 + 2,
                     "Trying to update a list of triangle fan indices but indices in given list are not in correct triangle fan format.",
                     "Pekan"
                 );
             }
         );
-
 
         const size_t prevIndicesCount = indices.size();
         indices.resize((nVertices - 2) * 3);

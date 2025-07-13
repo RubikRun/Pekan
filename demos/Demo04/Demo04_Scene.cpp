@@ -2,6 +2,7 @@
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 #include "RenderCommands.h"
+#include "Renderer2D.h"
 
 #include <glm/gtc/constants.hpp>
 static const float PI = glm::pi<float>();
@@ -64,6 +65,7 @@ static const std::vector<glm::vec2> POLYGON2_VERTICES =
 };
 
 using namespace Pekan::Graphics;
+using namespace Pekan::Renderer;
 
 namespace Demo
 {
@@ -252,6 +254,8 @@ namespace Demo
 
     void Demo04_Scene::render()
     {
+        Renderer2D::beginFrame();
+
         // Clear background color
         if (m_guiWindow != nullptr)
         {
@@ -278,6 +282,8 @@ namespace Demo
             m_polygon1.render();
             m_polygon2.render();
         }
+
+        Renderer2D::endFrame();
     }
 
     void Demo04_Scene::exit()

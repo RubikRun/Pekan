@@ -10,24 +10,24 @@ namespace Pekan
 namespace Renderer
 {
 
-	// A class representing a 2D line
+	// A class representing a 2D line.
+	//
+	// NOTE: This class is used primarily for debugging and development-time graphics.
+	//       It renders a line primitive very directly, without any optimization.
+	//       For an actual game/application it's better to use
+	//           class LineShape
+	//       It is better optimized and allows control of line's thickness.
 	class Line
 	{
 	public:
 
 		// Creates a line between 2 points
 		// @param[in] dynamic - Specifies if line is going to be moved often. Used for optimization.
-		void create
-		(
-			glm::vec2 pointA, glm::vec2 pointB,
-			bool dynamic = true
-		);
+		void create(glm::vec2 pointA, glm::vec2 pointB, bool dynamic = true);
 
 		void destroy();
 
-		void render() const;
-		// Renders line using the given camera
-		void render(const Camera2D& camera);
+		void render();
 
 		void setPointA(glm::vec2 pointA);
 		void setPointB(glm::vec2 pointB);

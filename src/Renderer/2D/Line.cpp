@@ -3,12 +3,12 @@
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 #include "RenderCommands.h"
+#include "Renderer2D.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/2D_VertexShader.glsl"
 #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/SolidColor_FragmentShader.glsl"
 
 static constexpr long long VERTEX_DATA_SIZE = 4 * sizeof(float);
-
 static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 using namespace Pekan::Graphics;
@@ -46,21 +46,29 @@ namespace Renderer
 		m_renderObject.destroy();
 	}
 
-	void Line::render() const
+	void Line::render()
 	{
 		PK_ASSERT(m_renderObject.isValid(), "Trying to render a Line that is not yet created.", "Pekan");
 		m_renderObject.bind();
 		RenderCommands::draw(2, DrawMode::Lines);
-	}
 
-	void Line::render(const Camera2D& camera)
-	{
 		PK_ASSERT(m_renderObject.isValid(), "Trying to render a Line that is not yet created.", "Pekan");
 		m_renderObject.bind();
 
-		// Set shader's view projection matrix uniform
-		const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
-		m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
+		// Get current camera
+		Camera2D_ConstPtr camera = Renderer2D::getCamera();
+		if (camera != nullptr)
+		{
+			// Set shader's view projection matrix uniform to camera's transform
+			const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
+			m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
+		}
+		else
+		{
+			// Set shader's view projection matrix uniform to a default view projection matrix
+			static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+			m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
+		}
 
 		RenderCommands::draw(2, DrawMode::Lines);
 	}

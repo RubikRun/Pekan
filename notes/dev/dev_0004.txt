@@ -3704,3 +3704,28 @@ Okay, looks good.
 Works same as before, of course.
 Done.
 }
+
+{
+Next TO-DO item is
+    Fix Demo05 and Demo06, shapes are missing
+I think I meant Demo04 and Demo05, because Demo06 works fine.
+
+Actually, after recent changes, Demo04 and Demo05 don't work at all.
+It's not that shapes are missing. They just crash.
+
+That's chill tho, there's a simple reason - they don't include the Renderer2D subsystem
+    PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D;
+in their main() functions, and they don't call Renderer2D's beginFrame() and endFrame()
+in their scene's render() functions.
+
+Once I did that, I noticed a few more tiny bugs.
+Only one worh mentioning is that class Line was not correctly using the camera.
+It still had 2 overloads of render() - one with a camera parameter and one without,
+but now we're past this, instead we have a single "global" camera set in Renderer2D
+and Line needs to use that.
+Fixed it, no biggie.
+
+That's it.
+Now Demo04 and Demo05 work fine.
+Done.
+}
