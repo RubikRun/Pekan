@@ -1,28 +1,35 @@
 #include "Demo00_GUIWindow.h"
 
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+using namespace Pekan;
+using namespace Pekan::GUI;
 
 namespace Demo
 {
 
-	void Demo00_GUIWindow::_render()
-	{
-		ImGui::SetNextWindowSize(ImVec2(200, 120));
-		ImGui::Begin("Pekan");
-
-		ImGui::Text("Background Color");
-		ImGui::ColorEdit3("", (float*)(&m_clearColor));
-
-		ImGui::Text("Position");
-		ImGui::DragFloat2("", (float*)&(m_position), 0.01f, -1.0f, 1.0f);
-
-		ImGui::End();
-	}
-
 	bool Demo00_GUIWindow::init()
 	{
+		gui.textWidget_backgroundColor = TextWidget("Background Color");
+		gui.colorEditWidget = ColorEdit3Widget({ 0.30f, 0.55f, 0.60f });
+		gui.textWidget_position = TextWidget("Position");
+		gui.positionWidget = DragFloat2Widget({ 0.0f, 0.0f }, -1.0f, 1.0f, 0.01f);
+
 		return true;
+	}
+
+	void Demo00_GUIWindow::_render()
+	{
+		gui.textWidget_backgroundColor.render();
+		gui.colorEditWidget.render();
+		gui.textWidget_position.render();
+		gui.positionWidget.render();
+	}
+
+	Pekan::GUIWindowProperties Demo00_GUIWindow::getProperties()
+	{
+		GUIWindowProperties props;
+		props.size = { 200, 120 };
+		props.name = "Demo00";
+		return props;
 	}
 
 } // namespace Demo

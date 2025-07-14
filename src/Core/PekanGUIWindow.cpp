@@ -22,7 +22,17 @@ namespace Pekan
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        // Get GUI window's properties, potentially from derived class.
+        // These properties will be the same for the whole lifetime of a GUI window
+        // so we can keep them in a static variable here, to avoid calling getProperties() on every frame.
+        static GUIWindowProperties properties = getProperties();
+
+        ImGui::SetNextWindowSize(ImVec2(properties.size.x, properties.size.y));
+        ImGui::Begin(properties.name.c_str());
+
         _render();
+
+        ImGui::End();
 
         ImGui::Render();
 

@@ -1,38 +1,43 @@
 #pragma once
 
 #include "PekanGUIWindow.h"
-using Pekan::PekanGUIWindow;
 
-#include "imgui.h"
+#include "TextWidget.h"
+#include "ColorEdit3Widget.h"
+#include "DragFloat2Widget.h"
 
 namespace Demo
 {
 
-	class Demo00_GUIWindow : public PekanGUIWindow
+	class Demo00_GUIWindow : public Pekan::PekanGUIWindow
 	{
 	public:
 
 		Demo00_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
 
-		// Returns current value of clear color
-		inline const ImVec4& getClearColor() const { return m_clearColor; }
+		// Returns current value of the "clear color" parameter
+		inline glm::vec4 getClearColor() const { return glm::vec4(gui.colorEditWidget.getValue(), 1.0f); }
 
-		// Returns current value of position
-		inline const ImVec2& getPosition() const { return m_position; }
+		// Returns current value of the "position" parameter.
+		inline glm::vec2 getPosition() const { return gui.positionWidget.getValue(); }
 
 	private: /* functions */
 
+		bool init() override;
+
 		void _render() override;
 
-		bool init() override;
+		Pekan::GUIWindowProperties getProperties() override;
 
 	private: /* variables */
 
-		// Color for clearing scene's background
-		ImVec4 m_clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-		// Position of the square, relative to window's center
-		ImVec2 m_position = ImVec2(0.0f, 0.0f);
+		struct Widgets
+		{
+			Pekan::GUI::TextWidget textWidget_backgroundColor;
+			Pekan::GUI::ColorEdit3Widget colorEditWidget;
+			Pekan::GUI::TextWidget textWidget_position;
+			Pekan::GUI::DragFloat2Widget positionWidget;
+		} gui;
 	};
 
 } // namespace Demo

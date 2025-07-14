@@ -3788,4 +3788,88 @@ and then just say that this supposedly-existant class GUI is a friend
 Okay, it worked.
 Now ImGui's init and exit logic is done in the GUI subsystem.
 
+----------
+14.07.2025
+----------
+
+What's left to do is the essential part:
+Currently client code is using raw ImGui calls to create its GUI.
+We need to create API for this in the GUI module that client code will be able to use instead of raw ImGui.
+Let's look at how our demos use ImGui so far and create the API based on that.
+1. Demos usually specify GUI window's size and title, like this:
+    ImGui::SetNextWindowSize(ImVec2(200, 120));
+	ImGui::Begin("Pekan");
+    ...
+    ImGui::End();
+2. Demos create a list of widgets.
+These widgets are ordered vertically one after the other.
+Types of widgets:
+    2.1. Text
+        in params: string text
+    2.2. ColorEdit3
+        in params: string label
+        out params: float* value
+    2.3. SliderFloat2
+        in params: string label, float step, float min, float max
+        out params: float* value
+    2.4. SliderInt
+        in params: string label, int min, int max
+        out params: int* value
+    2.5. Checkbox
+        in params: string label
+        out params: bool* value
+    2.6. Button
+        in params: string label
+        functions:
+            bool isClicked()
+    etc.
+3. Demos have members associated with the value of each widget,
+except Button - Button doesn't have a value, you can access its "clicked" state directly through isClicked().
+----
+Okay, so let's describe what we want to achieve with this API.
+We are kind of motivated by 2 things.
+(A) All ImGui calls should be Pekan calls.
+    If it was just that it'd be quite straightforward, literally creating empty wrappers,
+    only renaming ImGui::X to Pekan::GUI::X.
+(B) We want to present a more object-oriented way for building GUI.
+    I don't like the way GUI is built with ImGui - you just call a bunch of functions at render-time and that's it.
+    I want to have a class for each widget type and allow users to create widgets at init time and render widgets at render time.
+Let's look at an example:
+Currently to render a piece of text, client code does this
+    ImGui::Text("Background Color");
+in the render() function.
+If we take into account only (A) then client code will do
+    Pekan::GUI::Text("Background Color");
+again in the render() function.
+If we take into account both (A) and (B) then we'll have a class called
+    TextWidget
+and client code will do
+    m_textWidget = TextWidget("Background Color")
+in their init() function, and then
+    m_textWidget.render()
+in their render() function.
+I think this is a much better approach for Pekan.
+
+So, that's the plan.
+Let's do it.
+I'll start with demos one by one, implementing widgets as I need them.
+At the end, when all demos work with the GUI subsystem,
+we'll have a bunch of widgets created,
+and we'll probably be missing a few, but hopefullu it will be obvious
+how to complete them.
+(Also it's not a big deal if we don't "complete" them. We can always just create new ones as we need them later.)
+
+Demo00 is done.
+I had to create these 3 widgets for it
+    TextWidget
+    ColorEdit3Widget
+    DragFloat2Widget
+Nothing much to say, everything went as planned.
+Also, I moved the window-creation code to the base class
+    PekanGUIWindow
+and I added this virtual function there
+    virtual GUIWindowProperties getProperties() { return {}; }
+allowing derived classes to specify the properties that they want for their window. (just size and name, for now)
+Demo00's GUI code looks much better now and it doesn't directly use ImGui at all.
+
 }

@@ -43,11 +43,11 @@ namespace Demo
 	void Demo00_Scene::update(double dt)
 	{
         // Get position from GUI
-        const ImVec2& position = m_guiWindow->getPosition();
+        glm::vec2 position = m_guiWindow->getPosition();
         // Set "uPosition" uniform inside of the shader
         Shader& shader = m_renderObject.getShader();
         shader.bind();
-        shader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+        shader.setUniform2fv("uPosition", position);
         shader.unbind();
 	}
 
@@ -56,7 +56,7 @@ namespace Demo
         // Clear background color
         if (m_guiWindow != nullptr)
         {
-            const ImVec4& clearColor = m_guiWindow->getClearColor();
+            glm::vec4 clearColor = m_guiWindow->getClearColor();
             RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
             RenderCommands::clear();
         }
