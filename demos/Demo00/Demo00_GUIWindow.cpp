@@ -24,7 +24,7 @@ namespace Demo
 		gui.positionWidget.render();
 	}
 
-	Pekan::GUIWindowProperties Demo00_GUIWindow::getProperties()
+	GUIWindowProperties Demo00_GUIWindow::getProperties()
 	{
 		GUIWindowProperties props;
 		props.size = { 200, 120 };

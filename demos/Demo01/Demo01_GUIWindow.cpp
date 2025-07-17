@@ -52,7 +52,7 @@ namespace Demo
         }
     }
 
-    Pekan::GUIWindowProperties Demo01_GUIWindow::getProperties()
+    GUIWindowProperties Demo01_GUIWindow::getProperties()
     {
         GUIWindowProperties props;
         props.size = { 320, PekanEngine::getWindow().getSize().y };

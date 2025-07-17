@@ -1,7 +1,6 @@
 #pragma once
 
-#include "PekanGUIWindow.h"
-using Pekan::PekanGUIWindow;
+#include "GUIWindow.h"
 
 #include "CheckboxWidget.h"
 #include "ButtonWidget.h"
@@ -14,11 +13,11 @@ namespace Demo
 
 	class Demo01_Scene;
 
-	class Demo01_GUIWindow : public PekanGUIWindow
+	class Demo01_GUIWindow : public Pekan::GUI::GUIWindow
 	{
 	public:
 
-		Demo01_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
+		Demo01_GUIWindow(Pekan::PekanApplication* application) : Pekan::GUI::GUIWindow(application) {}
 
 		inline bool getMoveThirdSquare() const { return gui.checkboxWidget_moveThirdSquare.isChecked(); }
 		inline int getSquareX(size_t idx) const { return gui.squares[idx].sliderWidget_x.getValue(); }
@@ -37,7 +36,7 @@ namespace Demo
 
 		void update(double deltaTime) override;
 
-		Pekan::GUIWindowProperties getProperties() override;
+		Pekan::GUI::GUIWindowProperties getProperties() override;
 
 	private: /* variables */
 

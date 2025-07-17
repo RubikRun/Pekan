@@ -68,8 +68,6 @@ add_library(Core STATIC
     src/Core/PekanEngine.cpp
     src/Core/PekanApplication.h
     src/Core/PekanApplication.cpp
-    src/Core/PekanGUIWindow.h
-    src/Core/PekanGUIWindow.cpp
     src/Core/Window.h
     src/Core/Window.cpp
     src/Core/Layer.h

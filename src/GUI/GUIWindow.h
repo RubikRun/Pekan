@@ -5,7 +5,8 @@
 
 namespace Pekan
 {
-
+namespace GUI
+{
 	// Properties of a GUI window
 	struct GUIWindowProperties
 	{
@@ -16,15 +17,15 @@ namespace Pekan
 		std::string name = "GUI window";
 	};
 
-	// A base class for all Pekan GUI windows
-	class PekanGUIWindow : public Layer
+	// A base class for all GUI windows in Pekan
+	class GUIWindow : public Layer
 	{
 	public:
 
-		PekanGUIWindow(Pekan::PekanApplication* application) : Layer("gui_layer", application) {}
-		PekanGUIWindow(const std::string& layerName, Pekan::PekanApplication* application) : Layer(layerName, application) {}
+		GUIWindow(Pekan::PekanApplication* application) : Layer("gui_layer", application) {}
+		GUIWindow(const std::string& layerName, Pekan::PekanApplication* application) : Layer(layerName, application) {}
 
-		virtual ~PekanGUIWindow() = default;
+		virtual ~GUIWindow() = default;
 
 		void render() override final;
 
@@ -47,4 +48,5 @@ namespace Pekan
 		bool onMouseButtonReleased(const MouseButtonReleasedEvent& event) override;
 	};
 
+} // namespace GUI
 } // namespace Pekan

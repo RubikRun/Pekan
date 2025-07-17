@@ -3911,4 +3911,15 @@ It works!
 
 Demo01's GUI code looks much better now and it doesn't directly use ImGui at all.
 
+----------
+17.07.2025
+----------
+
+Time to refactor widgets, establish their final look/structure,
+and then we'll proceed to implementing all widget types for all demos.
+
+First thing that I'll have to do is to move PekanGUIWindow to the GUI module.
+Done.
+Only changed Demo00 and Demo01 to work with it. I'll have to fix the rest later.
+
 }

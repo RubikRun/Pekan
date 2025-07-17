@@ -5,6 +5,8 @@ project(GUI)
 add_library(GUI STATIC
     GUI.h
     GUI.cpp
+    GUIWindow.h
+    GUIWindow.cpp
     Widgets/TextWidget.h
     Widgets/TextWidget.cpp
     Widgets/ColorEdit3Widget.h

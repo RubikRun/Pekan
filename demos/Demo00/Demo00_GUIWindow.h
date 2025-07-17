@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PekanGUIWindow.h"
+#include "GUIWindow.h"
 
 #include "TextWidget.h"
 #include "ColorEdit3Widget.h"
@@ -9,11 +9,11 @@
 namespace Demo
 {
 
-	class Demo00_GUIWindow : public Pekan::PekanGUIWindow
+	class Demo00_GUIWindow : public Pekan::GUI::GUIWindow
 	{
 	public:
 
-		Demo00_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
+		Demo00_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
 		// Returns current value of the "clear color" parameter
 		inline glm::vec4 getClearColor() const { return glm::vec4(gui.colorEditWidget.getValue(), 1.0f); }
@@ -27,7 +27,7 @@ namespace Demo
 
 		void _render() override;
 
-		Pekan::GUIWindowProperties getProperties() override;
+		Pekan::GUI::GUIWindowProperties getProperties() override;
 
 	private: /* variables */
 

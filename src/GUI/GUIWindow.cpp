@@ -1,4 +1,4 @@
-#include "PekanGUIWindow.h"
+#include "GUIWindow.h"
 #include "PekanEngine.h"
 
 #include "imgui.h"
@@ -9,8 +9,10 @@
 
 namespace Pekan
 {
+namespace GUI
+{
 
-	void PekanGUIWindow::render()
+	void GUIWindow::render()
 	{
         if (PekanEngine::getWindow().isMinimized())
         {
@@ -50,39 +52,40 @@ namespace Pekan
         }
 	}
 
-    bool PekanGUIWindow::onKeyPressed(const KeyPressedEvent& event)
+    bool GUIWindow::onKeyPressed(const KeyPressedEvent& event)
     {
         const ImGuiIO& io = ImGui::GetIO();
         return io.WantCaptureKeyboard;
     }
 
-    bool PekanGUIWindow::onKeyReleased(const KeyReleasedEvent& event)
+    bool GUIWindow::onKeyReleased(const KeyReleasedEvent& event)
     {
         const ImGuiIO& io = ImGui::GetIO();
         return io.WantCaptureKeyboard;
     }
-    bool PekanGUIWindow::onMouseMoved(const MouseMovedEvent& event)
+    bool GUIWindow::onMouseMoved(const MouseMovedEvent& event)
     {
         const ImGuiIO& io = ImGui::GetIO();
         return io.WantCaptureMouse;
     }
 
-    bool PekanGUIWindow::onMouseScrolled(const MouseScrolledEvent& event)
+    bool GUIWindow::onMouseScrolled(const MouseScrolledEvent& event)
     {
         const ImGuiIO& io = ImGui::GetIO();
         return io.WantCaptureMouse;
     }
 
-    bool PekanGUIWindow::onMouseButtonPressed(const MouseButtonPressedEvent& event)
+    bool GUIWindow::onMouseButtonPressed(const MouseButtonPressedEvent& event)
     {
         const ImGuiIO& io = ImGui::GetIO();
         return io.WantCaptureMouse;
     }
 
-    bool PekanGUIWindow::onMouseButtonReleased(const MouseButtonReleasedEvent& event)
+    bool GUIWindow::onMouseButtonReleased(const MouseButtonReleasedEvent& event)
     {
         const ImGuiIO& io = ImGui::GetIO();
         return io.WantCaptureMouse;
     }
 
+} // namespace GUI
 } // namespace Pekan
