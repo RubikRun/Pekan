@@ -21,6 +21,9 @@ namespace GUI
 		// Returns a pointer to the global GUI instance
 		static GUI* getInstance();
 
+		// Generates a new ID for a GUI widget
+		static int generateWidgetId();
+
 	private: /* functions */
 
 		void init() override;
@@ -36,6 +39,9 @@ namespace GUI
 	private: /* variables */
 
 		bool m_isInitialized = false;
+
+		// Next available ID for a GUI widget
+		static int m_nextWidgetId;
 	};
 
 } // namespace GUI

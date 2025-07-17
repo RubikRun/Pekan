@@ -19,9 +19,6 @@ namespace Demo
     bool Demo01_Scene::init()
 	{
         RenderState::enableMultisampleAntiAliasing();
-
-        m_resolution = PekanEngine::getWindow().getSize();
-
         // Enable and configure blending
         RenderState::enableBlending();
         RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
@@ -40,66 +37,26 @@ namespace Demo
 
 	void Demo01_Scene::update(double dt)
 	{
-        m_vertices.clear();
-        for (const Rectangle& square : m_squares)
+        if (m_guiWindow == nullptr)
         {
-            const float x = float(square.x);
-            const float y = float(square.y);
-            const float w = float(square.width);
-            const float h = float(square.height);
-            const float angle = float(square.rotation) * PI / 180.0f;
-            const float radius = std::sqrtf((w / 2.0f) * (w / 2.0f) + (h / 2.0f) * (h / 2.0f));
-
-            const float squareVertices[] =
-            {
-                // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
-                square.color.x, square.color.y, square.color.z, square.color.w,
-                // bottom right
-                (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
-                (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
-                square.color.x, square.color.y, square.color.z, square.color.w,
-                // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
-                square.color.x, square.color.y, square.color.z, square.color.w,
-                // bottom left
-                (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
-                (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
-                square.color.x, square.color.y, square.color.z, square.color.w,
-                // top right
-                (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
-                (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
-                square.color.x, square.color.y, square.color.z, square.color.w,
-                // top left
-                (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.x) - 1.0f,
-                (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / float(m_resolution.y) - 1.0f,
-                square.color.x, square.color.y, square.color.z, square.color.w,
-            };
-
-            m_vertices.insert(m_vertices.end(), std::begin(squareVertices), std::end(squareVertices));
+            return;
         }
 
+        // Clear vertices list
+        m_vertices.clear();
+        // Generate vertices of each square and fill them to vertices list
+        for (size_t i = 0; i < m_guiWindow->getNumberOfSquares(); i++)
+        {
+            generateSquareVertices(i);
+        }
+        // Set render object's vertex data to the vertices list
         m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
 
         // If we should move third square and there is a third square,
         // we will move it slightly just to test m_renderObject.setVertexSubData(...)
-        if (m_guiWindow != nullptr && m_guiWindow->getMoveThirdSquare() && m_squares.size() >= 3)
+        if (m_guiWindow->getMoveThirdSquare() && m_guiWindow->getNumberOfSquares() >= 3)
         {
-            // Traverse vertex attributes of third square
-            for (int i = 2 * 6 * 6; i < 3 * 6 * 6; i++)
-            {
-                // If vertex attribute is position
-                if (i % 6 == 0 || i % 6 == 1)
-                {
-                    // Move vertex slightly, in X and Y direction equally
-                    m_vertices[i] += cos(t * 15.0f) / 300.0f;
-                }
-            }
-
-            // Update the region of vertex buffer the contains the third square
-            m_renderObject.setVertexSubData(&m_vertices[2 * 6 * 6], 2 * 6 * 6 * sizeof(float), 6 * 6 * sizeof(float));
+            moveThirdSquare();
         }
 
         t += float(dt);
@@ -119,15 +76,65 @@ namespace Demo
         m_renderObject.destroy();
 	}
 
-    void Demo01_Scene::addSquare()
+    void Demo01_Scene::generateSquareVertices(size_t idx)
     {
-        Rectangle newSquare;
-        newSquare.width = 60;
-        newSquare.height = 60;
-        newSquare.x = m_resolution.x / 2;
-        newSquare.y = m_resolution.y / 2;
-        newSquare.id = m_squares.size();
-        m_squares.push_back(newSquare);
+        static const glm::vec2 windowSize = glm::vec2(PekanEngine::getWindow().getSize());
+
+        // Get square's parameters from GUI
+        const float x = float(m_guiWindow->getSquareX(idx));
+        const float y = float(m_guiWindow->getSquareY(idx));
+        const float w = float(m_guiWindow->getSquareSize(idx));
+        const float h = float(m_guiWindow->getSquareSize(idx));
+        const float angle = float(m_guiWindow->getSquareRotation(idx)) * PI / 180.0f;
+        const glm::vec4 squareColor = m_guiWindow->getSquareColor(idx);
+        // Calculate square's vertices based on square's parameters
+        const float radius = std::sqrtf((w / 2.0f) * (w / 2.0f) + (h / 2.0f) * (h / 2.0f));
+        const float squareVertices[] =
+        {
+            // bottom left
+            (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / windowSize.x - 1.0f,
+            (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / windowSize.y - 1.0f,
+            squareColor.x, squareColor.y, squareColor.z, squareColor.w,
+            // bottom right
+            (x + std::cos(angle - PI / 4.0f) * radius) * 2.0f / windowSize.x - 1.0f,
+            (y + std::sin(angle - PI / 4.0f) * radius) * 2.0f / windowSize.y - 1.0f,
+            squareColor.x, squareColor.y, squareColor.z, squareColor.w,
+            // top right
+            (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / windowSize.x - 1.0f,
+            (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / windowSize.y - 1.0f,
+            squareColor.x, squareColor.y, squareColor.z, squareColor.w,
+            // bottom left
+            (x + std::cos(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / windowSize.x - 1.0f,
+            (y + std::sin(angle - PI * 3.0f / 4.0f) * radius) * 2.0f / windowSize.y - 1.0f,
+            squareColor.x, squareColor.y, squareColor.z, squareColor.w,
+            // top right
+            (x + std::cos(angle + PI / 4.0f) * radius) * 2.0f / windowSize.x - 1.0f,
+            (y + std::sin(angle + PI / 4.0f) * radius) * 2.0f / windowSize.y - 1.0f,
+            squareColor.x, squareColor.y, squareColor.z, squareColor.w,
+            // top left
+            (x + std::cos(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / windowSize.x - 1.0f,
+            (y + std::sin(angle + PI * 3.0f / 4.0f) * radius) * 2.0f / windowSize.y - 1.0f,
+            squareColor.x, squareColor.y, squareColor.z, squareColor.w,
+        };
+        // Fill square's vertices to the vertices list
+        m_vertices.insert(m_vertices.end(), std::begin(squareVertices), std::end(squareVertices));
+    }
+
+    void Demo01_Scene::moveThirdSquare()
+    {
+        // Traverse vertex attributes of third square
+        for (int i = 2 * 6 * 6; i < 3 * 6 * 6; i++)
+        {
+            // If vertex attribute is position
+            if (i % 6 == 0 || i % 6 == 1)
+            {
+                // Move vertex slightly, in X and Y direction equally
+                m_vertices[i] += cos(t * 15.0f) / 300.0f;
+            }
+        }
+
+        // Update the region of vertex buffer the contains the third square
+        m_renderObject.setVertexSubData(&m_vertices[2 * 6 * 6], 2 * 6 * 6 * sizeof(float), 6 * 6 * sizeof(float));
     }
 
 } // namespace Demo

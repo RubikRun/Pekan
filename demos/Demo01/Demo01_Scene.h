@@ -8,16 +8,6 @@
 namespace Demo
 {
 
-	struct Rectangle {
-		int x = 0;
-		int y = 0;
-		int width = 0;
-		int height = 0;
-		int rotation = 0;
-		glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		int id = -1;
-	};
-
 	class Demo01_Scene : public Pekan::Layer
 	{
 	public:
@@ -32,14 +22,18 @@ namespace Demo
 
 		void exit() override;
 
-		void addSquare();
-
-		// Returns a (const) reference to the list of squares
-		inline const std::vector<Rectangle>& getSquares() const { return m_squares; }
-		inline std::vector<Rectangle>& getSquares() { return m_squares; }
-
-		// Attaches a GUI window for controlling background's color
+		// Attaches a GUI window for controlling squares
 		void attachGUIWindow(const std::shared_ptr<const Demo01_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
+
+	private: /* functions */
+
+		// Generates vertices for the square with given index
+		// and fills them to the vertices list.
+		void generateSquareVertices(size_t idx);
+
+		// Moves third square slightly.
+		// More precisely updates third square's position based on current time.
+		void moveThirdSquare();
 
 	private: /* variables */
 
@@ -47,14 +41,10 @@ namespace Demo
 
 		std::shared_ptr<const Demo01_GUIWindow> m_guiWindow;
 
-		// List holding currently existing squares
-		std::vector<Rectangle> m_squares;
-		// Array of vertex data of currently existing squares
+		// Array of vertex data of current squares
 		std::vector<float> m_vertices;
 
 		float t = 0.0f;
-
-		glm::ivec2 m_resolution;
 	};
 
 } // namespace Demo

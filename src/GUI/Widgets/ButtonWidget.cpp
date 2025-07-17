@@ -1,4 +1,4 @@
-#include "TextWidget.h"
+#include "ButtonWidget.h"
 
 #include "PekanLogger.h"
 #include "GUI.h"
@@ -10,20 +10,20 @@ namespace Pekan
 {
 namespace GUI
 {
-	TextWidget::TextWidget()
+	ButtonWidget::ButtonWidget()
 		: m_id(GUI::generateWidgetId())
 	{}
-	TextWidget::TextWidget(const char* text)
-		: m_text(text)
+	ButtonWidget::ButtonWidget(const char* label)
+		: m_label(label)
 		, m_id(GUI::generateWidgetId())
 	{}
 
-	void TextWidget::render() const
+	void ButtonWidget::render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
 
 		ImGui::PushID(m_id);
-		ImGui::Text(m_text.c_str());
+		m_isClicked = ImGui::Button(m_label.c_str());
 		ImGui::PopID();
 	}
 

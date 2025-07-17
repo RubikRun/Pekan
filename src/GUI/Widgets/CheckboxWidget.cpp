@@ -1,4 +1,4 @@
-#include "ColorEdit3Widget.h"
+#include "CheckboxWidget.h"
 
 #include "PekanLogger.h"
 #include "GUI.h"
@@ -10,29 +10,29 @@ namespace Pekan
 {
 namespace GUI
 {
-	ColorEdit3Widget::ColorEdit3Widget()
+	CheckboxWidget::CheckboxWidget()
 		: m_id(GUI::generateWidgetId())
 	{}
-	ColorEdit3Widget::ColorEdit3Widget(glm::vec3 initialValue)
-		: m_value(initialValue)
+	CheckboxWidget::CheckboxWidget(bool initialIsChecked)
+		: m_isChecked(initialIsChecked)
 		, m_id(GUI::generateWidgetId())
 	{}
-	ColorEdit3Widget::ColorEdit3Widget(const char* label)
+	CheckboxWidget::CheckboxWidget(const char* label)
 		: m_label(label)
 		, m_id(GUI::generateWidgetId())
 	{}
-	ColorEdit3Widget::ColorEdit3Widget(const char* label, glm::vec3 initialValue)
+	CheckboxWidget::CheckboxWidget(const char* label, bool initialIsChecked)
 		: m_label(label)
-		, m_value(initialValue)
+		, m_isChecked(initialIsChecked)
 		, m_id(GUI::generateWidgetId())
 	{}
 
-	void ColorEdit3Widget::render() const
+	void CheckboxWidget::render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
 
 		ImGui::PushID(m_id);
-		ImGui::ColorEdit3(m_label.c_str(), (float*)(&m_value));
+		ImGui::Checkbox(m_label.c_str(), &m_isChecked);
 		ImGui::PopID();
 	}
 

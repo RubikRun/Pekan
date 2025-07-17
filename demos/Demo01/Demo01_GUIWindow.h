@@ -3,7 +3,11 @@
 #include "PekanGUIWindow.h"
 using Pekan::PekanGUIWindow;
 
-#include <glm/glm.hpp>
+#include "CheckboxWidget.h"
+#include "ButtonWidget.h"
+#include "TextWidget.h"
+#include "SliderIntWidget.h"
+#include "ColorEdit4Widget.h"
 
 namespace Demo
 {
@@ -16,23 +20,43 @@ namespace Demo
 
 		Demo01_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
 
-		inline void attachScene(const std::shared_ptr<Demo01_Scene>& scene) { m_scene = scene; }
+		inline bool getMoveThirdSquare() const { return gui.checkboxWidget_moveThirdSquare.isChecked(); }
+		inline int getSquareX(size_t idx) const { return gui.squares[idx].sliderWidget_x.getValue(); }
+		inline int getSquareY(size_t idx) const { return gui.squares[idx].sliderWidget_y.getValue(); }
+		inline int getSquareSize(size_t idx) const { return gui.squares[idx].sliderWidget_size.getValue(); }
+		inline int getSquareRotation(size_t idx) const { return gui.squares[idx].sliderWidget_rotation.getValue(); }
+		inline glm::vec4 getSquareColor(size_t idx) const { return gui.squares[idx].colorWidget.getValue(); }
 
-		inline bool getMoveThirdSquare() const { return m_moveThirdSquare; }
+		inline int getNumberOfSquares() const { return gui.squares.size(); }
 
 	private: /* functions */
 
+		bool init() override;
+
 		void _render() override;
 
-		bool init() override;
+		void update(double deltaTime) override;
+
+		Pekan::GUIWindowProperties getProperties() override;
 
 	private: /* variables */
 
-		std::shared_ptr<Demo01_Scene> m_scene;
+		struct Widgets
+		{
+			struct SquareWidgets
+			{
+				Pekan::GUI::TextWidget textWidget_name;
+				Pekan::GUI::SliderIntWidget sliderWidget_x;
+				Pekan::GUI::SliderIntWidget sliderWidget_y;
+				Pekan::GUI::SliderIntWidget sliderWidget_size;
+				Pekan::GUI::SliderIntWidget sliderWidget_rotation;
+				Pekan::GUI::ColorEdit4Widget colorWidget;
+			};
 
-		glm::ivec2 m_resolution = glm::ivec2(0, 0);
-
-		bool m_moveThirdSquare = false;
+			Pekan::GUI::CheckboxWidget checkboxWidget_moveThirdSquare;
+			Pekan::GUI::ButtonWidget buttonWidget_addSquare;
+			std::vector<SquareWidgets> squares;
+		} gui;
 	};
 
 } // namespace Demo

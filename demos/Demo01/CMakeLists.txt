@@ -16,6 +16,7 @@ add_executable(Demo01
 target_link_libraries(Demo01 PRIVATE
     Core
     Renderer
+    GUI
 )
 
 # Set Demo01's working directory to be Demo01's source directory

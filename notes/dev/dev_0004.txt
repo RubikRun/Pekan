@@ -3872,4 +3872,43 @@ and I added this virtual function there
 allowing derived classes to specify the properties that they want for their window. (just size and name, for now)
 Demo00's GUI code looks much better now and it doesn't directly use ImGui at all.
 
+----------
+15.07.2025
+----------
+
+Let's do one more demo
+    Demo01
+and then refactor a bit.
+
+Did Demo01.
+It was a bit more complicated.
+One thing worth mentioning:
+Added IDs to all widget types.
+    int m_id = -1;
+The reason for this is that ImGui uses widgets' labels as IDs.
+I don't want that for Pekan. It makes no sense.
+For example, in Demo01 each square has a bunch of parameters labeled "X", "Y", "Size", "Color".
+In ImGui we can't just have multiple sliders with the same label "X", because this "X" is the ID.
+To avoid this ImGui provides these 2 functions
+    ImGui::PushID(...);
+    ImGui::PopID();
+That open a "unique ID" scope, like a namespace for labels and IDs or sth like that.
+Basically you can do
+    ImGui::PushID(0);
+    // render a slider with label "X"
+    ImGui::PopID();
+    ImGui::PushID(1);
+    // render a slider with label "X"
+    ImGui::PopID();
+and that's how you can render 2 sliders with the same label "X".
+I want to do this internally instead of requiring that client code do it.
+So, that's why each widget needs an ID.
+Then in the render function we can do
+    ImGui::PushID(m_id);
+    // render widget
+    ImGui::PopID();
+It works!
+
+Demo01's GUI code looks much better now and it doesn't directly use ImGui at all.
+
 }

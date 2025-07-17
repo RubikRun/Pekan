@@ -1,4 +1,4 @@
-#include "ColorEdit3Widget.h"
+#include "SliderIntWidget.h"
 
 #include "PekanLogger.h"
 #include "GUI.h"
@@ -10,29 +10,32 @@ namespace Pekan
 {
 namespace GUI
 {
-	ColorEdit3Widget::ColorEdit3Widget()
+	SliderIntWidget::SliderIntWidget()
 		: m_id(GUI::generateWidgetId())
 	{}
-	ColorEdit3Widget::ColorEdit3Widget(glm::vec3 initialValue)
+	SliderIntWidget::SliderIntWidget(int initialValue, int min, int max)
 		: m_value(initialValue)
+		, m_min(min), m_max(max)
 		, m_id(GUI::generateWidgetId())
 	{}
-	ColorEdit3Widget::ColorEdit3Widget(const char* label)
+	SliderIntWidget::SliderIntWidget(const char* label, int min, int max)
 		: m_label(label)
+		, m_min(min), m_max(max)
 		, m_id(GUI::generateWidgetId())
 	{}
-	ColorEdit3Widget::ColorEdit3Widget(const char* label, glm::vec3 initialValue)
+	SliderIntWidget::SliderIntWidget(const char* label, int initialValue, int min, int max)
 		: m_label(label)
 		, m_value(initialValue)
+		, m_min(min), m_max(max)
 		, m_id(GUI::generateWidgetId())
 	{}
 
-	void ColorEdit3Widget::render() const
+	void SliderIntWidget::render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
 
 		ImGui::PushID(m_id);
-		ImGui::ColorEdit3(m_label.c_str(), (float*)(&m_value));
+		ImGui::SliderInt(m_label.c_str(), &m_value, m_min, m_max);
 		ImGui::PopID();
 	}
 

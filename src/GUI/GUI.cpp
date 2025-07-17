@@ -13,6 +13,7 @@ namespace Pekan
 {
 namespace GUI
 {
+    int GUI::m_nextWidgetId = 0;
 
 	static GUI g_gui;
 
@@ -25,6 +26,11 @@ namespace GUI
 	{
 		return &g_gui;
 	}
+
+    int GUI::generateWidgetId()
+    {
+        return m_nextWidgetId++;
+    }
 
 	void GUI::init()
 	{
