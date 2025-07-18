@@ -13,6 +13,7 @@ namespace Pekan
 {
 namespace GUI
 {
+
     int GUI::m_nextWidgetId = 0;
 
 	static GUI g_gui;

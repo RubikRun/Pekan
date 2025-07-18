@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
+#include "Widget.h"
 
+#include <string>
 #include <glm/glm.hpp>
 
 namespace Pekan
@@ -9,30 +10,36 @@ namespace Pekan
 namespace GUI
 {
 
-	class ColorEdit3Widget
+	// A widget allowing control over an RGB color parameter in GUI.
+	//
+	// NOTE: Instances of this class MUST be owned by a ColorEdit3Widget_Ptr
+	class ColorEdit3Widget : public Widget
 	{
 	public:
 
-		ColorEdit3Widget();
-		ColorEdit3Widget(glm::vec3 initialValue);
-		ColorEdit3Widget(const char* label);
-		ColorEdit3Widget(const char* label, glm::vec3 initialValue);
-
-		void render() const;
+		void create(GUIWindow* guiWindow);
+		void create(GUIWindow* guiWindow, glm::vec3 initialValue);
+		void create(GUIWindow* guiWindow, const char* label);
+		void create(GUIWindow* guiWindow, const char* label, glm::vec3 initialValue);
+		void destroy();
 
 		inline glm::vec3 getValue() const { return m_value; }
 
-	private:
+	private: /* functions */
+
+		void _render() const override;
+
+	private: /* variables */
 
 		// Label to be displayed next to the widget
 		std::string m_label;
 
 		// The 3 values making up the color
 		mutable glm::vec3 m_value = { 1.0f, 1.0f, 1.0f };
-
-		// Widget's ID in the GUI subsystem
-		int m_id = -1;
 	};
+
+	typedef std::shared_ptr<ColorEdit3Widget> ColorEdit3Widget_Ptr;
+	typedef std::shared_ptr<const ColorEdit3Widget> ColorEdit3Widget_ConstPtr;
 
 } // namespace GUI
 } // namespace Pekan

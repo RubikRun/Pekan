@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
+#include "Widget.h"
 
+#include <string>
 #include <glm/glm.hpp>
 
 namespace Pekan
@@ -9,28 +10,33 @@ namespace Pekan
 namespace GUI
 {
 
-	class ButtonWidget
+	// A button widget allowing you to push it in GUI and cause some event.
+	//
+	// NOTE: Instances of this class MUST be owned by a ButtonWidget_Ptr
+	class ButtonWidget : public Widget
 	{
 	public:
 
-		ButtonWidget();
-		ButtonWidget(const char* label);
-
-		void render() const;
+		void create(GUIWindow* guiWindow);
+		void create(GUIWindow* guiWindow, const char* label);
 
 		inline bool isClicked() const { return m_isClicked; }
 
-	private:
+	private: /* functions */
+
+		void _render() const override;
+
+	private: /* variables */
 
 		// Label to be displayed next to the widget
 		std::string m_label;
 
 		// The "is currently clicked" state of the button
 		mutable bool m_isClicked = false;
-
-		// Widget's ID in the GUI subsystem
-		int m_id = -1;
 	};
+
+	typedef std::shared_ptr<ButtonWidget> ButtonWidget_Ptr;
+	typedef std::shared_ptr<const ButtonWidget> ButtonWidget_ConstPtr;
 
 } // namespace GUI
 } // namespace Pekan

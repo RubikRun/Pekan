@@ -3,6 +3,10 @@
 #include "Layer.h"
 #include <glm/glm.hpp>
 
+#include "Widget.h"
+
+#include <vector>
+
 namespace Pekan
 {
 namespace GUI
@@ -24,15 +28,23 @@ namespace GUI
 
 		GUIWindow(Pekan::PekanApplication* application) : Layer("gui_layer", application) {}
 		GUIWindow(const std::string& layerName, Pekan::PekanApplication* application) : Layer(layerName, application) {}
-
 		virtual ~GUIWindow() = default;
 
 		void render() override final;
 
+		// Adds a widget to the GUI window.
+		// Widgets added here will be automatically rendered when the GUI window is rendred
+		// in the order in which they were added.
+		//
+		// NOTE: If you want finer control over the rendering of your widgets,
+		// there is no need to add them here,
+		// you can override _render() and render them manually there.
+		void addWidget(const Widget_ConstPtr& widget);
+
 	private: /* functions*/
 
-		// To be implemented by derived classes to render specific widgets
-		virtual void _render() = 0;
+		// Can be implemented by derived classes with specific render functionality.
+		virtual void _render() {}
 
 		// Can be implemented by derived classes to return specific properties of the GUI window
 		virtual GUIWindowProperties getProperties() { return {}; }
@@ -46,6 +58,11 @@ namespace GUI
 		bool onMouseScrolled(const MouseScrolledEvent& event) override;
 		bool onMouseButtonPressed(const MouseButtonPressedEvent& event) override;
 		bool onMouseButtonReleased(const MouseButtonReleasedEvent& event) override;
+
+	private: /* variables */
+
+		// Widgets making up the GUI inside the window.
+		std::vector<Widget_ConstPtr> m_widgets;
 	};
 
 } // namespace GUI

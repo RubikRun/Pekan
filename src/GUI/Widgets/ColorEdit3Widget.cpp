@@ -1,7 +1,6 @@
 #include "ColorEdit3Widget.h"
 
 #include "PekanLogger.h"
-#include "GUI.h"
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -10,30 +9,38 @@ namespace Pekan
 {
 namespace GUI
 {
-	ColorEdit3Widget::ColorEdit3Widget()
-		: m_id(GUI::generateWidgetId())
-	{}
-	ColorEdit3Widget::ColorEdit3Widget(glm::vec3 initialValue)
-		: m_value(initialValue)
-		, m_id(GUI::generateWidgetId())
-	{}
-	ColorEdit3Widget::ColorEdit3Widget(const char* label)
-		: m_label(label)
-		, m_id(GUI::generateWidgetId())
-	{}
-	ColorEdit3Widget::ColorEdit3Widget(const char* label, glm::vec3 initialValue)
-		: m_label(label)
-		, m_value(initialValue)
-		, m_id(GUI::generateWidgetId())
-	{}
 
-	void ColorEdit3Widget::render() const
+	void ColorEdit3Widget::create(GUIWindow* guiWindow)
+	{
+		Widget::create(guiWindow);
+	}
+	void ColorEdit3Widget::create(GUIWindow* guiWindow, glm::vec3 initialValue)
+	{
+		Widget::create(guiWindow);
+		m_value = initialValue;
+	}
+	void ColorEdit3Widget::create(GUIWindow* guiWindow, const char* label)
+	{
+		Widget::create(guiWindow);
+		m_label = label;
+	}
+	void ColorEdit3Widget::create(GUIWindow* guiWindow, const char* label, glm::vec3 initialValue)
+	{
+		Widget::create(guiWindow);
+		m_label = label;
+		m_value = initialValue;
+	}
+	void ColorEdit3Widget::destroy()
+	{
+		Widget::destroy();
+		m_label = std::string();
+		m_value = { 1.0f, 1.0f, 1.0f };
+	}
+
+	void ColorEdit3Widget::_render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
-
-		ImGui::PushID(m_id);
 		ImGui::ColorEdit3(m_label.c_str(), (float*)(&m_value));
-		ImGui::PopID();
 	}
 
 } // namespace GUI

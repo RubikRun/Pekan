@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Widget.h"
+
 #include <string>
 
 namespace Pekan
@@ -7,27 +9,31 @@ namespace Pekan
 namespace GUI
 {
 
-	class TextWidget
+	// A widget displaying some text.
+	//
+	// NOTE: Instances of this class MUST be owned by a TextWidget_Ptr
+	class TextWidget : public Widget
 	{
 	public:
 
-		// Creates a text widget with empty text
-		TextWidget();
-		// Creates a text widget with a given text
-		TextWidget(const char* text);
-
-		void render() const;
+		void create(GUIWindow* guiWindow);
+		void create(GUIWindow* guiWindow, const char* text);
+		void destroy();
 
 		inline const std::string& getText() const { return m_text; }
 
-	private:
+	private: /* functions */
+
+		void _render() const override;
+
+	private: /* variables */
 
 		// Text to be displayed on the text widget
 		std::string m_text;
-
-		// Widget's ID in the GUI subsystem
-		int m_id = -1;
 	};
+
+	typedef std::shared_ptr<TextWidget> TextWidget_Ptr;
+	typedef std::shared_ptr<const TextWidget> TextWidget_ConstPtr;
 
 } // namespace GUI
 } // namespace Pekan

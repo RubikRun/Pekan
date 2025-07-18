@@ -16,16 +16,14 @@ namespace Demo
 		Demo00_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
 		// Returns current value of the "clear color" parameter
-		inline glm::vec4 getClearColor() const { return glm::vec4(gui.colorEditWidget.getValue(), 1.0f); }
+		glm::vec4 getClearColor() const;
 
 		// Returns current value of the "position" parameter.
-		inline glm::vec2 getPosition() const { return gui.positionWidget.getValue(); }
+		glm::vec2 getPosition() const;
 
 	private: /* functions */
 
 		bool init() override;
-
-		void _render() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() override;
 
@@ -33,10 +31,10 @@ namespace Demo
 
 		struct Widgets
 		{
-			Pekan::GUI::TextWidget textWidget_backgroundColor;
-			Pekan::GUI::ColorEdit3Widget colorEditWidget;
-			Pekan::GUI::TextWidget textWidget_position;
-			Pekan::GUI::DragFloat2Widget positionWidget;
+			Pekan::GUI::TextWidget_Ptr textWidget_backgroundColor    = std::make_shared<Pekan::GUI::TextWidget>();
+			Pekan::GUI::ColorEdit3Widget_Ptr colorEditWidget         = std::make_shared<Pekan::GUI::ColorEdit3Widget>();
+			Pekan::GUI::TextWidget_Ptr textWidget_position           = std::make_shared<Pekan::GUI::TextWidget>();
+			Pekan::GUI::DragFloat2Widget_Ptr positionWidget          = std::make_shared<Pekan::GUI::DragFloat2Widget>();
 		} gui;
 	};
 

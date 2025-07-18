@@ -19,20 +19,18 @@ namespace Demo
 
 		Demo01_GUIWindow(Pekan::PekanApplication* application) : Pekan::GUI::GUIWindow(application) {}
 
-		inline bool getMoveThirdSquare() const { return gui.checkboxWidget_moveThirdSquare.isChecked(); }
-		inline int getSquareX(size_t idx) const { return gui.squares[idx].sliderWidget_x.getValue(); }
-		inline int getSquareY(size_t idx) const { return gui.squares[idx].sliderWidget_y.getValue(); }
-		inline int getSquareSize(size_t idx) const { return gui.squares[idx].sliderWidget_size.getValue(); }
-		inline int getSquareRotation(size_t idx) const { return gui.squares[idx].sliderWidget_rotation.getValue(); }
-		inline glm::vec4 getSquareColor(size_t idx) const { return gui.squares[idx].colorWidget.getValue(); }
+		bool getMoveThirdSquare() const;
+		int getSquareX(size_t idx) const;
+		int getSquareY(size_t idx) const;
+		int getSquareSize(size_t idx) const;
+		int getSquareRotation(size_t idx) const;
+		glm::vec4 getSquareColor(size_t idx) const;
 
 		inline int getNumberOfSquares() const { return gui.squares.size(); }
 
 	private: /* functions */
 
 		bool init() override;
-
-		void _render() override;
 
 		void update(double deltaTime) override;
 
@@ -44,16 +42,17 @@ namespace Demo
 		{
 			struct SquareWidgets
 			{
-				Pekan::GUI::TextWidget textWidget_name;
-				Pekan::GUI::SliderIntWidget sliderWidget_x;
-				Pekan::GUI::SliderIntWidget sliderWidget_y;
-				Pekan::GUI::SliderIntWidget sliderWidget_size;
-				Pekan::GUI::SliderIntWidget sliderWidget_rotation;
-				Pekan::GUI::ColorEdit4Widget colorWidget;
+				Pekan::GUI::TextWidget_Ptr textWidget_name =               std::make_shared<Pekan::GUI::TextWidget>();
+				Pekan::GUI::SliderIntWidget_Ptr sliderWidget_x =           std::make_shared<Pekan::GUI::SliderIntWidget>();
+				Pekan::GUI::SliderIntWidget_Ptr sliderWidget_y =           std::make_shared<Pekan::GUI::SliderIntWidget>();
+				Pekan::GUI::SliderIntWidget_Ptr sliderWidget_size =        std::make_shared<Pekan::GUI::SliderIntWidget>();
+				Pekan::GUI::SliderIntWidget_Ptr sliderWidget_rotation =    std::make_shared<Pekan::GUI::SliderIntWidget>();
+				Pekan::GUI::ColorEdit4Widget_Ptr colorWidget =             std::make_shared<Pekan::GUI::ColorEdit4Widget>();
 			};
 
-			Pekan::GUI::CheckboxWidget checkboxWidget_moveThirdSquare;
-			Pekan::GUI::ButtonWidget buttonWidget_addSquare;
+			Pekan::GUI::CheckboxWidget_Ptr checkboxWidget_moveThirdSquare =    std::make_shared<Pekan::GUI::CheckboxWidget>();
+			Pekan::GUI::ButtonWidget_Ptr buttonWidget_addSquare =              std::make_shared<Pekan::GUI::ButtonWidget>();
+
 			std::vector<SquareWidgets> squares;
 		} gui;
 	};

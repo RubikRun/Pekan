@@ -3920,6 +3920,83 @@ and then we'll proceed to implementing all widget types for all demos.
 
 First thing that I'll have to do is to move PekanGUIWindow to the GUI module.
 Done.
+Moved it to the GUI module and renamed it to GUIWindow.
 Only changed Demo00 and Demo01 to work with it. I'll have to fix the rest later.
+
+Now, the problem that I'm trying to solve with this refactoring
+is that currently in demo applications we have to call create() on each widget in the init() function
+and then call render() on each widget in the render() function.
+It would be good to automate this so that creating the widgets automatically makes them be rendered.
+If client code needs some special logic around this they can still do it manually,
+but 90% of the time we just want to create all widgets and render all widgets,
+so it's good to make this be the default behavior.
+
+The way we'll do that is to have a base class
+    Widget
+that all widget types inherit from. It will provide a render() function and will hold the widget's ID.
+Then in GUIWindow we'll keep track of a list of widgets.
+In each widget's create() function we'll take in a GUIWindow pointer
+to the window where that widget will be added.
+So, when you create a widget it will automatically get added to GUIWindow's list of widgets.
+Then, of course, this list of widgets will automatically be rendered in GUIWindow's render() function.
+If client code does NOT want this to happen, they can just pass nullptr as the GUIWindow pointer when creating a widget
+and then the widget will NOT be added to GUIWindow's list and client code will have to manually render it
+in their render() function the way they do it now.
+
+Okay, so that's exactly what I did.
+There were some complications.
+Most notably, in Widget's create() function
+    void create(GUIWindow* guiWindow)
+we can't just do this
+    guiWindow->addWidget(this);
+because this "addWidget" function looks like
+    void addWidget(const Widget_ConstPtr& widget);
+It takes in a shared_ptr<const Widget>, so we can't just pass a raw Widget* pointer
+("this" is a raw Widget* pointer)
+There is a special thing in C++ for handling this issue
+    std::enable_shared_from_this
+We can make class Widget derive from std::enable_shared_from_this like this:
+    class Widget : public std::enable_shared_from_this<Widget>
+and then in Widget's create() function we can do this:
+(IMPORTANT: this would not work in a constructor, has to be a member function)
+    guiWindow->addWidget(shared_from_this());
+basically getting a shared_ptr from the raw "this".
+
+There is a small issue with this.
+Now we have to force users of widgets classes to always use shared_ptr for their widgets.
+If client code does has a text widget as a member variable like this:
+    Pekan::GUI::TextWidget m_textWidget;
+and then calls
+    m_textWidget.create(this, "sometext");
+it will crash, because the TextWidget instance is NOT owned by a shared_ptr, and so
+    shared_from_this()
+will fail to get shared_ptr from "this".
+Instead, client code must do this:
+    Pekan::GUI::TextWidget_Ptr m_textWidget = std::make_shared<Pekan::GUI::TextWidget>();
+and then call
+    m_textWidget->create(this, "sometext");
+Now it will work fine.
+It's a bit annoying that we force client code to use shared_ptr with their widgets,
+but I'm not going to think of a better solution right now.
+It's not that important, and I'm not even sure if this GUI subsystem will be alive for long,
+we might remove it completely in the future, or change it fundamentally.
+...
+There is one thing that can be done to avoid the crash and provide an error message instead.
+Of course, avoiding the crash, means that the widget will NOT be added to GUI window so it will NOT be rendered,
+but I guess that's better than a crash.
+We can explicitly check if the widget is owned by a shared_ptr in Widget's create() function like this:
+    if (!weak_from_this().expired())
+If it's NOT owned by a shared_ptr we can log an error and assert
+    PK_LOG_ERROR(...);
+    PK_ASSERT_QUICK(false);
+AND of course NOT call
+    guiWindow->addWidget(shared_from_this());
+so that we don't get the crash.
+Also, added a NOTE on every widget class explaining that a shared_ptr must be used:
+    // NOTE: Instances of this class MUST be owned by a TextWidget_Ptr
+
+That's it.
+Changed Demo00 and Demo01 to work with the new widgets API.
+It seems to work.
 
 }

@@ -1,27 +1,33 @@
 #include "Demo00_GUIWindow.h"
 
+#include "PekanLogger.h"
+
 using namespace Pekan;
 using namespace Pekan::GUI;
 
 namespace Demo
 {
 
-	bool Demo00_GUIWindow::init()
+	glm::vec4 Demo00_GUIWindow::getClearColor() const
 	{
-		gui.textWidget_backgroundColor = TextWidget("Background Color");
-		gui.colorEditWidget = ColorEdit3Widget({ 0.30f, 0.55f, 0.60f });
-		gui.textWidget_position = TextWidget("Position");
-		gui.positionWidget = DragFloat2Widget({ 0.0f, 0.0f }, -1.0f, 1.0f, 0.01f);
-
-		return true;
+		PK_ASSERT_QUICK(gui.colorEditWidget != nullptr);
+		return glm::vec4(gui.colorEditWidget->getValue(), 1.0f);
 	}
 
-	void Demo00_GUIWindow::_render()
+	glm::vec2 Demo00_GUIWindow::getPosition() const
 	{
-		gui.textWidget_backgroundColor.render();
-		gui.colorEditWidget.render();
-		gui.textWidget_position.render();
-		gui.positionWidget.render();
+		PK_ASSERT_QUICK(gui.positionWidget != nullptr);
+		return gui.positionWidget->getValue();
+	}
+
+	bool Demo00_GUIWindow::init()
+	{
+		gui.textWidget_backgroundColor->create(this, "Background Color");
+		gui.colorEditWidget->create(this, { 0.30f, 0.55f, 0.60f });
+		gui.textWidget_position->create(this, "Position");
+		gui.positionWidget->create(this, { 0.0f, 0.0f }, -1.0f, 1.0f, 0.01f);
+
+		return true;
 	}
 
 	GUIWindowProperties Demo00_GUIWindow::getProperties()

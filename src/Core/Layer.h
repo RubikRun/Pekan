@@ -36,6 +36,7 @@ namespace Pekan
 		std::string m_name;
 	};
 
-	typedef std::shared_ptr<Layer> LayerPtr;
+	typedef std::shared_ptr<Layer> Layer_Ptr;
+	typedef std::shared_ptr<const Layer> Layer_ConstPtr;
 
 } // namespace Pekan

@@ -32,6 +32,12 @@ namespace GUI
         ImGui::SetNextWindowSize(ImVec2(properties.size.x, properties.size.y));
         ImGui::Begin(properties.name.c_str());
 
+        // Render all widgets of the GUI window
+        for (const Widget_ConstPtr& widget : m_widgets)
+        {
+            widget->render();
+        }
+        // Call derived class' render function
         _render();
 
         ImGui::End();
@@ -51,6 +57,11 @@ namespace GUI
             glfwMakeContextCurrent(backup_current_context);
         }
 	}
+
+    void GUIWindow::addWidget(const Widget_ConstPtr& widget)
+    {
+        m_widgets.push_back(widget);
+    }
 
     bool GUIWindow::onKeyPressed(const KeyPressedEvent& event)
     {

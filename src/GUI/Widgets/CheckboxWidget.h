@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
+#include "Widget.h"
 
+#include <string>
 #include <glm/glm.hpp>
 
 namespace Pekan
@@ -9,30 +10,35 @@ namespace Pekan
 namespace GUI
 {
 
-	class CheckboxWidget
+	// A checkbox widget allowing control over a boolean parameter in GUI.
+	//
+	// NOTE: Instances of this class MUST be owned by a CheckboxWidget_Ptr
+	class CheckboxWidget : public Widget
 	{
 	public:
 
-		CheckboxWidget();
-		CheckboxWidget(bool initialIsChecked);
-		CheckboxWidget(const char* label);
-		CheckboxWidget(const char* label, bool initialIsChecked);
-
-		void render() const;
+		void create(GUIWindow* guiWindow);
+		void create(GUIWindow* guiWindow, bool initialIsChecked);
+		void create(GUIWindow* guiWindow, const char* label);
+		void create(GUIWindow* guiWindow, const char* label, bool initialIsChecked);
 
 		inline bool isChecked() const { return m_isChecked; }
 
-	private:
+	private: /* functions */
+
+		void _render() const override;
+
+	private: /* variables */
 
 		// Label to be displayed next to the widget
 		std::string m_label;
 
 		// The checked states of the checkbox
 		mutable bool m_isChecked = false;
-
-		// Widget's ID in the GUI subsystem
-		int m_id = -1;
 	};
+
+	typedef std::shared_ptr<CheckboxWidget> CheckboxWidget_Ptr;
+	typedef std::shared_ptr<const CheckboxWidget> CheckboxWidget_ConstPtr;
 
 } // namespace GUI
 } // namespace Pekan

@@ -7,6 +7,8 @@ add_library(GUI STATIC
     GUI.cpp
     GUIWindow.h
     GUIWindow.cpp
+    Widgets/Widget.h
+    Widgets/Widget.cpp
     Widgets/TextWidget.h
     Widgets/TextWidget.cpp
     Widgets/ColorEdit3Widget.h
@@ -32,6 +34,7 @@ SOURCE_GROUP("Source Files\\Widgets" FILES
     Widgets/ButtonWidget.cpp
     Widgets/SliderIntWidget.cpp
     Widgets/ColorEdit4Widget.cpp
+    Widgets/Widget.cpp
 )
 SOURCE_GROUP("Header Files\\Widgets" FILES
     Widgets/TextWidget.h
@@ -41,6 +44,7 @@ SOURCE_GROUP("Header Files\\Widgets" FILES
     Widgets/ButtonWidget.h
     Widgets/SliderIntWidget.h
     Widgets/ColorEdit4Widget.h
+    Widgets/Widget.h
 )
 
 # Set include directories for GUI

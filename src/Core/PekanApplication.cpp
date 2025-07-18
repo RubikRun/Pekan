@@ -32,7 +32,7 @@ namespace Pekan
         }
 
         // Initalize all layers
-        for (LayerPtr& layer : m_layerStack)
+        for (Layer_Ptr& layer : m_layerStack)
         {
             if (layer != nullptr)
             {
@@ -82,7 +82,7 @@ namespace Pekan
             const double deltaTime = m_deltaTimer.getDeltaTime();
 
             // Update all layers
-            for (LayerPtr layer : m_layerStack)
+            for (Layer_Ptr layer : m_layerStack)
             {
                 if (layer != nullptr)
                 {
@@ -90,7 +90,7 @@ namespace Pekan
                 }
             }
             // Render all layers
-            for (LayerPtr layer : m_layerStack)
+            for (Layer_Ptr layer : m_layerStack)
             {
                 if (layer != nullptr)
                 {
@@ -113,7 +113,7 @@ namespace Pekan
     void PekanApplication::exit()
     {
         // Exit all layers
-        for (LayerPtr layer : m_layerStack)
+        for (Layer_Ptr layer : m_layerStack)
         {
             if (layer != nullptr)
             {

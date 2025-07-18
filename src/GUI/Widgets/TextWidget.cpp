@@ -1,7 +1,6 @@
 #include "TextWidget.h"
 
 #include "PekanLogger.h"
-#include "GUI.h"
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -10,21 +9,26 @@ namespace Pekan
 {
 namespace GUI
 {
-	TextWidget::TextWidget()
-		: m_id(GUI::generateWidgetId())
-	{}
-	TextWidget::TextWidget(const char* text)
-		: m_text(text)
-		, m_id(GUI::generateWidgetId())
-	{}
 
-	void TextWidget::render() const
+	void TextWidget::create(GUIWindow* guiWindow)
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		Widget::create(guiWindow);
+	}
+	void TextWidget::create(GUIWindow* guiWindow, const char* text)
+	{
+		Widget::create(guiWindow);
+		m_text = text;
+	}
+	void TextWidget::destroy()
+	{
+		Widget::destroy();
+		m_text = std::string();
+	}
 
-		ImGui::PushID(m_id);
+	void TextWidget::_render() const
+	{
+		PK_ASSERT_QUICK(isValid());
 		ImGui::Text(m_text.c_str());
-		ImGui::PopID();
 	}
 
 } // namespace GUI

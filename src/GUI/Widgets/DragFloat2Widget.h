@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
+#include "Widget.h"
 
+#include <string>
 #include <glm/glm.hpp>
 
 namespace Pekan
@@ -9,20 +10,25 @@ namespace Pekan
 namespace GUI
 {
 
-	class DragFloat2Widget
+	// A widget allowing control over a 2 floating point number parameter in GUI.
+	//
+	// NOTE: Instances of this class MUST be owned by a DragFloat2Widget_Ptr
+	class DragFloat2Widget : public Widget
 	{
 	public:
 
-		DragFloat2Widget();
-		DragFloat2Widget(glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f);
-		DragFloat2Widget(const char* label, float min = 0.0f, float max = 1.0f, float step = 0.01f);
-		DragFloat2Widget(const char* label, glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f);
-
-		void render() const;
+		void create(GUIWindow* guiWindow);
+		void create(GUIWindow* guiWindow, glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f);
+		void create(GUIWindow* guiWindow, const char* label, float min = 0.0f, float max = 1.0f, float step = 0.01f);
+		void create(GUIWindow* guiWindow, const char* label, glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f);
 
 		inline glm::vec2 getValue() const { return m_value; }
 
-	private:
+	private: /* functions */
+
+		void _render() const override;
+
+	private: /* variables */
 
 		// Label to be displayed next to the widget
 		std::string m_label;
@@ -41,10 +47,10 @@ namespace GUI
 		// This is the smallest change that you can do to a value by dragging.
 		// It determines how precisely you can drag.
 		float m_step = 0.01f;
-
-		// Widget's ID in the GUI subsystem
-		int m_id = -1;
 	};
+
+	typedef std::shared_ptr<DragFloat2Widget> DragFloat2Widget_Ptr;
+	typedef std::shared_ptr<const DragFloat2Widget> DragFloat2Widget_ConstPtr;
 
 } // namespace GUI
 } // namespace Pekan
