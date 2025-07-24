@@ -10,7 +10,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A class representing a batch of 2D shapes.
@@ -60,5 +60,5 @@ namespace Renderer
 		bool m_isValid = false;
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

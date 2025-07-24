@@ -11,4 +11,4 @@ add_library(Tools STATIC
 target_include_directories(Tools PUBLIC .)
 
 # Set link libraries for Tools
-target_link_libraries(Tools PRIVATE Core Renderer)
+target_link_libraries(Tools PRIVATE Core Renderer2D)

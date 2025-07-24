@@ -3303,7 +3303,7 @@ But for now we'll not worry about that.
 For now requiring that client code include the subsystems that it needs, is an okay solution.
 So, TL;DR client code will have to do something like that in their main function
     #include "Graphics.h"
-    #include "Renderer2D.h"
+    #include "Renderer2DSystem.h"
     ...
     int main()
     {
@@ -4056,4 +4056,60 @@ Did that. No major design issues followed.
 
 That's it.
 Everything works. GUI subsystem looks good.
+}
+
+----------
+24.07.2025
+----------
+
+{
+Okay, we have only a few TO-DO items remaining to finish v0.2,
+and they are small ones (seems like).
+
+Next TO-DO item is
+    Rename project Renderer to Renderer2D. Let's have a single subsystem per module and their names to always match.
+
+Okay, renamed Renderer to Renderer2D everywhere.
+This makes the class Renderer2D ambiguous in client code, for example if we have
+    using namespace Pekan::Renderer2D;
+    ...
+    Renderer2D::beginFrame()
+That's a bit annoying. We can do a workaround by aliasing class Renderer2D
+    using Renderer = Pekan::Renderer2D::Renderer2D;
+    ...
+    Renderer::beginFrame();
+but this is also not ideal.
+It's be better to rename class Renderer2D to something more descriptive
+so that it's not the same as the Renderer2D namespace.
+So let's rename it to
+    class Renderer2DSystem
+We'll later rename GUI to GUISubsystem, etc. as well (created a TO-DO item).
+Yeah, that's better.
+Now client code can say, unambiguously:
+    using namespace Pekan::Renderer2D;
+    ...
+    Renderer2DSystem::beginFrame();
+Having this name also is suggestive of the architecture of Renderer2DSystem,
+more specifically do we want to have beginFrame() directly inside of the Renderer2D system?
+Do we want to have setCamera() directly inside of the Renderer2D system? etc.
+We'll deal with that sometime in the future.
+Just mentioning that I think Renderer2DSystem is a good name,
+and if
+    Renderer2DSystem::beginFrame()
+doesn't look very clean and doesn't make 100% sense,
+it's just because it doesn't make 100% sense that we have beginFrame() directly inside of the Renderer2D system.
+
+One more related thing to do is to remove the
+    2D
+folder from Renderer2D.
+We had this "2D" folder there because we were going to have a "3D" folder as well
+in the same Renderer module/subsystem.
+But now we decided to have a separate Renderer2D and Renderer3D modules/subsystems,
+so obviously all files inside of Renderer2D are 2D-specific, no need for a "2D" folder.
+
+By the way, some demos don't work at the moment
+because they need their GUI windows to be initialized before their scenes.
+Created a TO-DO item for this.
+
+Done.
 }

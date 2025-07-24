@@ -47,7 +47,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::RenderObject m_renderObject;
+		Pekan::Renderer2D::RenderObject m_renderObject;
 
 		int m_squaresCount = -1;
 

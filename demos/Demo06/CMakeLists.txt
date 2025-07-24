@@ -15,7 +15,7 @@ add_executable(Demo06
 # Set link libraries for Demo06
 target_link_libraries(Demo06 PRIVATE
     Core
-    Renderer
+    Renderer2D
     Tools
     GUI
 )

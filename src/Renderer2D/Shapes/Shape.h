@@ -8,7 +8,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A vertex of a 2D shape
@@ -114,5 +114,5 @@ namespace Renderer
 		mutable bool m_needUpdateTransformMatrix = false;
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

@@ -3,7 +3,7 @@
 #include "Utils/PekanUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
-#include "Renderer2D.h"
+#include "Renderer2DSystem.h"
 
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"
@@ -15,7 +15,7 @@ static const float ZOOM_SPEED = 1.1f;
 
 using namespace Pekan;
 using namespace Pekan::Graphics;
-using namespace Pekan::Renderer;
+using namespace Pekan::Renderer2D;
 using namespace Pekan::Utils;
 using namespace Pekan::Tools;
 
@@ -107,7 +107,7 @@ namespace Demo
 
 	void Demo06_Scene::render() const
 	{
-		Renderer2D::beginFrame();
+		Renderer2DSystem::beginFrame();
 		RenderCommands::clear();
 
 		if (m_guiWindow->isEnabledRectangles())
@@ -160,7 +160,7 @@ namespace Demo
 
 		m_centerSquare.render();
 
-		Renderer2D::endFrame();
+		Renderer2DSystem::endFrame();
 	}
 
 	void Demo06_Scene::exit()
@@ -216,7 +216,7 @@ namespace Demo
 		m_cameraSecond->setSize(m_bbox.size.x, m_bbox.size.y);
 		m_cameraSecond->setPosition(m_bbox.center);
 
-		Renderer2D::setCamera(m_cameraFirst);
+		Renderer2DSystem::setCamera(m_cameraFirst);
 		PekanTools::enableCameraController2D(m_cameraFirst);
 		PekanTools::setCameraController2DZoomSpeed(1.1f);
 	}
@@ -508,12 +508,12 @@ namespace Demo
 			m_currentCameraIdx = (m_currentCameraIdx + 1) % 2;
 			if (m_currentCameraIdx == 0)
 			{
-				Renderer2D::setCamera(m_cameraFirst);
+				Renderer2DSystem::setCamera(m_cameraFirst);
 				PekanTools::enableCameraController2D(m_cameraFirst);
 			}
 			else
 			{
-				Renderer2D::setCamera(m_cameraSecond);
+				Renderer2DSystem::setCamera(m_cameraSecond);
 				PekanTools::enableCameraController2D(m_cameraSecond);
 			}
 			return true;

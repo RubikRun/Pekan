@@ -6,7 +6,7 @@ using namespace Pekan::Graphics;
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	static const BufferDataUsage DEFAULT_VERTEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
@@ -218,5 +218,5 @@ namespace Renderer
 		m_shader.setUniform1i(uniformName, slot);
 	}
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

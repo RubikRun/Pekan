@@ -32,7 +32,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::RenderObject m_renderObject;
+		Pekan::Renderer2D::RenderObject m_renderObject;
 
 		// Cube's vertices
 		std::vector<Vertex> m_vertices;

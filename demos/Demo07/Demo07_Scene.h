@@ -42,15 +42,15 @@ namespace Demo
 
 		std::shared_ptr<const Demo07_GUIWindow> m_guiWindow;
 
-		Pekan::Renderer::Camera2D_Ptr m_camera;
-		std::vector<Pekan::Renderer::LineShape> m_coordSys;
+		Pekan::Renderer2D::Camera2D_Ptr m_camera;
+		std::vector<Pekan::Renderer2D::LineShape> m_coordSys;
 
-		Pekan::Renderer::RectangleShape m_rectangle;
-		Pekan::Renderer::CircleShape m_circle;
-		Pekan::Renderer::CircleShapeStatic<> m_circleStatic;
-		Pekan::Renderer::TriangleShape m_triangle;
-		Pekan::Renderer::PolygonShape m_polygon;
-		Pekan::Renderer::LineShape m_line;
+		Pekan::Renderer2D::RectangleShape m_rectangle;
+		Pekan::Renderer2D::CircleShape m_circle;
+		Pekan::Renderer2D::CircleShapeStatic<> m_circleStatic;
+		Pekan::Renderer2D::TriangleShape m_triangle;
+		Pekan::Renderer2D::PolygonShape m_polygon;
+		Pekan::Renderer2D::LineShape m_line;
 	};
 
 } // namespace Demo

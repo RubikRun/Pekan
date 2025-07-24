@@ -7,7 +7,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A class representing a 2D polygon shape with a solid color
@@ -59,5 +59,5 @@ namespace Renderer
 		mutable bool m_isIndicesTriangleFan = false;
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

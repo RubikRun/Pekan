@@ -70,18 +70,18 @@ namespace Demo
 
 	private: /* variables */
 
-		std::vector<Pekan::Renderer::RectangleShape> m_rectangles;
-		std::vector<Pekan::Renderer::CircleShape> m_circles;
-		std::vector<Pekan::Renderer::CircleShapeStatic<>> m_circlesStatic;
-		std::vector<Pekan::Renderer::TriangleShape> m_triangles;
-		std::vector<Pekan::Renderer::PolygonShape> m_polygons;
-		std::vector<Pekan::Renderer::LineShape> m_lines;
+		std::vector<Pekan::Renderer2D::RectangleShape> m_rectangles;
+		std::vector<Pekan::Renderer2D::CircleShape> m_circles;
+		std::vector<Pekan::Renderer2D::CircleShapeStatic<>> m_circlesStatic;
+		std::vector<Pekan::Renderer2D::TriangleShape> m_triangles;
+		std::vector<Pekan::Renderer2D::PolygonShape> m_polygons;
+		std::vector<Pekan::Renderer2D::LineShape> m_lines;
 
 		// A square in the center of the bounding box, just to make sure that coordinates are resolution-independent
-		Pekan::Renderer::RectangleShape m_centerSquare;
+		Pekan::Renderer2D::RectangleShape m_centerSquare;
 
-		Pekan::Renderer::Camera2D_Ptr m_cameraFirst;
-		Pekan::Renderer::Camera2D_Ptr m_cameraSecond;
+		Pekan::Renderer2D::Camera2D_Ptr m_cameraFirst;
+		Pekan::Renderer2D::Camera2D_Ptr m_cameraSecond;
 
 		int m_currentCameraIdx = 0;
 

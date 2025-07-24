@@ -6,7 +6,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A class representing a 2D triangle shape with a solid color
@@ -66,5 +66,5 @@ namespace Renderer
 #endif
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

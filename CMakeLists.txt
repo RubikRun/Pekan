@@ -24,8 +24,8 @@ if(WITH_DEMO_PROJECTS)
 endif()
 # Add Graphics subdirectory
 add_subdirectory(src/Graphics)
-# Add Renderer subdirectory
-add_subdirectory(src/Renderer)
+# Add Renderer2D subdirectory
+add_subdirectory(src/Renderer2D)
 # Add GUI subdirectory
 add_subdirectory(src/GUI)
 # Add Tools subdirectory

@@ -125,7 +125,7 @@
 
 0047 05.07.2025 (DONE): Think about moving ImGui to its own module and subsystem called GUI, instead of having it in Core.
 
-0048 06.07.2025 (TODO): Rename project Renderer to Renderer2D. Let's have a single subsystem per module and their names to always match.
+0048 06.07.2025 (DONE): Rename project Renderer to Renderer2D. Let's have a single subsystem per module and their names to always match.
 
 0049 07.07.2025 (TODO): Move numberOfSamples member from WindowProperties to ApplicationProperties
 
@@ -145,3 +145,8 @@
                         and bring back their older version as well.
 
 0052 20.07.2025 (TODO): Remove "inline" from everywhere
+
+0053 24.07.2025 (TODO): Rename class GUI to GUISystem and class Graphics to GraphicsSystem.
+
+0054 24.07.2025 (TODO): Create a mechanism in LayerStack (or elsewhere) that allows for client code to specify
+                        a hierarchy of layer initialization (which layers should be initialized before which ones)

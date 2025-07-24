@@ -7,7 +7,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A class representing a 2D line.
@@ -48,5 +48,5 @@ namespace Renderer
 		glm::vec4 m_color;
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

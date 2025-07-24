@@ -8,7 +8,7 @@
 
 static const float DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED = 1.1f;
 
-using namespace Pekan::Renderer;
+using namespace Pekan::Renderer2D;
 
 namespace Pekan
 {

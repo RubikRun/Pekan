@@ -38,14 +38,14 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::RenderObject m_renderObject;
+		Pekan::Renderer2D::RenderObject m_renderObject;
 
-		Pekan::Renderer::TriangleShape m_triangle;
-		Pekan::Renderer::RectangleShape m_rectangle;
-		Pekan::Renderer::CircleShape m_circle;
-		Pekan::Renderer::CircleShapeStatic<> m_circleStatic;
-		Pekan::Renderer::PolygonShape m_polygon1;
-		Pekan::Renderer::PolygonShape m_polygon2;
+		Pekan::Renderer2D::TriangleShape m_triangle;
+		Pekan::Renderer2D::RectangleShape m_rectangle;
+		Pekan::Renderer2D::CircleShape m_circle;
+		Pekan::Renderer2D::CircleShapeStatic<> m_circleStatic;
+		Pekan::Renderer2D::PolygonShape m_polygon1;
+		Pekan::Renderer2D::PolygonShape m_polygon2;
 
 		glm::vec2 m_rectangleInitialPosition;
 		float m_rectangleInitialWidth;

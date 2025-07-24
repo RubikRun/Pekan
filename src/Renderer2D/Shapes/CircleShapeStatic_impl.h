@@ -7,7 +7,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
     template <unsigned NSegments>
@@ -86,5 +86,5 @@ namespace Renderer
         MathUtils::generateTriangleFanIndices(m_indices, NSegments);
     }
 
-} // namespace Renderer
-} // namespace Renderer
+} // namespace Renderer2D
+} // namespace Renderer2D

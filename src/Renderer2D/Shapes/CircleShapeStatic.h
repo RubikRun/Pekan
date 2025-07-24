@@ -6,7 +6,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A class representing a 2D circle shape with a solid color.
@@ -66,7 +66,7 @@ namespace Renderer
 		float m_radius = 0.0f;
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan
 
 #include "CircleShapeStatic_impl.h"

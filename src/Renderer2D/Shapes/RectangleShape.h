@@ -6,7 +6,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A class representing a 2D rectangle shape with a solid color
@@ -57,5 +57,5 @@ namespace Renderer
 		static const unsigned s_indices[6];
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

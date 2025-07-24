@@ -3,10 +3,10 @@
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 #include "RenderCommands.h"
-#include "Renderer2D.h"
+#include "Renderer2DSystem.h"
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/2D_VertexShader.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/SolidColor_FragmentShader.glsl"
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/2D_VertexShader.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/SolidColor_FragmentShader.glsl"
 
 static constexpr long long VERTEX_DATA_SIZE = 4 * sizeof(float);
 static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -15,7 +15,7 @@ using namespace Pekan::Graphics;
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	void Line::create(glm::vec2 pointA, glm::vec2 pointB, bool dynamic)
@@ -49,7 +49,7 @@ namespace Renderer
 	void Line::update()
 	{
 		// Get current camera
-		Camera2D_ConstPtr camera = Renderer2D::getCamera();
+		Camera2D_ConstPtr camera = Renderer2DSystem::getCamera();
 		if (camera != nullptr)
 		{
 			// Set shader's view projection matrix uniform to camera's transform
@@ -90,5 +90,5 @@ namespace Renderer
 		m_renderObject.getShader().setUniform4fv("uColor", color);
 	}
 
-} // namespace Renderer
-} // namespace Renderer
+} // namespace Renderer2D
+} // namespace Renderer2D

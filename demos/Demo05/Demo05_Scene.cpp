@@ -2,7 +2,7 @@
 #include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "RenderCommands.h"
-#include "Renderer2D.h"
+#include "Renderer2DSystem.h"
 #include "PekanTools.h"
 
 #include <glm/gtc/constants.hpp>
@@ -19,7 +19,7 @@ const float MTT1_SPEED = 0.01f;
 static const float CAMERA_SCALE = MTT0_RADIUS * 5.0f;
 
 using namespace Pekan::Graphics;
-using namespace Pekan::Renderer;
+using namespace Pekan::Renderer2D;
 using namespace Pekan::Tools;
 
 namespace Demo
@@ -47,7 +47,7 @@ namespace Demo
         // Create camera
         m_camera = std::make_shared<Camera2D>();
         m_camera->setSize(CAMERA_SCALE);
-        Renderer2D::setCamera(m_camera);
+        Renderer2DSystem::setCamera(m_camera);
         PekanTools::enableCameraController2D(m_camera);
 
         t = 0.0f;
@@ -75,7 +75,7 @@ namespace Demo
 
     void Demo05_Scene::render() const
     {
-        Renderer2D::beginFrame();
+        Renderer2DSystem::beginFrame();
 
         // Clear background color
         if (m_guiWindow != nullptr)
@@ -99,7 +99,7 @@ namespace Demo
             m_lineShapes[i].render();
         }
 
-        Renderer2D::endFrame();
+        Renderer2DSystem::endFrame();
     }
 
     void Demo05_Scene::exit()

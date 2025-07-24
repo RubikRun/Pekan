@@ -6,7 +6,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
     void Camera2D::setSize(float width, float height)
@@ -98,5 +98,5 @@ namespace Renderer
         return worldPos;
     }
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

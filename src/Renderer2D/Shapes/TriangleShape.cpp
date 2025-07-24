@@ -7,7 +7,7 @@ using namespace Pekan::Graphics;
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 #if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
@@ -135,5 +135,5 @@ namespace Renderer
         m_needUpdateVerticesWorld = false;
     }
 
-} // namespace Renderer
-} // namespace Renderer
+} // namespace Renderer2D
+} // namespace Renderer2D

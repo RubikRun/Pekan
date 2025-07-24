@@ -23,7 +23,7 @@ namespace Tools
         // NOTE: Only a single 2D camera can be controlled at a time,
         // so if another camera was being controlled until now,
         // the control will be transfered to the new camera.
-        static void enableCameraController2D(const Renderer::Camera2D_Ptr& camera);
+        static void enableCameraController2D(const Renderer2D::Camera2D_Ptr& camera);
 
         // Disables camera controller for the currently controlled 2D camera
         static void disableCameraController2D();

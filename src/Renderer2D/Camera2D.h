@@ -5,7 +5,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
     class Camera2D
@@ -51,10 +51,10 @@ namespace Renderer
         glm::mat4 m_viewProjectionMatrix = glm::mat4(1.0f);
     };
 
-    typedef std::shared_ptr<Renderer::Camera2D> Camera2D_Ptr;
-    typedef std::shared_ptr<const Renderer::Camera2D> Camera2D_ConstPtr;
-    typedef std::weak_ptr<Renderer::Camera2D> Camera2D_WeakPtr;
-    typedef std::weak_ptr<const Renderer::Camera2D> Camera2D_ConstWeakPtr;
+    typedef std::shared_ptr<Renderer2D::Camera2D> Camera2D_Ptr;
+    typedef std::shared_ptr<const Renderer2D::Camera2D> Camera2D_ConstPtr;
+    typedef std::weak_ptr<Renderer2D::Camera2D> Camera2D_WeakPtr;
+    typedef std::weak_ptr<const Renderer2D::Camera2D> Camera2D_ConstWeakPtr;
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

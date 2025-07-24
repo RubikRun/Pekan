@@ -5,7 +5,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
     const unsigned RectangleShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
@@ -88,5 +88,5 @@ namespace Renderer
         m_needUpdateVerticesWorld = false;
     }
 
-} // namespace Renderer
-} // namespace Renderer
+} // namespace Renderer2D
+} // namespace Renderer2D

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Layer.h"
-#include "2D/Line.h"
-#include "2D/Shapes/LineShape.h"
+#include "Line.h"
+#include "Shapes/LineShape.h"
 #include "Camera2D.h"
 
 #include "Demo05_GUIWindow.h"
@@ -36,14 +36,14 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer::Line m_lines[MTT0_SUBDIVS];
+		Pekan::Renderer2D::Line m_lines[MTT0_SUBDIVS];
 
-		Pekan::Renderer::LineShape m_lineShapes[MTT1_SUBDIVS];
+		Pekan::Renderer2D::LineShape m_lineShapes[MTT1_SUBDIVS];
 
 		// GUI window for controlling background's color
 		std::shared_ptr<const Demo05_GUIWindow> m_guiWindow;
 
-		Pekan::Renderer::Camera2D_Ptr m_camera;
+		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 
 		// Multiplication factor of the 2 Mandelbrot Times Tables
 		float m_mtt0factor = 30.0f;

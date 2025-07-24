@@ -8,7 +8,7 @@ using namespace Pekan::Graphics;
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
     void PolygonShape::create(const std::vector<glm::vec2>& vertices, bool dynamic)
@@ -156,5 +156,5 @@ namespace Renderer
         m_needUpdateVerticesWorld = false;
     }
 
-} // namespace Renderer
-} // namespace Renderer
+} // namespace Renderer2D
+} // namespace Renderer2D

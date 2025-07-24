@@ -6,7 +6,7 @@
 
 // Toggle this macro on/off to log filepaths/filenames of source files.
 // e.g. when on:
-//     [ERROR in C:/dev/Pekan/src/Renderer/Shader.cpp]: sth
+//     [ERROR in C:/dev/Pekan/src/Renderer2D/Shader.cpp]: sth
 // when off:
 //     [ERROR in Shader.cpp]: sth
 #define PK_LOGGER_USE_FILEPATH_FOR_SOURCE_FILE 0
@@ -157,7 +157,7 @@ namespace Logger
 		#define PK_SOURCE_FILE __FILE__
 	#else
 		// Extracts a filename from given filepath,
-		// e.g. "C:/dev/Pekan/src/Renderer/Shader.cpp" -> "Shader.cpp".
+		// e.g. "C:/dev/Pekan/src/Renderer2D/Shader.cpp" -> "Shader.cpp".
 		constexpr std::string_view _getFileNameFromFilePath(std::string_view filePath)
 		{
 			const size_t pos = filePath.find_last_of("/\\");

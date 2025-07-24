@@ -5,12 +5,12 @@
 
 using namespace Pekan::Graphics;
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/2D_BatchRendering_VertexShader.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER_ROOT_DIR "/shaders/SolidColor_BatchRendering_FragmentShader.glsl"
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/2D_BatchRendering_VertexShader.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/SolidColor_BatchRendering_FragmentShader.glsl"
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// Maximum allowed fraction of hardware's maximum texture size.
@@ -207,5 +207,5 @@ namespace Renderer
 		m_shapesCount = 0;
 	}
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

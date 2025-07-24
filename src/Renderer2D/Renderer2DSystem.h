@@ -5,20 +5,20 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 // Use this macro in your application's main function to include the Renderer2D subsystem of Pekan
-#define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer::Renderer2D::registerSubsystem()
+#define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer2D::Renderer2DSystem::registerSubsystem()
 
-    class Renderer2D : public ISubsystem
+    class Renderer2DSystem : public ISubsystem
     {
 
         friend class Shape;
 
     public:
 
-        // Registers Renderer2D as a subsystem in Pekan's SubsystemManager,
+        // Registers Renderer2DSystem as a subsystem in Pekan's SubsystemManager,
         // so that it's automatically initialized and exited.
         static void registerSubsystem();
 
@@ -62,5 +62,5 @@ namespace Renderer
         bool m_isInitialized = false;
     };
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan

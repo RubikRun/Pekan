@@ -10,7 +10,7 @@ static const float PI = glm::pi<float>();
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
     void CircleShape::create(float radius, bool dynamic)
@@ -112,5 +112,5 @@ namespace Renderer
         m_needUpdateIndices = false;
     }
 
-} // namespace Renderer
-} // namespace Renderer
+} // namespace Renderer2D
+} // namespace Renderer2D

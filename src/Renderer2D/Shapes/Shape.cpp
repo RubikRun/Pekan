@@ -1,19 +1,19 @@
 #include "Shape.h"
 
 #include "PekanLogger.h"
-#include "Renderer2D.h"
+#include "Renderer2DSystem.h"
 #include "Utils/PekanUtils.h"
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
     void Shape::render() const
     {
         PK_ASSERT(m_isValid, "Trying to render a Shape that is not yet created.", "Pekan");
 
-        Renderer2D::render(*this);
+        Renderer2DSystem::render(*this);
     }
 
     void Shape::setPosition(glm::vec2 position)
@@ -123,5 +123,5 @@ namespace Renderer
         m_needUpdateVerticesWorld = true;
     }
 
-} // namespace Renderer
-} // namespace Renderer
+} // namespace Renderer2D
+} // namespace Renderer2D

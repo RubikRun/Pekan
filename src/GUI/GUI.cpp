@@ -70,7 +70,7 @@ namespace GUI
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
 
-        // Setup Platform/Renderer backends
+        // Setup Platform/Renderer2D backends
         ImGui_ImplGlfw_InitForOpenGL(PekanEngine::s_window.getGlfwWindow(), true);
         ImGui_ImplOpenGL3_Init(PK_GLSL_VERSION);
 

@@ -11,7 +11,7 @@
 
 namespace Pekan
 {
-namespace Renderer
+namespace Renderer2D
 {
 
 	// A class representing a renderable object in Pekan, consisting of:
@@ -85,5 +85,5 @@ namespace Renderer
 		Graphics::BufferDataUsage m_indexDataUsage = Graphics::BufferDataUsage::None;
 	};
 
-} // namespace Renderer
+} // namespace Renderer2D
 } // namespace Pekan
