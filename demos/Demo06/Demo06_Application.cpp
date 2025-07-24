@@ -34,7 +34,7 @@ namespace Demo
 		props.windowProperties.title = getName();
 		props.windowProperties.width = 1720;
 		props.windowProperties.height = 980;
-		props.windowProperties.numberOfSamples = 16;
+		props.numberOfSamples = 16;
 		return props;
 	}
 

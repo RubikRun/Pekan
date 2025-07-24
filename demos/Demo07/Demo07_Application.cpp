@@ -31,7 +31,7 @@ namespace Demo
 	{
 		ApplicationProperties props;
 		props.windowProperties.title = getName();
-		props.windowProperties.numberOfSamples = 16;
+		props.numberOfSamples = 16;
 		return props;
 	}
 

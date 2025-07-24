@@ -4113,3 +4113,10 @@ Created a TO-DO item for this.
 
 Done.
 }
+
+{
+Next TO-DO item is
+    Move numberOfSamples member from WindowProperties to ApplicationProperties
+
+Done. Easy.
+}

@@ -26,6 +26,9 @@ namespace Pekan
 		//
 		// NOTE: Only used if there is no target FPS set (see "fps" property)
 		bool useVSync = true;
+
+		// Number of samples per pixel to be used for multisampling
+		int numberOfSamples = 1;
 	};
 
 	// A base class for all Pekan applications

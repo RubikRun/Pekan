@@ -11,6 +11,7 @@ struct GLFWwindow;
 namespace Pekan
 {
 	class PekanEngine;
+	class ApplicationProperties;
 
 	// A window's properties grouped together in a struct with default values
 	struct WindowProperties
@@ -37,9 +38,6 @@ namespace Pekan
 
 		// Flag indicating if mouse's cursor should be hidden
 		bool hideCursor = false;
-
-		// Number of samples per pixel to be used for multisampling
-		int numberOfSamples = 1;
 	};
 
 	// A class representing an OS-independent window
@@ -49,8 +47,8 @@ namespace Pekan
 
 	public:
 
-		// Creates a window with given properties
-		bool create(const WindowProperties& properties);
+		// Creates a window with given application properties
+		bool create(const ApplicationProperties& applicationProperties);
 		// Destroys a window
 		void destroy();
 

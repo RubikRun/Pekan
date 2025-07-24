@@ -12,9 +12,9 @@
 namespace Pekan
 {
 
-    bool Window::create(const WindowProperties& properties)
+    bool Window::create(const ApplicationProperties& applicationProperties)
     {
-        m_properties = properties;
+        m_properties = applicationProperties.windowProperties;
 
         if (!glfwInit())
         {
@@ -28,19 +28,19 @@ namespace Pekan
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
         // Set window hint for number of samples
-        glfwWindowHint(GLFW_SAMPLES, properties.numberOfSamples);
+        glfwWindowHint(GLFW_SAMPLES, applicationProperties.numberOfSamples);
 
         // Create a GLFW window
-        if (properties.fullScreen)
+        if (m_properties.fullScreen)
         {
             GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
 
-            m_glfwWindow = glfwCreateWindow(mode->width, mode->height, properties.title.c_str(), primaryMonitor, nullptr);
+            m_glfwWindow = glfwCreateWindow(mode->width, mode->height, m_properties.title.c_str(), primaryMonitor, nullptr);
         }
         else
         {
-            m_glfwWindow = glfwCreateWindow(properties.width, properties.height, properties.title.c_str(), nullptr, nullptr);
+            m_glfwWindow = glfwCreateWindow(m_properties.width, m_properties.height, m_properties.title.c_str(), nullptr, nullptr);
         }
         if (m_glfwWindow == nullptr)
         {
@@ -49,17 +49,17 @@ namespace Pekan
             return false;
         }
 
-        if (!properties.fullScreen)
+        if (!m_properties.fullScreen)
         {
             // Set window's initial position
-            glfwSetWindowPos(m_glfwWindow, properties.initialPosition.x, properties.initialPosition.y);
+            glfwSetWindowPos(m_glfwWindow, m_properties.initialPosition.x, m_properties.initialPosition.y);
         }
 
         // Make the window's context current
         glfwMakeContextCurrent(m_glfwWindow);
 
         // Hide cursor if needed
-        if (properties.hideCursor)
+        if (m_properties.hideCursor)
         {
             glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
         }

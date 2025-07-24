@@ -31,7 +31,7 @@ namespace Pekan
         s_application = application;
 
         const ApplicationProperties properties = application->getProperties();
-        if (!s_window.create(properties.windowProperties))
+        if (!s_window.create(properties))
         {
             return false;
         }
