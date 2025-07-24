@@ -36,6 +36,20 @@ namespace GUI
 		m_min = min;
 		m_max = max;
 	}
+	void SliderIntWidget::destroy()
+	{
+		m_label.clear();
+		m_value = 0;
+		m_min = 1;
+		m_max = 10;
+		Widget::destroy();
+	}
+
+	int SliderIntWidget::getValue() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_value;
+	}
 
 	void SliderIntWidget::_render() const
 	{

@@ -51,7 +51,7 @@ namespace Demo
         shader.unbind();
 	}
 
-	void Demo00_Scene::render()
+	void Demo00_Scene::render() const
 	{
         // Clear background color
         if (m_guiWindow != nullptr)

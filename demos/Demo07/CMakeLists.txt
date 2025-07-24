@@ -17,6 +17,7 @@ target_link_libraries(Demo07 PRIVATE
     Core
     Renderer
     Tools
+    GUI
 )
 
 # Set Demo07's working directory to be Demo07's source directory

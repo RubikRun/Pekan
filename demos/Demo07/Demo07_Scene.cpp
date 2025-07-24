@@ -90,7 +90,7 @@ namespace Demo
 		m_line.setScale(m_guiWindow->getLineScale());
 	}
 
-	void Demo07_Scene::render()
+	void Demo07_Scene::render() const
 	{
 		Renderer2D::beginFrame();
 
@@ -101,7 +101,7 @@ namespace Demo
 		m_triangle.render();
 		m_polygon.render();
 		m_line.render();
-		for (LineShape& csLine : m_coordSys)
+		for (const LineShape& csLine : m_coordSys)
 		{
 			csLine.render();
 		}

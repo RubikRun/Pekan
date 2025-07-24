@@ -3999,4 +3999,61 @@ That's it.
 Changed Demo00 and Demo01 to work with the new widgets API.
 It seems to work.
 
+----------
+19.07.2025
+----------
+
+We're pretty much done with this.
+Only thing left to do is to change all other demos to work with the new GUI subsystem.
+In the process we might find new things to implement.
+So let's do it.
+
+----------
+23.07.2025
+----------
+
+Took a few days, but it's finally ready.
+All demos use the new GUI subsystem now, and they DO NOT use ImGui directly.
+I created some new widgets along the way
+    SeparatorWidget
+    SliderFloatWidget
+    SliderFloat2Widget
+    ComboBoxWidget
+    FPSDisplayWidget
+    NewLineWidget
+Nothing much to say about any specific widget.
+
+An important thing that I did in the GUIWindow class:
+Implemented an exit() function that destroys all widgets of the GUI window
+    for (const Widget_Ptr& widget : m_widgets)
+    {
+        widget->destroy();
+    }
+so that client code doesn't have to manually destroy their widgets
+in their own exit() function in their own GUIWindow-derived class.
+Once they create a widget passing a non-null GUIWindow pointer,
+this widget is registered in the given GUIWindow and will be
+automatically rendered and destroyed.
+We don't want derived classes to override this functionality
+by overriding the exit() function, so let's mark it as final
+    void exit() override final;
+However, we still want to allow client code to implement specific exiting functionality
+but it should be ON TOP of this base GUIWindow exiting functionality,
+so we will provide a function
+    virtual void _exit() {};
+that can be implemented with additional exiting functionality,
+and we'll call
+    _exit()
+in
+    exit()
+after destroying the registered widgets.
+
+Another thing that I noticed (almost not related)
+is that the render() functions of some classes are const and others are not.
+All render() functions must be const.
+So let's do that.
+Did that. No major design issues followed.
+
+That's it.
+Everything works. GUI subsystem looks good.
 }

@@ -1,38 +1,38 @@
 #pragma once
 
-#include "PekanGUIWindow.h"
-using Pekan::PekanGUIWindow;
+#include "GUIWindow.h"
 
-#include "imgui.h"
+#include "ColorEdit3Widget.h"
+#include "SliderFloatWidget.h"
 
 namespace Demo
 {
 
-	class Demo05_GUIWindow : public PekanGUIWindow
+	class Demo05_GUIWindow : public Pekan::GUI::GUIWindow
 	{
 	public:
 
-		Demo05_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
-
-		// Returns current value of clear color
-		inline const ImVec4& getClearColor() const { return m_clearColor; }
-
-		// Returns current line thickness
-		inline float getLineThickness() const { return m_lineThickness; }
-
-	private: /* functions */
-
-		void _render() override;
+		Demo05_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
 		bool init() override;
 
+		// Returns current value of background color parameter
+		glm::vec3 getBackgroundColor() const { return gui.backgroundColorWidget->getValue(); }
+
+		// Returns current value of line thickness parameter
+		float getLineThickness() const { return gui.lineThicknessWidget->getValue(); }
+
+	private: /* functions */
+
+		Pekan::GUI::GUIWindowProperties getProperties() const override;
+
 	private: /* variables */
 
-		// Color for clearing scene's background
-		ImVec4 m_clearColor = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
-
-		// Line thickness to be used for MTT's lines in Demo05
-		float m_lineThickness = 0.0005f;
+		struct Widgets
+		{
+			Pekan::GUI::ColorEdit3Widget_Ptr backgroundColorWidget =    std::make_shared<Pekan::GUI::ColorEdit3Widget>();
+			Pekan::GUI::SliderFloatWidget_Ptr lineThicknessWidget =     std::make_shared<Pekan::GUI::SliderFloatWidget>();
+		} gui;
 	};
 
 } // namespace Demo

@@ -1,43 +1,47 @@
 #include "Demo06_GUIWindow.h"
 
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "PekanLogger.h"
+
+using namespace Pekan::GUI;
 
 namespace Demo
 {
 
-	void Demo06_GUIWindow::_render()
-	{
-		ImGui::SetNextWindowSize(ImVec2(300, 300));
-		ImGui::Begin("Pekan");
-
-		ImGui::Text("Number Of Shapes");
-		ImGui::SliderInt("##NumberOfShapes", &m_numberOfShapes, 5, 60000);
-
-		ImGui::Checkbox("Show Rectangles", &m_isEnabledRectangles);
-		ImGui::Checkbox("Show Circles", &m_isEnabledCircles);
-		ImGui::Checkbox("Show Circles Static", &m_isEnabledCirclesStatic);
-		ImGui::Checkbox("Show Triangles", &m_isEnabledTriangles);
-		ImGui::Checkbox("Show Polygons", &m_isEnabledPolygons);
-		ImGui::Checkbox("Show Lines", &m_isEnabledLines);
-
-		m_fpsWaitFrames--;
-		if (m_fpsWaitFrames < 1)
-		{
-			m_fpsCache = ImGui::GetIO().Framerate;
-			m_fpsWaitFrames = int(m_fpsCache);
-		}
-
-		// Display current FPS
-		ImGui::Text("%.3f ms/frame", 1000.0f / m_fpsCache);
-		ImGui::Text("%.1f FPS", m_fpsCache);
-
-		ImGui::End();
-	}
-
 	bool Demo06_GUIWindow::init()
 	{
+		if (m_isInitialized)
+		{
+			return true;
+		}
+
+		gui.numberOfShapesLabel->create(this, "Number Of Shapes");
+		gui.numberOfShapesWidget->create(this, "", 60000, 5, 60000);
+
+		gui.showRectanglesWidget->create(this, "Show Rectangles", true);
+		gui.showCirclesWidget->create(this, "Show Circles", true);
+		gui.showCirclesStaticWidget->create(this, "Show Circles Static", true);
+		gui.showTrianglesWidget->create(this, "Show Triangles", true);
+		gui.showPolygonsWidget->create(this, "Show Polygons", true);
+		gui.showLinesWidget->create(this, "Show Lines", true);
+		gui.fpsDisplayWidget->create(this);
+
+		m_isInitialized = true;
+
 		return true;
+	}
+
+	void Demo06_GUIWindow::_exit()
+	{
+		PK_ASSERT(m_isInitialized, "Trying to exit Demo06_GUIWindow but it's not initialized.", "Demo06");
+		m_isInitialized = false;
+	}
+
+	GUIWindowProperties Demo06_GUIWindow::getProperties() const
+	{
+		GUIWindowProperties props;
+		props.size = { 300, 300 };
+		props.name = "Demo06";
+		return props;
 	}
 
 } // namespace Demo

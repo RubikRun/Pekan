@@ -9,6 +9,13 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
+    bool Demo01_GUIWindow::init()
+    {
+        gui.checkboxWidget_moveThirdSquare->create(this, "Move third square slightly", false);
+        gui.buttonWidget_addSquare->create(this, "+");
+        return true;
+    }
+
     bool Demo01_GUIWindow::getMoveThirdSquare() const
     {
         PK_ASSERT_QUICK(gui.checkboxWidget_moveThirdSquare != nullptr);
@@ -40,13 +47,6 @@ namespace Demo
         return gui.squares[idx].colorWidget->getValue();
     }
 
-    bool Demo01_GUIWindow::init()
-    {
-        gui.checkboxWidget_moveThirdSquare->create(this, "Move third square slightly", false);
-        gui.buttonWidget_addSquare->create(this, "+");
-        return true;
-    }
-
     void Demo01_GUIWindow::update(double deltaTime)
     {
         static const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
@@ -67,7 +67,7 @@ namespace Demo
         }
     }
 
-    GUIWindowProperties Demo01_GUIWindow::getProperties()
+    GUIWindowProperties Demo01_GUIWindow::getProperties() const
     {
         GUIWindowProperties props;
         props.size = { 320, PekanEngine::getWindow().getSize().y };

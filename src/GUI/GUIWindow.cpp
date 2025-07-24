@@ -12,7 +12,18 @@ namespace Pekan
 namespace GUI
 {
 
-	void GUIWindow::render()
+    void GUIWindow::exit()
+    {
+        // Destroys all widgets of the GUI window
+        for (const Widget_Ptr& widget : m_widgets)
+        {
+            widget->destroy();
+        }
+        // Call derived class' exit function
+        _exit();
+    }
+
+	void GUIWindow::render() const
 	{
         if (PekanEngine::getWindow().isMinimized())
         {
@@ -58,7 +69,7 @@ namespace GUI
         }
 	}
 
-    void GUIWindow::addWidget(const Widget_ConstPtr& widget)
+    void GUIWindow::addWidget(const Widget_Ptr& widget)
     {
         m_widgets.push_back(widget);
     }

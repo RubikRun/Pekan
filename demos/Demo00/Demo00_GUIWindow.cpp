@@ -8,6 +8,16 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
+	bool Demo00_GUIWindow::init()
+	{
+		gui.textWidget_backgroundColor->create(this, "Background Color");
+		gui.colorEditWidget->create(this, { 0.30f, 0.55f, 0.60f });
+		gui.textWidget_position->create(this, "Position");
+		gui.positionWidget->create(this, { 0.0f, 0.0f }, -1.0f, 1.0f, 0.01f);
+
+		return true;
+	}
+
 	glm::vec4 Demo00_GUIWindow::getClearColor() const
 	{
 		PK_ASSERT_QUICK(gui.colorEditWidget != nullptr);
@@ -20,17 +30,7 @@ namespace Demo
 		return gui.positionWidget->getValue();
 	}
 
-	bool Demo00_GUIWindow::init()
-	{
-		gui.textWidget_backgroundColor->create(this, "Background Color");
-		gui.colorEditWidget->create(this, { 0.30f, 0.55f, 0.60f });
-		gui.textWidget_position->create(this, "Position");
-		gui.positionWidget->create(this, { 0.0f, 0.0f }, -1.0f, 1.0f, 0.01f);
-
-		return true;
-	}
-
-	GUIWindowProperties Demo00_GUIWindow::getProperties()
+	GUIWindowProperties Demo00_GUIWindow::getProperties() const
 	{
 		GUIWindowProperties props;
 		props.size = { 200, 120 };

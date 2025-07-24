@@ -21,8 +21,9 @@ namespace GUI
 		void create(GUIWindow* guiWindow, bool initialIsChecked);
 		void create(GUIWindow* guiWindow, const char* label);
 		void create(GUIWindow* guiWindow, const char* label, bool initialIsChecked);
+		void destroy();
 
-		inline bool isChecked() const { return m_isChecked; }
+		bool isChecked() const;
 
 	private: /* functions */
 

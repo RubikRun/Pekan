@@ -125,7 +125,7 @@ namespace Demo
         }
     }
 
-    void Snake::render()
+    void Snake::render() const
     {
         m_renderObject.bind();
 

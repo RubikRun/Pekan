@@ -30,6 +30,18 @@ namespace GUI
 		m_label = label;
 		m_isChecked = initialIsChecked;
 	}
+	void CheckboxWidget::destroy()
+	{
+		m_label.clear();
+		m_isChecked = false;
+		Widget::destroy();
+	}
+
+	bool CheckboxWidget::isChecked() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_isChecked;
+	}
 
 	void CheckboxWidget::_render() const
 	{

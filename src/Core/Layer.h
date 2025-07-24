@@ -22,7 +22,7 @@ namespace Pekan
 		virtual bool init() { return true; }
 		virtual void exit() {}
 		virtual void update(double deltaTime) {}
-		virtual void render() {}
+		virtual void render() const {}
 
 		inline const std::string& getName() const { return m_name; }
 

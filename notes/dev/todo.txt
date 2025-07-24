@@ -123,7 +123,7 @@
                             static glm::ivec2 getWindowSize();
                         from PekanEngine
 
-0047 05.07.2025 (TODO): Think about moving ImGui to its own module and subsystem called GUI, instead of having it in Core.
+0047 05.07.2025 (DONE): Think about moving ImGui to its own module and subsystem called GUI, instead of having it in Core.
 
 0048 06.07.2025 (TODO): Rename project Renderer to Renderer2D. Let's have a single subsystem per module and their names to always match.
 
@@ -143,3 +143,5 @@
                         Check if that's the case.
                         If something is broken, we'll need to keep these 2 current shaders (but renamed)
                         and bring back their older version as well.
+
+0052 20.07.2025 (TODO): Remove "inline" from everywhere

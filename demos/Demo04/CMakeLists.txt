@@ -16,6 +16,7 @@ add_executable(Demo04
 target_link_libraries(Demo04 PRIVATE
     Core
     Renderer
+    GUI
 )
 
 # Set Demo04's working directory to be Demo04's source directory

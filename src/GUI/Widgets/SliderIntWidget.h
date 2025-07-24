@@ -21,8 +21,9 @@ namespace GUI
 		void create(GUIWindow* guiWindow, int initialValue, int min = 1, int max = 10);
 		void create(GUIWindow* guiWindow, const char* label, int min = 1, int max = 10);
 		void create(GUIWindow* guiWindow, const char* label, int initialValue, int min = 1, int max = 10);
+		void destroy();
 
-		inline int getValue() const { return m_value; }
+		int getValue() const;
 
 	private: /* functions */
 

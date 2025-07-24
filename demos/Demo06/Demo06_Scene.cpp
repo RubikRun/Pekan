@@ -69,6 +69,19 @@ namespace Demo
 	{
 		RenderState::enableMultisampleAntiAliasing();
 
+		if (m_guiWindow == nullptr)
+		{
+			PK_LOG_ERROR("Cannot initialize Demo06_Scene because there is no GUI window attached.", "Demo06");
+			return false;
+		}
+
+		// We have to manually initialize GUI window before retrieving values from it.
+		// In the layer stack the GUI window is AFTER the scene because it needs to be drawn on top,
+		// so it will be automatically initialized AFTER the scene, which is not good. We need some of its values here.
+		// That's why we will manually initialize the GUI window here.
+		// Then Pekan will try to initialize it again, but that's fine, it will just skip.
+		m_guiWindow->init();
+
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
 		m_perShapeTypeCount = shapesCount / 5;
 
@@ -92,7 +105,7 @@ namespace Demo
 		t += float(dt);
 	}
 
-	void Demo06_Scene::render()
+	void Demo06_Scene::render() const
 	{
 		Renderer2D::beginFrame();
 		RenderCommands::clear();

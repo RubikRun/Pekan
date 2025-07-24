@@ -19,6 +19,18 @@ namespace GUI
 		Widget::create(guiWindow);
 		m_label = label;
 	}
+	void ButtonWidget::destroy()
+	{
+		m_label.clear();
+		m_isClicked = false;
+		Widget::destroy();
+	}
+
+	bool ButtonWidget::isClicked() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_isClicked;
+	}
 
 	void ButtonWidget::_render() const
 	{

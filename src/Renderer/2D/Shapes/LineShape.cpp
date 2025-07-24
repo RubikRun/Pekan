@@ -39,7 +39,7 @@ namespace Renderer
     void LineShape::setThickness(float thickness)
     {
         PK_ASSERT(isValid(), "Trying to set thickness of a LineShape that is not yet created.", "Pekan");
-        PK_ASSERT(thickness > 0.0f, "LineShape's thickness must be greater than 0.", "Pekan");
+        PK_ASSERT(thickness >= 0.0f, "LineShape's thickness must be greater than or equal to 0.", "Pekan");
 
         m_thickness = thickness;
         m_needUpdateVerticesLocal = true;

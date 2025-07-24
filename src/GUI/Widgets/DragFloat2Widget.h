@@ -18,11 +18,12 @@ namespace GUI
 	public:
 
 		void create(GUIWindow* guiWindow);
-		void create(GUIWindow* guiWindow, glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f);
-		void create(GUIWindow* guiWindow, const char* label, float min = 0.0f, float max = 1.0f, float step = 0.01f);
-		void create(GUIWindow* guiWindow, const char* label, glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f);
+		void create(GUIWindow* guiWindow, glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f, const std::string& format = "%.3f");
+		void create(GUIWindow* guiWindow, const char* label, float min = 0.0f, float max = 1.0f, float step = 0.01f, const std::string& format = "%.3f");
+		void create(GUIWindow* guiWindow, const char* label, glm::vec2 initialValue, float min = 0.0f, float max = 1.0f, float step = 0.01f, const std::string& format = "%.3f");
+		void destroy();
 
-		inline glm::vec2 getValue() const { return m_value; }
+		glm::vec2 getValue() const;
 
 	private: /* functions */
 
@@ -47,6 +48,11 @@ namespace GUI
 		// This is the smallest change that you can do to a value by dragging.
 		// It determines how precisely you can drag.
 		float m_step = 0.01f;
+
+		// Formatting string specifying how to format
+		// the floating point number when displaying it next to the slider.
+		// (It's a classic C style formatting string)
+		std::string m_format = "%.3f";
 	};
 
 	typedef std::shared_ptr<DragFloat2Widget> DragFloat2Widget_Ptr;

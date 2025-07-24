@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "GUI.h"
 
 #include "PekanLogger.h"
 
@@ -8,6 +9,7 @@ using Demo::Demo02_Application;
 int main(void)
 {
     PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS;
+    PEKAN_INCLUDE_SUBSYSTEM_GUI;
 
     Demo02_Application application;
     if (!application.init())

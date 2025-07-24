@@ -32,9 +32,15 @@ namespace GUI
 	}
 	void ColorEdit4Widget::destroy()
 	{
-		Widget::destroy();
-		m_label = std::string();
+		m_label.clear();
 		m_value = { 1.0f, 1.0f, 1.0f, 1.0f };
+		Widget::destroy();
+	}
+
+	glm::vec4 ColorEdit4Widget::getValue() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_value;
 	}
 
 	void ColorEdit4Widget::_render() const

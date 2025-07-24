@@ -1,68 +1,59 @@
 #pragma once
 
-#include "PekanGUIWindow.h"
-using Pekan::PekanGUIWindow;
-
-#include "imgui.h"
+#include "GUIWindow.h"
+#include "ColorEdit3Widget.h"
+#include "DragFloat2Widget.h"
+#include "ComboBoxWidget.h"
+#include "CheckboxWidget.h"
 
 namespace Demo
 {
 
-	class Demo04_GUIWindow : public PekanGUIWindow
+	class Demo04_GUIWindow : public Pekan::GUI::GUIWindow
 	{
 	public:
 
-		Demo04_GUIWindow(Pekan::PekanApplication* application) : PekanGUIWindow(application) {}
-
-		// Returns current value of clear color
-		inline const ImVec4& getClearColor() const { return m_clearColor; }
-
-		// Returns current value of position
-		inline const ImVec2& getPosition() const { return m_position; }
-
-		// Checks if shapes are currently enabled
-		inline bool isEnabledShapes() const { return m_enabledShapes; }
-
-		// Returns currently selected shader index
-		inline int getShaderIdx() const { return m_shaderIdx; }
-
-		// Checks if triangle's vertices should be reversed (CW order instead of CCW)
-		inline bool getReverseTriangleOrientation() const { return m_reverseTriangleOrientation; }
-
-		// Checks if polygon's vertices should be reversed (CW order instead of CCW)
-		inline bool getReversePolygonOrientation() const { return m_reversePolygonOrientation; }
-
-		// Checks if face culling should be enabled
-		inline bool getEnabledFaceCulling() const { return m_enabledFaceCulling; }
-
-	private: /* functions */
-
-		void _render() override;
+		Demo04_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
 		bool init() override;
 
+		// Returns current value of background color
+		glm::vec4 getBackgroundColor() const { return glm::vec4(gui.backgroundColorWidget->getValue(), 1.0f); }
+
+		// Returns current value of position
+		glm::vec2 getPosition() const { return gui.positionWidget->getValue(); }
+
+		// Checks if shapes are currently enabled
+		bool isEnabledShapes() const { return gui.enableShapesWidget->isChecked(); }
+
+		// Returns currently selected shader index
+		int getShaderIdx() const { return gui.shaderWidget->getIndex(); }
+
+		// Checks if triangle's vertices should be reversed (CW order instead of CCW)
+		bool getReverseTriangleOrientation() const { return gui.reverseTriangleOrientationWidget->isChecked(); }
+
+		// Checks if polygon's vertices should be reversed (CW order instead of CCW)
+		bool getReversePolygonOrientation() const { return gui.reversePolygonOrientationWidget->isChecked(); }
+
+		// Checks if face culling should be enabled
+		bool getEnabledFaceCulling() const { return gui.enableFaceCullingWidget->isChecked(); }
+
+	private: /* functions */
+
+		Pekan::GUI::GUIWindowProperties getProperties() const override;
+
 	private: /* variables */
 
-		// Color for clearing scene's background
-		ImVec4 m_clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-		// Position of the square, relative to window's center
-		ImVec2 m_position = ImVec2(0.0f, 0.0f);
-
-		// Flag indicating if shapes are enabled and should be rendered
-		bool m_enabledShapes = true;
-
-		// Flag indicating if we should reverse the triangle orientation to be CW instead of CCW
-		bool m_reverseTriangleOrientation = false;
-
-		// Flag indicating if we should reverse the polygon orientation to be CW instead of CCW
-		bool m_reversePolygonOrientation = false;
-
-		// Flag indicating if face culling should be enabled
-		bool m_enabledFaceCulling = false;
-
-		// Shader index determining which shader will be used for rendering
-		int m_shaderIdx = 0;
+		struct Widgets
+		{
+			Pekan::GUI::ColorEdit3Widget_Ptr backgroundColorWidget =             std::make_shared<Pekan::GUI::ColorEdit3Widget>();
+			Pekan::GUI::DragFloat2Widget_Ptr positionWidget =                    std::make_shared<Pekan::GUI::DragFloat2Widget>();
+			Pekan::GUI::ComboBoxWidget_Ptr shaderWidget =                        std::make_shared<Pekan::GUI::ComboBoxWidget>();
+			Pekan::GUI::CheckboxWidget_Ptr enableShapesWidget =                  std::make_shared<Pekan::GUI::CheckboxWidget>();
+			Pekan::GUI::CheckboxWidget_Ptr reverseTriangleOrientationWidget =    std::make_shared<Pekan::GUI::CheckboxWidget>();
+			Pekan::GUI::CheckboxWidget_Ptr reversePolygonOrientationWidget =     std::make_shared<Pekan::GUI::CheckboxWidget>();
+			Pekan::GUI::CheckboxWidget_Ptr enableFaceCullingWidget =             std::make_shared<Pekan::GUI::CheckboxWidget>();
+		} gui;
 	};
 
 } // namespace Demo

@@ -15,6 +15,8 @@ namespace GUI
 
 	void Widget::create(GUIWindow* guiWindow)
 	{
+		PK_ASSERT(m_id < 0, "Trying to create a Widget instance that is already created.", "Pekan");
+
 		m_id = GUI::generateWidgetId();
 		if (guiWindow != nullptr)
 		{
@@ -35,6 +37,7 @@ namespace GUI
 
 	void Widget::destroy()
 	{
+		PK_ASSERT(m_id >= 0, "Trying to destroy a Widget instance that is not yet created.", "Pekan");
 		m_id = -1;
 	}
 

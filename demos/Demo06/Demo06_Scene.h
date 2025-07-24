@@ -38,11 +38,11 @@ namespace Demo
 
 		void update(double deltaTime) override;
 
-		void render() override;
+		void render() const override;
 
 		void exit() override;
 		
-		void attachGUIWindow(const std::shared_ptr<const Demo06_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<Demo06_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -89,7 +89,7 @@ namespace Demo
 
 		int m_perShapeTypeCount = -1;
 
-		std::shared_ptr<const Demo06_GUIWindow> m_guiWindow;
+		std::shared_ptr<Demo06_GUIWindow> m_guiWindow;
 
 		float t = 0.0f;
 	};

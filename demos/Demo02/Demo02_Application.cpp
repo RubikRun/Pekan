@@ -17,8 +17,8 @@ namespace Demo
 		// Create demo scene and demo GUI window
 		std::shared_ptr<Demo02_Scene> demoScene = std::make_shared<Demo02_Scene>(this);
 		std::shared_ptr<Demo02_GUIWindow> demoGuiWindow = std::make_shared<Demo02_GUIWindow>(this);
-		// Attach demo scene to demo GUI window
-		demoGuiWindow->attachScene(demoScene);
+		// Attach demo GUI window to demo scene
+		demoScene->attachGUIWindow(demoGuiWindow);
 
 		// Add scene and GUI window to application's layers
 		layerStack.pushLayer(demoScene);

@@ -62,7 +62,7 @@ namespace Demo
         t += float(dt);
 	}
 
-	void Demo01_Scene::render()
+	void Demo01_Scene::render() const
 	{
         RenderCommands::clear();
 

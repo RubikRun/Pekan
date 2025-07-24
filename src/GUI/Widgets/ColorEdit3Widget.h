@@ -23,7 +23,7 @@ namespace GUI
 		void create(GUIWindow* guiWindow, const char* label, glm::vec3 initialValue);
 		void destroy();
 
-		inline glm::vec3 getValue() const { return m_value; }
+		glm::vec3 getValue() const;
 
 	private: /* functions */
 

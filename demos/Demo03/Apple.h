@@ -14,7 +14,7 @@ namespace Demo
 
 		void update();
 
-		void render();
+		void render() const;
 
 		void destroy();
 

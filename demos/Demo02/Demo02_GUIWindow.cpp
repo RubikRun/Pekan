@@ -3,90 +3,50 @@
 #include "Demo02_Scene.h"
 #include "PekanEngine.h"
 
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include "glm/glm.hpp"
 
+using namespace Pekan::GUI;
 using Pekan::PekanEngine;
 
 namespace Demo
 {
-	static void renderEditColor(glm::vec3& color, int index)
+
+	static const float COLOR_DULLNESS = 0.9f;
+
+	static const glm::vec3 INITIAL_COLORS[6] =
 	{
-		const std::string colorLabel = std::string("Color ") + std::to_string(index);
-
-		ImGui::PushItemWidth(0.75f * ImGui::GetContentRegionAvail().x);
-		ImGui::Text(colorLabel.c_str());
-		ImGui::SameLine();
-		ImGui::ColorEdit3((std::string("##") + colorLabel).c_str(), (float*)&color);
-		ImGui::PopItemWidth();
-	}
-
-	static void renderSliderRotation(float& rotation)
-	{
-		ImGui::PushItemWidth(0.75f * ImGui::GetContentRegionAvail().x);
-		ImGui::Text("Rotation");
-		ImGui::SameLine();
-		ImGui::SliderFloat("##Rotation", &rotation, 0.0f, 360.0f);
-		ImGui::PopItemWidth();
-	}
-
-	static void renderSliderFov(float& fov)
-	{
-		ImGui::PushItemWidth(0.63f * ImGui::GetContentRegionAvail().x);
-		ImGui::Text("Field Of View");
-		ImGui::SameLine();
-		ImGui::SliderFloat("##FOV", &fov, 10.0f, 100.0f);
-		ImGui::PopItemWidth();
-	}
-
-	static void renderSliderCameraDist(float& cameraDist)
-	{
-		ImGui::PushItemWidth(0.60f * ImGui::GetContentRegionAvail().x);
-		ImGui::Text("Camera Distance");
-		ImGui::SameLine();
-		ImGui::SliderFloat("##CameraDist", &cameraDist, 0.5f, 10.0f);
-		ImGui::PopItemWidth();
-	}
-
-	static void renderCheckboxHideFourthFace(bool& hideFourthFace)
-	{
-		ImGui::Checkbox("Hide fourth face", &hideFourthFace);
-	}
-
-	void Demo02_GUIWindow::_render()
-	{
-		if (m_scene == nullptr)
-		{
-			PK_ASSERT(false, "Cannot render GUI window because there is no scene attached", "Pekan");
-			return;
-		}
-
-		ImGui::SetNextWindowSize(ImVec2(320, m_resolution.y));
-		ImGui::Begin("Cube");
-
-		std::vector<glm::vec3>& colors = m_scene->getColors();
-		for (int i = 0; i < colors.size(); i++)
-		{
-			ImGui::PushID(i);
-			renderEditColor(colors[i], i);
-			ImGui::PopID();
-		}
-		ImGui::Separator();
-
-		renderSliderRotation(m_scene->getRotation());
-		renderSliderFov(m_scene->getFOV());
-		renderSliderCameraDist(m_scene->getCameraDist());
-		renderCheckboxHideFourthFace(m_scene->getHideFourthFace());
-
-		ImGui::End();
-	}
+		{ COLOR_DULLNESS, 0.0f, 0.0f },
+		{ 0.0f, COLOR_DULLNESS, 0.0f },
+		{ 0.0f, 0.0f, COLOR_DULLNESS },
+		{ COLOR_DULLNESS, COLOR_DULLNESS, 0.0f },
+		{ COLOR_DULLNESS, 0.0f, COLOR_DULLNESS },
+		{ 0.0f, COLOR_DULLNESS, COLOR_DULLNESS }
+	};
 
 	bool Demo02_GUIWindow::init()
 	{
-		m_resolution = PekanEngine::getWindow().getSize();
+		for (size_t i = 0; i < 6; i++)
+		{
+			const std::string colorLabel = std::string("Color ") + std::to_string(i + 1);
+			gui.colorEditWidgets[i]->create(this, colorLabel.c_str(), INITIAL_COLORS[i]);
+		}
+		gui.separatorWidget->create(this);
+		gui.rotationWidget->create(this, "Rotation", 0.0f, -180.0f, 180.0f);
+		gui.fovWidget->create(this, "Field Of View", 30.0f, 10.0f, 100.0f);
+		gui.cameraDistWidget->create(this, "Camera Distance", 2.5f, 0.5f, 10.0f);
+		gui.hideFourthFaceWidget->create(this, "Hide Fourth Face", false);
+
 		return true;
+	}
+
+	GUIWindowProperties Demo02_GUIWindow::getProperties() const
+	{
+		static const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
+
+		GUIWindowProperties props;
+		props.size = { 380, windowSize.y };
+		props.name = "Cube";
+		return props;
 	}
 
 } // namespace Demo

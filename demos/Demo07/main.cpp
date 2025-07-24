@@ -1,5 +1,6 @@
 #include "Graphics.h"
 #include "Renderer2D.h"
+#include "GUI.h"
 
 #include "PekanLogger.h"
 
@@ -10,6 +11,7 @@ int main(void)
 {
     PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS;
     PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D;
+    PEKAN_INCLUDE_SUBSYSTEM_GUI;
 
     Demo07_Application application;
     if (!application.init())

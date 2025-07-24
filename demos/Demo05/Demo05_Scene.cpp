@@ -73,15 +73,15 @@ namespace Demo
         m_mtt1factor += float(dt) * MTT1_SPEED;
     }
 
-    void Demo05_Scene::render()
+    void Demo05_Scene::render() const
     {
         Renderer2D::beginFrame();
 
         // Clear background color
         if (m_guiWindow != nullptr)
         {
-            const ImVec4& clearColor = m_guiWindow->getClearColor();
-            RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+            const glm::vec3 backgroundColor = m_guiWindow->getBackgroundColor();
+            RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
             RenderCommands::clear();
         }
         else
@@ -141,6 +141,7 @@ namespace Demo
             const float angB = float(i) * m_mtt0factor * arc0;
             m_lines[i].setPointA(getMtt0Point(angA));
             m_lines[i].setPointB(getMtt0Point(angB));
+            m_lines[i].update();
         }
 
         const float arc1 = 2.0f * PI / float(MTT1_SUBDIVS);

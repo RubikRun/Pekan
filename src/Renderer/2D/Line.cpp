@@ -46,15 +46,8 @@ namespace Renderer
 		m_renderObject.destroy();
 	}
 
-	void Line::render()
+	void Line::update()
 	{
-		PK_ASSERT(m_renderObject.isValid(), "Trying to render a Line that is not yet created.", "Pekan");
-		m_renderObject.bind();
-		RenderCommands::draw(2, DrawMode::Lines);
-
-		PK_ASSERT(m_renderObject.isValid(), "Trying to render a Line that is not yet created.", "Pekan");
-		m_renderObject.bind();
-
 		// Get current camera
 		Camera2D_ConstPtr camera = Renderer2D::getCamera();
 		if (camera != nullptr)
@@ -69,7 +62,12 @@ namespace Renderer
 			static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
 			m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 		}
+	}
 
+	void Line::render() const
+	{
+		PK_ASSERT(m_renderObject.isValid(), "Trying to render a Line that is not yet created.", "Pekan");
+		m_renderObject.bind();
 		RenderCommands::draw(2, DrawMode::Lines);
 	}
 

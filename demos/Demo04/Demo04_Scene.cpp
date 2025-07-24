@@ -212,9 +212,9 @@ namespace Demo
             }
 
             // Get position from GUI
-            const ImVec2& position = m_guiWindow->getPosition();
+            const glm::vec2 position = m_guiWindow->getPosition();
             // Set "uPosition" uniform inside of the shader
-            texRectShader.setUniform2fv("uPosition", glm::vec2(position.x, position.y));
+            texRectShader.setUniform2fv("uPosition", position);
         }
 
         texRectShader.setUniform1f("uTime", t);
@@ -252,15 +252,15 @@ namespace Demo
         t += float(dt) * 5.0f;
     }
 
-    void Demo04_Scene::render()
+    void Demo04_Scene::render() const
     {
         Renderer2D::beginFrame();
 
         // Clear background color
         if (m_guiWindow != nullptr)
         {
-            const ImVec4& clearColor = m_guiWindow->getClearColor();
-            RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+            const glm::vec4 backgroundColor = m_guiWindow->getBackgroundColor();
+            RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
             RenderCommands::clear();
         }
         else

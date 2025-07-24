@@ -30,24 +30,30 @@ namespace GUI
 		GUIWindow(const std::string& layerName, Pekan::PekanApplication* application) : Layer(layerName, application) {}
 		virtual ~GUIWindow() = default;
 
-		void render() override final;
+		void exit() override final;
+
+		void render() const  override final;
 
 		// Adds a widget to the GUI window.
 		// Widgets added here will be automatically rendered when the GUI window is rendred
-		// in the order in which they were added.
+		// in the order in which they were added,
+		// and they will be automatically destroyed when the GUI window is destroyed.
 		//
 		// NOTE: If you want finer control over the rendering of your widgets,
 		// there is no need to add them here,
 		// you can override _render() and render them manually there.
-		void addWidget(const Widget_ConstPtr& widget);
+		void addWidget(const Widget_Ptr& widget);
 
 	private: /* functions*/
 
+		// Can be implemented by derived classes with specific exiting functionality.
+		virtual void _exit() {};
+
 		// Can be implemented by derived classes with specific render functionality.
-		virtual void _render() {}
+		virtual void _render() const {}
 
 		// Can be implemented by derived classes to return specific properties of the GUI window
-		virtual GUIWindowProperties getProperties() { return {}; }
+		virtual GUIWindowProperties getProperties() const { return {}; }
 
 		// Override these "on event" functions
 		// so that they can mark the event as handled when ImGui captures the mouse/keyboard.
@@ -62,7 +68,7 @@ namespace GUI
 	private: /* variables */
 
 		// Widgets making up the GUI inside the window.
-		std::vector<Widget_ConstPtr> m_widgets;
+		std::vector<Widget_Ptr> m_widgets;
 	};
 
 } // namespace GUI

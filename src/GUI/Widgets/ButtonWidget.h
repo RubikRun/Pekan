@@ -19,8 +19,9 @@ namespace GUI
 
 		void create(GUIWindow* guiWindow);
 		void create(GUIWindow* guiWindow, const char* label);
+		void destroy();
 
-		inline bool isClicked() const { return m_isClicked; }
+		bool isClicked() const;
 
 	private: /* functions */
 

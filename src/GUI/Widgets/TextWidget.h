@@ -20,7 +20,7 @@ namespace GUI
 		void create(GUIWindow* guiWindow, const char* text);
 		void destroy();
 
-		inline const std::string& getText() const { return m_text; }
+		const std::string& getText() const;
 
 	private: /* functions */
 

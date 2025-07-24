@@ -18,7 +18,7 @@ namespace Demo
 
 		void update(double deltaTime) override;
 
-		void render() override;
+		void render() const override;
 
 		void exit() override;
 		

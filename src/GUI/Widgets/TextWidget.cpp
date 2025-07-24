@@ -21,8 +21,14 @@ namespace GUI
 	}
 	void TextWidget::destroy()
 	{
+		m_text.clear();
 		Widget::destroy();
-		m_text = std::string();
+	}
+
+	const std::string& TextWidget::getText() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_text;
 	}
 
 	void TextWidget::_render() const

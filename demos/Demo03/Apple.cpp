@@ -64,7 +64,7 @@ namespace Demo
     {
     }
 
-    void Apple::render()
+    void Apple::render() const
     {
         m_renderObject.bind();
 

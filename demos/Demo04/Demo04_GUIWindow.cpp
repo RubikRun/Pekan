@@ -1,45 +1,37 @@
 #include "Demo04_GUIWindow.h"
 
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+using namespace Pekan::GUI;
 
 namespace Demo
 {
 
-	static const char* SHADER_NAMES[] = { "Standard Blend", "Two Points Blend 1", "Two Points Blend 2", "Two Points Blend 3" };
-
-	void Demo04_GUIWindow::_render()
+	static const std::vector<std::string> SHADER_NAMES =
 	{
-		ImGui::SetNextWindowSize(ImVec2(300, 340));
-		ImGui::Begin("Pekan");
-
-		ImGui::Text("Background Color");
-		ImGui::ColorEdit3("##BackgroundColor", (float*)(&m_clearColor));
-
-		ImGui::Text("Position");
-		ImGui::DragFloat2("##Position", (float*)&(m_position), 0.01f, -1.0f, 1.0f);
-
-		ImGui::Text("Shader");
-		ImGui::Combo("##Shader", &m_shaderIdx, SHADER_NAMES, IM_ARRAYSIZE(SHADER_NAMES));
-
-		ImGui::Text("Enable Shapes");
-		ImGui::Checkbox("##EnableShapes", &m_enabledShapes);
-
-		ImGui::Text("Reverse Triangle Orientation");
-		ImGui::Checkbox("##ReverseTriangleOrientation", &m_reverseTriangleOrientation);
-
-		ImGui::Text("Reverse Polygon Orientation");
-		ImGui::Checkbox("##ReversePolygonOrientation", &m_reversePolygonOrientation);
-
-		ImGui::Text("Enable Face Culling");
-		ImGui::Checkbox("##EnableFaceCulling", &m_enabledFaceCulling);
-
-		ImGui::End();
-	}
+		"Standard Blend",
+		"Two Points Blend 1",
+		"Two Points Blend 2",
+		"Two Points Blend 3"
+	};
 
 	bool Demo04_GUIWindow::init()
 	{
+		gui.backgroundColorWidget->create(this, { 0.45f, 0.55f, 0.60f });
+		gui.positionWidget->create(this, "Position", -1.0f, 1.0f, 0.01f);
+		gui.shaderWidget->create(this, "Shader", SHADER_NAMES);
+		gui.enableShapesWidget->create(this, "Enable Shapes", true);
+		gui.reverseTriangleOrientationWidget->create(this, "Reverse Triangle Orientation");
+		gui.reversePolygonOrientationWidget->create(this, "Reverse Polygon Orientation");
+		gui.enableFaceCullingWidget->create(this, "Enable Face Culling");
+
 		return true;
+	}
+
+	GUIWindowProperties Demo04_GUIWindow::getProperties() const
+	{
+		GUIWindowProperties props;
+		props.size = { 300, 340 };
+		props.name = "Textures & Shapes";
+		return props;
 	}
 
 } // namespace Demo

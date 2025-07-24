@@ -15,6 +15,8 @@ namespace Demo
 
 		Demo00_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
+		bool init() override;
+
 		// Returns current value of the "clear color" parameter
 		glm::vec4 getClearColor() const;
 
@@ -23,9 +25,7 @@ namespace Demo
 
 	private: /* functions */
 
-		bool init() override;
-
-		Pekan::GUI::GUIWindowProperties getProperties() override;
+		Pekan::GUI::GUIWindowProperties getProperties() const override;
 
 	private: /* variables */
 

@@ -32,7 +32,7 @@ namespace Demo
 		}
 	}
 
-	void Demo03_Scene::render()
+	void Demo03_Scene::render() const
 	{
 		RenderCommands::clear();
 		m_apple.render();
