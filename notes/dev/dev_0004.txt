@@ -4120,3 +4120,21 @@ Next TO-DO item is
 
 Done. Easy.
 }
+
+----------
+25.07.2025
+----------
+
+{
+Next TO-DO item is
+    Is it a problem that RenderObject and ShapesBatch might use the same texture slots?
+    Probably not, because they do separate draw calls and have separate shaders.
+    Still, good to check.
+
+Checked it. It's not a problem.
+Checked by adding to Demo06 a render object with 2 blending textures (same as Demo04),
+one of which uses texture slot 0. The 1D texture for ShapesBatch also uses texture slot 0.
+They work fine together, so it's ok.
+
+Done.
+}
