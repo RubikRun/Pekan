@@ -16,6 +16,11 @@ namespace Pekan
 		void pushLayer(const Layer_Ptr& layer);
 		void popLayer(const Layer_Ptr& layer);
 
+		// Initializes all layers of the layer stack
+		void initAll();
+		// Exits all layers of the layer stack
+		void exitAll();
+
 		// Iterators for traversing the layers stack forwards
 		std::vector<Layer_Ptr>::iterator begin() { return m_layers.begin(); }
 		std::vector<Layer_Ptr>::iterator end() { return m_layers.end(); }
@@ -23,7 +28,13 @@ namespace Pekan
 		std::vector<Layer_Ptr>::reverse_iterator rbegin() { return m_layers.rbegin(); }
 		std::vector<Layer_Ptr>::reverse_iterator rend() { return m_layers.rend(); }
 
-	private:
+	private: /* functions */
+
+		// Initializes a given layer,
+		// recursively making sure that parent is initialized first.
+		void initLayer(const Layer_Ptr& layer);
+
+	private: /* variables */
 
 		// A list of layers making up the layer stack
 		std::vector<Layer_Ptr> m_layers;

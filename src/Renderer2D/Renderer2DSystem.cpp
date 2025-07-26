@@ -33,20 +33,18 @@ namespace Renderer2D
 		renderBatch(s_batchStatic);
 	}
 
-	void Renderer2DSystem::init()
+	bool Renderer2DSystem::init()
 	{
 		s_batchDynamic.create(BufferDataUsage::DynamicDraw);
 		s_batchStatic.create(BufferDataUsage::StaticDraw);
 
-		m_isInitialized = true;
+		return true;
 	}
 
 	void Renderer2DSystem::exit()
 	{
 		s_batchDynamic.destroy();
 		s_batchStatic.destroy();
-
-		m_isInitialized = false;
 	}
 
 	ISubsystem* Renderer2DSystem::getParent()

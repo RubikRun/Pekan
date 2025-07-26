@@ -18,18 +18,23 @@ namespace Pekan
 
 	void SubsystemManager::initSubsystem(ISubsystem* subsystem)
 	{
-		if (subsystem->isInitialized())
+		PK_ASSERT_QUICK(subsystem != nullptr);
+		if (subsystem->m_isInitialized)
 		{
 			return;
 		}
 		// If subsystem has a parent that is not yet initialized, initialize the parent first.
 		ISubsystem* parent = subsystem->getParent();
-		if (parent != nullptr && !parent->isInitialized())
+		if (parent != nullptr && !parent->m_isInitialized)
 		{
 			initSubsystem(parent);
 		}
 		// Initialize subsystem
-		subsystem->init();
+		subsystem->m_isInitialized = subsystem->init();
+		if (!subsystem->m_isInitialized)
+		{
+			PK_LOG_ERROR("Failed to initialize subsystem \"" << subsystem->getSubsystemName() << "\".", "Pekan");
+		}
 	}
 
 	void SubsystemManager::initAll()
@@ -44,7 +49,9 @@ namespace Pekan
 	{
 		for (auto it = g_subsystems.rbegin(); it != g_subsystems.rend(); ++it)
 		{
+			PK_ASSERT((*it)->m_isInitialized, "Trying to exit a subsystem that is not yet initialized.", "Pekan");
 			(*it)->exit();
+			(*it)->m_isInitialized = false;
 		}
 	}
 }

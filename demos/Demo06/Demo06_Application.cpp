@@ -24,6 +24,10 @@ namespace Demo
 		layerStack.pushLayer(demoScene);
 		layerStack.pushLayer(demoGuiWindow);
 
+		// Set scene's parent to be GUI window
+		// because we need some default GUI values to initialize the scene
+		demoScene->setParent(demoGuiWindow);
+
 		return true;
 	}
 

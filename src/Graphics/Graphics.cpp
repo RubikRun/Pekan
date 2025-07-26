@@ -49,16 +49,18 @@ namespace Graphics
 		return true;
 	}
 
-	void Graphics::init()
+	bool Graphics::init()
 	{
-		loadOpenGL();
-		m_isInitialized = true;
+		if (!loadOpenGL())
+		{
+			PK_LOG_ERROR("Failed to load OpenGL when initializing the Graphics subsystem.", "Pekan");
+			return false;
+		}
+		return true;
 	}
 
 	void Graphics::exit()
-	{
-		m_isInitialized = false;
-	}
+	{}
 
 #if PK_OPENGL_VERSION_MAJOR >= 4 && PK_OPENGL_VERSION_MINOR >= 3
 

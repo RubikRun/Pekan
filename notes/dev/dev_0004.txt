@@ -713,7 +713,7 @@ Trying to put it into words:
 - Creating a window should happen after that, because it needs to know the properties
 - Loading OpenGL and initializing ImGui require a window (a GLFW context)
 There are 2 options that I can think of
-1. Separate window creation from engine initialization, so that PekanApplication can first initializa the engine,
+1. Separate window creation from engine initialization, so that PekanApplication can first initialize the engine,
    then call specific application's _init() function, and then create window by calling some function on PekanEngine.
 2. Create a virtual function in PekanApplication that returns window's properties and can be overriden
    on specific applications to return the properties needed by the specific application.
@@ -4137,4 +4137,50 @@ one of which uses texture slot 0. The 1D texture for ShapesBatch also uses textu
 They work fine together, so it's ok.
 
 Done.
+}
+
+{
+Next TO-DO item can't really be done before doing this one:
+    Create a mechanism in LayerStack (or elsewhere) that allows for client code to specify
+    a hierarchy of layer initialization (which layers should be initialized before which ones)
+because currently half of our demos don't work. So let's do that now.
+
+The solution here will be very similar to how SubsystemManager initializes ISubsystems,
+but not exactly the same.
+We'll keep track of a Layer's parent in this new member in class Layer
+    Layer_Ptr m_parent;
+which can be publicly set with this new setter
+    void setParent(const Layer_Ptr& parent) { m_parent = parent; }
+It will be client code's responsibility to call setParent() on layers that require some other layer to be initialized first.
+They can do that in the init() function of their PekanApplication-derived class.
+Then, in class Layer stack we'll add these 2 new public functions
+    void initAll();
+    void exitAll();
+for initializing and exiting all layers of the layer stack.
+The exitAll() function is trivial, we just exit each layer, same way we currently do it in PekanApplication's exit() function.
+The initAll() function will initialize parents first, recursively, same way it's done in SubsystemManager for ISubsystems.
+Basically we'll provide this new private function
+    void initLayer(const Layer_Ptr& layer);
+that initializes a given layer but first, recursively, initializes its parent and the parent's parent, etc.
+If the given layer is already initialized we'll skip it.
+Then in initAll() we'll just call this initLayer() function on each layer
+    for (Layer_Ptr& layer : m_layers)
+    {
+        initLayer(layer);
+    }
+That's basically it. Then we'll just call initAll() and exitAll() in PekanApplication
+and remove the old code that was initializing and exiting layers the old way.
+
+Did a few extra things in class Layer/LayerStack and class ISubsystem/SubsystemManager,
+related to error-checking and logging. Nothing much to say.
+Subsystems now have names, used for logging
+    virtual std::string getSubsystemName() const = 0;    (in ISubsystem)
+
+Also, moved the "isInitialized" logic to be in ISubsystem instead of in each derived class
+    bool m_isInitialized = false;
+SubsystemManager will be responsible for setting this flag on subsystems.
+Makes more sense that way and we don't need to do biolerplate code for m_isInitialized in each subsystem.
+
+Done.
+All demos work and Layer-related code is structured better now.
 }

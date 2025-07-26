@@ -148,9 +148,11 @@
 
 0053 24.07.2025 (TODO): Rename class GUI to GUISystem and class Graphics to GraphicsSystem.
 
-0054 24.07.2025 (TODO): Create a mechanism in LayerStack (or elsewhere) that allows for client code to specify
+0054 24.07.2025 (DONE): Create a mechanism in LayerStack (or elsewhere) that allows for client code to specify
                         a hierarchy of layer initialization (which layers should be initialized before which ones)
 
 0055 25.07.2025 (TODO): Fix Demo06 to not crash if default shapes count is different than max shapes count.
                         Currently it just creates the default number of shapes at initialization time
                         and then if you increase them during runtime it crashes.
+
+0056 25.07.2025 (TODO): Change class Layer's getName() function to be pure virtual and remove m_name member, maybe also remove constructor.

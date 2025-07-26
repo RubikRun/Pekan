@@ -33,21 +33,20 @@ namespace GUI
         return m_nextWidgetId++;
     }
 
-	void GUI::init()
-	{
-		m_isInitialized = initImGui();
-		if (!m_isInitialized)
-		{
-			PK_LOG_ERROR("Failed to initialize ImGui when initializing the GUI subsystem.", "Pekan");
-		}
-	}
+    bool GUI::init()
+    {
+        if (!initImGui())
+        {
+            PK_LOG_ERROR("Failed to initialize ImGui when initializing the GUI subsystem.", "Pekan");
+            return false;
+        }
+        return true;
+    }
 
-	void GUI::exit()
-	{
-		exitImGui();
-
-		m_isInitialized = false;
-	}
+    void GUI::exit()
+    {
+        exitImGui();
+    }
 
     bool GUI::initImGui()
     {

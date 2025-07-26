@@ -14,6 +14,8 @@ namespace GUI
 	{
 	public:
 
+		std::string getSubsystemName() const override { return "GUI"; }
+
 		// Registers GUI as a subsystem in Pekan's SubsystemManager,
 		// so that it's automatically initialized and exited.
 		static void registerSubsystem();
@@ -26,10 +28,8 @@ namespace GUI
 
 	private: /* functions */
 
-		void init() override;
+		bool init() override;
 		void exit() override;
-
-		bool isInitialized() override { return m_isInitialized; }
 
 		// Initializes ImGui library, and creates ImGui context
 		static bool initImGui();
@@ -37,8 +37,6 @@ namespace GUI
 		static void exitImGui();
 
 	private: /* variables */
-
-		bool m_isInitialized = false;
 
 		// Next available ID for a GUI widget
 		static int m_nextWidgetId;

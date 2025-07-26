@@ -8,11 +8,15 @@
 namespace Pekan
 {
 
-	class PekanApplication;
+	class Layer;
+	class LayerStack;
+
+	typedef std::shared_ptr<Layer> Layer_Ptr;
+	typedef std::shared_ptr<const Layer> Layer_ConstPtr;
 
 	class Layer : public EventListener
 	{
-		friend class PekanApplication;
+		friend class LayerStack;
 
 	public:
 
@@ -24,7 +28,12 @@ namespace Pekan
 		virtual void update(double deltaTime) {}
 		virtual void render() const {}
 
-		inline const std::string& getName() const { return m_name; }
+		const std::string& getLayerName() const { return m_name; }
+
+		// Sets layer's parent.
+		// A layer depends on its parent, meaning that its parent must be initialized first.
+		// If layer does NOT depend on any other layer you don't need to set a parent.
+		void setParent(const Layer_Ptr& parent) { m_parent = parent; }
 
 	protected: /* variables */
 
@@ -34,9 +43,12 @@ namespace Pekan
 	private: /* variables*/
 
 		std::string m_name;
-	};
 
-	typedef std::shared_ptr<Layer> Layer_Ptr;
-	typedef std::shared_ptr<const Layer> Layer_ConstPtr;
+		// Pointer to layer's parent.
+		// A layer depends on its parent, meaning that its parent must be initialized first.
+		Layer_Ptr m_parent;
+
+		bool m_isInitialized = false;
+	};
 
 } // namespace Pekan

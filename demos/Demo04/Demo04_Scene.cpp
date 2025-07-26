@@ -72,6 +72,12 @@ namespace Demo
 
     bool Demo04_Scene::init()
     {
+        if (m_guiWindow == nullptr)
+        {
+            PK_LOG_ERROR("Cannot initialize Demo04_Scene without a GUI window attached.", "Demo04");
+            return false;
+        }
+
         RenderState::enableMultisampleAntiAliasing();
         // Enable and configure blending
         RenderState::enableBlending();
@@ -91,14 +97,7 @@ namespace Demo
             0, 2, 3
         };
 
-        if (m_guiWindow != nullptr)
-        {
-            m_shaderIdx = m_guiWindow->getShaderIdx();
-        }
-        else
-        {
-            m_shaderIdx = 0;
-        }
+        m_shaderIdx = m_guiWindow->getShaderIdx();
 
         m_renderObject.create
         (
@@ -146,17 +145,14 @@ namespace Demo
         m_polygon2.create(POLYGON2_VERTICES);
         m_polygon2.setPosition(m_polygon2InitialPosition);
 
-        if (m_guiWindow != nullptr)
+        m_enabledFaceCulling = m_guiWindow->getEnabledFaceCulling();
+        if (m_enabledFaceCulling)
         {
-            m_enabledFaceCulling = m_guiWindow->getEnabledFaceCulling();
-            if (m_enabledFaceCulling)
-            {
-                RenderState::enableFaceCulling();
-            }
-            else
-            {
-                RenderState::disableFaceCulling();
-            }
+            RenderState::enableFaceCulling();
+        }
+        else
+        {
+            RenderState::disableFaceCulling();
         }
 
         t = 0.0f;

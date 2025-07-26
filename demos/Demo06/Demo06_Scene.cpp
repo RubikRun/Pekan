@@ -1,12 +1,9 @@
 #include "Demo06_Scene.h"
 #include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
-#include "Utils/FileUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
 #include "Renderer2DSystem.h"
-
-#include "Image.h"
 
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"
@@ -15,12 +12,6 @@
 
 static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
 static const float ZOOM_SPEED = 1.1f;
-
-static const char* VERTEX_SHADER_FILEPATH = "resources/06_vertex_shader.glsl";
-static const char* FRAGMENT_SHADER_FILEPATH = "resources/06_fragment_shader.glsl";
-
-static const char* IMAGE0_FILEPATH = "resources/0.png";
-static const char* IMAGE1_FILEPATH = "resources/1.png";
 
 using namespace Pekan;
 using namespace Pekan::Graphics;
@@ -84,52 +75,12 @@ namespace Demo
 			return false;
 		}
 
-		// We have to manually initialize GUI window before retrieving values from it.
-		// In the layer stack the GUI window is AFTER the scene because it needs to be drawn on top,
-		// so it will be automatically initialized AFTER the scene, which is not good. We need some of its values here.
-		// That's why we will manually initialize the GUI window here.
-		// Then Pekan will try to initialize it again, but that's fine, it will just skip.
-		m_guiWindow->init();
-
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
 		m_perShapeTypeCount = shapesCount / 5;
 
 		createBbox();
 		createCameras();
 		createShapes();
-
-		// Set up vertex data and configure vertex attributes
-		const float vertices[] =
-		{
-			-0.8f, -0.8f, 0.0f, 0.0f, // bottom left
-			 0.8f, -0.8f, 1.0f, 0.0f, // bottom right
-			 0.8f,  0.8f, 1.0f, 1.0f, // top right
-			-0.8f,  0.8f, 0.0f, 1.0f  // top left
-		};
-		const unsigned indices[] =
-		{
-			0, 1, 2,
-			0, 2, 3
-		};
-
-		m_testSquare.create
-		(
-			vertices, sizeof(vertices),
-			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "texCoord" } },
-			BufferDataUsage::StaticDraw,
-			Pekan::FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-			Pekan::FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
-		);
-		m_testSquare.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
-
-		// Load the two images
-		Image image0;
-		Image image1;
-		image0.load(IMAGE0_FILEPATH);
-		image1.load(IMAGE1_FILEPATH);
-		// Set two images as textures to the test square
-		m_testSquare.setTextureImage(image0, "uTex0", 0);
-		m_testSquare.setTextureImage(image1, "uTex1", 1);
 
         return true;
 	}
@@ -142,8 +93,6 @@ namespace Demo
 			m_perShapeTypeCount = shapesCount / 5;
 		}
 
-		m_testSquare.getShader().setUniform1f("uTime", t);
-
 		updateShapes(float(dt));
 
 		t += float(dt);
@@ -153,11 +102,6 @@ namespace Demo
 	{
 		Renderer2DSystem::beginFrame();
 		RenderCommands::clear();
-
-		m_testSquare.bind();
-		RenderCommands::drawIndexed(6);
-		m_testSquare.unbind();
-
 
 		if (m_guiWindow->isEnabledRectangles())
 		{
@@ -239,8 +183,6 @@ namespace Demo
 			m_lines[i].destroy();
 		}
 		m_centerSquare.destroy();
-
-		m_testSquare.destroy();
 	}
 
 	void Demo06_Scene::createBbox()

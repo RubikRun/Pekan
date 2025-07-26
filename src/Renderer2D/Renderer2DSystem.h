@@ -18,6 +18,8 @@ namespace Renderer2D
 
     public:
 
+        std::string getSubsystemName() const override { return "Renderer2D"; }
+
         // Registers Renderer2DSystem as a subsystem in Pekan's SubsystemManager,
         // so that it's automatically initialized and exited.
         static void registerSubsystem();
@@ -32,12 +34,10 @@ namespace Renderer2D
 
     private: /* functions */
 
-        void init() override;
+        bool init() override;
         void exit() override;
 
         ISubsystem* getParent() override;
-
-        bool isInitialized() override { return m_isInitialized; }
 
         // Submits a shape for rendering.
         // Actual rendering will happen when you call endFrame().
@@ -57,9 +57,6 @@ namespace Renderer2D
         // NOTE: It's a weak pointer so the camera is NOT owned by Renderer2D.
         //       If the camera is destroyed at some point, Renderer2D will safely stop using it.
         static Camera2D_ConstWeakPtr s_camera;
-
-        // A flag indicating if the Renderer2D subsystem is initialized
-        bool m_isInitialized = false;
     };
 
 } // namespace Renderer2D

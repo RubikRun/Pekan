@@ -14,6 +14,8 @@ namespace Graphics
 	{
 	public:
 
+		std::string getSubsystemName() const override { return "GUI"; }
+
 		// Registers Graphics as a subsystem in Pekan's SubsystemManager,
 		// so that it's automatically initialized and exited.
 		static void registerSubsystem();
@@ -26,14 +28,8 @@ namespace Graphics
 
 	private: /* functions */
 
-		void init() override;
+		bool init() override;
 		void exit() override;
-
-		bool isInitialized() override { return m_isInitialized; }
-
-	private: /* variables */
-
-		bool m_isInitialized = false;
 	};
 
 } // namespace Graphics

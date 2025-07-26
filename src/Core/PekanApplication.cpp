@@ -31,23 +31,8 @@ namespace Pekan
             return false;
         }
 
-        // Initalize all layers
-        for (Layer_Ptr& layer : m_layerStack)
-        {
-            if (layer != nullptr)
-            {
-                if (!layer->init())
-                {
-                    PK_LOG_ERROR("Failed to initialize layer \"" << layer->getName() << "\"", "Pekan");
-                }
-            }
-            else
-            {
-                // A null layer is not really a problem, but it's also not supposed to happen at all,
-                // so we can just log a warning.
-                PK_LOG_WARNING("A null layer found when initializing application.", "Pekan");
-            }
-        }
+        // Initalize all layers of the layer stack
+        m_layerStack.initAll();
 
         return true;
     }
@@ -112,14 +97,8 @@ namespace Pekan
 
     void PekanApplication::exit()
     {
-        // Exit all layers
-        for (Layer_Ptr layer : m_layerStack)
-        {
-            if (layer != nullptr)
-            {
-                layer->exit();
-            }
-        }
+        // Exit all layers of the layer stack
+        m_layerStack.exitAll();
 
         // Exit engine
         PekanEngine::exit();

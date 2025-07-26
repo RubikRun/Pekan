@@ -18,8 +18,6 @@ namespace Demo
 
 		bool init() override;
 
-		void _exit() override;
-
 		// Returns current number of shapes
 		int getNumberOfShapes() const { return gui.numberOfShapesWidget->getValue(); }
 
@@ -48,19 +46,6 @@ namespace Demo
 			Pekan::GUI::CheckboxWidget_Ptr showLinesWidget =            std::make_shared<Pekan::GUI::CheckboxWidget>();
 			Pekan::GUI::FPSDisplayWidget_Ptr fpsDisplayWidget =         std::make_shared<Pekan::GUI::FPSDisplayWidget>();
 		} gui;
-
-		// We need to manually keep track of whether the GUI window is initialized,
-		// because our scene depends on the GUI window,
-		// meaning that the GUI window needs to be initialized first.
-		// However, in the layer stack we have the GUI window AFTER the scene,
-		// because it needs to be drawn on top,
-		// so it will be automatically initialized AFTER the scene.
-		// To make this work, the scene will manually initialize the GUI window
-		// upon its own initialization, and then the GUI window will be initialized again
-		// automatically by Pekan.
-		// We don't want to initialize the GUI window twice so we'll just skip initialization
-		// if it's already initialized.
-		bool m_isInitialized = false;
 	};
 
 } // namespace Demo
