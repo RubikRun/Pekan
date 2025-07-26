@@ -4217,3 +4217,16 @@ Demos work same as before.
 Done.
 }
 
+{
+Next TO-DO item is
+    Remove "inline" from some places
+
+Went through all uses of "inline" in my code base.
+Removed a few that were not needed.
+The other ones are needed because they mark a function that is defined in the header
+so if multiple .cpp files include that header this will lead to multiple definitions of a function,
+that's why we need to mark them as "inline".
+
+Done.
+}
+

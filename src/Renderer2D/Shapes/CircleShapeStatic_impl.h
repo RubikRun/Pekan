@@ -32,7 +32,7 @@ namespace Renderer2D
     }
 
     template<unsigned NSegments>
-    inline const ShapeVertex* CircleShapeStatic<NSegments>::getVertices() const
+    const ShapeVertex* CircleShapeStatic<NSegments>::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a CircleShapeStatic that is not yet created.", "Pekan");
         if (m_needUpdateVerticesLocal)
@@ -81,7 +81,7 @@ namespace Renderer2D
     }
 
     template<unsigned NSegments>
-    inline void CircleShapeStatic<NSegments>::generateIndices()
+    void CircleShapeStatic<NSegments>::generateIndices()
     {
         MathUtils::generateTriangleFanIndices(m_indices, NSegments);
     }

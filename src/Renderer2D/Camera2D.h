@@ -12,7 +12,7 @@ namespace Renderer2D
     {
     public:
 
-        inline glm::vec2 getSize() const { return glm::vec2(m_width, m_height); }
+        inline glm::vec2 getSize() const { return { m_width, m_height }; }
         void setSize(float width, float height);
 
         // Sets camera's size, in the smaller dimension, to be equal to the given scale.

@@ -11,7 +11,7 @@ namespace Utils
 
     // Returns the random number generator.
     // If called for the first time it will also seed the random number generator.
-    static inline std::mt19937& getRandomNumberGenerator()
+    static std::mt19937& getRandomNumberGenerator()
     {
         static std::mt19937 randomNumberGenerator(std::chrono::steady_clock::now().time_since_epoch().count());
         return randomNumberGenerator;
