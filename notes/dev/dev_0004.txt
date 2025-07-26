@@ -4184,3 +4184,36 @@ Makes more sense that way and we don't need to do biolerplate code for m_isIniti
 Done.
 All demos work and Layer-related code is structured better now.
 }
+
+----------
+26.07.2025
+----------
+
+{
+Next TO-DO item (that we can now do because demos work) is
+    Maybe rename the 2 shaders
+        2D_BatchRendering_VertexShader.glsl
+        SolidColor_BatchRendering_FragmentShader.glsl
+    into something reflecting that they are specifically for shapes.
+    Previously they were general-purpose - could be used for other objects as well,
+    but now they are specific to batched shapes.
+    If we use them for something else, it will probably be broken.
+    Check if that's the case.
+    If something is broken, we'll need to keep these 2 current shaders (but renamed)
+    and bring back their older version as well.
+
+Okay, luckily they are not used for anything else, so I just renamed them to
+    2D_Shapes_BatchRendering_VertexShader.glsl
+    2D_Shapes_BatchRendering_SolidColor_FragmentShader.glsl
+and moved them to
+    /Shapes/Shaders/
+
+The other 2 shaders are only used for class Line so I renamed them to
+    2D_Line_SolidColor_FragmentShader.glsl
+    2D_Line_VertexShader.glsl
+
+That's it. Nothing interesting here.
+Demos work same as before.
+Done.
+}
+

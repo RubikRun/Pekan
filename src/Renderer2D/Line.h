@@ -17,6 +17,11 @@ namespace Renderer2D
 	//       For an actual game/application it's better to use
 	//           class LineShape
 	//       It is better optimized and allows control of line's thickness.
+	//
+	// NOTE: Another difference between Line and LineShape is that a Line always has a thickness of 1 pixel,
+	//       no matter how much you zoom in/out with a camera,
+	//       while LineShape has a world-space thickness so if you zoom in it will appear thicker
+	//       and if you zoom out it will appear thinner.
 	class Line
 	{
 	public:

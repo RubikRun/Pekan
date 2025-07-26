@@ -133,7 +133,7 @@
                         Probably not, because they do separate draw calls and have separate shaders.
                         Still, good to check.
 
-0051 12.07.2025 (TODO): Maybe rename the 2 shaders
+0051 12.07.2025 (DONE): Maybe rename the 2 shaders
                             2D_BatchRendering_VertexShader.glsl
                             SolidColor_BatchRendering_FragmentShader.glsl
                         into something reflecting that they are specifically for shapes.

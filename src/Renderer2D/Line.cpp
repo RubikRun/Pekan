@@ -5,8 +5,8 @@
 #include "RenderCommands.h"
 #include "Renderer2DSystem.h"
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/2D_VertexShader.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/SolidColor_FragmentShader.glsl"
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_VertexShader.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_SolidColor_FragmentShader.glsl"
 
 static constexpr long long VERTEX_DATA_SIZE = 4 * sizeof(float);
 static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);

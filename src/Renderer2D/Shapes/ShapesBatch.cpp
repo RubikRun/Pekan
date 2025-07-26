@@ -5,8 +5,8 @@
 
 using namespace Pekan::Graphics;
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/2D_BatchRendering_VertexShader.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/shaders/SolidColor_BatchRendering_FragmentShader.glsl"
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shapes/Shaders/2D_Shapes_BatchRendering_VertexShader.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shapes/Shaders/2D_Shapes_BatchRendering_SolidColor_FragmentShader.glsl"
 
 namespace Pekan
 {
