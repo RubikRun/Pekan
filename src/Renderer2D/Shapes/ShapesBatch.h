@@ -4,7 +4,10 @@
 #include "Camera2D.h"
 #include "RenderObject.h"
 #include "RenderState.h"
+
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 #include "Texture1D.h"
+#endif
 
 #include <vector>
 
@@ -44,8 +47,10 @@ namespace Renderer2D
 		// Indices of all shapes in the batch
 		std::vector<unsigned> m_indices;
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Colors of all shapes in the batch
 		std::vector<glm::vec4> m_colors;
+#endif
 
 		// Number of shapes currently in the batch
 		int m_shapesCount = 0;
@@ -53,8 +58,10 @@ namespace Renderer2D
 		// Underlying render object used for rendering all vertices and indices
 		RenderObject m_renderObject;
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Underlying 1D texture used for passing the colors of all shapes to the shader
 		Graphics::Texture1D m_texture;
+#endif
 
 		// Flag indicating if shapes batch is valid, meaning that it has been created and not yet destroyed
 		bool m_isValid = false;

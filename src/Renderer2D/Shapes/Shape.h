@@ -15,7 +15,12 @@ namespace Renderer2D
 	struct ShapeVertex
 	{
 		glm::vec2 position = glm::vec2(0.0f, 0.0f);
+
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		float shapeIndex = -1.0f;
+#else
+		glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+#endif
 	};
 
 	// A base class for 2D shapes
@@ -52,9 +57,11 @@ namespace Renderer2D
 		// and it's better to use dynamic buffers for its vertices and indices.
 		inline bool isDynamic() const { return m_isDynamic; }
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Sets shape's index inside of its batch.
 		// This index will determine the value of the "shapeIndex" attribute of shape's vertices
 		inline void setShapeIndex(float shapeIndex) const { m_shapeIndex = shapeIndex; }
+#endif
 
 	protected: /* functions */
 
@@ -83,6 +90,7 @@ namespace Renderer2D
 		// Flag indicating if world vertices in derived class need to be updated before use
 		mutable bool m_needUpdateVerticesWorld = true;
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Shape's index inside of its batch.
 		// To be used by derived classes to set each vertex's "shapeIndex" attribute.
 		//
@@ -95,6 +103,7 @@ namespace Renderer2D
 		// but it would be inefficient, because then a batch will have to copy all vertices
 		// in order to add the "shapeIndex" attribute to them.
 		mutable float m_shapeIndex = -1.0f;
+#endif
 
 	private: /* variables */
 

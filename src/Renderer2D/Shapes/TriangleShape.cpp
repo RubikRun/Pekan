@@ -10,7 +10,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
     // Checks if the orientation of 3 given vertices is CCW (counter-clockwise)
     static bool isOrientationCCW(const glm::vec2& a, const glm::vec2& b, const glm::vec2& c)
     {
@@ -27,7 +27,7 @@ namespace Renderer2D
         m_verticesLocal[1] = vertexB;
         m_verticesLocal[2] = vertexC;
 
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
         m_needUpdateVerticesWorld = true;
@@ -38,7 +38,7 @@ namespace Renderer2D
         PK_ASSERT(isValid(), "Trying to set vertex A of a TriangleShape that is not yet created.", "Pekan");
 
         m_verticesLocal[0] = vertexA;
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
         m_needUpdateVerticesWorld = true;
@@ -49,7 +49,7 @@ namespace Renderer2D
         PK_ASSERT(isValid(), "Trying to set vertex B of a TriangleShape that is not yet created.", "Pekan");
 
         m_verticesLocal[1] = vertexB;
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
         m_needUpdateVerticesWorld = true;
@@ -60,7 +60,7 @@ namespace Renderer2D
         PK_ASSERT(isValid(), "Trying to set vertex C of a TriangleShape that is not yet created.", "Pekan");
 
         m_verticesLocal[2] = vertexC;
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
         m_needUpdateVerticesWorld = true;
@@ -73,7 +73,7 @@ namespace Renderer2D
         m_verticesLocal[0] = vertexA;
         m_verticesLocal[1] = vertexB;
         m_verticesLocal[2] = vertexC;
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
         m_needUpdateVerticesWorld = true;
@@ -83,7 +83,7 @@ namespace Renderer2D
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a TriangleShape that is not yet created.", "Pekan");
 
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         if (m_needUpdateIndices)
         {
             updateIndices();
@@ -96,7 +96,7 @@ namespace Renderer2D
         return m_verticesWorld;
     }
 
-#if !PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
     void TriangleShape::updateIndices() const
     {
         // If face culling is disabled it doesn't matter if triangle is CW or CCW
@@ -127,10 +127,18 @@ namespace Renderer2D
         m_verticesWorld[0].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
         m_verticesWorld[1].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
         m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
         // Set "shapeIndex" attribute of each vertex to be shape's index
         m_verticesWorld[0].shapeIndex = m_shapeIndex;
         m_verticesWorld[1].shapeIndex = m_shapeIndex;
         m_verticesWorld[2].shapeIndex = m_shapeIndex;
+#else
+        // Set "color" attribute of each vertex to be shape's color
+        m_verticesWorld[0].color = m_color;
+        m_verticesWorld[1].color = m_color;
+        m_verticesWorld[2].color = m_color;
+#endif
 
         m_needUpdateVerticesWorld = false;
     }

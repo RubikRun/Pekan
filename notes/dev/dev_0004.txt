@@ -4237,3 +4237,84 @@ Next TO-DO item is:
 Easy. Nothing to say.
 Done.
 }
+
+----------
+28.07.2025
+----------
+
+{
+Today I noticed something weird about Demo06.
+It works at around 37 FPS, which is not good.
+I remember quite clearly that it worked at 48 FPS before.
+Went back to check and, indeed, at the very beginning of batch rendering
+    e595842 - Implement Batch Rendering for 2D shapes
+it worked pretty well at 48 FPS.
+Looks like it dropped some performance at this commit
+    5202abb - Use multiple batches in Renderer2D. When a batch fills up, render it, and start a new one
+which goes hand in hand with the previous commit
+    c9b9aa7 - Create class Texture1D; Use a Texture1D for colors in ShapesBatch instead of a "color" vertex attribute
+so basically it works slower with a 1D texture and multiple batches compared to a vertex attribute and a single batch.
+Hmmm that's not great.
+We can't always stick to a vertex attribute and a single batch,
+because we don't know how big a single batch can be on any given hardware.
+On my machine putting 60k shapes together in a single batch is fine,
+but on weaker machines it could crash.
+
+I guess I can make this be an option in CMake - whether to use a 1D texture or a vertex attribute for the colors.
+If it's a 1D texture we'll use the texture's limit to determine when to start a new batch, as we do now.
+If it's a vertex attribute we'll use some artificial limit of vertices/indices, which can be adjusted for different hardwares some time in the future.
+Yep, let's do that.
+
+Introducing a new CMake option in Renderer2D
+    PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+Then, based on that option we'll need to modify
+    struct ShapeVertex    (Shape.h)
+to have either this member, if we're using a 1D texture
+    float shapeIndex = -1.0f;
+or this member, if we're NOT using a 1D texture (so using a vertex attribute)
+    glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+Of course, if we are NOT using a 1D texture we don't need Shape's member
+    mutable float m_shapeIndex = -1.0f;
+and we don't need its setter
+    inline void setShapeIndex(float shapeIndex) const { m_shapeIndex = shapeIndex; }
+
+Then we need to modify, accordingly, the updateVerticesWorld() function of each shape type
+to set the "color" attribute of each vertex to be the color of the shape, if we are NOT using a 1D texture
+    m_verticesWorld[i].color = m_color;
+Otherwise, if we are using a 1D texture, we need to set the "shapeIndex" attribute to be shape's index, as we do it now
+    m_verticesWorld[i].shapeIndex = m_shapeIndex;
+
+Then, we need to modify the vertex buffer layout to be this
+    { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float, "shapeIndex" } }
+if we are using a 1D texture and this
+    { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } }
+otherwise.
+
+To match this, we'll need to have 2 sets of shaders.
+One will be called
+    2D_Shapes_BatchRendering_1DTexture_VertexShader.glsl
+    2D_Shapes_BatchRendering_SolidColor_1DTexture_FragmentShader.glsl
+and the other
+    2D_Shapes_BatchRendering_VertexShader.glsl
+    2D_Shapes_BatchRendering_SolidColor_FragmentShader.glsl
+The first one will be the 2 shaders as they currently are - using a 1D texture,
+and the second one will be modified to use a vertex attribute instead.
+Then, be careful in ShapesBatch.cpp to use the correct set of shaders based on the PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH option.
+
+Also, any texture related code must be removed if we are NOT using a 1D texture.
+
+That's basically it. The rest is trivial, nothing to say.
+
+While we're dealing with CMake options let's rename the old option
+    PEKAN_DISABLE_2D_SHAPES_ORIENTATION_CHECKING
+to
+    PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
+and work with it in reverse logic, it makes more sense.
+
+That's all.
+Now we have 2 ways of handling the colors of shapes in a ShapesBatch.
+Second way (with a vertex attribute) works faster at 48 FPS, same as before, so that's good.
+
+Done.
+}

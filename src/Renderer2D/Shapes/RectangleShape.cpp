@@ -79,11 +79,20 @@ namespace Renderer2D
         m_verticesWorld[1].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
         m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
         m_verticesWorld[3].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
+
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
         // Set "shapeIndex" attribute of each vertex to be shape's index
         m_verticesWorld[0].shapeIndex = m_shapeIndex;
         m_verticesWorld[1].shapeIndex = m_shapeIndex;
         m_verticesWorld[2].shapeIndex = m_shapeIndex;
         m_verticesWorld[3].shapeIndex = m_shapeIndex;
+#else
+        // Set "color" attribute of each vertex to be shape's color
+        m_verticesWorld[0].color = m_color;
+        m_verticesWorld[1].color = m_color;
+        m_verticesWorld[2].color = m_color;
+        m_verticesWorld[3].color = m_color;
+#endif
 
         m_needUpdateVerticesWorld = false;
     }

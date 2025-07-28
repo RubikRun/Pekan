@@ -97,8 +97,13 @@ namespace Renderer2D
         {
             // Calculate world vertex positions by applying the transform matrix to the local vertex positions
             m_verticesWorld[i].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
             // Set "shapeIndex" attribute to be shape's index
             m_verticesWorld[i].shapeIndex = m_shapeIndex;
+#else
+            // Set "color" attribute to be shape's color
+            m_verticesWorld[i].color = m_color;
+#endif
         }
 
         m_needUpdateVerticesWorld = false;
