@@ -3,8 +3,8 @@ project(Graphics)
 
 # Add a static library Graphics, compiling the following source files
 add_library(Graphics STATIC
-    Graphics.h
-    Graphics.cpp
+    GraphicsSystem.h
+    GraphicsSystem.cpp
     GLCall.h
     GLCall.cpp
     RenderState.h

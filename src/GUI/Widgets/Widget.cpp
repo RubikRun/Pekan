@@ -1,7 +1,7 @@
 #include "Widget.h"
 
 #include "PekanLogger.h"
-#include "GUI.h"
+#include "GUISystem.h"
 
 #include "GUIWindow.h"
 
@@ -17,7 +17,7 @@ namespace GUI
 	{
 		PK_ASSERT(m_id < 0, "Trying to create a Widget instance that is already created.", "Pekan");
 
-		m_id = GUI::generateWidgetId();
+		m_id = GUISystem::generateWidgetId();
 		if (guiWindow != nullptr)
 		{
 			// Check if widget is owned by a shared_ptr.

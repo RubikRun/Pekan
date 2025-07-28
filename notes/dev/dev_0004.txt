@@ -4230,3 +4230,10 @@ that's why we need to mark them as "inline".
 Done.
 }
 
+{
+Next TO-DO item is:
+    Rename class GUI to GUISystem and class Graphics to GraphicsSystem.
+
+Easy. Nothing to say.
+Done.
+}

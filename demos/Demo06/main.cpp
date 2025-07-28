@@ -1,6 +1,6 @@
-#include "Graphics.h"
+#include "GraphicsSystem.h"
 #include "Renderer2DSystem.h"
-#include "GUI.h"
+#include "GUISystem.h"
 
 #include "PekanLogger.h"
 

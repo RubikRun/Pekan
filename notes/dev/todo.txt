@@ -146,7 +146,7 @@
 
 0052 20.07.2025 (DONE): Remove "inline" from some places
 
-0053 24.07.2025 (TODO): Rename class GUI to GUISystem and class Graphics to GraphicsSystem.
+0053 24.07.2025 (DONE): Rename class GUI to GUISystem and class Graphics to GraphicsSystem.
 
 0054 24.07.2025 (DONE): Create a mechanism in LayerStack (or elsewhere) that allows for client code to specify
                         a hierarchy of layer initialization (which layers should be initialized before which ones)

@@ -1,7 +1,7 @@
 #include "Renderer2DSystem.h"
 
 #include "SubsystemManager.h"
-#include "Graphics.h"
+#include "GraphicsSystem.h"
 
 using namespace Pekan::Graphics;
 
@@ -49,7 +49,7 @@ namespace Renderer2D
 
 	ISubsystem* Renderer2DSystem::getParent()
 	{
-		return Graphics::Graphics::getInstance();
+		return GraphicsSystem::getInstance();
 	}
 
 	void Renderer2DSystem::render(const Shape& shape)
