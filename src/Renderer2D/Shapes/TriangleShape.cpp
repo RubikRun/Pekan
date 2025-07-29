@@ -2,6 +2,7 @@
 
 #include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
+#include "Utils/MathUtils.h"
 
 using namespace Pekan::Graphics;
 
@@ -10,13 +11,8 @@ namespace Pekan
 namespace Renderer2D
 {
 
-#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
-    // Checks if the orientation of 3 given vertices is CCW (counter-clockwise)
-    static bool isOrientationCCW(const glm::vec2& a, const glm::vec2& b, const glm::vec2& c)
-    {
-        const float det = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-        return (det >= 0.0f);
-    }
+#if !PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
+    const unsigned TriangleShape::s_indices[3] = { 0, 1, 2 };
 #endif
 
     void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC, bool dynamic)
@@ -27,10 +23,10 @@ namespace Renderer2D
         m_verticesLocal[1] = vertexB;
         m_verticesLocal[2] = vertexC;
 
+        m_needUpdateVerticesWorld = true;
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
-        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertexA(glm::vec2 vertexA)
@@ -38,10 +34,10 @@ namespace Renderer2D
         PK_ASSERT(isValid(), "Trying to set vertex A of a TriangleShape that is not yet created.", "Pekan");
 
         m_verticesLocal[0] = vertexA;
+        m_needUpdateVerticesWorld = true;
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
-        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertexB(glm::vec2 vertexB)
@@ -49,10 +45,10 @@ namespace Renderer2D
         PK_ASSERT(isValid(), "Trying to set vertex B of a TriangleShape that is not yet created.", "Pekan");
 
         m_verticesLocal[1] = vertexB;
+        m_needUpdateVerticesWorld = true;
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
-        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertexC(glm::vec2 vertexC)
@@ -60,10 +56,10 @@ namespace Renderer2D
         PK_ASSERT(isValid(), "Trying to set vertex C of a TriangleShape that is not yet created.", "Pekan");
 
         m_verticesLocal[2] = vertexC;
+        m_needUpdateVerticesWorld = true;
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
-        m_needUpdateVerticesWorld = true;
     }
 
     void TriangleShape::setVertices(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC)
@@ -73,27 +69,36 @@ namespace Renderer2D
         m_verticesLocal[0] = vertexA;
         m_verticesLocal[1] = vertexB;
         m_verticesLocal[2] = vertexC;
+        m_needUpdateVerticesWorld = true;
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         m_needUpdateIndices = true;
 #endif
-        m_needUpdateVerticesWorld = true;
     }
 
     const ShapeVertex* TriangleShape::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a TriangleShape that is not yet created.", "Pekan");
 
-#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
-        if (m_needUpdateIndices)
-        {
-            updateIndices();
-        }
-#endif
         if (m_needUpdateVerticesWorld)
         {
             updateVerticesWorld();
         }
         return m_verticesWorld;
+    }
+
+    const unsigned* TriangleShape::getIndices() const
+    {
+        PK_ASSERT(isValid(), "Trying to get indices of a TriangleShape that is not yet created.", "Pekan");
+
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
+        if (m_needUpdateIndices)
+        {
+            updateIndices();
+        }
+        return m_indices;
+#else
+        return s_indices;
+#endif
     }
 
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
@@ -105,11 +110,19 @@ namespace Renderer2D
         {
             return;
         }
-        if (isOrientationCCW(m_verticesLocal[0], m_verticesLocal[1], m_verticesLocal[2]))
+        // We need latest world vertices to correctly update indices
+        if (m_needUpdateVerticesWorld)
+        {
+            updateVerticesWorld();
+        }
+
+        // If the orientation of the 3 vertices in world space is CCW we need standard indices { 0, 1, 2 }
+        if (MathUtils::isOrientationCCW(m_verticesWorld[0].position, m_verticesWorld[1].position, m_verticesWorld[2].position))
         {
             m_indices[0] = 0;
             m_indices[2] = 2;
         }
+        // Otherwise we need reverse orientation indices { 2, 1, 0 }
         else
         {
             m_indices[0] = 2;

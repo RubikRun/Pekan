@@ -51,5 +51,8 @@ namespace MathUtils
     // WARNING: Indices array must be of size (nVertices - 2) * 3 to contain the nVertices - 2 triangles.
     void generateTriangleFanIndices(unsigned* indices, int nVertices);
 
+    // Checks if orientation is reversed by a given transform matrix
+    bool isOrientationReversedByTransform(const glm::mat3& transform);
+
 } // namespace MathUtils
 } // namespace Pekan

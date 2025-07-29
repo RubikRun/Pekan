@@ -48,11 +48,15 @@ namespace Renderer2D
 		// Indices into the vertices list, making up the triangles of the triangulated polygon.
 		mutable std::vector<unsigned> m_indices;
 
+		// Flag indicating if local vertices need to be updated before use
+		mutable bool m_needUpdateVerticesLocal = true;
+
 		// Flag indicating if local vertices are reversed.
 		mutable bool m_isReversedVerticesLocal = false;
 
-		// Flag indicating if local vertices need to be updated before use
-		mutable bool m_needUpdateVerticesLocal = true;
+		// Flag indicating if indices are "reversed",
+		// or more precisely each 3 consecutive indices have reversed orientation.
+		mutable bool m_isReversedIndices = false;
 
 		// Flag indicating if indices list currently contains "triangle fan" indices,
 		// meaning indices in the form { 0, 1, 2, 0, 2, 3, 0, 3, 4, ... }

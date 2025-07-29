@@ -209,7 +209,7 @@ namespace MathUtils
     {
         PK_ASSERT
         (
-            indices.size() == 0 || (indices.size() % 3 == 0 && indices.size() > 0),
+            indices.size() % 3 == 0,
             "Trying to update a list of triangle fan indices but given list contains an invalid number of indices.",
             "Pekan"
         );
@@ -244,6 +244,14 @@ namespace MathUtils
             indices[i + 1] = i / 3 + 1;
             indices[i + 2] = i / 3 + 2;
         }
+    }
+
+    bool isOrientationReversedByTransform(const glm::mat3& transform)
+    {
+        const glm::vec2 a = glm::vec2(transform[0]);
+        const glm::vec2 b = glm::vec2(transform[1]);
+        const float det = a.x * b.y - a.y * b.x;
+        return det < 0.0f;
     }
 
 } // namespace MathUtils

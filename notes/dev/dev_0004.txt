@@ -4318,3 +4318,41 @@ Second way (with a vertex attribute) works faster at 48 FPS, same as before, so 
 
 Done.
 }
+
+----------
+30.07.2025
+----------
+
+{
+Today I came back to revisit the logic behind this CMake option
+    PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
+and I found there's a major issue there.
+
+We are checking the orientation only on local vertices, but what actually matters are world vertices,
+so for example in Demo07 if you enable face culling and flip the triangle (same for polygon)
+using a negative scale you'll get an invisible triangle, even if you have enabled
+    PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
+That's not good.
+
+Changed class TriangleShape to do orientation checking on world vertices, not too hard. Found some other small issues as well, and fixed them.
+
+The hard part is class PolygonShape.
+We can't directly do orientation checking on world vertices because our functions
+    bool triangulatePolygon(const std::vector<glm::vec2>& vertices, std::vector<unsigned>& indices);
+    bool isPolygonConvex(const std::vector<glm::vec2>& vertices);
+    bool isPolygonCCW(const std::vector<glm::vec2>& vertices);
+in MathUtils take in a vector of glm::vec2, but our world vertices are a vector of ShapeVertex.
+We can, of course, copy the positions of world vertices into a new vector of glm::vec2
+but that's not very effecient and it'll have to be done each time a polygon changes/moves.
+A better idea is to "reverse" indices, or more precisely flip every triangle,
+if polygon's transform happens to reverse orientation.
+Did that.
+It was kind of hard and annoying, I couldn't easily handle each case in a good way,
+but in the end I think I ended up on a good design of the solution.
+It works in all cases that I tested, and it doesn't look too bad.
+It only does this "reversing" of indices if the option
+    PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
+is enabled AND face culling is enabled, so this code will be used only for very specific cases.
+
+Done.
+}

@@ -4,6 +4,8 @@
 #include "Utils/PekanUtils.h"
 #include "Utils/MathUtils.h"
 
+#include <algorithm>
+
 using namespace Pekan::Graphics;
 
 namespace Pekan
@@ -17,6 +19,8 @@ namespace Renderer2D
 
         m_verticesLocal = vertices;
         m_isReversedVerticesLocal = false;
+        m_isIndicesTriangleFan = false;
+        m_isReversedIndices = false;
         m_needUpdateVerticesLocal = true;
     }
 
@@ -26,6 +30,8 @@ namespace Renderer2D
 
         m_verticesLocal = vertices;
         m_isReversedVerticesLocal = false;
+        m_isIndicesTriangleFan = false;
+        m_isReversedIndices = false;
         m_needUpdateVerticesLocal = true;
     }
 
@@ -67,28 +73,34 @@ namespace Renderer2D
 
     const unsigned* PolygonShape::getIndices() const
     {
-        // Indices are updated together with local vertices,
-        // so update local vertices here if needed.
+        // Indices are updated together with local vertices and world vertices,
+        // so update local vertices and world vertices here if needed.
         if (m_needUpdateVerticesLocal)
         {
             updateVerticesLocal();
         }
+        if (m_needUpdateVerticesWorld)
+        {
+            updateVerticesWorld();
+        }
 
+        PK_ASSERT_QUICK(m_indices.size() % 3 == 0);
         return m_indices.data();
     }
 
     void PolygonShape::updateVerticesLocal() const
     {
-        m_isReversedVerticesLocal = false;
+        PK_ASSERT(isValid(), "Trying to update local vertices of a PolygonShape that is not yet created.", "Pekan");
 
         // If given vertices form a non-convex polygon, we will need to triangulate it manually.
         if (!MathUtils::isPolygonConvex(m_verticesLocal))
         {
             // If given vertices form a CW polygon, reverse them, to ensure that we have a CCW polygon.
+            // (This is needed to triangulate the polygon correctly)
             if (!MathUtils::isPolygonCCW(m_verticesLocal))
             {
                 std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
-                m_isReversedVerticesLocal = true;
+                m_isReversedVerticesLocal = !m_isReversedVerticesLocal;
             }
             // Triangulate polygon,
             // filling the indices list with indices of triangles ready to be rendered.
@@ -100,9 +112,11 @@ namespace Renderer2D
             m_isIndicesTriangleFan = false;
         }
         // Otherwise we can generate triangle fan indices.
-        // (We can't use a triangle fan primitive because it would not work in Batch Rendering)
+        // (We can't use a triangle fan primitive because it would not work in ShapesBatch)
         else
         {
+
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
             // If given vertices form a CW polygon, reverse them, to ensure that we have a CCW polygon,
             // but only if face culling is enabled - otherwise CW polygons are ok.
             if
@@ -115,13 +129,15 @@ namespace Renderer2D
             )
             {
                 std::reverse(m_verticesLocal.begin(), m_verticesLocal.end());
-                m_isReversedVerticesLocal = true;
+                m_isReversedVerticesLocal = !m_isReversedVerticesLocal;
             }
+#endif
 
             const size_t nVerts = m_verticesLocal.size();
-            // If we already have some triangle fan indices we just need to update them
-            // with the new number of vertices, extending/shortening the list as needed.
-            if (m_isIndicesTriangleFan)
+
+            // If we already have some triangle fan indices and they are NOT reversed,
+            // we just need to update them with the new number of vertices, extending/shortening the list as needed.
+            if (m_isIndicesTriangleFan && !m_isReversedIndices)
             {
                 MathUtils::updateTriangleFanIndices(m_indices, nVerts);
             }
@@ -134,6 +150,8 @@ namespace Renderer2D
 
             m_isIndicesTriangleFan = true;
         }
+
+        m_isReversedIndices = false;
 
         m_needUpdateVerticesLocal = false;
         m_needUpdateVerticesWorld = true;
@@ -160,6 +178,22 @@ namespace Renderer2D
         }
 
         m_needUpdateVerticesWorld = false;
+
+#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
+        if (RenderState::isEnabledFaceCulling())
+        {
+            // If transform's orientation and indices orientation don't match
+            if (MathUtils::isOrientationReversedByTransform(transformMatrix) != m_isReversedIndices)
+            {
+                // "Reverse" indices, flip every triangle
+                for (size_t i = 0; i + 2 < m_indices.size(); i += 3)
+                {
+                    std::swap(m_indices[i + 1], m_indices[i + 2]);
+                }
+                m_isReversedIndices = !m_isReversedIndices;
+            }
+        }
+#endif
     }
 
 } // namespace Renderer2D

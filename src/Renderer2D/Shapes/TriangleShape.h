@@ -34,16 +34,13 @@ namespace Renderer2D
 		const ShapeVertex* getVertices() const override;
 		int getVerticesCount() const override { return 3; };
 
-#if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
-		const unsigned* getIndices() const override { return m_indices; }
+		const unsigned* getIndices() const override;
 		int getIndicesCount() const override { return 3; };
-#endif
 
 	private: /* functions */
 
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
-		// Updates indices so that the orientation of the 3 vertices is CCW.
-		// This is done only if face culling is enabled in RenderState, otherwise there's no point.
+		// Updates indices if needed
 		void updateIndices() const;
 #endif
 
@@ -60,9 +57,11 @@ namespace Renderer2D
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
 		// Indices of the 3 vertices of the triangle, determining the order in which they will be drawn
 		mutable unsigned m_indices[3] = { 0, 1, 2 };
-
 		// Flag indicating if indices need to be updated before use
 		bool m_needUpdateIndices = true;
+#else
+		// Indices of the 3 vertices of the triangle, determining the order in which they will be drawn
+		static const unsigned s_indices[3];
 #endif
 	};
 
