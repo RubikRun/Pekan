@@ -155,4 +155,4 @@
                         Currently it just creates the default number of shapes at initialization time
                         and then if you increase them during runtime it crashes.
 
-0056 25.07.2025 (TODO): Change class Layer's getName() function to be pure virtual and remove m_name member, maybe also remove constructor.
+0056 25.07.2025 (DONE): Change class Layer's getName() function to be pure virtual and remove m_name member, maybe also remove constructor.

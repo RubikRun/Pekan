@@ -26,12 +26,10 @@ namespace GUI
 	{
 	public:
 
-		GUIWindow(Pekan::PekanApplication* application) : Layer("gui_layer", application) {}
-		GUIWindow(const std::string& layerName, Pekan::PekanApplication* application) : Layer(layerName, application) {}
+		GUIWindow(Pekan::PekanApplication* application) : Layer(application) {}
 		virtual ~GUIWindow() = default;
 
 		void exit() override final;
-
 		void render() const  override final;
 
 		// Adds a widget to the GUI window.
@@ -43,6 +41,10 @@ namespace GUI
 		// there is no need to add them here,
 		// you can override _render() and render them manually there.
 		void addWidget(const Widget_Ptr& widget);
+
+		// Can be implemented by derived classes if they want a non-default name
+		// for the layer of their GUI window
+		virtual inline std::string getLayerName() const override { return "gui_layer"; }
 
 	private: /* functions*/
 

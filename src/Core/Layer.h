@@ -20,7 +20,7 @@ namespace Pekan
 
 	public:
 
-		Layer(const std::string& name, PekanApplication* application) : m_name(name), m_application(application) {}
+		Layer(PekanApplication* application) : m_application(application) {}
 		virtual ~Layer() = default;
 
 		virtual bool init() { return true; }
@@ -28,7 +28,8 @@ namespace Pekan
 		virtual void update(double deltaTime) {}
 		virtual void render() const {}
 
-		const std::string& getLayerName() const { return m_name; }
+		// To be implemented by derived classes to return layer's name
+		virtual std::string getLayerName() const = 0;
 
 		// Sets layer's parent.
 		// A layer depends on its parent, meaning that its parent must be initialized first.
@@ -41,8 +42,6 @@ namespace Pekan
 		PekanApplication* m_application = nullptr;
 
 	private: /* variables*/
-
-		std::string m_name;
 
 		// Pointer to layer's parent.
 		// A layer depends on its parent, meaning that its parent must be initialized first.

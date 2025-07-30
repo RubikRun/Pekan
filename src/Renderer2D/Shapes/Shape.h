@@ -1,6 +1,5 @@
 #pragma once
 
-#include "RenderObject.h"
 #include "RenderCommands.h"
 #include "Camera2D.h"
 

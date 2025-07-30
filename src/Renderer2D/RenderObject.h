@@ -18,13 +18,13 @@ namespace Renderer2D
 	// - vertices
 	// - indices (optional)
 	// - a shader
-	// - a texture (optional)
+	// - textures (optional)
 	class RenderObject
 	{
 	public:
 
 		// Creates a render object with vertices and a shader.
-		// Index data and a texture can be set later.
+		// Index data and textures can be configured later.
 		void create
 		(
 			const void* vertexData,
@@ -36,7 +36,7 @@ namespace Renderer2D
 		);
 
 		// Creates a render object with a shader only.
-		// Vertex data, index data and a texture can be set later.
+		// Vertex data, index data and textures can be configured later.
 		void create
 		(
 			const Graphics::VertexBufferLayout& layout,
@@ -53,16 +53,26 @@ namespace Renderer2D
 		void bind() const;
 		void unbind() const;
 
+		// Sets new vertex data to the render object (old data usage will be used)
 		void setVertexData(const void* data, long long size);
+		// Sets new vertex data, with a new data usage, to the render object
 		void setVertexData(const void* data, long long size, Graphics::BufferDataUsage dataUsage);
+		// Fills a region of render object's vertex data with given data. Previous data in this region is overwritten.
 		void setVertexSubData(const void* data, long long offset, long long size);
 
+		// Sets new index data to the render object (old data usage will be used)
 		void setIndexData(const void* data, long long size);
+		// Sets new index data, with a new data usage, to the render object
 		void setIndexData(const void* data, long long size, Graphics::BufferDataUsage dataUsage);
+		// Fills a region of render object's index data with given data. Previous data in this region is overwritten.
 		void setIndexSubData(const void* data, long long offset, long long size);
 
+		// Sets new source code to be used for render object's shader
 		void setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 
+		// Sets a new image to be used as a texture inside render object's shader.
+		// @param[in] uniformName - Name of uniform inside the shader containing the slot where texture will be bound
+		// @param[in] slot - Slot where texture will be bound
 		void setTextureImage(const Graphics::Image& image, const char* uniformName, unsigned slot);
 
 		Graphics::Shader& getShader() { return m_shader; }

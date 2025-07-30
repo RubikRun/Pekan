@@ -18,7 +18,7 @@ namespace Demo
 	{
 	public:
 
-		Demo04_Scene(Pekan::PekanApplication* application) : Layer("scene_layer", application) {}
+		Demo04_Scene(Pekan::PekanApplication* application) : Layer(application) {}
 
 		bool init() override;
 
@@ -30,6 +30,8 @@ namespace Demo
 		
 		// Attaches a GUI window for controlling background's color
 		void attachGUIWindow(const std::shared_ptr<const Demo04_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
+
+		inline std::string getLayerName() const override { return "scene_layer"; }
 
 	private: /* functions */
 

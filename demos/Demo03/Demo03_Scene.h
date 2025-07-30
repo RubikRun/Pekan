@@ -12,7 +12,7 @@ namespace Demo
 	{
 	public:
 
-		Demo03_Scene(Pekan::PekanApplication* application) : Layer("scene_layer", application) {}
+		Demo03_Scene(Pekan::PekanApplication* application) : Layer(application) {}
 
 		bool init() override;
 
@@ -21,6 +21,8 @@ namespace Demo
 		void render() const override;
 
 		void exit() override;
+
+		inline std::string getLayerName() const override { return "scene_layer"; }
 
 	private: /* functions */
 

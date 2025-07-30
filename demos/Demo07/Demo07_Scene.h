@@ -21,7 +21,7 @@ namespace Demo
 
 	public:
 
-		Demo07_Scene(Pekan::PekanApplication* application) : Layer("scene_layer", application) {}
+		Demo07_Scene(Pekan::PekanApplication* application) : Layer(application) {}
 
 		bool init() override;
 
@@ -32,6 +32,8 @@ namespace Demo
 		void exit() override;
 		
 		void attachGUIWindow(const std::shared_ptr<const Demo07_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
+
+		inline std::string getLayerName() const override { return "scene_layer"; }
 
 	private: /* functions */
 

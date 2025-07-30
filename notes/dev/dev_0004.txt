@@ -4382,3 +4382,36 @@ It works now!
 Now in Demo06 you can increase the number of shapes beyond the initial value.
 Done.
 }
+
+{
+We have one last TO-DO item
+    Change class Layer's getName() function to be pure virtual and remove m_name member, maybe also remove constructor.
+
+Okay, easier than I thought.
+Couldn't fully remove Layer's constructor because we still need to require from derived classes to provide a PekanApplication pointer
+in their constructors, so Layer's constructor is now this:
+    Layer(PekanApplication* application) : m_application(application) {}
+and there is NO default constructor.
+A Layer's name will be provided with this new pure virtual function
+    virtual std::string getLayerName() const = 0;
+that must be implemented by each derived class to return the name of the layer.
+
+Then we need to change class GUIWindow to have only this constructor
+    GUIWindow(Pekan::PekanApplication* application) : Layer(application) {}
+and to implement the getLayerName() function with a default GUI window layer name
+    virtual inline std::string getLayerName() const override { return "gui_layer"; }
+Derived classes of GUIWindow can still override this function and pick a specific name,
+but they don't have to - if they don't, the default name "gui_layer" will be used.
+That's it for GUI windows. We don't have any GUI windows with specific names so we don't need to change anything more.
+
+What about scenes?
+Currently our demo scenes are directly derived from Layer so we'll have to change each demo scene
+to call Layer's constructor passing the application pointer only, without the name, like this:
+    Demo00_Scene(Pekan::PekanApplication* application) : Layer(application) {}
+and then each demo scene will have to implement the getLayerName() function
+    inline std::string getLayerName() const override { return "scene_layer"; }
+That's it.
+
+Everything works as before.
+Done.
+}
