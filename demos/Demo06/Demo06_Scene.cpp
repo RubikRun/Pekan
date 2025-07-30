@@ -76,7 +76,9 @@ namespace Demo
 		}
 
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
+		const int shapesMaxCount = m_guiWindow->getMaxNumberOfShapes();
 		m_perShapeTypeCount = shapesCount / 5;
+		m_perShapeTypeMaxCount = shapesMaxCount / 5;
 
 		createBbox();
 		createCameras();
@@ -236,9 +238,9 @@ namespace Demo
 		const glm::vec2 positionXRange = { m_bbox.min.x + widthHeightRange.y / 2.0f, m_bbox.max.x - widthHeightRange.y / 2.0f };
 		const glm::vec2 positionYRange = { m_bbox.min.y + widthHeightRange.y / 2.0f, m_bbox.max.y - widthHeightRange.y / 2.0f };
 
-		m_rectangles.resize(m_perShapeTypeCount);
+		m_rectangles.resize(m_perShapeTypeMaxCount);
 
-		for (int i = 0; i < m_perShapeTypeCount; i++)
+		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
 			m_rectangles[i].create(getRandomFloat(widthHeightRange), getRandomFloat(widthHeightRange));
 			m_rectangles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
@@ -253,9 +255,9 @@ namespace Demo
 		const glm::vec2 positionXRange = { m_bbox.min.x + radiusRange.y, m_bbox.max.x - radiusRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y + radiusRange.y, m_bbox.max.y - radiusRange.y };
 
-		m_circles.resize(m_perShapeTypeCount / 2);
+		m_circles.resize(m_perShapeTypeMaxCount / 2);
 
-		for (int i = 0; i < m_perShapeTypeCount / 2; i++)
+		for (int i = 0; i < m_perShapeTypeMaxCount / 2; i++)
 		{
 			m_circles[i].create(getRandomFloat(radiusRange));
 			m_circles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
@@ -271,9 +273,9 @@ namespace Demo
 		const glm::vec2 positionXRange = { m_bbox.min.x + radiusRange.y, m_bbox.max.x - radiusRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y + radiusRange.y, m_bbox.max.y - radiusRange.y };
 
-		m_circlesStatic.resize(m_perShapeTypeCount / 2);
+		m_circlesStatic.resize(m_perShapeTypeMaxCount / 2);
 
-		for (int i = 0; i < m_perShapeTypeCount / 2; i++)
+		for (int i = 0; i < m_perShapeTypeMaxCount / 2; i++)
 		{
 			m_circlesStatic[i].create(getRandomFloat(radiusRange));
 			m_circlesStatic[i].setPosition(getRandomVec2(positionXRange, positionYRange));
@@ -289,9 +291,9 @@ namespace Demo
 		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y - pointYRange.x, m_bbox.max.y - pointYRange.y };
 
-		m_triangles.resize(m_perShapeTypeCount);
+		m_triangles.resize(m_perShapeTypeMaxCount);
 
-		for (int i = 0; i < m_perShapeTypeCount; i++)
+		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
 			m_triangles[i].create
 			(
@@ -312,8 +314,8 @@ namespace Demo
 		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y + pointYRange.y, m_bbox.max.y - pointYRange.y };
 
-		m_polygons.resize(m_perShapeTypeCount);
-		for (int i = 0; i < m_perShapeTypeCount; i++)
+		m_polygons.resize(m_perShapeTypeMaxCount);
+		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
 			const std::vector<glm::vec2> vertices = getRandomPolygonVertices(getRandomInt(6, 18), pointXRange, pointYRange);
 			m_polygons[i].create(vertices);
@@ -330,9 +332,9 @@ namespace Demo
 		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
 		const glm::vec2 positionYRange = { m_bbox.min.y - pointYRange.x, m_bbox.max.y - pointYRange.y };
 
-		m_lines.resize(m_perShapeTypeCount);
+		m_lines.resize(m_perShapeTypeMaxCount);
 
-		for (int i = 0; i < m_perShapeTypeCount; i++)
+		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
 			m_lines[i].create
 			(

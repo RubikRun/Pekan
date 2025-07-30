@@ -25,6 +25,11 @@ namespace GUI
 
 		int getValue() const;
 
+		const std::string& getLabel() const;
+
+		int getMin() const;
+		int getMax() const;
+
 	private: /* functions */
 
 		void _render() const override;

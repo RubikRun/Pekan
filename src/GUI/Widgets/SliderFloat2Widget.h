@@ -25,6 +25,12 @@ namespace GUI
 
 		glm::vec2 getValue() const;
 
+		const std::string& getLabel() const;
+
+		float getMin() const;
+		float getMax() const;
+		const std::string& getFormat() const;
+
 	private: /* functions */
 
 		void _render() const override;

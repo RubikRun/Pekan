@@ -25,6 +25,8 @@ namespace GUI
 
 		glm::vec4 getValue() const;
 
+		const std::string& getLabel() const;
+
 	private: /* functions */
 
 		void _render() const override;

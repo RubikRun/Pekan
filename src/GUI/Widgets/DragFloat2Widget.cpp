@@ -62,6 +62,36 @@ namespace GUI
 		return m_value;
 	}
 
+	const std::string& DragFloat2Widget::getLabel() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_label;
+	}
+
+	float DragFloat2Widget::getMin() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_min;
+	}
+
+	float DragFloat2Widget::getMax() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_max;
+	}
+
+	float DragFloat2Widget::getStep() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_step;
+	}
+
+	const std::string& DragFloat2Widget::getFormat() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_format;
+	}
+
 	void DragFloat2Widget::_render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);

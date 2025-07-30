@@ -10,7 +10,7 @@ namespace Demo
 	bool Demo06_GUIWindow::init()
 	{
 		gui.numberOfShapesLabel->create(this, "Number Of Shapes");
-		gui.numberOfShapesWidget->create(this, "", 60000, 5, 60000);
+		gui.numberOfShapesWidget->create(this, "", 10000, 5, 60000);
 
 		gui.showRectanglesWidget->create(this, "Show Rectangles", true);
 		gui.showCirclesWidget->create(this, "Show Circles", true);

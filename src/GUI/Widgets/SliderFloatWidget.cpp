@@ -55,6 +55,30 @@ namespace GUI
 		return m_value;
 	}
 
+	const std::string& SliderFloatWidget::getLabel() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_label;
+	}
+
+	float SliderFloatWidget::getMin() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_min;
+	}
+
+	float SliderFloatWidget::getMax() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_max;
+	}
+
+	const std::string& SliderFloatWidget::getFormat() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_format;
+	}
+
 	void SliderFloatWidget::_render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);

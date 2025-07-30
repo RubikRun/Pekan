@@ -43,6 +43,12 @@ namespace GUI
 		return m_value;
 	}
 
+	const std::string& ColorEdit4Widget::getLabel() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_label;
+	}
+
 	void ColorEdit4Widget::_render() const
 	{
 		PK_ASSERT_QUICK(isValid());

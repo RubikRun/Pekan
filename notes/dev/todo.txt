@@ -151,7 +151,7 @@
 0054 24.07.2025 (DONE): Create a mechanism in LayerStack (or elsewhere) that allows for client code to specify
                         a hierarchy of layer initialization (which layers should be initialized before which ones)
 
-0055 25.07.2025 (TODO): Fix Demo06 to not crash if default shapes count is different than max shapes count.
+0055 25.07.2025 (DONE): Fix Demo06 to not crash if default shapes count is different than max shapes count.
                         Currently it just creates the default number of shapes at initialization time
                         and then if you increase them during runtime it crashes.
 

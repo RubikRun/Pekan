@@ -4356,3 +4356,29 @@ is enabled AND face culling is enabled, so this code will be used only for very 
 
 Done.
 }
+
+{
+Let's do the next TO-DO item
+    Fix Demo06 to not crash if default shapes count is different than max shapes count.
+    Currently it just creates the default number of shapes at initialization time
+    and then if you increase them during runtime it crashes.
+
+It looks easy, but I stumbled upon something that I forgot to implement :D
+In order for this to work we need to create shapes using the maximum value of numberOfShapesWidget,
+not the current value, as we do now.
+The current value is just the default value because we retrieve it at the beginning in scene's init() function.
+So yeah, we just need to use the maximum value instead.
+However, we can't access it right now because it's private in class SliderIntWidget.
+Basically we need to create getters for all members of all widget types,
+for example in class SliderIntWidget we need these getters:
+    const std::string& getLabel() const;
+    int getMin() const;
+    int getMax() const;
+In other widget types we need fewer getters or more, each widget type is different.
+Went through all of them and implemented their getters.
+Nothing interesting to say.
+
+It works now!
+Now in Demo06 you can increase the number of shapes beyond the initial value.
+Done.
+}

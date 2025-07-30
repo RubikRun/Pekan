@@ -51,6 +51,24 @@ namespace GUI
 		return m_value;
 	}
 
+	const std::string& SliderIntWidget::getLabel() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_label;
+	}
+
+	int SliderIntWidget::getMin() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_min;
+	}
+
+	int SliderIntWidget::getMax() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_max;
+	}
+
 	void SliderIntWidget::_render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);

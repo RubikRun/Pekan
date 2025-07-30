@@ -26,6 +26,10 @@ namespace GUI
 		// Returns index of currently selected item
 		int getIndex() const;
 
+		const std::string& getLabel() const;
+
+		const std::vector<std::string>& getItems() const;
+
 	private: /* functions */
 
 		void _render() const override;

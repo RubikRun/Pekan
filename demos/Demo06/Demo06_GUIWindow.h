@@ -20,6 +20,8 @@ namespace Demo
 
 		// Returns current number of shapes
 		int getNumberOfShapes() const { return gui.numberOfShapesWidget->getValue(); }
+		// Returns maximum number of shapes allowed in GUI
+		int getMaxNumberOfShapes() const { return gui.numberOfShapesWidget->getMax(); }
 
 		bool isEnabledRectangles() const { return gui.showRectanglesWidget->isChecked(); }
 		bool isEnabledCircles() const { return gui.showCirclesWidget->isChecked(); }

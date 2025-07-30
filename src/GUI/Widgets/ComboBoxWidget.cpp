@@ -52,6 +52,18 @@ namespace GUI
 		return m_index;
 	}
 
+	const std::string& ComboBoxWidget::getLabel() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_label;
+	}
+
+	const std::vector<std::string>& ComboBoxWidget::getItems() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_items;
+	}
+
 	void ComboBoxWidget::_render() const
 	{
 		PK_ASSERT_QUICK(isValid());

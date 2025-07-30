@@ -88,6 +88,7 @@ namespace Demo
 		BoundingBox2D m_bbox;
 
 		int m_perShapeTypeCount = -1;
+		int m_perShapeTypeMaxCount = -1;
 
 		std::shared_ptr<Demo06_GUIWindow> m_guiWindow;
 

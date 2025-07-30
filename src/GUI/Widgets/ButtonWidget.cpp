@@ -32,6 +32,12 @@ namespace GUI
 		return m_isClicked;
 	}
 
+	const std::string& ButtonWidget::getLabel() const
+	{
+		PK_ASSERT_QUICK(m_id >= 0);
+		return m_label;
+	}
+
 	void ButtonWidget::_render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
