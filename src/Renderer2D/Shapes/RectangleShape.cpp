@@ -15,7 +15,7 @@ namespace Renderer2D
         PK_ASSERT(width > 0.0f, "RectangleShape's width must be greater than 0.", "Pekan");
         PK_ASSERT(height > 0.0f, "RectangleShape's height must be greater than 0.", "Pekan");
 
-        Shape::create(dynamic);
+        Shape::_create(dynamic);
 
         m_width = width;
         m_height = height;

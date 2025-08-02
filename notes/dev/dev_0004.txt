@@ -4415,3 +4415,52 @@ That's it.
 Everything works as before.
 Done.
 }
+
+----------
+31.07.2025
+----------
+
+{
+All features planned for v0.2 are ready now.
+All TO-DO items are also ready.
+
+However, I want to implement one final feature:
+    A Sprite class,
+    together with a SpritesBatch class
+    for rendering sprites together in a batch.
+because currently to render a simple rectangle with a texture client code needs to have a raw RenderObject
+and provide its geometry and shaders manually AND more importantly multiple such rectangles can't be batched together,
+so if you have many textured rectangles it will be very slow.
+
+----------
+01.08.2025
+----------
+
+Started implementing class Sprite but I noticed something that I want to do first.
+I'd be good to have a base class for transformable objects,
+because we need both class Shape and class Sprite to be transformable in the exact same way.
+So let's create
+    class Transformable
+and make class Shape derive from it.
+
+Okay, did that.
+It was easier than I thought.
+Added these 2 new files under src/Renderer2D/
+    Transformable2D.h
+    Transformable2D.cpp
+containing a
+    class Transformable2D
+where I moved all members and function from class Shape that are related to shape's transform.
+Then, of course, I made class Shape derive from Transformable2D
+    class Shape : public Transformable2D
+
+Also, changed a few other small things.
+Most notably, renamed Shape's create() and destroy() functions
+to be called
+    _create()
+    _destroy()
+because they are protected - only meant to be called by derived classes.
+
+Done with this part.
+
+}

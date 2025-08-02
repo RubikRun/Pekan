@@ -17,7 +17,7 @@ namespace Renderer2D
 		// Creates a rectangle shape with given width and height.
 		// @param[in] dynamic - Indicates if rectangle will be changed/transformed often. Used for optimization.
 		void create(float width, float height, bool dynamic = true);
-		void destroy() { Shape::destroy(); }
+		void destroy() { Shape::_destroy(); }
 
 		void setWidth(float width);
 		void setHeight(float height);

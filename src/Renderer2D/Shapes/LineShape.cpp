@@ -14,7 +14,7 @@ namespace Renderer2D
     {
         PK_ASSERT(thickness > 0.0f, "LineShape's thickness must be greater than 0.", "Pekan");
 
-        Shape::create(dynamic);
+        Shape::_create(dynamic);
 
         m_pointA = pointA;
         m_pointB = pointB;

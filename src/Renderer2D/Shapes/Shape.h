@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Transformable2D.h"
 #include "RenderCommands.h"
 #include "Camera2D.h"
 
@@ -13,7 +14,7 @@ namespace Renderer2D
 	// A vertex of a 2D shape
 	struct ShapeVertex
 	{
-		glm::vec2 position = glm::vec2(0.0f, 0.0f);
+		glm::vec2 position = { 0.0f, 0.0f };
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		float shapeIndex = -1.0f;
@@ -23,22 +24,18 @@ namespace Renderer2D
 	};
 
 	// A base class for 2D shapes
-	class Shape
+	class Shape : public Transformable2D
 	{
 	public:
 
+		// Checks if shape is valid, meaning that it has been created and not yet destroyed
+		inline bool isValid() const { return m_isValid; }
+
 		void render() const;
 
-		void setPosition(glm::vec2 position);
-		void setRotation(float rotation); // in radians
-		void setScale(glm::vec2 scale);
+		// Sets shape's color
 		void setColor(glm::vec4 color);
-
-		void move(glm::vec2 deltaPosition);
-
-		inline glm::vec2 getPosition() const { return m_position; }
-		inline float getRotation() const { return m_rotation; }
-		inline glm::vec2 getScale() const { return m_scale; }
+		// Returns shape's color
 		inline glm::vec4 getColor() const { return m_color; }
 
 		// To be implemented by derived classes to return their vertex data in world space.
@@ -64,30 +61,24 @@ namespace Renderer2D
 
 	protected: /* functions */
 
+		// Creates a shape.
 		// @param[in] dynamic - Indicates if shape will be changed/transformed often. Used for optimization.
-		void create(bool dynamic);
-		void destroy();
-
-		// Checks if shape is valid, meaning that it has been created and not yet destroyed
-		inline bool isValid() const { return m_isValid; }
-
-		const glm::mat3& getTransformMatrix() const;
-
-	private: /* functions */
-
-		// Updates the transform matrix with current position, rotation and scale.
-		void updateTransformMatrix() const;
+		//
+		// NOTE: Cannot be used directly on this class.
+		//       To be used by derived classes' create() function.
+		void _create(bool dynamic);
+		// Destroys a shape.
+		//
+		// NOTE: Cannot be used directly on this class.
+		//       To be used by derived classes' create() function.
+		void _destroy();
 
 	protected: /* variables*/
 
-		glm::vec2 m_position = glm::vec2(-1.0f, -1.0f);
-		float m_rotation = -1.0f; // in radians
-		glm::vec2 m_scale = glm::vec2(-1.0f, -1.0f);
-
-		glm::vec4 m_color = glm::vec4(-1.0f, -1.0f, -1.0f, -1.0f);
-
 		// Flag indicating if world vertices in derived class need to be updated before use
 		mutable bool m_needUpdateVerticesWorld = true;
+
+		glm::vec4 m_color = glm::vec4(-1.0f, -1.0f, -1.0f, -1.0f);
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Shape's index inside of its batch.
@@ -104,6 +95,11 @@ namespace Renderer2D
 		mutable float m_shapeIndex = -1.0f;
 #endif
 
+	private: /* functions */
+
+		// Called by base class Transformable2D when transform changes
+		void onTransformChanged() override;
+
 	private: /* variables */
 
 		// Flag indicating if shape is valid, meaning that it has been created and not yet destroyed
@@ -113,13 +109,6 @@ namespace Renderer2D
 		// Set to true if shape's vertices/indices are going to be changed often.
 		// Used for optimization.
 		bool m_isDynamic = true;
-
-		// A 2D transform matrix, containing position, rotation and scale,
-		// used to transform vertices from local space to world space
-		mutable glm::mat3 m_transformMatrix = glm::mat3(0.0f);
-
-		// Flag indicating if transform matrix has to be updated before use
-		mutable bool m_needUpdateTransformMatrix = false;
 	};
 
 } // namespace Renderer2D

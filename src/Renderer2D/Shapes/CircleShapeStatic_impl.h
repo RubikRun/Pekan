@@ -15,7 +15,7 @@ namespace Renderer2D
     {
         PK_ASSERT(radius > 0.0f, "CircleShapeStatic's radius must be greater than 0.", "Pekan");
 
-        Shape::create(dynamic);
+        Shape::_create(dynamic);
 
         m_radius = radius;
         m_needUpdateVerticesLocal = true;

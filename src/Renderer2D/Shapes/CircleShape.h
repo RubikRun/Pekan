@@ -23,7 +23,7 @@ namespace Renderer2D
 		// Creates a circle shape with given radius.
 		// @param[in] dynamic - Indicates if circle will be changed/transformed often. Used for optimization.
 		void create(float radius, bool dynamic = true);
-		void destroy() { Shape::destroy(); }
+		void destroy() { Shape::_destroy(); }
 
 		void setRadius(float radius);
 		void setSegmentsCount(int segmentsCount);

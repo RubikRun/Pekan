@@ -17,7 +17,7 @@ namespace Renderer2D
 
     void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC, bool dynamic)
     {
-        Shape::create(dynamic);
+        Shape::_create(dynamic);
 
         m_verticesLocal[0] = vertexA;
         m_verticesLocal[1] = vertexB;

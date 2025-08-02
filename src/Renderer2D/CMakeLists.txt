@@ -17,6 +17,8 @@ add_library(Renderer2D STATIC
     Camera2D.cpp
     Line.h
     Line.cpp
+    Transformable2D.h
+    Transformable2D.cpp
     Shapes/Shape.h
     Shapes/Shape.cpp
     Shapes/TriangleShape.h

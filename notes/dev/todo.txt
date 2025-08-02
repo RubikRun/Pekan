@@ -156,3 +156,7 @@
                         and then if you increase them during runtime it crashes.
 
 0056 25.07.2025 (DONE): Change class Layer's getName() function to be pure virtual and remove m_name member, maybe also remove constructor.
+
+0057 01.08.2025 (TODO): Check if it's better/faster to pre-allocate a fixed-size vertex buffer in ShapesBatch
+                        and use m_renderObject.setVertexSubData() instead of m_renderObject.setVertexData().
+                        Then we'll have to start a new batch whenever we fill up the buffer, which is fine.

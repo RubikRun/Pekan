@@ -15,7 +15,7 @@ namespace Renderer2D
 
     void PolygonShape::create(const std::vector<glm::vec2>& vertices, bool dynamic)
     {
-        Shape::create(dynamic);
+        Shape::_create(dynamic);
 
         m_verticesLocal = vertices;
         m_isReversedVerticesLocal = false;
