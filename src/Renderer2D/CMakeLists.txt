@@ -69,7 +69,7 @@ SOURCE_GROUP("Header Files\\Sprite" FILES
 )
 
 # Set include directories for Renderer2D
-target_include_directories(Renderer2D PUBLIC . Shapes)
+target_include_directories(Renderer2D PUBLIC . Shapes Sprite)
 
 # Set link libraries for Renderer2D
 target_link_libraries(Renderer2D PUBLIC Graphics)

@@ -20,6 +20,7 @@ namespace Renderer2D
 
 	class Sprite : public Transformable2D
 	{
+	public:
 
 		void create(const Graphics::Image& image, float width, float height, bool dynamic = true);
 		void destroy();

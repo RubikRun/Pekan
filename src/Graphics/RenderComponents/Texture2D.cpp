@@ -47,6 +47,12 @@ namespace Graphics {
 
 	void Texture2D::setImage(const Image& image)
 	{
+		if (!image.isValid())
+		{
+			PK_LOG_ERROR("Trying to set an invalid image to a texture.", "Pekan");
+			return;
+		}
+
 		bind();
 
 		// Set image data to the texture object

@@ -4,6 +4,7 @@
 #include "RenderObject.h"
 #include "RectangleShape.h"
 #include "Camera2D.h"
+#include "Sprite.h"
 
 #include "Demo08_GUIWindow.h"
 
@@ -34,9 +35,12 @@ namespace Demo
 	private: /* functions */
 
 		void createCamera();
+		void createSprites();
 		void createCenterSquare();
 
 	private: /* variables */
+
+		Pekan::Renderer2D::Sprite m_sprite;
 
 		// A square in the center of the bounding box, just to make sure that coordinates are resolution-independent
 		Pekan::Renderer2D::RectangleShape m_centerSquare;

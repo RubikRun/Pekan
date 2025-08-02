@@ -4,6 +4,7 @@
 #include "PekanTools.h"
 #include "RenderCommands.h"
 #include "Renderer2DSystem.h"
+#include "Image.h"
 
 #include <algorithm>
 
@@ -41,6 +42,7 @@ namespace Demo
 		m_spritesMaxCount = m_guiWindow->getMaxNumberOfSprites();
 
 		createCamera();
+		createSprites();
 		createCenterSquare();
 
         return true;
@@ -62,12 +64,14 @@ namespace Demo
 		RenderCommands::clear();
 
 		m_centerSquare.render();
+		m_sprite.render();
 
 		Renderer2DSystem::endFrame();
 	}
 
 	void Demo08_Scene::exit()
 	{
+		m_sprite.destroy();
 		m_centerSquare.destroy();
 	}
 
@@ -81,6 +85,12 @@ namespace Demo
 		Renderer2DSystem::setCamera(m_camera);
 		PekanTools::enableCameraController2D(m_camera);
 		PekanTools::setCameraController2DZoomSpeed(1.1f);
+	}
+
+	void Demo08_Scene::createSprites()
+	{
+		Image image("resources/00.png");
+		m_sprite.create(image, 100.0f, 100.0f);
 	}
 
 	void Demo08_Scene::createCenterSquare()
