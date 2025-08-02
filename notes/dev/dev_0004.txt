@@ -4476,5 +4476,7 @@ I want to immediately implement SpritesBatch.
 So obviously without SpritesBatch we can't really test Sprite,
 but that's fine, let's just continue.
 
+Before proceeding to implementing SpritesBatch let's create a new demo for this.
+I want basically the same demo as Demo06 but with sprites instead of shapes.
 
 }
