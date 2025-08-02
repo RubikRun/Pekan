@@ -49,9 +49,9 @@ namespace Renderer2D
 		mutable bool m_needUpdateVerticesLocal = true;
 
 		// Width of rectangle, size across the X axis in local space
-		float m_width = -1.0f;
+		float m_width = 0.0f;
 		// Height of rectangle, size across the Y acis in local space
-		float m_height = -1.0f;
+		float m_height = 0.0f;
 
 		// Indices of vertices of the 2 triangles making up the rectangle
 		static const unsigned s_indices[6];

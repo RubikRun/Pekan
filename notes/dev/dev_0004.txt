@@ -4463,4 +4463,18 @@ because they are protected - only meant to be called by derived classes.
 
 Done with this part.
 
+----------
+02.08.2025
+----------
+
+Implemented class Sprite.
+Based it on class Shape and class RectangleShape,
+because it's basically a rectangle with a texture.
+
+I can't test it yet because I don't want to implement an underlying render object of class Sprite,
+I want to immediately implement SpritesBatch.
+So obviously without SpritesBatch we can't really test Sprite,
+but that's fine, let's just continue.
+
+
 }

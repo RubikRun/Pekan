@@ -12,8 +12,8 @@ namespace Renderer2D
 
     void RectangleShape::create(float width, float height, bool dynamic)
     {
-        PK_ASSERT(width > 0.0f, "RectangleShape's width must be greater than 0.", "Pekan");
-        PK_ASSERT(height > 0.0f, "RectangleShape's height must be greater than 0.", "Pekan");
+        PK_ASSERT(width >= 0.0f, "RectangleShape's width must be greater than or equal to 0.", "Pekan");
+        PK_ASSERT(height >= 0.0f, "RectangleShape's height must be greater than or equal to 0.", "Pekan");
 
         Shape::_create(dynamic);
 
@@ -25,7 +25,7 @@ namespace Renderer2D
     void RectangleShape::setWidth(float width)
     {
         PK_ASSERT(isValid(), "Trying to set width of a RectangleShape that is not yet created.", "Pekan");
-        PK_ASSERT(width > 0.0f, "RectangleShape's width must be greater than 0.", "Pekan");
+        PK_ASSERT(width >= 0.0f, "RectangleShape's width must be greater than or equal to 0.", "Pekan");
 
         m_width = width;
         m_needUpdateVerticesLocal = true;
@@ -34,7 +34,7 @@ namespace Renderer2D
     void RectangleShape::setHeight(float height)
     {
         PK_ASSERT(isValid(), "Trying to set height of a RectangleShape that is not yet created.", "Pekan");
-        PK_ASSERT(height > 0.0f, "RectangleShape's height must be greater than 0.", "Pekan");
+        PK_ASSERT(height >= 0.0f, "RectangleShape's height must be greater than or equal to 0.", "Pekan");
 
         m_height = height;
         m_needUpdateVerticesLocal = true;

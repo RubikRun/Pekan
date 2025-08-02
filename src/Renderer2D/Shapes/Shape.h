@@ -33,10 +33,10 @@ namespace Renderer2D
 
 		void render() const;
 
-		// Sets shape's color
-		void setColor(glm::vec4 color);
 		// Returns shape's color
 		inline glm::vec4 getColor() const { return m_color; }
+		// Sets shape's color
+		void setColor(glm::vec4 color);
 
 		// To be implemented by derived classes to return their vertex data in world space.
 		virtual const ShapeVertex* getVertices() const = 0;
