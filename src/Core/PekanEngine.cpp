@@ -76,6 +76,18 @@ namespace Pekan
         return s_window.getMousePosition();
     }
 
+    glm::vec2 PekanEngine::getMousePositionNdc()
+    {
+        const glm::vec2 mousePosition = getMousePosition();
+        const glm::vec2 windowSize = s_window.getSize();
+        const glm::vec2 mousePositionNdc =
+        {
+            (mousePosition.x / windowSize.x) * 2.0f - 1.0f,
+            1.0f - (mousePosition.y / windowSize.y) * 2.0f
+        };
+        return mousePositionNdc;
+    }
+
     bool PekanEngine::isMouseButtonPressed(MouseButton button)
     {
         return s_window.isMouseButtonPressed(button);

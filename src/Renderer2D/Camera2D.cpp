@@ -80,21 +80,27 @@ namespace Renderer2D
         m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
     }
 
-    glm::vec2 Camera2D::screenToWorld(glm::vec2 screenPos) const
+    glm::vec2 Camera2D::windowToWorld(glm::vec2 windowPosition) const
     {
-        const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
+        const glm::vec2 windowSize = glm::vec2(PekanEngine::getWindow().getSize());
 
-        // Convert screen position to NDC (-1 to 1)
-        const glm::vec2 ndc =
+        // Convert window position to NDC
+        const glm::vec2 ndcPosition =
         {
-            (screenPos.x / windowSize.x) * 2.0f - 1.0f,
-            1.0f - (screenPos.y / windowSize.y) * 2.0f
+            (windowPosition.x / windowSize.x) * 2.0f - 1.0f,
+            1.0f - (windowPosition.y / windowSize.y) * 2.0f
         };
 
+        return ndcToWorld(ndcPosition);
+    }
+
+    glm::vec2 Camera2D::ndcToWorld(glm::vec2 ndcPosition) const
+    {
+        const glm::vec2 cameraSize = getSize();
         // Multiply NDC position by half camera's size, effectively scaling it to camera space,
         // then divide by zoom level to reverse the effect of the zoom,
         // then add camera's position to get the final position in world space.
-        const glm::vec2 worldPos = (ndc * (glm::vec2(m_width, m_height) * 0.5f)) / m_zoom + m_position;
+        const glm::vec2 worldPos = (ndcPosition * (cameraSize * 0.5f)) / m_zoom + m_position;
         return worldPos;
     }
 

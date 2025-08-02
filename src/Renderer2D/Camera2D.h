@@ -12,7 +12,7 @@ namespace Renderer2D
     {
     public:
 
-        inline glm::vec2 getSize() const { return { m_width, m_height }; }
+        glm::vec2 getSize() const { return { m_width, m_height }; }
         void setSize(float width, float height);
 
         // Sets camera's size, in the smaller dimension, to be equal to the given scale.
@@ -30,8 +30,11 @@ namespace Renderer2D
 
         inline const glm::mat4& getViewProjectionMatrix() const { return m_viewProjectionMatrix; };
 
-        // Converts a given position from screen space to world space, using the camera.
-        glm::vec2 screenToWorld(glm::vec2 screenPos) const;
+        // Converts a given position from window space to world space, using the camera.
+        glm::vec2 windowToWorld(glm::vec2 windowPosition) const;
+        // Converts a given position from NDC (Normalized Device Coordinates) to world space, using the camera
+        // (NDC means from -1 to 1 in both the X and Y axes, and the Y axis is pointing upwards)
+        glm::vec2 ndcToWorld(glm::vec2 ndcPosition) const;
 
     private: /* functions */
 

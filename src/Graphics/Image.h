@@ -21,6 +21,9 @@ namespace Graphics
 		inline int getHeight() const { return m_height; }
 		inline int getNumChannels() const { return m_numChannels; }
 
+		// Checks if image is valid, meaning it has been loaded successfully and contains valid data
+		bool isValid() const { return m_data != nullptr; }
+
 	private:
 
 		// Pixel data containing the actual image

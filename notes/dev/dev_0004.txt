@@ -4463,4 +4463,103 @@ because they are protected - only meant to be called by derived classes.
 
 Done with this part.
 
+----------
+02.08.2025
+----------
+
+Implemented class Sprite.
+Based it on class Shape and class RectangleShape,
+because it's basically a rectangle with a texture.
+
+Some things to mention about class Sprite:
+- There is this struct SpriteVertex which represent a sprite's vertex inside a vertex buffer on the GPU, same as ShapeVertex.
+    It has a
+        - "position" which is the world position of the vertex, ready to be multiplied by the view projection matrix in the shader
+        - "textureCoordinates" which is the 2D point in texture space that the vertex maps to
+        - "textureIndex" which is the index of the texture inside the batch
+- For now I've made Sprite's API such that a texture can be set only once - when creating the Sprite:
+        void create(const Graphics::Texture2D_ConstPtr& texture, float width, float height, bool dynamic = true);
+    Created a TO-DO item for later to add API that allows a sprite's texture to be changed.
+- We have this function
+        void setTextureIndex(float textureIndex)
+    in class Sprite, which is similar to Shape's setShapeIndex() function.
+    It's supposed to be called by SpritesBatch's code before getting the vertices.
+    Not the greatest design choice.
+    In fact, let's create a TO-DO item to look at this later, maybe let this index be a parameter to the getVertices() function.
+- We don't need to keep track of indices at all, because it's known that a sprite's vertices will always be { 0, 1, 2, 0, 2, 3 }.
+    SpritesBatch will just generate these constant indices. Sprite doesn't need to provide indices to it.
+Everything else is pretty standard, basically the same as RectangleShape but changed according to SpriteVertex instead of ShapeVertex.
+
+I can't test it yet because I don't want to implement an underlying render object of class Sprite,
+I want to immediately implement SpritesBatch.
+So obviously without SpritesBatch we can't really test Sprite,
+but that's fine, let's just continue.
+
+Before proceeding to implementing SpritesBatch let's create a new demo for this.
+I want basically the same demo as Demo06 but with sprites instead of shapes.
+Did that. Not too hard, just replaced all shape types with the single Sprite type.
+
+Let's implement SpritesBatch now.
+It will be very similar to ShapesBatch.
+- The main difference is that on top of the list of vertices m_vertices
+    and the list of indices m_indices we keep track of a list of textures
+        std::vector<Graphics::Texture2D_ConstPtr> m_textures;
+- Then another difference, obviously, is the layout of the underlying render object m_renderObject
+        { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "textureCoordinates" }, { ShaderDataType::Float, "textureIndex" }},
+    It has to match that of SpriteVertex
+- In addSprite() we'll handle sprite's vertices the same exact way as in ShapesBatch,
+    but instead of setting a shape index or in this case a sprite index, we will set a texture index
+        sprite.setTextureIndex(float(m_textures.size()));
+    which is just the index of the texture inside the m_textures list.
+    Then, the indices we can just generate on the fly because a sprite's indices are always { 0, 1, 2, 0, 2, 3 }
+    Additionally, we need to handle textures. We need to get sprite's texture and add it to the list of textures
+        const Texture2D_ConstPtr& texture = sprite.getTexture();
+        m_textures.push_back(texture);
+- In render() we need some extra work to make textures work.
+    We will bind each texture to the slot equal to texture's index inside m_textures
+        for (unsigned i = 0; i < m_textures.size(); i++)
+        {
+            m_textures[i]->bind(i);
+        }
+    Then we need to set the value of "uTextures" uniform inside the shader to be { 0, 1, 2, 3, ... }.
+    We need this, because unfortunately we can't just use the vertex attribute "textureIndex" and pass it directly to texture(...)
+    inside the shader. We need an array of sampler2D, even though we know that it will always be { 0, 1, 2, 3, ... },
+    there really isn't a good way around this.
+    So to set the value of "uTextures" uniform I created this static function in SpritesBatch.cpp
+        static void setTexturesUniformValue(Shader& shader)
+    that just generates a list { 0, 1, 2, 3, ... } with as many elements as is the maximum number of textures supported on current hardware.
+    and then sets the "uTextures" uniform to that list.
+- We need new shaders for this
+        "/Sprite/Shaders/Sprite_VertexShader.glsl"
+        "/Sprite/Shaders/Sprite_FragmentShader.glsl"
+    Nothing too special going on there.
+    In the fragment shader we'll use the vertex attribute
+        in float vTexIndex;
+    to sample from the correct texture
+        int index = int(vTexIndex + 0.5);
+        FragColor = texture(uTextures[index], vTexCoord);
+    More precisely to sample from the correct sampler2D from the uTextures array.
+    The uTextures array is declared like this
+        #define MAX_TEXTURES 32
+        uniform sampler2D uTextures[MAX_TEXTURES];
+    It has a hardcoded size which is not good. We want this size to be equal to the maximum number of textures supported on current hardware,
+    but this number obviously changes from platform to platform so we can't hardcode it in the shader.
+    We need to generate the shader replacing this number with the correct number.
+    Created a TO-DO item for this.
+
+Finally, we need to integrate SpritesBatch in Renderer2D the same way ShapesBatch is integrated.
+Nothing fancy there, just some renaming and basically doubling the logic of ShapesBatch
+so now we have 2 shapes batches (a static one and a dynamic one) and 2 sprites batches
+    static ShapesBatch s_shapesBatchDynamic;
+    static ShapesBatch s_shapesBatchStatic;
+    static SpritesBatch s_spritesBatchDynamic;
+    static SpritesBatch s_spritesBatchStatic;
+
+That's it.
+
+At the end I had some fun and I added an Anti-Gravity mouse effect in Demo08.
+Turned out great.
+Looks pretty good and runs at 37 FPS with 10k sprites.
+
+Calling it done with sprites.
 }

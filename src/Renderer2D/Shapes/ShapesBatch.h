@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Shape.h"
-#include "Camera2D.h"
 #include "RenderObject.h"
-#include "RenderState.h"
+#include "Camera2D.h"
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 #include "Texture1D.h"

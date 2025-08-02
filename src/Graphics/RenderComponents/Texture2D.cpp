@@ -13,8 +13,8 @@ namespace Graphics {
 
 	static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::LinearOnLinearMipmap;
 	static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Linear;
-	static const TextureWrapMode DEFAULT_WRAP_MODE_X = TextureWrapMode::ClampToBorder;
-	static const TextureWrapMode DEFAULT_WRAP_MODE_Y = TextureWrapMode::ClampToBorder;
+	static const TextureWrapMode DEFAULT_WRAP_MODE_X = TextureWrapMode::ClampToEdge;
+	static const TextureWrapMode DEFAULT_WRAP_MODE_Y = TextureWrapMode::ClampToEdge;
 	static const glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(255, 0, 0, 255);
 
 	Texture2D::~Texture2D()
@@ -47,6 +47,12 @@ namespace Graphics {
 
 	void Texture2D::setImage(const Image& image)
 	{
+		if (!image.isValid())
+		{
+			PK_LOG_ERROR("Trying to set an invalid image to a texture.", "Pekan");
+			return;
+		}
+
 		bind();
 
 		// Set image data to the texture object

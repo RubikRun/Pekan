@@ -58,6 +58,10 @@ namespace Pekan
 		static bool isKeyRepeating(KeyCode key);
 		// Returns current mouse position, in pixels, relative to window's top-left corner
 		static glm::vec2 getMousePosition();
+		// Returns current mouse position, in NDC (Normalized Device Coordinates),
+		// which means from -1 to 1 in both the X and Y axes,
+		// and the Y axis is pointing upwards.
+		static glm::vec2 getMousePositionNdc();
 		// Checks if mouse button is currently pressed/released.
 		static bool isMouseButtonPressed(MouseButton button);
 		static bool isMouseButtonReleased(MouseButton button);

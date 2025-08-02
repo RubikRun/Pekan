@@ -3,6 +3,7 @@
 #include "PekanLogger.h"
 #include "Utils/PekanUtils.h"
 #include "Utils/MathUtils.h"
+#include "RenderState.h"
 
 using namespace Pekan::Graphics;
 

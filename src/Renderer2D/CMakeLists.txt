@@ -35,6 +35,10 @@ add_library(Renderer2D STATIC
     Shapes/LineShape.cpp
     Shapes/ShapesBatch.h
     Shapes/ShapesBatch.cpp
+    Sprite/Sprite.h
+    Sprite/Sprite.cpp
+    Sprite/SpritesBatch.h
+    Sprite/SpritesBatch.cpp
 )
 
 # Group Shapes files under a virtual folder called "Shapes"
@@ -58,9 +62,18 @@ SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/PolygonShape.h
     Shapes/ShapesBatch.h
 )
+# Group Sprite files under a virtual folder called "Sprite"
+SOURCE_GROUP("Source Files\\Sprite" FILES
+    Sprite/Sprite.cpp
+    Sprite/SpritesBatch.cpp
+)
+SOURCE_GROUP("Header Files\\Sprite" FILES
+    Sprite/Sprite.h
+    Sprite/SpritesBatch.h
+)
 
 # Set include directories for Renderer2D
-target_include_directories(Renderer2D PUBLIC . Shapes)
+target_include_directories(Renderer2D PUBLIC . Shapes Sprite)
 
 # Set link libraries for Renderer2D
 target_link_libraries(Renderer2D PUBLIC Graphics)

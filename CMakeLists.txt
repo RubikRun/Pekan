@@ -21,6 +21,7 @@ if(WITH_DEMO_PROJECTS)
     add_subdirectory(demos/Demo05)
     add_subdirectory(demos/Demo06)
     add_subdirectory(demos/Demo07)
+    add_subdirectory(demos/Demo08)
 endif()
 # Add Graphics subdirectory
 add_subdirectory(src/Graphics)
@@ -58,6 +59,7 @@ if(WITH_DEMO_PROJECTS)
     set_target_properties(Demo05 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo06 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo07 PROPERTIES FOLDER "Demos")
+    set_target_properties(Demo08 PROPERTIES FOLDER "Demos")
 endif()
 
 # Add a static library Core, compiling the following source files
@@ -125,8 +127,8 @@ target_include_directories(Core PUBLIC src/Core src/Core/Logger)
 target_include_directories(Core PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)
-    # Set Demo07 to be the startup project by default
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo07)
+    # Set Demo08 to be the startup project by default
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo08)
 endif()
 
 # Set PEKAN_ROOT_DIR macro to be the path to current source directory
