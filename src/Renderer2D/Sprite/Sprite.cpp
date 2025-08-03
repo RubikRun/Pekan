@@ -1,9 +1,7 @@
 #include "Sprite.h"
 
 #include "PekanLogger.h"
-
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shapes/Shaders/Sprite_VertexShader.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Sprite/Shaders/Sprite_FragmentShader.glsl"
+#include "Renderer2DSystem.h"
 
 using namespace Pekan::Graphics;
 
@@ -12,9 +10,13 @@ namespace Pekan
 namespace Renderer2D
 {
 
+    int Sprite::m_texturesCount = 0;
+
 	void Sprite::create(const Image& image, float width, float height, bool dynamic)
 	{
         PK_ASSERT(!isValid(), "Trying to create a Sprite instance that is already created.", "Pekan");
+
+        Transformable2D::_create();
 
         // Set default values to members
         // that will not be explicitly initialized here or updated later
@@ -23,6 +25,8 @@ namespace Renderer2D
 
         // Create sprite's texture with the given image
         m_texture.create(image);
+        m_textureIndex = m_texturesCount;
+        m_texturesCount++;
 
         m_width = width;
         m_height = height;
@@ -34,12 +38,16 @@ namespace Renderer2D
 	{
         PK_ASSERT(isValid(), "Trying to destroy a Sprite instance that is not yet created.", "Pekan");
 
+        Transformable2D::_destroy();
+
         m_isValid = false;
 	}
 
     void Sprite::render() const
     {
-        // TODO
+        PK_ASSERT(m_isValid, "Trying to render a Sprite that is not yet created.", "Pekan");
+
+        Renderer2DSystem::render(*this);
     }
 
     void Sprite::setWidth(float width)
@@ -101,10 +109,16 @@ namespace Renderer2D
         m_verticesWorld[3].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
 
         // Set "uvCoordinates" attribute of each vertex
-        m_verticesWorld[0].uvCoordinates = { 0.0f, 0.0f };
-        m_verticesWorld[1].uvCoordinates = { 1.0f, 0.0f };
-        m_verticesWorld[2].uvCoordinates = { 1.0f, 1.0f };
-        m_verticesWorld[3].uvCoordinates = { 0.0f, 1.0f };
+        m_verticesWorld[0].textureCoordinates = { 0.0f, 0.0f };
+        m_verticesWorld[1].textureCoordinates = { 1.0f, 0.0f };
+        m_verticesWorld[2].textureCoordinates = { 1.0f, 1.0f };
+        m_verticesWorld[3].textureCoordinates = { 0.0f, 1.0f };
+
+        // Set "textureIndex" attribute of each vertex
+        m_verticesWorld[0].textureIndex = float(m_textureIndex);
+        m_verticesWorld[1].textureIndex = float(m_textureIndex);
+        m_verticesWorld[2].textureIndex = float(m_textureIndex);
+        m_verticesWorld[3].textureIndex = float(m_textureIndex);
 
         m_needUpdateVerticesWorld = false;
     }

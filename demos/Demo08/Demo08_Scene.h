@@ -40,7 +40,8 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer2D::Sprite m_sprite;
+		Pekan::Renderer2D::Sprite m_sprite0;
+		Pekan::Renderer2D::Sprite m_sprite1;
 
 		// A square in the center of the bounding box, just to make sure that coordinates are resolution-independent
 		Pekan::Renderer2D::RectangleShape m_centerSquare;

@@ -38,6 +38,10 @@ namespace Demo
 			return false;
 		}
 
+		// Enable and configure blending
+		RenderState::enableBlending();
+		RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
+
 		m_spritesCount = m_guiWindow->getNumberOfSprites();
 		m_spritesMaxCount = m_guiWindow->getMaxNumberOfSprites();
 
@@ -64,14 +68,16 @@ namespace Demo
 		RenderCommands::clear();
 
 		m_centerSquare.render();
-		m_sprite.render();
+		m_sprite0.render();
+		m_sprite1.render();
 
 		Renderer2DSystem::endFrame();
 	}
 
 	void Demo08_Scene::exit()
 	{
-		m_sprite.destroy();
+		m_sprite0.destroy();
+		m_sprite1.render();
 		m_centerSquare.destroy();
 	}
 
@@ -89,8 +95,14 @@ namespace Demo
 
 	void Demo08_Scene::createSprites()
 	{
-		Image image("resources/00.png");
-		m_sprite.create(image, 100.0f, 100.0f);
+		Image image0("resources/00.png");
+		m_sprite0.create(image0, 100.0f, 100.0f);
+		m_sprite0.setPosition({ 100.0f, 0.0f });
+		m_sprite0.setRotation(0.5f);
+		Image image1("resources/01.png");
+		m_sprite1.create(image1, 100.0f, 100.0f);
+		m_sprite1.setPosition({ 0.0f, 300.0f });
+		m_sprite1.setScale({ 5.0f, -3.0f });
 	}
 
 	void Demo08_Scene::createCenterSquare()

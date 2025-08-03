@@ -14,8 +14,10 @@ namespace Renderer2D
 	{
 		// Position of the vertex, in world space
 		glm::vec2 position = { 0.0f, 0.0f };
-		// UV coordinates of the vertex specifying a point in texture's UV space
-		glm::vec2 uvCoordinates = { 0.0f, 0.0f };
+		// Texture coordinates of the vertex specifying a point in texture's UV space
+		glm::vec2 textureCoordinates = { 0.0f, 0.0f };
+		// Index of the texture to be used for the vertex
+		float textureIndex = 0.0f;
 	};
 
 	class Sprite : public Transformable2D
@@ -39,6 +41,12 @@ namespace Renderer2D
 		// Returns sprite's vertex data in world space.
 		const SpriteVertex* getVertices() const;
 
+		// TODO: temp
+		int getTextureIndex() const { return m_textureIndex; }
+
+		// TODO: temp
+		const Graphics::Texture2D* getTexture() const { return &m_texture; }
+
 		// Checks if sprite is dynamic,
 		// meaning it will be changed/transformed often,
 		// and it's better to use dynamic buffers for its vertices.
@@ -55,6 +63,12 @@ namespace Renderer2D
 
 		// Sprite's underlying texture containing sprite's image
 		Graphics::Texture2D m_texture;
+
+		// TODO: temp
+		int m_textureIndex = -1;
+
+		// TODO: temp
+		static int m_texturesCount;
 
 		// Width of sprite, size across the X axis in local space
 		float m_width = 0.0f;

@@ -2,6 +2,7 @@
 
 #include "ISubsystem.h"
 #include "ShapesBatch.h"
+#include "SpritesBatch.h"
 
 namespace Pekan
 {
@@ -15,6 +16,7 @@ namespace Renderer2D
     {
 
         friend class Shape;
+        friend class Sprite;
 
     public:
 
@@ -40,18 +42,32 @@ namespace Renderer2D
         ISubsystem* getParent() override;
 
         // Submits a shape for rendering.
-        // Actual rendering will happen when you call endFrame().
+        // Actual rendering will happen when you call endFrame()
+        // or when the shapes batch is filled up.
         static void render(const Shape& shape);
 
         // Renders all shapes from a given batch with current camera
-        static void renderBatch(ShapesBatch& batch);
+        static void renderShapesBatch(ShapesBatch& batch);
+
+        // Submits a sprite for rendering.
+        // Actual rendering will happen when you call endFrame()
+        // or when the sprites batch is filled up.
+        static void render(const Sprite& sprite);
+
+        // Renders all sprites from a given batch with current camera
+        static void renderSpritesBatch(SpritesBatch& batch);
 
     private:
 
         // A batch of dynamic (often moved/transformed) shapes
-        static ShapesBatch s_batchDynamic;
+        static ShapesBatch s_shapesBatchDynamic;
         // A batch of static (not moved/transformed much) shapes
-        static ShapesBatch s_batchStatic;
+        static ShapesBatch s_shapesBatchStatic;
+
+        // A batch of dynamic (often moved/transformed) sprites
+        static SpritesBatch s_spritesBatchDynamic;
+        // A batch of static (not moved/transformed much) sprites
+        static SpritesBatch s_spritesBatchStatic;
 
         // A pointer to the camera used for rendering.
         // NOTE: It's a weak pointer so the camera is NOT owned by Renderer2D.
