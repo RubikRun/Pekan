@@ -38,10 +38,12 @@ namespace Demo
 		void createSprites();
 		void createCenterSquare();
 
+		void updateSprites(float dt);
+
 	private: /* variables */
 
-		Pekan::Renderer2D::Sprite m_sprite0;
-		Pekan::Renderer2D::Sprite m_sprite1;
+		std::vector<Pekan::Renderer2D::Sprite> m_sprites;
+		std::vector<glm::vec2> m_spritesVelocities;
 
 		// A square in the center of the bounding box, just to make sure that coordinates are resolution-independent
 		Pekan::Renderer2D::RectangleShape m_centerSquare;

@@ -19,6 +19,24 @@ namespace Renderer2D
 	// Maximum allowed number of indices per batch.
 	static constexpr size_t MAX_INDICES_PER_BATCH = 150000;
 
+	// Sets "uTextures" uniform inside a given shader
+	// to a list of texture slots { 0, 1, 2, 3, ... }
+	// with as many texture slots as are supported on current hardware.
+	static void setTexturesUniformValue(Shader& shader)
+	{
+		static const int maxTextureSlots = RenderState::getMaxTextureSlots();
+		std::vector<int> textures(maxTextureSlots);
+		for (size_t i = 0; i < maxTextureSlots; i++)
+		{
+			textures[i] = i;
+		}
+
+		// TODO: temp
+		PK_ASSERT(textures.size() == 32, "(TEMP) Maximum number of texture slots on your hardware differs from the one hardcoded in Sprite_FragmentShader.glsl", "Pekan");
+
+		shader.setUniform1iv("uTextures", textures.size(), textures.data());
+	}
+
 	void SpritesBatch::create(BufferDataUsage bufferDataUsage)
 	{
 		PK_ASSERT(!m_isValid, "Trying to create a SpritesBatch instance that is already created.", "Pekan");
@@ -59,12 +77,19 @@ namespace Renderer2D
 	{
 		PK_ASSERT(m_isValid, "Trying to add a sprite to a SpritesBatch that is not yet created.", "Pekan");
 
+		static const int maxTextureSlots = RenderState::getMaxTextureSlots();
+
 		// A flag indicating if more sprites can be added after this one,
 		// or the batch needs to be rendered, and a new one started.
 		bool canAddMore = true;
 
 		const unsigned oldVerticesSize = unsigned(m_vertices.size());
 		const size_t oldIndicesSize = m_indices.size();
+
+		// Set sprite's texture's index,
+		// letting the sprite know what its texture index is inside of the batch,
+		// so that it can set the "textureIndex" attribute to its vertices.
+		sprite.setTextureIndex(float(m_textures.size()));
 
 		// Get sprite's vertices
 		const SpriteVertex* vertices = sprite.getVertices();
@@ -98,8 +123,16 @@ namespace Renderer2D
 			canAddMore = false;
 		}
 
-		// TODO: temp
-		m_textureBindings.push_back({ sprite.getTextureIndex(), sprite.getTexture() });
+		// Get sprite's textures
+		const Texture2D_ConstPtr& texture = sprite.getTexture();
+		// Add sprite's texture to the batch
+		m_textures.push_back(texture);
+
+		// If we reach the maximum number of texture slots, we can't add more sprites
+		if (m_textures.size() >= maxTextureSlots)
+		{
+			canAddMore = false;
+		}
 
 		return canAddMore;
 	}
@@ -127,17 +160,14 @@ namespace Renderer2D
 		const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
 		shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
 
-		// TODO: temp
-		for (const TextureBinding& textureBinding : m_textureBindings)
+		// Bind all textures
+		for (unsigned i = 0; i < m_textures.size(); i++)
 		{
-			textureBinding.texture->bind(textureBinding.slot);
+			m_textures[i]->bind(i);
 		}
-		int samplers[32];
-		for (int i = 0; i < 32; ++i)
-		{
-			samplers[i] = i;
-		}
-		shader.setUniform1iv("uTextures", 32, samplers);
+
+		// Set the value of "uTextures" uniform inside the shader
+		setTexturesUniformValue(shader);
 
 		// Draw all triangles making up all sprites from the batch
 		RenderCommands::drawIndexed(m_indices.size());
@@ -168,6 +198,7 @@ namespace Renderer2D
 
 		m_vertices.clear();
 		m_indices.clear();
+		m_textures.clear();
 	}
 
 } // namespace Renderer2D

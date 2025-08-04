@@ -10,9 +10,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    int Sprite::m_texturesCount = 0;
-
-	void Sprite::create(const Image& image, float width, float height, bool dynamic)
+	void Sprite::create(const Texture2D_ConstPtr& texture, float width, float height, bool dynamic)
 	{
         PK_ASSERT(!isValid(), "Trying to create a Sprite instance that is already created.", "Pekan");
 
@@ -23,11 +21,7 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
         m_needUpdateVerticesWorld = true;
 
-        // Create sprite's texture with the given image
-        m_texture.create(image);
-        m_textureIndex = m_texturesCount;
-        m_texturesCount++;
-
+        m_texture = texture;
         m_width = width;
         m_height = height;
         m_isDynamic = dynamic;
@@ -114,6 +108,8 @@ namespace Renderer2D
         m_verticesWorld[2].textureCoordinates = { 1.0f, 1.0f };
         m_verticesWorld[3].textureCoordinates = { 0.0f, 1.0f };
 
+        PK_ASSERT(m_textureIndex >= 0.0f, "Trying to update world vertices of a Sprite but texture index is negative.", "Pekan");
+
         // Set "textureIndex" attribute of each vertex
         m_verticesWorld[0].textureIndex = float(m_textureIndex);
         m_verticesWorld[1].textureIndex = float(m_textureIndex);
@@ -121,6 +117,11 @@ namespace Renderer2D
         m_verticesWorld[3].textureIndex = float(m_textureIndex);
 
         m_needUpdateVerticesWorld = false;
+    }
+
+    void Sprite::onTransformChanged()
+    {
+        m_needUpdateVerticesWorld = true;
     }
 
 } // namespace Renderer2D

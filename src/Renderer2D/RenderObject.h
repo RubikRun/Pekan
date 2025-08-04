@@ -89,7 +89,7 @@ namespace Renderer2D
 		Graphics::Shader m_shader;
 
 		// A vector of textures, where the index of each texture is the slot where it will be bound
-		std::vector<Graphics::Texture2DPtr> m_textures;
+		std::vector<Graphics::Texture2D_Ptr> m_textures;
 
 		Graphics::BufferDataUsage m_vertexDataUsage = Graphics::BufferDataUsage::None;
 		Graphics::BufferDataUsage m_indexDataUsage = Graphics::BufferDataUsage::None;

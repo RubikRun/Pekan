@@ -2,7 +2,6 @@
 
 #include "Transformable2D.h"
 #include "RenderObject.h"
-#include "Image.h"
 #include "Texture2D.h"
 
 namespace Pekan
@@ -13,44 +12,45 @@ namespace Renderer2D
 	struct SpriteVertex
 	{
 		// Position of the vertex, in world space
-		glm::vec2 position = { 0.0f, 0.0f };
+		glm::vec2 position = { -1.0f, -1.0f };
 		// Texture coordinates of the vertex specifying a point in texture's UV space
-		glm::vec2 textureCoordinates = { 0.0f, 0.0f };
+		glm::vec2 textureCoordinates = { -1.0f, -1.0f };
 		// Index of the texture to be used for the vertex
-		float textureIndex = 0.0f;
+		float textureIndex = -1.0f;
 	};
 
 	class Sprite : public Transformable2D
 	{
 	public:
 
-		void create(const Graphics::Image& image, float width, float height, bool dynamic = true);
+		void create(const Graphics::Texture2D_ConstPtr& texture, float width, float height, bool dynamic = true);
 		void destroy();
 
 		// Checks if sprite is valid, meaning that it has been created and not yet destroyed
-		inline bool isValid() const { return m_isValid; }
+		bool isValid() const { return m_isValid; }
 
 		void render() const;
 
 		void setWidth(float width);
 		void setHeight(float height);
 
-		inline float getWidth() const { return m_width; }
-		inline float getHeight() const { return m_height; }
+		float getWidth() const { return m_width; }
+		float getHeight() const { return m_height; }
 
 		// Returns sprite's vertex data in world space.
 		const SpriteVertex* getVertices() const;
 
-		// TODO: temp
-		int getTextureIndex() const { return m_textureIndex; }
-
-		// TODO: temp
-		const Graphics::Texture2D* getTexture() const { return &m_texture; }
+		// Returns (a pointer to) underlying texture
+		const Graphics::Texture2D_ConstPtr& getTexture() const { return m_texture; }
 
 		// Checks if sprite is dynamic,
 		// meaning it will be changed/transformed often,
 		// and it's better to use dynamic buffers for its vertices.
-		inline bool isDynamic() const { return m_isDynamic; }
+		bool isDynamic() const { return m_isDynamic; }
+
+		// Sets sprite's texture's index inside of its batch.
+		// This index will determine the value of the "textureIndex" attribute of sprite's vertices
+		void setTextureIndex(float textureIndex) const { m_textureIndex = textureIndex; }
 
 	private: /* functions */
 
@@ -59,16 +59,13 @@ namespace Renderer2D
 		// Updates world vertices from current local vertices and current transform matrix
 		void updateVerticesWorld() const;
 
+		// Called by base class Transformable2D when transform changes
+		void onTransformChanged() override;
+
 	private: /* variables */
 
 		// Sprite's underlying texture containing sprite's image
-		Graphics::Texture2D m_texture;
-
-		// TODO: temp
-		int m_textureIndex = -1;
-
-		// TODO: temp
-		static int m_texturesCount;
+		Graphics::Texture2D_ConstPtr m_texture;
 
 		// Width of sprite, size across the X axis in local space
 		float m_width = 0.0f;
@@ -89,6 +86,18 @@ namespace Renderer2D
 		// Set to true if sprite's vertices are going to be changed often.
 		// Used for optimization.
 		bool m_isDynamic = true;
+
+		// Sprite's texture's index inside of its batch.
+		//
+		// NOTE: Marked as "mutable" because it doesn't reflect a sprite's state exactly.
+		// It reflects the state of "a sprite inside a batch".
+		// We want to be able to change a sprite's index in a "const" way
+		// because it doesn't change the actual sprite.
+		// This can, of course, be avoided by letting a Sprite be "just a sprite"
+		// and return only its actual vertices without any batch-related metadata,
+		// but it would be inefficient, because then a batch will have to copy all vertices
+		// in order to add the "textureIndex" attribute to them.
+		mutable float m_textureIndex = -1.0f;
 
 		// Flag indicating if sprite is valid, meaning that it has been created and not yet destroyed
 		bool m_isValid = false;

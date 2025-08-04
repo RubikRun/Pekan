@@ -50,8 +50,8 @@ namespace Renderer2D
 		// Indices of all sprites in the batch
 		std::vector<unsigned> m_indices;
 
-		// TODO: temp
-		std::vector<TextureBinding> m_textureBindings;
+		// Textures of all sprites in the batch
+		std::vector<Graphics::Texture2D_ConstPtr> m_textures;
 
 		// Underlying render object used for rendering all vertices and indices
 		RenderObject m_renderObject;

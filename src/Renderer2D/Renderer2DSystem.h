@@ -30,9 +30,12 @@ namespace Renderer2D
         static void endFrame();
 
         // Returns (a const pointer to) the camera currently used for rendering
-        static inline Camera2D_ConstPtr getCamera() { return s_camera.lock(); }
+        static Camera2D_ConstPtr getCamera() { return s_camera.lock(); }
         // Sets a camera to be used for rendering
-        static inline void setCamera(const Camera2D_ConstPtr& camera) { s_camera = camera; }
+        static void setCamera(const Camera2D_ConstPtr& camera) { s_camera = camera; }
+
+        // Returns current mouse position in world space, using current camera
+        static glm::vec2 getMousePosition();
 
     private: /* functions */
 

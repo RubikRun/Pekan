@@ -83,7 +83,7 @@ namespace Renderer2D
 		m_vertexBuffer.destroy();
 		m_vertexArray.destroy();
 
-		for (const Texture2DPtr& texture : m_textures)
+		for (const Texture2D_Ptr& texture : m_textures)
 		{
 			if (texture != nullptr)
 			{

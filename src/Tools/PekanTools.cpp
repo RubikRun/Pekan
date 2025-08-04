@@ -42,6 +42,9 @@ namespace Tools
                 return false;
             }
 
+            // Get window's size
+            const glm::vec2 windowSize = glm::vec2(PekanEngine::getWindow().getSize());
+
             // Calculate how much the mouse has moved from its previous position to the current position
             const glm::vec2 newMousePos = { event.getX(), event.getY() };
             const glm::vec2 mouseDelta = newMousePos - m_mousePos;
@@ -50,12 +53,12 @@ namespace Tools
 
             if (PekanEngine::isMouseButtonPressed(MouseButton::Left))
             {
-                // Mouse coordinates are in window space, we need them in camera space.
-                // We can divide the camera's size by the window's size to get a vector
-                // that can be used to multiply any window-space coordinate to get a camera-space coordinate.
-                const glm::vec2 windowToCameraFactor = camera->getSize() / glm::vec2(PekanEngine::getWindow().getSize());
-                // Move camera by the amount that the mouse has moved in camera space, divided by the zoom level
-                camera->move(glm::vec2(-mouseDelta.x, mouseDelta.y) * windowToCameraFactor / camera->getZoom());
+                // Mouse coordinates are in window space, we need them in world space.
+                // We can divide the camera's size by the window's size multiplied by zoom level to get a vector
+                // that can be used to multiply any window-space coordinate to get a world-space coordinate.
+                const glm::vec2 windowToCameraFactor = camera->getSize() / (windowSize * camera->getZoom());
+                // Move camera by the amount that the mouse has moved in world space
+                camera->move(glm::vec2(-mouseDelta.x, mouseDelta.y) * windowToCameraFactor);
             }
 
             return true;

@@ -1,5 +1,6 @@
 #include "Renderer2DSystem.h"
 
+#include "PekanLogger.h"
 #include "SubsystemManager.h"
 #include "GraphicsSystem.h"
 
@@ -37,6 +38,23 @@ namespace Renderer2D
 		renderShapesBatch(s_shapesBatchStatic);
 		renderSpritesBatch(s_spritesBatchDynamic);
 		renderSpritesBatch(s_spritesBatchStatic);
+	}
+
+	glm::vec2 Renderer2DSystem::getMousePosition()
+	{
+		Camera2D_ConstPtr camera = s_camera.lock();
+
+		if (camera == nullptr)
+		{
+			PK_LOG_ERROR("Trying to get mouse position in camera space, but there is no camera set in Renderer2DSystem.", "Pekan");
+			return { -1.0f, -1.0f };
+		}
+
+		// Get mouse position in screen space
+		const glm::vec2 mousePosScreen = PekanEngine::getMousePosition();
+		// Convert mouse position from screen space to world space
+		const glm::vec2 mousePosWorld = camera->screenToWorld(mousePosScreen);
+		return mousePosWorld;
 	}
 
 	bool Renderer2DSystem::init()

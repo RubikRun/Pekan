@@ -84,7 +84,7 @@ namespace Graphics {
 		GLCall(glUniform1i(location, value));
 	}
 
-	void Shader::setUniform1iv(const char* uniformName, int count, int* value)
+	void Shader::setUniform1iv(const char* uniformName, int count, const int* value)
 	{
 		bind();
 		const int location = getUniformLocation(uniformName);

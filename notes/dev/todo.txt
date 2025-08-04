@@ -160,3 +160,9 @@
 0057 01.08.2025 (TODO): Check if it's better/faster to pre-allocate a fixed-size vertex buffer in ShapesBatch
                         and use m_renderObject.setVertexSubData() instead of m_renderObject.setVertexData().
                         Then we'll have to start a new batch whenever we fill up the buffer, which is fine.
+
+0058 03.08.2025 (TODO): Figure out order of rendering of shapes and sprites.
+                        More specifically if you have both shapes and sprites in a single scene
+                        then the whole shapes batch is rendered first and then the whole sprites batch is rendered second
+                        disregarding the order in which client code called render() on their shapes and sprites.
+                        Example: In Demo08 we render m_centerSquare before the sprites, but the sprites appear on top.

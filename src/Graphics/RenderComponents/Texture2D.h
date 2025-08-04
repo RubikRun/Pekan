@@ -59,7 +59,8 @@ namespace Graphics {
 		static void getFormat(const Image& image, unsigned& format, unsigned& internalFormat);
 	};
 
-	typedef std::shared_ptr<Texture2D> Texture2DPtr;
+	typedef std::shared_ptr<Texture2D> Texture2D_Ptr;
+	typedef std::shared_ptr<const Texture2D> Texture2D_ConstPtr;
 
 } // namespace Pekan
 } // namespace Graphics
