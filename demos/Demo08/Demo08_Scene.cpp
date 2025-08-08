@@ -24,17 +24,6 @@ namespace Demo
 	// and named "00.png", "01.png", "02.png", etc.
 	static constexpr int TEXTURES_COUNT = 44;
 
-	// Oscillates between 0 and 1 in a sine wave, as x grows
-	static float osc(float x)
-	{
-		return (cos(x) + 1.0f) / 2.0f;
-	}
-	// Oscillates between a and b in a sine wave, as x grows
-	static float osc(float x, float a, float b)
-	{
-		return a + (b - a) * osc(x);
-	}
-
 	// Loads textures to be used for the sprites
 	//
 	// NOTE: this works only for two-digit filenames, so it supports at most 100 textures (00 to 99).
@@ -46,7 +35,10 @@ namespace Demo
 		{
 			// Generate image file's name
 			std::string filename = "resources/";
-			if (i < 10) filename += "0";
+			if (i < 10)
+			{
+				filename += "0";
+			}
 			filename += std::to_string(i) + ".png";
 			// Load image
 			Image image(filename.c_str());
@@ -82,10 +74,8 @@ namespace Demo
 
 	void Demo08_Scene::update(double dt)
 	{
-		if (m_guiWindow != nullptr)
-		{
-			m_spritesCount = m_guiWindow->getNumberOfSprites();
-		}
+		PK_ASSERT_QUICK(m_guiWindow != nullptr);
+		m_spritesCount = m_guiWindow->getNumberOfSprites();
 
 		updateSprites(float(dt));
 
@@ -113,6 +103,7 @@ namespace Demo
 			m_sprites[i].destroy();
 		}
 		m_centerSquare.destroy();
+		m_camera->destroy();
 	}
 
 	void Demo08_Scene::createCamera()
@@ -120,7 +111,7 @@ namespace Demo
 		const glm::vec2 windowSize = glm::vec2(PekanEngine::getWindow().getSize());
 
 		m_camera = std::make_shared<Camera2D>();
-		m_camera->setSize(windowSize.x, windowSize.y);
+		m_camera->create(windowSize.x, windowSize.y);
 
 		Renderer2DSystem::setCamera(m_camera);
 		PekanTools::enableCameraController2D(m_camera);

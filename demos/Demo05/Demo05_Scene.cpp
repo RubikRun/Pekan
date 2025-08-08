@@ -46,7 +46,7 @@ namespace Demo
 
         // Create camera
         m_camera = std::make_shared<Camera2D>();
-        m_camera->setSize(CAMERA_SCALE);
+        m_camera->create(CAMERA_SCALE);
         Renderer2DSystem::setCamera(m_camera);
         PekanTools::enableCameraController2D(m_camera);
 

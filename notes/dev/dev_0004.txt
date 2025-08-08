@@ -4563,3 +4563,25 @@ Looks pretty good and runs at 37 FPS with 10k sprites.
 
 Calling it done with sprites.
 }
+
+----------
+08.08.2025
+----------
+
+{
+Today I did some cleanup in Camera2D and wrote some comments.
+
+Noticed that there are no create() and destroy() functions there, so I added them,
+together with an m_isValid member and an isValid() function.
+
+Also, noticed that we recalculate view/projection matrices in every set*() function.
+There's no need to do that, we can do a small optimization there by just having 2 flags
+    mutable bool m_needUpdateViewMatrix = false;
+    mutable bool m_needUpdateProjectionMatrix = false;
+and calling updateViewMatrix() and updateProjectionMatrix() only when needed.
+
+That's it.
+Changed Demo05 to Demo08 to create() and destroy() their cameras.
+Everything works as before.
+Done.
+}

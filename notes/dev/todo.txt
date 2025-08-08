@@ -165,7 +165,7 @@
                         More specifically if you have both shapes and sprites in a single scene
                         then the whole shapes batch is rendered first and then the whole sprites batch is rendered second
                         disregarding the order in which client code called render() on their shapes and sprites.
-                        Example: In Demo08 we render m_centerSquare before the sprites, but the sprites appear on top.
+                        Example: In Demo08 we render m_centerSquare after the sprites, but the sprites appear on top.
 
 0059 07.08.2025 (TODO): Add API to class Sprite allowing sprite's texture to be changed after having created the sprite.
 

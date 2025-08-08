@@ -22,17 +22,6 @@ using namespace Pekan::Tools;
 namespace Demo
 {
 
-	// Oscillates between 0 and 1 in a sine wave, as x grows
-	static float osc(float x)
-	{
-		return (cos(x) + 1.0f) / 2.0f;
-	}
-	// Oscillates between a and b in a sine wave, as x grows
-	static float osc(float x, float a, float b)
-	{
-		return a + (b - a) * osc(x);
-	}
-
 	// Generates random vertices forming a normal polygon.
 	// A "normal" polygon is a polygon whose sides do NOT intersect. It could be either convex or concave.
 	static std::vector<glm::vec2> getRandomPolygonVertices(int numPoints, glm::vec2 xRange, glm::vec2 yRange)
@@ -204,11 +193,11 @@ namespace Demo
 	void Demo06_Scene::createCameras()
 	{
 		m_cameraFirst = std::make_shared<Camera2D>();
-		m_cameraFirst->setSize(m_bbox.size.x, m_bbox.size.y);
+		m_cameraFirst->create(m_bbox.size.x, m_bbox.size.y);
 		m_cameraFirst->setPosition(m_bbox.center);
 
 		m_cameraSecond = std::make_shared<Camera2D>();
-		m_cameraSecond->setSize(m_bbox.size.x, m_bbox.size.y);
+		m_cameraSecond->create(m_bbox.size.x, m_bbox.size.y);
 		m_cameraSecond->setPosition(m_bbox.center);
 
 		Renderer2DSystem::setCamera(m_cameraFirst);
