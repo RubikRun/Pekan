@@ -172,3 +172,7 @@
 0060 07.08.2025 (TODO): Think about class Sprite's setTextureIndex() function and class Shape's setShapeIndex() function.
                         Do they need to be functions? Is it not bad that they can be called by other code except SpritesBatch and ShapesBatch?
                         We require them to be called before calling getVertices() so why don't we make this index be a parameter to getVertices() ?
+
+0061 08.08.2025 (TODO): Get rid of code duplication in the 2 render() overloads in ShapesBatch, same way as it's done in SpritesBatch
+
+0062 09.08.2025 (TODO): Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()

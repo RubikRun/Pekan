@@ -4585,3 +4585,94 @@ Changed Demo05 to Demo08 to create() and destroy() their cameras.
 Everything works as before.
 Done.
 }
+
+{
+Let's look at this TO-DO item
+    Check if it's better/faster to pre-allocate a fixed-size vertex buffer in ShapesBatch
+    and use m_renderObject.setVertexSubData() instead of m_renderObject.setVertexData().
+    Then we'll have to start a new batch whenever we fill up the buffer, which is fine.
+
+Let's try to do this in SpritesBatch first because it's easier there,
+and the logic will be the same, I believe.
+
+Okay, managed to do it in SpritesBatch.
+First thing I did was to pre-allocate the vertex buffer and index buffer with some size.
+What size exactly?
+Well, the thing that limits a SpritesBatch from growing infinitely is
+    RenderState::getMaxTextureSlots();
+We can have as many sprites as we have texture slots available on current hardware.
+From that, we can calculate the vertices capacity and indices capacity of the SpritesBatch,
+because we know that a sprite always has 4 vertices and 6 indices.
+So, we'll keep these 3 capacities - for textures, vertices and indices - as 3 member variables
+    int m_capacityVertices = -1;
+    int m_capacityIndices = -1;
+    int m_capacityTextures = -1;
+and we'll calculate them in the create() function like this:
+    m_capacityTextures = RenderState::getMaxTextureSlots();
+    m_capacityVertices = m_capacityTextures * 4;
+    m_capacityIndices = m_capacityTextures * 6;
+Now that we have these capcities we can pre-allocate the vertex buffer like this:
+    m_renderObject.create
+    (
+        nullptr,
+        m_capacityVertices * sizeof(SpriteVertex),
+        ...
+    );
+and the index buffer like this:
+    m_renderObject.setIndexData(nullptr, m_capacityIndices * sizeof(unsigned), ...);
+Then, in the render() function when we have new vertex data and new index data that we need to set,
+we'll use the *subData() functions to just set the data, without allocating new memory - we already have the memory allocated.
+    m_renderObject.setVertexSubData(m_vertices.data(), 0, m_vertices.size() * sizeof(SpriteVertex));
+    m_renderObject.setIndexSubData(m_indices.data(), 0, m_indices.size() * sizeof(unsigned));
+It seems like this should be enough, but unfortunately no.
+It's not enough because in the way we add sprites to the batch currently we often overflow the capcity.
+For example, for vertices we do this:
+    if (m_vertices.size() >= MAX_VERTICES_PER_BATCH)
+    {
+        canAddMore = false;
+    }
+So once we have too many vertices, we signalize to the caller that they need to stop and render the batch.
+However, it's too late because we have already added the sprite which overflow the batch.
+We'll need to change the idea around the addSprite() function.
+I basically changed it to return true if it successfully added the sprite without a problem,
+and return false if it couldn't add the sprite because it would overfow the batch.
+So if the sprite would overflow the batch, we don't add it to the batch, we just return false.
+Then the caller of addSprite() which is
+    void Renderer2DSystem::render(const Sprite& sprite)
+needs to react to that false value that is returned.
+Basically it needs to render the batch then and there, clear it and add the sprite to the next batch.
+    if (!s_spritesBatchDynamic.addSprite(sprite))
+    {
+        renderSpritesBatch(s_spritesBatchDynamic);
+        s_spritesBatchDynamic.clear();
+        if (!s_spritesBatchDynamic.addSprite(sprite))
+        {
+            PK_LOG_ERROR("Failed to add a sprite to a SpritesBatch that was just cleared.", "Pekan");
+        }
+    }
+Now it works!
+
+I also changed a few other small things, nothing much to say there.
+
+Looking at performance now with Demo08.
+It's actually a bit slower than before :(
+    Before: 38 FPS
+    Now:    33 FPS
+That's unfortunate.
+According to ChatGPT it might be because of GPU synchronization.
+More precisely, it's probably because when we issue a draw call with some vertex buffer and index buffer,
+these buffers remain locked until the draw call is finished, so we can't set new data to them.
+That's what happens now with this pre-allocating change.
+What happened before is the following:
+We issue a draw call with some vertex buffer and index buffer,
+and then while the draw call is still running we start uploading a new vertex buffer and a new index buffer
+that will be used for the next draw call.
+This overlap between drawing and uploading is what makes the old code faster.
+Probably.
+Can't be too sure,
+but I'm sure that I see a small drop in performance.
+Soooo, we'll probably revert back to the old code.
+Let's first try this for ShapesBatch as well.
+We might gain some new insight.
+
+}

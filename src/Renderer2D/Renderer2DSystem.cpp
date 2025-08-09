@@ -123,21 +123,35 @@ namespace Renderer2D
 		if (sprite.isDynamic())
 		{
 			// Add sprite to dynamic batch.
-			// If batch is full, render it, and clear it, effectively starting a new one.
+			// If it couldn't be added, this means that the batch is full,
 			if (!s_spritesBatchDynamic.addSprite(sprite))
 			{
+				// so we can render the batch and clear it, effectively starting a new one.
 				renderSpritesBatch(s_spritesBatchDynamic);
 				s_spritesBatchDynamic.clear();
+				// Finally we need to add the sprite to the new batch.
+				// If it couldn't be added again, to a fresh new batch, something is definitely wrong.
+				if (!s_spritesBatchDynamic.addSprite(sprite))
+				{
+					PK_LOG_ERROR("Failed to add a sprite to a SpritesBatch that was just cleared.", "Pekan");
+				}
 			}
 		}
 		else
 		{
 			// Add sprite to static batch.
-			// If batch is full, render it, and clear it, effectively starting a new one.
+			// If it couldn't be added, this means that the batch is full,
 			if (!s_spritesBatchStatic.addSprite(sprite))
 			{
+				// so we can render the batch and clear it, effectively starting a new one.
 				renderSpritesBatch(s_spritesBatchStatic);
 				s_spritesBatchStatic.clear();
+				// Finally we need to add the sprite to the new batch.
+				// If it couldn't be added again, to a fresh new batch, something is definitely wrong.
+				if (!s_spritesBatchStatic.addSprite(sprite))
+				{
+					PK_LOG_ERROR("Failed to add a sprite to a SpritesBatch that was just cleared.", "Pekan");
+				}
 			}
 		}
 	}
@@ -145,15 +159,7 @@ namespace Renderer2D
 	void Renderer2DSystem::renderSpritesBatch(SpritesBatch& batch)
 	{
 		Camera2D_ConstPtr camera = s_camera.lock();
-
-		if (camera != nullptr)
-		{
-			batch.render(camera);
-		}
-		else
-		{
-			batch.render();
-		}
+		batch.render(camera);
 	}
 
 } // namespace Renderer2D

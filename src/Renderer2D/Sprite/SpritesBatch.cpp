@@ -14,21 +14,15 @@ namespace Pekan
 namespace Renderer2D
 {
 
-	// Maximum allowed number of vertices per batch.
-	static constexpr size_t MAX_VERTICES_PER_BATCH = 100000;
-	// Maximum allowed number of indices per batch.
-	static constexpr size_t MAX_INDICES_PER_BATCH = 150000;
-
 	// Sets "uTextures" uniform inside a given shader
 	// to a list of texture slots { 0, 1, 2, 3, ... }
-	// with as many texture slots as are supported on current hardware.
-	static void setTexturesUniformValue(Shader& shader)
+	// with as many texture slots as is batch's capacity.
+	static void setTexturesUniform(Shader& shader, size_t capacityTextures)
 	{
-		static const int maxTextureSlots = RenderState::getMaxTextureSlots();
-		std::vector<int> textures(maxTextureSlots);
-		for (size_t i = 0; i < maxTextureSlots; i++)
+		std::vector<int> textures(capacityTextures);
+		for (size_t i = 0; i < capacityTextures; i++)
 		{
-			textures[i] = i;
+			textures[i] = int(i);
 		}
 
 		// TODO: temp
@@ -37,23 +31,46 @@ namespace Renderer2D
 		shader.setUniform1iv("uTextures", textures.size(), textures.data());
 	}
 
+	// Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera.
+	static void setViewProjectionMatrixUniform(Shader& shader, const Camera2D_ConstPtr& camera)
+	{
+		if (camera != nullptr)
+		{
+			// Set shader's view projection matrix uniform to camera's view projection matrix
+			const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
+			shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
+		}
+		else
+		{
+			// Set shader's view projection matrix uniform to a default view projection matrix
+			static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+			shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
+		}
+	}
+
 	void SpritesBatch::create(BufferDataUsage bufferDataUsage)
 	{
 		PK_ASSERT(!m_isValid, "Trying to create a SpritesBatch instance that is already created.", "Pekan");
 
-		// Create underlying render object with empty vertex data
+		// Set batch's capacity for textures to be the maximum number of texture slots supported on current hardware
+		m_capacityTextures = RenderState::getMaxTextureSlots();
+		// Since each sprite has exactly 4 vertices, 6 indices and 1 texture,
+		// we can calculate vertices capacity and indices capacity based on the textures capacity
+		m_capacityVertices = m_capacityTextures * 4;
+		m_capacityIndices = m_capacityTextures * 6;
+
+		// Create underlying render object, pre-allocating memory for vertex data
 		m_renderObject.create
 		(
 			nullptr,
-			0,
+			m_capacityVertices * sizeof(SpriteVertex),
 			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "textureCoordinates" }, { ShaderDataType::Float, "textureIndex" }},
 			bufferDataUsage,
 			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);
-		// and empty index data
-		// (we need to explicitly set empty index data because we are also setting data usage)
-		m_renderObject.setIndexData(nullptr, 0, bufferDataUsage);
+		// Pre-allocate memory for index data
+		m_renderObject.setIndexData(nullptr, m_capacityIndices * sizeof(unsigned), bufferDataUsage);
 
 		// Set shader's view projection matrix uniform to a default view projection matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
@@ -67,7 +84,6 @@ namespace Renderer2D
 		PK_ASSERT(m_isValid, "Trying to destroy a SpritesBatch instance that is not yet created.", "Pekan");
 
 		m_renderObject.destroy();
-
 		clear();
 
 		m_isValid = false;
@@ -77,11 +93,11 @@ namespace Renderer2D
 	{
 		PK_ASSERT(m_isValid, "Trying to add a sprite to a SpritesBatch that is not yet created.", "Pekan");
 
-		static const int maxTextureSlots = RenderState::getMaxTextureSlots();
-
-		// A flag indicating if more sprites can be added after this one,
-		// or the batch needs to be rendered, and a new one started.
-		bool canAddMore = true;
+		// If adding this sprite would overflow the batch, don't add it.
+		if (wouldOverflow())
+		{
+			return false;
+		}
 
 		const unsigned oldVerticesSize = unsigned(m_vertices.size());
 		const size_t oldIndicesSize = m_indices.size();
@@ -95,12 +111,6 @@ namespace Renderer2D
 		const SpriteVertex* vertices = sprite.getVertices();
 		// Add sprite's vertices to the batch
 		m_vertices.insert(m_vertices.end(), vertices, vertices + 4);
-
-		// If we reach the maximum number of vertices, we can't add more sprites
-		if (m_vertices.size() >= MAX_VERTICES_PER_BATCH)
-		{
-			canAddMore = false;
-		}
 
 		// Add sprites's indices { 0, 1, 2, 0, 2, 3 } to the batch,
 		// first making each index relative to where sprite's vertices begin in the vertices list.
@@ -117,85 +127,32 @@ namespace Renderer2D
 		m_indices[oldIndicesSize + 4] = oldVerticesSize + 2;
 		m_indices[oldIndicesSize + 5] = oldVerticesSize + 3;
 
-		// If we reach the maximum number of indices, we can't add more sprites
-		if (m_indices.size() >= MAX_INDICES_PER_BATCH)
-		{
-			canAddMore = false;
-		}
-
 		// Get sprite's textures
 		const Texture2D_ConstPtr& texture = sprite.getTexture();
 		// Add sprite's texture to the batch
 		m_textures.push_back(texture);
 
-		// If we reach the maximum number of texture slots, we can't add more sprites
-		if (m_textures.size() >= maxTextureSlots)
-		{
-			canAddMore = false;
-		}
-
-		return canAddMore;
+		return true;
 	}
 
 	void SpritesBatch::render(const Camera2D_ConstPtr& camera)
 	{
 		PK_ASSERT(m_isValid, "Trying to render a SpritesBatch that is not yet created.", "Pekan");
 
-		// If camera is null, render without a camera
-		if (camera == nullptr)
-		{
-			PK_ASSERT(false, "Trying to render a SpritesBatch with a null camera.", "Pekan");
-			render();
-			return;
-		}
-
 		// Set underlying render object's vertex data and index data
 		// to the data of our vertices list and indices list
-		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(SpriteVertex));
-		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
+		m_renderObject.setVertexSubData(m_vertices.data(), 0, m_vertices.size() * sizeof(SpriteVertex));
+		m_renderObject.setIndexSubData(m_indices.data(), 0, m_indices.size() * sizeof(unsigned));
 
 		Shader& shader = m_renderObject.getShader();
-
-		// Set shader's view projection matrix uniform to camera's transform
-		const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
-		shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
-
+		setViewProjectionMatrixUniform(shader, camera);
 		// Bind all textures
 		for (unsigned i = 0; i < m_textures.size(); i++)
 		{
 			m_textures[i]->bind(i);
 		}
-
 		// Set the value of "uTextures" uniform inside the shader
-		setTexturesUniformValue(shader);
-
-		// Draw all triangles making up all sprites from the batch
-		RenderCommands::drawIndexed(m_indices.size());
-	}
-
-	void SpritesBatch::render()
-	{
-		PK_ASSERT(m_isValid, "Trying to render a SpritesBatch that is not yet created.", "Pekan");
-
-		// Set underlying render object's vertex data and index data
-		// to the data of our vertices list and indices list
-		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(SpriteVertex));
-		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
-
-		Shader& shader = m_renderObject.getShader();
-
-		// Set shader's view projection matrix uniform to a default view projection matrix
-		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-		shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
-
-		// Bind all textures
-		for (unsigned i = 0; i < m_textures.size(); i++)
-		{
-			m_textures[i]->bind(i);
-		}
-
-		// Set the value of "uTextures" uniform inside the shader
-		setTexturesUniformValue(shader);
+		setTexturesUniform(shader, size_t(m_capacityTextures));
 
 		// Draw all triangles making up all sprites from the batch
 		RenderCommands::drawIndexed(m_indices.size());
@@ -208,6 +165,16 @@ namespace Renderer2D
 		m_vertices.clear();
 		m_indices.clear();
 		m_textures.clear();
+	}
+
+	bool SpritesBatch::wouldOverflow() const
+	{
+		return
+		(
+			m_vertices.size() + 4 > m_capacityVertices
+			|| m_indices.size() + 6 > m_capacityIndices
+			|| m_textures.size() + 1 > m_capacityTextures
+		);
 	}
 
 } // namespace Renderer2D

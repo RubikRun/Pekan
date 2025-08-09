@@ -24,18 +24,25 @@ namespace Renderer2D
 		void destroy();
 
 		// Adds a sprite to the batch.
-		// @return true if we can continue adding sprites, not rendering yet.
-		//         false if we need to render the batch, and start a new one.
+		// Returns true, if sprite was successfully added to the batch.
+		// If false is returned, it means that the sprite was NOT added to the batch because it would overflow the batch.
+		// In such case the batch needs to be rendered, cleared and the sprite can be added to the next batch.
 		bool addSprite(const Sprite& sprite);
 
-		// Renders all sprites from the batch
+		// Renders all sprites from the batch with a given camera.
+		//
+		// NOTE: Camera can be null - then sprites will be rendered in default NDC (-1 to 1) space.
 		void render(const Camera2D_ConstPtr& camera);
-		void render();
 
 		// Clears batch, removing all sprites, leaving it empty
 		void clear();
 
-	private:
+	private: /* functions */
+
+		// Checks if adding one more sprite would overflow the batch
+		bool wouldOverflow() const;
+
+	private: /* variables */
 
 		// Vertices of all sprites in the batch
 		std::vector<SpriteVertex> m_vertices;
@@ -48,6 +55,13 @@ namespace Renderer2D
 
 		// Underlying render object used for rendering all vertices and indices with all textures attached
 		RenderObject m_renderObject;
+
+		// Batch's capacity for vertices
+		int m_capacityVertices = -1;
+		// Batch's capacity for indices
+		int m_capacityIndices = -1;
+		// Batch's capacity for textures
+		int m_capacityTextures = -1;
 
 		// Flag indicating if sprites batch is valid, meaning that it has been created and not yet destroyed
 		bool m_isValid = false;
