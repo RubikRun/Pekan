@@ -4675,4 +4675,16 @@ Soooo, we'll probably revert back to the old code.
 Let's first try this for ShapesBatch as well.
 We might gain some new insight.
 
+So, doing this for ShapesBatch is quite straightforward.
+We need to implement the exact same logic.
+Just be careful around this macro
+    PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+Okay, did it.
+Indeed, Demo06 is also slower because of this change.
+    Before: 50 FPS
+    Now:    42 FPS
+With this macro
+    PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+enabled it's also slower, similar numbers.
+
 }

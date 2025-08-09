@@ -19,26 +19,70 @@ namespace Renderer2D
 {
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-	// Maximum allowed fraction of hardware's maximum texture size to use for colors of shapes.
+	// A batch's capacity for colors will be this fraction of the maximum texture size supported on current hardware.
 	// For example, if this fraction is 80% and hardware's maximum texture size is 1024,
-	// then we'll allow up to 0.8 * 1024 texels to be used for colors of shapes.
-	static const float MAX_TEXTURE_SIZE_FRACTION = 0.95f;
+	// then colors capacity will be 0.8 * 1024 = 819.
+	static constexpr float CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE = 0.95f;
+	// Expected average number of vertices per shape.
+	// Used for estimation of size of pre-allocated memory.
+	static constexpr int EXPECTED_VERTICES_PER_SHAPE = 24;
+	// Expected average number of indices per shape
+	// Used for estimation of size of pre-allocated memory.
+	static constexpr int EXPECTED_INDICES_PER_SHAPE = 66;
 #else
-	// Maximum allowed number of vertices per batch.
-	static constexpr size_t MAX_VERTICES_PER_BATCH = 100000;
-	// Maximum allowed number of indices per batch.
-	static constexpr size_t MAX_INDICES_PER_BATCH = 150000;
+	// A batch's capacity for vertices
+	static constexpr int DEFAULT_CAPACITY_VERTICES = 100000;
+	// A batch's capacity for indices
+	static constexpr int DEFAULT_CAPACITY_INDICES = 150000;
 #endif
+
+	// Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera.
+	static void setViewProjectionMatrixUniform(Shader& shader, const Camera2D_ConstPtr& camera)
+	{
+		if (camera != nullptr)
+		{
+			// Set shader's view projection matrix uniform to camera's view projection matrix
+			const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
+			shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
+		}
+		else
+		{
+			// Set shader's view projection matrix uniform to a default view projection matrix
+			static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+			shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
+		}
+	}
 
 	void ShapesBatch::create(BufferDataUsage bufferDataUsage)
 	{
 		PK_ASSERT(!m_isValid, "Trying to create a ShapesBatch instance that is already created.", "Pekan");
 
-		// Create underlying render object with empty vertex data
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+		// Set batch's capacity for colors to be some fraction of the maximum texture size supported on current hardware
+		m_capacityColors = int(float(RenderState::getMaxTextureSize()) * CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE);
+		// Each shape has exactly 1 color, so colors capacity is also shapes capacity.
+		// Once we know shapes capacity of our batch how can we set good vertices capacity and indices capacity?
+		// We don't know the exact number of vertices/indices of a shape because each shape type has a different number of vertices/indices.
+		// If we pick a number too small for vertices capacity, for example, then the batch will be limited by this arbitrary number that we picked,
+		// instead of being limited by the colors capacity which is what actually matters.
+		// If we pick a number too big for vertices capacity, then the batch will be correctly limited by the colors capacity,
+		// but we will have wasted a lot of memory for vertices that we will not use - we might use 20% of the memory that we allocated,
+		// because when we reached that 20% the colors capacity ran out and we had to stop.
+		// ...
+		// The solution we do here is to use some expected average for the number of vertices/indices of a shape,
+		// so that it can behave well on average.
+		m_capacityVertices = EXPECTED_VERTICES_PER_SHAPE * m_capacityColors;
+		m_capacityIndices = EXPECTED_INDICES_PER_SHAPE * m_capacityColors;
+#else
+		m_capacityVertices = DEFAULT_CAPACITY_VERTICES;
+		m_capacityIndices = DEFAULT_CAPACITY_INDICES;
+#endif
+
+		// Create underlying render object, pre-allocating memory for vertex data
 		m_renderObject.create
 		(
 			nullptr,
-			0,
+			m_capacityVertices * sizeof(ShapeVertex),
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float, "shapeIndex" } },
 #else
@@ -48,9 +92,8 @@ namespace Renderer2D
 			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);
-		// and empty index data
-		// (we need to explicitly set empty index data because we are also setting data usage)
-		m_renderObject.setIndexData(nullptr, 0, bufferDataUsage);
+		// Pre-allocate memory for index data
+		m_renderObject.setIndexData(nullptr, m_capacityIndices * sizeof(unsigned), bufferDataUsage);
 
 		// Set shader's view projection matrix uniform to a default view projection matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
@@ -59,14 +102,14 @@ namespace Renderer2D
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Create underlying texture object with empty data
 		m_texture.create();
-
 		// IMPORTANT: Set wrap mode to ClampToEdge, because for shader's calculations
 		//            we need 0.0 to mean the first color and 1.0 to mean the last color.
 		//            If we leave the default wrap mode (ClampToBorder) than 1.0 will be the border color instead.
 		m_texture.setWrapMode(TextureWrapMode::ClampToEdge);
-#endif
 
 		m_shapesCount = 0;
+#endif
+
 		m_isValid = true;
 	}
 
@@ -75,27 +118,18 @@ namespace Renderer2D
 		PK_ASSERT(m_isValid, "Trying to destroy a ShapesBatch instance that is not yet created.", "Pekan");
 
 		m_renderObject.destroy();
-
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		m_texture.destroy();
 #endif
 
 		clear();
 
-		m_shapesCount = 0;
 		m_isValid = false;
 	}
 
 	bool ShapesBatch::addShape(const Shape& shape)
 	{
 		PK_ASSERT(m_isValid, "Trying to add a shape to a ShapesBatch that is not yet created.", "Pekan");
-
-		// A flag indicating if more shapes can be added after this one,
-		// or the batch needs to be rendered, and a new one started.
-		bool canAddMore = true;
-
-		const unsigned oldVerticesSize = unsigned(m_vertices.size());
-		const size_t oldIndicesSize = m_indices.size();
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Set shape's index,
@@ -107,20 +141,26 @@ namespace Renderer2D
 		// Get shape's vertices
 		const ShapeVertex* vertices = shape.getVertices();
 		const int verticesCount = shape.getVerticesCount();
-		// Add shape's vertices to the batch
-		m_vertices.insert(m_vertices.end(), vertices, vertices + verticesCount);
-
-#if !PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		// If we reach the maximum number of vertices, we can't add more shapes
-		if (m_vertices.size() >= MAX_VERTICES_PER_BATCH)
-		{
-			canAddMore = false;
-		}
-#endif
-
 		// Get shape's indices
 		const unsigned* zeroBasedIndices = shape.getIndices();
 		const int indicesCount = shape.getIndicesCount();
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+		// Get shape's color
+		glm::vec4 color = shape.getColor();
+#endif
+
+		// If adding this shape would overflow the batch, don't add it
+		if (wouldOverflow(verticesCount, indicesCount))
+		{
+			return false;
+		}
+
+		const unsigned oldVerticesSize = unsigned(m_vertices.size());
+		const size_t oldIndicesSize = m_indices.size();
+
+		// Add shape's vertices to the batch
+		m_vertices.insert(m_vertices.end(), vertices, vertices + verticesCount);
+
 		// Add shape's indices to the batch,
 		// first making each index relative to where shape's vertices begin in the vertices list.
 		// Shape's indices are "zero based" meaning they are relative to 0, starting at 0.
@@ -134,53 +174,24 @@ namespace Renderer2D
 			m_indices[i] = zeroBasedIndices[i - oldIndicesSize] + oldVerticesSize;
 		}
 
-#if !PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		// If we reach the maximum number of indices, we can't add more shapes
-		if (m_indices.size() >= MAX_INDICES_PER_BATCH)
-		{
-			canAddMore = false;
-		}
-#endif
-
-
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-
-		// Get shape's color
-		glm::vec4 color = shape.getColor();
 		// Add shape's color to the batch
 		m_colors.push_back(color);
 
-		// Max number of colors per batch that we'll allow on current hardware.
-		static size_t maxColors = size_t(float(RenderState::getMaxTextureSize()) * MAX_TEXTURE_SIZE_FRACTION);
-		// If we reach the maximum number of colors, we can't add more shapes
-		if (int(m_colors.size()) >= maxColors)
-		{
-			canAddMore = false;
-		}
+		m_shapesCount++;
 #endif
 
-		m_shapesCount++;
-
-		return canAddMore;
+		return true;
 	}
 
 	void ShapesBatch::render(const Camera2D_ConstPtr& camera)
 	{
 		PK_ASSERT(m_isValid, "Trying to render a ShapesBatch that is not yet created.", "Pekan");
 
-		// If camera is null, render without a camera
-		if (camera == nullptr)
-		{
-			PK_ASSERT(false, "Trying to render a ShapesBatch with a null camera.", "Pekan");
-			render();
-			return;
-		}
-
 		// Set underlying render object's vertex data and index data
 		// to the data of our vertices list and indices list
-		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(ShapeVertex));
-		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
-
+		m_renderObject.setVertexSubData(m_vertices.data(), 0, m_vertices.size() * sizeof(ShapeVertex));
+		m_renderObject.setIndexSubData(m_indices.data(), 0, m_indices.size() * sizeof(unsigned));
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Set underlying texture's colors to the list of shapes' colors
@@ -190,49 +201,13 @@ namespace Renderer2D
 #endif
 
 		Shader& shader = m_renderObject.getShader();
-
+		setViewProjectionMatrixUniform(shader, camera);
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		// Set shader's "uShapesColorsTexture" uniform to be 0 - the slot where our texture is bound.
+		// Set shader's "uShapesColorsTexture" uniform to be 0, matching the slot where texture is bound.
 		shader.setUniform1i("uShapesColorsTexture", 0);
 		// Set shader's "uShapesCount" uniform to be the number of shapes in the batch.
 		shader.setUniform1i("uShapesCount", m_shapesCount);
 #endif
-		// Set shader's view projection matrix uniform to camera's transform
-		const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
-		shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
-
-		// Draw all triangles making up all shapes from the batch
-		RenderCommands::drawIndexed(m_indices.size());
-	}
-
-	void ShapesBatch::render()
-	{
-		PK_ASSERT(m_isValid, "Trying to render a ShapesBatch that is not yet created.", "Pekan");
-
-		// Set underlying render object's vertex data and index data
-		// to the data of our vertices list and indices list
-		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(ShapeVertex));
-		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
-
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		// Set underlying texture's colors to the list of shapes' colors
-		m_texture.setColors(m_colors);
-		// Bind texture to slot 0
-		m_texture.bind(0);
-#endif
-
-		Shader& shader = m_renderObject.getShader();
-
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		// Set shader's "uShapesColorsTexture" uniform to be 0 - the slot where our texture is bound.
-		shader.setUniform1i("uShapesColorsTexture", 0);
-		// Set shader's "uShapesCount" uniform to be the number of shapes in the batch.
-		shader.setUniform1i("uShapesCount", m_shapesCount);
-#endif
-
-		// Set shader's view projection matrix uniform to a default view projection matrix
-		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-		shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 
 		// Draw all triangles making up all shapes from the batch
 		RenderCommands::drawIndexed(m_indices.size());
@@ -244,12 +219,23 @@ namespace Renderer2D
 
 		m_vertices.clear();
 		m_indices.clear();
-
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		m_colors.clear();
-#endif
 
 		m_shapesCount = 0;
+#endif
+	}
+
+	bool ShapesBatch::wouldOverflow(int verticesCount, int indicesCount) const
+	{
+		return
+		(
+			m_vertices.size() + verticesCount > m_capacityVertices
+			|| m_indices.size() + indicesCount > m_capacityIndices
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+			|| m_colors.size() + 1 > m_capacityColors
+#endif
+		);
 	}
 
 } // namespace Renderer2D

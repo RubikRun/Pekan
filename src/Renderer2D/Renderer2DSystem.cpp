@@ -85,21 +85,35 @@ namespace Renderer2D
 		if (shape.isDynamic())
 		{
 			// Add shape to dynamic batch.
-			// If batch is full, render it, and clear it, effectively starting a new one.
+			// If it couldn't be added, this means that the batch is full,
 			if (!s_shapesBatchDynamic.addShape(shape))
 			{
+				// so we can render the batch and clear it, effectively starting a new one.
 				renderShapesBatch(s_shapesBatchDynamic);
 				s_shapesBatchDynamic.clear();
+				// Finally we need to add the shape to the new batch.
+				// If it couldn't be added again, to a fresh new batch, something is definitely wrong.
+				if (!s_shapesBatchDynamic.addShape(shape))
+				{
+					PK_LOG_ERROR("Failed to add a shape to a ShapesBatch that was just cleared.", "Pekan");
+				}
 			}
 		}
 		else
 		{
 			// Add shape to static batch.
-			// If batch is full, render it, and clear it, effectively starting a new one.
+			// If it couldn't be added, this means that the batch is full,
 			if (!s_shapesBatchStatic.addShape(shape))
 			{
+				// so we can render the batch and clear it, effectively starting a new one.
 				renderShapesBatch(s_shapesBatchStatic);
 				s_shapesBatchStatic.clear();
+				// Finally we need to add the shape to the new batch.
+				// If it couldn't be added again, to a fresh new batch, something is definitely wrong.
+				if (!s_shapesBatchStatic.addShape(shape))
+				{
+					PK_LOG_ERROR("Failed to add a shape to a ShapesBatch that was just cleared.", "Pekan");
+				}
 			}
 		}
 	}
@@ -107,15 +121,7 @@ namespace Renderer2D
 	void Renderer2DSystem::renderShapesBatch(ShapesBatch& batch)
 	{
 		Camera2D_ConstPtr camera = s_camera.lock();
-
-		if (camera != nullptr)
-		{
-			batch.render(camera);
-		}
-		else
-		{
-			batch.render();
-		}
+		batch.render(camera);
 	}
 
 	void Renderer2DSystem::render(const Sprite& sprite)
