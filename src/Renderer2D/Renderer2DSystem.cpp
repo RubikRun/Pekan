@@ -26,18 +26,19 @@ namespace Renderer2D
 
 	void Renderer2DSystem::beginFrame()
 	{
-		s_shapesBatchDynamic.clear();
-		s_shapesBatchStatic.clear();
-		s_spritesBatchDynamic.clear();
-		s_spritesBatchStatic.clear();
 	}
 
 	void Renderer2DSystem::endFrame()
 	{
 		renderShapesBatch(s_shapesBatchDynamic);
 		renderShapesBatch(s_shapesBatchStatic);
-		renderSpritesBatch(s_spritesBatchDynamic);
-		renderSpritesBatch(s_spritesBatchStatic);
+		renderSpritesBatch(s_spritesBatchDynamic, true);
+		renderSpritesBatch(s_spritesBatchStatic, true);
+
+		s_shapesBatchDynamic.clear();
+		s_shapesBatchStatic.clear();
+		s_spritesBatchDynamic.clear(true);
+		s_spritesBatchStatic.clear(true);
 	}
 
 	glm::vec2 Renderer2DSystem::getMousePosition()
@@ -142,17 +143,17 @@ namespace Renderer2D
 		}
 	}
 
-	void Renderer2DSystem::renderSpritesBatch(SpritesBatch& batch)
+	void Renderer2DSystem::renderSpritesBatch(SpritesBatch& batch, bool isFinal)
 	{
 		Camera2D_ConstPtr camera = s_camera.lock();
 
 		if (camera != nullptr)
 		{
-			batch.render(camera);
+			batch.render(camera, isFinal);
 		}
 		else
 		{
-			batch.render();
+			batch.render(isFinal);
 		}
 	}
 

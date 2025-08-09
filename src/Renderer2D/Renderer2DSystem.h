@@ -60,7 +60,8 @@ namespace Renderer2D
         static void render(const Sprite& sprite);
 
         // Renders all sprites from a given batch with current camera
-        static void renderSpritesBatch(SpritesBatch& batch);
+        // @param[in] isFinal - A flag indicating if this will be the final call to renderSpritesBatch() for this frame
+        static void renderSpritesBatch(SpritesBatch& batch, bool isFinal = false);
 
     private:
 

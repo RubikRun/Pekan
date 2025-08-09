@@ -29,13 +29,21 @@ namespace Renderer2D
 		bool addSprite(const Sprite& sprite);
 
 		// Renders all sprites from the batch
-		void render(const Camera2D_ConstPtr& camera);
-		void render();
+		// @param[in] isFinal - A flag indicating if this will be the final call to render() for this frame
+		void render(const Camera2D_ConstPtr& camera, bool isFinal = false);
+		void render(bool isFinal = false);
 
 		// Clears batch, removing all sprites, leaving it empty
-		void clear();
+		// @param[in] isFinal - A flag indicating if this will be the final call to clear() for this frame
+		void clear(bool isFinal = false);
 
-	private:
+	private: /* functions */
+
+		// Renders carry-over sprites
+		void renderCarryOver(const Camera2D_ConstPtr& camera);
+		void renderCarryOver();
+
+	private: /* variables */
 
 		// Vertices of all sprites in the batch
 		std::vector<SpriteVertex> m_vertices;
@@ -45,6 +53,15 @@ namespace Renderer2D
 
 		// Textures of all sprites in the batch
 		std::vector<Graphics::Texture2D_ConstPtr> m_textures;
+
+		// List of carry-over vertices that couldn't be added to this batch but must be added to the next one
+		std::vector<SpriteVertex> m_carryOverVertices;
+
+		// List of carry-over indices that couldn't be added to this batch but must be added to the next one
+		std::vector<unsigned> m_carryOverIndices;
+
+		// List of carry-over textures that couldn't be added to this batch but must be added to the next one
+		std::vector<Graphics::Texture2D_ConstPtr> m_carryOverTextures;
 
 		// Underlying render object used for rendering all vertices and indices with all textures attached
 		RenderObject m_renderObject;
