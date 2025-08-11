@@ -26,7 +26,7 @@ namespace Demo
 	GUIWindowProperties Demo06_GUIWindow::getProperties() const
 	{
 		GUIWindowProperties props;
-		props.size = { 300, 300 };
+		props.size = { 300, 360 };
 		props.name = "Demo06";
 		return props;
 	}

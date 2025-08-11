@@ -4698,6 +4698,41 @@ Done.
 
 Let's compare speeds now, just to make sure that what was slowing it down
 wasn't some of the additional changes that I kept, make sure that it was actually the pre-allocation.
-TODO: do this
 
+----------
+11.08.2025
+----------
+
+    {
+    Let's take a small detour and add some more info in
+        FPSDisplayWidget
+    More specifically, I want to see the average FPS for the past 5 seconds, 10 seconds, 15 seconds, and since the beginning.
+    Done.
+    Not too hard, nothing to say.
+    }
+
+Now that we have a better FPS display, let's time the before and after.
+    Demo08 - v0.2 - 20s FPS:
+        35.4s, 35.9s, 35.4s, 38.8s, 35.9, 33.0, 32.3, 34.8, 34.2, 33.1, 34.3, 35.6, 38.5, 34.8
+    Demo08 - HEAD~4 - 20s FPS:
+        34.5s, 35.6s, 35.1s, 37.8s, 36.8, 36.4, 36.4, 35.2, 37.2, 37.4, 36.2, 33.5, 38.4
+Averages of these averages are:
+    Demo08 - v0.2:    ---> 35.14 FPS
+    Demo08 - HEAD~4:  ---> 36.19 FPS
+
+Let's do the same for Demo06
+    Demo06 - v0.2   - 20s FPS:
+        53.3, 53.0, 51.5, 50.8, 51.6, 51.0, 52.0, 51.2
+    Demo06 - HEAD~4 - 20s FPS:
+        45.5, 52.8, 51.8, 51.5, 52.7, 52.5
+Averages of these averages are:
+    Demo08 - v0.2:    ---> 51.80
+    Demo08 - HEAD~4:  ---> 51.13
+
+Conclusion: It looks ok.
+Recent changes might have made it a bit slower (1-3% slower),
+but each run is unpredictable - FPS goes up or down by 5-10%,
+so results might be misleading.
+
+Considering it done.
 }
