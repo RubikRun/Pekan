@@ -23,12 +23,6 @@ namespace Renderer2D
 	// For example, if this fraction is 80% and hardware's maximum texture size is 1024,
 	// then colors capacity will be 0.8 * 1024 = 819.
 	static constexpr float CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE = 0.95f;
-	// Expected average number of vertices per shape.
-	// Used for estimation of size of pre-allocated memory.
-	static constexpr int EXPECTED_VERTICES_PER_SHAPE = 24;
-	// Expected average number of indices per shape
-	// Used for estimation of size of pre-allocated memory.
-	static constexpr int EXPECTED_INDICES_PER_SHAPE = 66;
 #else
 	// A batch's capacity for vertices
 	static constexpr int DEFAULT_CAPACITY_VERTICES = 100000;
@@ -60,29 +54,13 @@ namespace Renderer2D
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Set batch's capacity for colors to be some fraction of the maximum texture size supported on current hardware
 		m_capacityColors = int(float(RenderState::getMaxTextureSize()) * CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE);
-		// Each shape has exactly 1 color, so colors capacity is also shapes capacity.
-		// Once we know shapes capacity of our batch how can we set good vertices capacity and indices capacity?
-		// We don't know the exact number of vertices/indices of a shape because each shape type has a different number of vertices/indices.
-		// If we pick a number too small for vertices capacity, for example, then the batch will be limited by this arbitrary number that we picked,
-		// instead of being limited by the colors capacity which is what actually matters.
-		// If we pick a number too big for vertices capacity, then the batch will be correctly limited by the colors capacity,
-		// but we will have wasted a lot of memory for vertices that we will not use - we might use 20% of the memory that we allocated,
-		// because when we reached that 20% the colors capacity ran out and we had to stop.
-		// ...
-		// The solution we do here is to use some expected average for the number of vertices/indices of a shape,
-		// so that it can behave well on average.
-		m_capacityVertices = EXPECTED_VERTICES_PER_SHAPE * m_capacityColors;
-		m_capacityIndices = EXPECTED_INDICES_PER_SHAPE * m_capacityColors;
-#else
-		m_capacityVertices = DEFAULT_CAPACITY_VERTICES;
-		m_capacityIndices = DEFAULT_CAPACITY_INDICES;
 #endif
 
-		// Create underlying render object, pre-allocating memory for vertex data
+		// Create underlying render object with empty vertex data
 		m_renderObject.create
 		(
 			nullptr,
-			m_capacityVertices * sizeof(ShapeVertex),
+			0,
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float, "shapeIndex" } },
 #else
@@ -92,8 +70,9 @@ namespace Renderer2D
 			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);
-		// Pre-allocate memory for index data
-		m_renderObject.setIndexData(nullptr, m_capacityIndices * sizeof(unsigned), bufferDataUsage);
+		// and empty index data
+		// (we need to explicitly set empty index data because we are also setting data usage)
+		m_renderObject.setIndexData(nullptr, 0, bufferDataUsage);
 
 		// Set shader's view projection matrix uniform to a default view projection matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
@@ -190,8 +169,8 @@ namespace Renderer2D
 
 		// Set underlying render object's vertex data and index data
 		// to the data of our vertices list and indices list
-		m_renderObject.setVertexSubData(m_vertices.data(), 0, m_vertices.size() * sizeof(ShapeVertex));
-		m_renderObject.setIndexSubData(m_indices.data(), 0, m_indices.size() * sizeof(unsigned));
+		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(ShapeVertex));
+		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Set underlying texture's colors to the list of shapes' colors
@@ -228,14 +207,12 @@ namespace Renderer2D
 
 	bool ShapesBatch::wouldOverflow(int verticesCount, int indicesCount) const
 	{
-		return
-		(
-			m_vertices.size() + verticesCount > m_capacityVertices
-			|| m_indices.size() + indicesCount > m_capacityIndices
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-			|| m_colors.size() + 1 > m_capacityColors
+		return (m_colors.size() + 1 > m_capacityColors);
+#else
+		return (m_vertices.size() + verticesCount > DEFAULT_CAPACITY_VERTICES
+			|| m_indices.size() + indicesCount > DEFAULT_CAPACITY_INDICES);
 #endif
-		);
 	}
 
 } // namespace Renderer2D

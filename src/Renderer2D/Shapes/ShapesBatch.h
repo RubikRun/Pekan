@@ -60,10 +60,6 @@ namespace Renderer2D
 		// Batch's capacity for colors
 		int m_capacityColors = -1;
 #endif
-		// Batch's capacity for vertices
-		int m_capacityVertices = -1;
-		// Batch's capacity for indices
-		int m_capacityIndices = -1;
 
 		// Underlying render object used for rendering all vertices and indices
 		RenderObject m_renderObject;

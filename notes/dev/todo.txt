@@ -157,7 +157,7 @@
 
 0056 25.07.2025 (DONE): Change class Layer's getName() function to be pure virtual and remove m_name member, maybe also remove constructor.
 
-0057 01.08.2025 (TODO): Check if it's better/faster to pre-allocate a fixed-size vertex buffer in ShapesBatch
+0057 01.08.2025 (DONE): Check if it's better/faster to pre-allocate a fixed-size vertex buffer in ShapesBatch
                         and use m_renderObject.setVertexSubData() instead of m_renderObject.setVertexData().
                         Then we'll have to start a new batch whenever we fill up the buffer, which is fine.
 
@@ -173,6 +173,6 @@
                         Do they need to be functions? Is it not bad that they can be called by other code except SpritesBatch and ShapesBatch?
                         We require them to be called before calling getVertices() so why don't we make this index be a parameter to getVertices() ?
 
-0061 08.08.2025 (TODO): Get rid of code duplication in the 2 render() overloads in ShapesBatch, same way as it's done in SpritesBatch
+0061 08.08.2025 (DONE): Get rid of code duplication in the 2 render() overloads in ShapesBatch, same way as it's done in SpritesBatch
 
 0062 09.08.2025 (TODO): Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()

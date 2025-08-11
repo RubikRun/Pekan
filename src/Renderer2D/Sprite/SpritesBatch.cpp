@@ -59,18 +59,19 @@ namespace Renderer2D
 		m_capacityVertices = m_capacityTextures * 4;
 		m_capacityIndices = m_capacityTextures * 6;
 
-		// Create underlying render object, pre-allocating memory for vertex data
+		// Create underlying render object with empty vertex data
 		m_renderObject.create
 		(
 			nullptr,
-			m_capacityVertices * sizeof(SpriteVertex),
+			0,
 			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "textureCoordinates" }, { ShaderDataType::Float, "textureIndex" }},
 			bufferDataUsage,
 			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);
-		// Pre-allocate memory for index data
-		m_renderObject.setIndexData(nullptr, m_capacityIndices * sizeof(unsigned), bufferDataUsage);
+		// and empty index data
+		// (we need to explicitly set empty index data because we are also setting data usage)
+		m_renderObject.setIndexData(nullptr, 0, bufferDataUsage);
 
 		// Set shader's view projection matrix uniform to a default view projection matrix
 		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
@@ -141,8 +142,8 @@ namespace Renderer2D
 
 		// Set underlying render object's vertex data and index data
 		// to the data of our vertices list and indices list
-		m_renderObject.setVertexSubData(m_vertices.data(), 0, m_vertices.size() * sizeof(SpriteVertex));
-		m_renderObject.setIndexSubData(m_indices.data(), 0, m_indices.size() * sizeof(unsigned));
+		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(SpriteVertex));
+		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
 
 		Shader& shader = m_renderObject.getShader();
 		setViewProjectionMatrixUniform(shader, camera);

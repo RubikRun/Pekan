@@ -4687,4 +4687,17 @@ With this macro
     PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 enabled it's also slower, similar numbers.
 
+That's it.
+Since it's slower, I'll actually revert those changes, bring it back to old behavior,
+but it's good that we investigated this - I definitely gained some valuable insight.
+Also structured the code a bit better around those changes.
+So yeah, let's revert,
+keeping other changes,
+only reverting back to the behavior of allocating vertices/indices memory anew each time in render().
+Done.
+
+Let's compare speeds now, just to make sure that what was slowing it down
+wasn't some of the additional changes that I kept, make sure that it was actually the pre-allocation.
+TODO: do this
+
 }
