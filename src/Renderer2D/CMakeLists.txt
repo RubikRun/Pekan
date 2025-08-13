@@ -9,16 +9,19 @@ option(PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING "Enable orientation checking 
 
 # Add a static library Renderer2D, compiling the following source files
 add_library(Renderer2D STATIC
-    RenderObject.h
-    RenderObject.cpp
     Renderer2DSystem.h
     Renderer2DSystem.cpp
+    RenderBatch2D.h
+    RenderBatch2D.cpp
+    RenderObject.h
+    RenderObject.cpp
     Camera2D.h
     Camera2D.cpp
     Line.h
     Line.cpp
     Transformable2D.h
     Transformable2D.cpp
+    Vertex2D.h
     Shapes/Shape.h
     Shapes/Shape.cpp
     Shapes/TriangleShape.h
@@ -33,12 +36,8 @@ add_library(Renderer2D STATIC
     Shapes/PolygonShape.cpp
     Shapes/LineShape.h
     Shapes/LineShape.cpp
-    Shapes/ShapesBatch.h
-    Shapes/ShapesBatch.cpp
     Sprite/Sprite.h
     Sprite/Sprite.cpp
-    Sprite/SpritesBatch.h
-    Sprite/SpritesBatch.cpp
 )
 
 # Group Shapes files under a virtual folder called "Shapes"
@@ -49,7 +48,6 @@ SOURCE_GROUP("Source Files\\Shapes" FILES
     Shapes/LineShape.cpp
     Shapes/CircleShape.cpp
     Shapes/PolygonShape.cpp
-    Shapes/ShapesBatch.cpp
 )
 SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/Shape.h
@@ -60,16 +58,13 @@ SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/CircleShapeStatic.h
     Shapes/CircleShapeStatic_impl.h
     Shapes/PolygonShape.h
-    Shapes/ShapesBatch.h
 )
 # Group Sprite files under a virtual folder called "Sprite"
 SOURCE_GROUP("Source Files\\Sprite" FILES
     Sprite/Sprite.cpp
-    Sprite/SpritesBatch.cpp
 )
 SOURCE_GROUP("Header Files\\Sprite" FILES
     Sprite/Sprite.h
-    Sprite/SpritesBatch.h
 )
 
 # Set include directories for Renderer2D

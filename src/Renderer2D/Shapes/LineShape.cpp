@@ -45,7 +45,7 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
     }
 
-    const ShapeVertex* LineShape::getVertices() const
+    const Vertex2D* LineShape::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a LineShape that is not yet created.", "Pekan");
 

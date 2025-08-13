@@ -4736,3 +4736,144 @@ so results might be misleading.
 
 Considering it done.
 }
+
+----------
+12.08.2025
+----------
+
+{
+Let's look at the next TO-DO item
+    Figure out order of rendering of shapes and sprites.
+    More specifically if you have both shapes and sprites in a single scene
+    then the whole shapes batch is rendered first and then the whole sprites batch is rendered second
+    disregarding the order in which client code called render() on their shapes and sprites.
+    Example: In Demo08 we render m_centerSquare after the sprites, but the sprites appear on top.
+
+That's a major issue in our design.
+With current design we can't make it work in a good way.
+We could, for example add shapes to the shapes batch until a sprite appears,
+then we have to render the shapes batch and start a sprites batch, keep adding sprites to the sprites batch
+until a shape appears, then render sprites batch and start a shapes batch, etc.,
+basically rendering a batch whenever we switch between rendering shapes and rendering sprites.
+But that's alwfully inefficient - in the extreme case when client code renders a shape, a sprite, a shape, a sprite, etc.
+then this solution is equivalent to having no batching at all.
+
+A good solution is to have a single batch for all 2D primitives (shapes and sprites).
+No idea why we didn't do this from the start :D
+
+So let's create a new class
+    RenderBatch2D
+in new files in Renderer2D
+    RenderBatch2D.h
+    RenderBatch2D.cpp
+and delete the old classes
+    ShapesBatch
+    SpritesBatch
+RenderBatch2D will be a union of ShapesBatch and SpritesBatch.
+
+Okay, did it.
+It wasn't too difficult because ShapesBatch and SpritesBatch were already pretty well designed.
+Things worth mentioning:
+1. There is no SpriteVertex and ShapeVertex anymore.
+    Instead we have a single vertex type for all 2D primitives (shapes and sprites for now)
+        Vertex2D
+    which is in a new header file
+        Vertex2D.h
+    It consists of
+    a position, which both shapes and sprites have,
+        glm::vec2 position = { -1.0f, -1.0f };
+    texture coordinates, which only sprites use (for shapes we'll just not use them),
+        glm::vec2 textureCoordinates = { -1.0f, -1.0f };
+    texture index, which only sprites use (for shapes we'll just not use it),
+        float textureIndex = -1.0f;
+    either a shape index or a color, depending on PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH,
+    which only shapes use (for sprites we'll just not use it)
+        float shapeIndex = -1.0f;
+            or
+        glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    We will use the value of textureIndex to determine whether a Vertex2D belongs to a shape or a sprite.
+    If textureIndex < 0, then it's a shape.
+    If texture >= 0, then it's a sprite.
+2. We have 2 pairs of shaders and we'll use one of them depending on PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH,
+    same way we were doing it in ShapesBatch.
+        Shaders/2D_Batch_1DTexture_VertexShader.glsl
+        Shaders/2D_Batch_1DTexture_FragmentShader.glsl
+            and
+        2D_Batch_VertexShader.glsl
+        2D_Batch_FragmentShader.glsl
+3. The most essential part about all this is the fragment shader.
+    Inside the fragment shader we decide whether the current pixel is part of a shape or a sprite
+    and determine the color accordingly.
+    I wanted to avoid if-branching so the way I implemented it is the following:
+    - Get shape's color
+            vec4 shapeColor = texture(uColorsTexture, vShapeIndex / float(uColorsCount - 1));
+        That's if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH is enabled,
+        otherwise we already have the color as varying
+            in vec4 vColor;
+    - Get sprite's color
+            vec4 spriteColor = texture(uTextures[int(vTexIndex + 0.5)], vTexCoord);
+    - Check if pixel is part of a shape or a sprite, but NOT with an if statement
+            float isSprite = float(vTexIndex >= 0.0);
+        This variable isSprite will be 1.0 if we're rendering a sprite, and 0.0 otherwise
+    - Use isSprite to get either shape's color or sprite's color, but without an if statement, instead use mix(...)
+            FragColor = mix(shapeColor, spriteColor, isSprite);
+4. Decided to remove the support for "bufferDataUsage" in batch's create() function.
+    A RenderBatch2D will always use buffers with DynamicDraw usage - this simplifies Renderer2DSystem a lot,
+    because now it has only 1 underlying batch (previously it had 4).
+    If we have both a dynamic and a static batch in Renderer2D we'll have the same problem of order of rendering.
+    For example, if client code renders a dynamic shape, then a static shape, then a dynamic sprite, then a static sprite,
+    the order of rendering will be all dynamic primitves together and then all static primitves together (or the other way around).
+    So, decided to just ditch the support for dynamicness of a batch. We didn't need it in the first place, so that's fine.
+    If we need it some time in the future we'll think about it again.
+
+That's about it.
+It works pretty well.
+Now shapes and sprites are rendered in the order in which client code calls render() on them.
+
+----------
+13.08.2025
+----------
+
+Let's do some timing.
+I expect things to run a bit slower now, because each vertex carries some redundant data
+(if it's a shape's vertex, it carries redundant data for a sprite, if it's a sprite's vertex, it carries redundant data for a shape)
+so our vertex buffer can carry fewer vertices now.
+Also, our shaders have to do some additional work, sampling both shape's color and sprite's color and deciding between the two.
+
+Timings of Demo06 and Demo08 after current changes (v0.2) and before (HEAD~1),
+also Demo06 is tested both with and without PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH:
+----
+    Demo06, v0.2, 20s, disabled PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+    46.0 46.2 47.0 47.2 ----avg----> 46.6
+
+    Demo06, HEAD~1, 20s, disabled PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+    49.6 51.2 50.2 49.1 ----avg----> 50.0
+
+    Demo06, v0.2, 20s, enabled PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+    49.8 48.2 48.2 48.0 ----avg----> 48.5
+
+    Demo06, HEAD~1, 20s, enabled PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+    55.2 54.2 53.6 53.6 ----avg----> 54.1
+
+    Demo08, v0.2, 20s
+    35.3 34.3 35.1 33.3 ----avg----> 34.5
+
+    Demo08, HEAD~1, 20s
+    35.5 39.5 40.5 34.9 ----avg----> 37.6
+----
+
+Conclusion:
+It's better to enable PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH by default - it's faster.
+The order of rendering change implemented here does, indeed, slow down things.
+It slows down
+    Demo06 from 54.1 FPS to 48.5 FPS
+    Demo08 from 37.6 FPS to 34.5 FPS
+on average.
+That's not very good, but it's expected.
+Order of rendering is non-negotiable, so the comparison is not really fair.
+The "before" case is a renderer specialized in rendering shapes only or sprites only, disregarding their order - of course it's faster.
+Of course we loose some performance by rendering both shapes and sprites in the correct order.
+It's fine though, the drop in performance is not big, and now we have correct order of rendering which is much more important.
+
+Done.
+}

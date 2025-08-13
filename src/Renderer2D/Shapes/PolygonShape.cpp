@@ -57,7 +57,7 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
     }
 
-    const ShapeVertex* PolygonShape::getVertices() const
+    const Vertex2D* PolygonShape::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a PolygonShape that is not yet created.", "Pekan");
 

@@ -3,21 +3,12 @@
 #include "Transformable2D.h"
 #include "RenderObject.h"
 #include "Texture2D.h"
+#include "Vertex2D.h"
 
 namespace Pekan
 {
 namespace Renderer2D
 {
-
-	struct SpriteVertex
-	{
-		// Position of the vertex, in world space
-		glm::vec2 position = { -1.0f, -1.0f };
-		// Coordinates in texture spae of the point that this vertex maps to
-		glm::vec2 textureCoordinates = { -1.0f, -1.0f };
-		// Index of the texture to be used for the vertex
-		float textureIndex = -1.0f;
-	};
 
 	class Sprite : public Transformable2D
 	{
@@ -46,7 +37,7 @@ namespace Renderer2D
 		float getHeight() const { return m_height; }
 
 		// Returns sprite's vertex data, in world space
-		const SpriteVertex* getVertices() const;
+		const Vertex2D* getVertices() const;
 
 		// Returns (a pointer to) underlying texture
 		const Graphics::Texture2D_ConstPtr& getTexture() const { return m_texture; }
@@ -83,7 +74,7 @@ namespace Renderer2D
 		// The 4 vertices (vertex positions) of the sprite, in local space
 		mutable glm::vec2 m_verticesLocal[4] = {};
 		// The 4 vertices of the sprite, in world space.
-		mutable SpriteVertex m_verticesWorld[4];
+		mutable Vertex2D m_verticesWorld[4];
 
 		// Flag indicating if local vertices need to be updated before use
 		mutable bool m_needUpdateVerticesLocal = true;

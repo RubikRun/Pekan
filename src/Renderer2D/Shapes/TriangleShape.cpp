@@ -76,7 +76,7 @@ namespace Renderer2D
 #endif
     }
 
-    const ShapeVertex* TriangleShape::getVertices() const
+    const Vertex2D* TriangleShape::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a TriangleShape that is not yet created.", "Pekan");
 

@@ -161,7 +161,7 @@
                         and use m_renderObject.setVertexSubData() instead of m_renderObject.setVertexData().
                         Then we'll have to start a new batch whenever we fill up the buffer, which is fine.
 
-0058 03.08.2025 (TODO): Figure out order of rendering of shapes and sprites.
+0058 03.08.2025 (DONE): Figure out order of rendering of shapes and sprites.
                         More specifically if you have both shapes and sprites in a single scene
                         then the whole shapes batch is rendered first and then the whole sprites batch is rendered second
                         disregarding the order in which client code called render() on their shapes and sprites.
@@ -176,3 +176,5 @@
 0061 08.08.2025 (DONE): Get rid of code duplication in the 2 render() overloads in ShapesBatch, same way as it's done in SpritesBatch
 
 0062 09.08.2025 (TODO): Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()
+
+0063 12.08.2025 (TODO): Move class RenderObject to module Graphics

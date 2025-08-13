@@ -44,7 +44,7 @@ namespace Renderer2D
         m_needUpdateIndices = true;
     }
 
-    const ShapeVertex* CircleShape::getVertices() const
+    const Vertex2D* CircleShape::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a CircleShape that is not yet created.", "Pekan");
         if (m_needUpdateVerticesLocal)

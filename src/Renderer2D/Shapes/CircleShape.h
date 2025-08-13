@@ -31,7 +31,7 @@ namespace Renderer2D
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return m_segmentsCount; }
 
-		const ShapeVertex* getVertices() const override;
+		const Vertex2D* getVertices() const override;
 		int getVerticesCount() const override { return m_verticesLocal.size(); };
 
 		const unsigned* getIndices() const override;
@@ -51,7 +51,7 @@ namespace Renderer2D
 		// Vertices (vertex positions) making up the circle, in local space
 		mutable std::vector<glm::vec2> m_verticesLocal;
 		// Vertices making up the circle, in world space
-		mutable std::vector<ShapeVertex> m_verticesWorld;
+		mutable std::vector<Vertex2D> m_verticesWorld;
 
 		// Indices into the vertices list, making up the triangles to be rendered
 		mutable std::vector<unsigned> m_indices;

@@ -25,7 +25,7 @@ namespace Renderer2D
 		inline float getWidth() const { return m_width; }
 		inline float getHeight() const { return m_height; }
 
-		const ShapeVertex* getVertices() const override;
+		const Vertex2D* getVertices() const override;
 		int getVerticesCount() const override { return 4; };
 
 		const unsigned* getIndices() const override { return s_indices; }
@@ -43,7 +43,7 @@ namespace Renderer2D
 		// The 4 vertices (vertex positions) of the rectangle, in local space.
 		mutable glm::vec2 m_verticesLocal[4] = {};
 		// The 4 vertices of the rectangle, in world space.
-		mutable ShapeVertex m_verticesWorld[4];
+		mutable Vertex2D m_verticesWorld[4];
 
 		// Flag indicating if local vertices need to be updated before use
 		mutable bool m_needUpdateVerticesLocal = true;

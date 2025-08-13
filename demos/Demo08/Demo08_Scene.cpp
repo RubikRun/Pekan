@@ -87,11 +87,11 @@ namespace Demo
 		Renderer2DSystem::beginFrame();
 		RenderCommands::clear();
 
-		m_centerSquare.render();
 		for (size_t i = 0; i < m_spritesCount; i++)
 		{
 			m_sprites[i].render();
 		}
+		m_centerSquare.render();
 
 		Renderer2DSystem::endFrame();
 	}

@@ -40,7 +40,7 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
     }
 
-    const ShapeVertex* RectangleShape::getVertices() const
+    const Vertex2D* RectangleShape::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a RectangleShape that is not yet created.", "Pekan");
 

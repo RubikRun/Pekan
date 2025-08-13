@@ -31,7 +31,7 @@ namespace Renderer2D
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return NSegments; }
 
-		const ShapeVertex* getVertices() const override;
+		const Vertex2D* getVertices() const override;
 		int getVerticesCount() const override { return NSegments; };
 
 		const unsigned* getIndices() const override { return m_indices; }
@@ -54,7 +54,7 @@ namespace Renderer2D
 		// Vertices making up the circle, in local space
 		mutable glm::vec2 m_verticesLocal[NSegments];
 		// Vertices making up the circle, in world space
-		mutable ShapeVertex m_verticesWorld[NSegments];
+		mutable Vertex2D m_verticesWorld[NSegments];
 
 		// Indices into the vertices list, making up the triangles to be rendered
 		unsigned m_indices[(NSegments - 2) * 3];

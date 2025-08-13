@@ -2,6 +2,7 @@
 
 #include "Transformable2D.h"
 #include "RenderCommands.h"
+#include "Vertex2D.h"
 
 #include <glm/glm.hpp>
 
@@ -10,35 +11,23 @@ namespace Pekan
 namespace Renderer2D
 {
 
-	// A vertex of a 2D shape
-	struct ShapeVertex
-	{
-		glm::vec2 position = { 0.0f, 0.0f };
-
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		float shapeIndex = -1.0f;
-#else
-		glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-#endif
-	};
-
 	// A base class for 2D shapes
 	class Shape : public Transformable2D
 	{
 	public:
 
 		// Checks if shape is valid, meaning that it has been created and not yet destroyed
-		inline bool isValid() const { return m_isValid; }
+		bool isValid() const { return m_isValid; }
 
 		void render() const;
 
 		// Returns shape's color
-		inline glm::vec4 getColor() const { return m_color; }
+		glm::vec4 getColor() const { return m_color; }
 		// Sets shape's color
 		void setColor(glm::vec4 color);
 
 		// To be implemented by derived classes to return their vertex data in world space.
-		virtual const ShapeVertex* getVertices() const = 0;
+		virtual const Vertex2D* getVertices() const = 0;
 		// To be implemented by derived classes to return the number of their vertices.
 		virtual int getVerticesCount() const = 0;
 
@@ -50,12 +39,12 @@ namespace Renderer2D
 		// Checks if shape is dynamic,
 		// meaning it will be changed/transformed often,
 		// and it's better to use dynamic buffers for its vertices and indices.
-		inline bool isDynamic() const { return m_isDynamic; }
+		bool isDynamic() const { return m_isDynamic; }
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Sets shape's index inside of its batch.
 		// This index will determine the value of the "shapeIndex" attribute of shape's vertices
-		inline void setShapeIndex(float shapeIndex) const { m_shapeIndex = shapeIndex; }
+		void setShapeIndex(float shapeIndex) const;
 #endif
 
 	protected: /* functions */

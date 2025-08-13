@@ -31,7 +31,7 @@ namespace Renderer2D
 		inline glm::vec2 getVertexB() const { return m_verticesLocal[1]; }
 		inline glm::vec2 getVertexC() const { return m_verticesLocal[2]; }
 
-		const ShapeVertex* getVertices() const override;
+		const Vertex2D* getVertices() const override;
 		int getVerticesCount() const override { return 3; };
 
 		const unsigned* getIndices() const override;
@@ -52,7 +52,7 @@ namespace Renderer2D
 		// The 3 vertices (vertex positions) of the triangle, in local space
 		glm::vec2 m_verticesLocal[3] = {};
 		// The 3 vertices of the triangle, in world space
-		mutable ShapeVertex m_verticesWorld[3];
+		mutable Vertex2D m_verticesWorld[3];
 
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
 		// Indices of the 3 vertices of the triangle, determining the order in which they will be drawn

@@ -25,7 +25,7 @@ namespace Renderer2D
 		// Sets a specific vertex of polygon, in local space
 		void setVertex(int index, glm::vec2 vertex);
 
-		const ShapeVertex* getVertices() const override;
+		const Vertex2D* getVertices() const override;
 		int getVerticesCount() const override { return m_verticesLocal.size(); };
 
 		const unsigned* getIndices() const override;
@@ -43,7 +43,7 @@ namespace Renderer2D
 		// The vertices (vertex positions) of the polygon, in local space
 		mutable std::vector<glm::vec2> m_verticesLocal;
 		// The vertices of the polygon, in world space
-		mutable std::vector<ShapeVertex> m_verticesWorld;
+		mutable std::vector<Vertex2D> m_verticesWorld;
 
 		// Indices into the vertices list, making up the triangles of the triangulated polygon.
 		mutable std::vector<unsigned> m_indices;

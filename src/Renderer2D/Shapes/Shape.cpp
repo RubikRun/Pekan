@@ -13,7 +13,7 @@ namespace Renderer2D
     {
         PK_ASSERT(m_isValid, "Trying to render a Shape that is not yet created.", "Pekan");
 
-        Renderer2DSystem::render(*this);
+        Renderer2DSystem::submitForRendering(*this);
     }
 
     void Shape::setColor(glm::vec4 color)
@@ -21,8 +21,21 @@ namespace Renderer2D
         PK_ASSERT(m_isValid, "Trying to set color of a Shape that is not yet created.", "Pekan");
 
         m_color = color;
+#if !PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+        m_needUpdateVerticesWorld = true;
+#endif
+    }
+
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+    void Shape::setShapeIndex(float shapeIndex) const
+    {
+        PK_ASSERT(m_isValid, "Trying to set shape index of a Shape that is not yet created.", "Pekan");
+        PK_ASSERT(shapeIndex >= 0.0f, "Trying to set a negative shape index to a Shape.", "Pekan");
+
+        m_shapeIndex = shapeIndex;
         m_needUpdateVerticesWorld = true;
     }
+#endif
 
     void Shape::_create(bool dynamic)
     {

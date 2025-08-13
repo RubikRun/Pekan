@@ -32,7 +32,7 @@ namespace Renderer2D
     }
 
     template<unsigned NSegments>
-    const ShapeVertex* CircleShapeStatic<NSegments>::getVertices() const
+    const Vertex2D* CircleShapeStatic<NSegments>::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a CircleShapeStatic that is not yet created.", "Pekan");
         if (m_needUpdateVerticesLocal)

@@ -41,7 +41,7 @@ namespace Renderer2D
     {
         PK_ASSERT(m_isValid, "Trying to render a Sprite that is not yet created.", "Pekan");
 
-        Renderer2DSystem::render(*this);
+        Renderer2DSystem::submitForRendering(*this);
     }
 
     void Sprite::setWidth(float width)
@@ -62,7 +62,7 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
     }
 
-    const SpriteVertex* Sprite::getVertices() const
+    const Vertex2D* Sprite::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a Sprite that is not yet created.", "Pekan");
 
