@@ -40,9 +40,22 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
     }
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+    const Vertex2D* RectangleShape::getVertices(float shapeIndex) const
+#else
     const Vertex2D* RectangleShape::getVertices() const
+#endif
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a RectangleShape that is not yet created.", "Pekan");
+
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+        PK_ASSERT(shapeIndex >= 0.0f, "Trying to get vertices of a Shape but giving it a negative shape index.", "Pekan");
+        if (m_shapeIndex != shapeIndex)
+        {
+            m_shapeIndex = shapeIndex;
+            m_needUpdateVerticesWorld = true;
+        }
+#endif
 
         if (m_needUpdateVerticesLocal)
         {

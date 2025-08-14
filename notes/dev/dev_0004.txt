@@ -4921,3 +4921,46 @@ and then at render time SpritesBatch retrieves Sprite's texture, inserts it in a
 
 Done.
 }
+
+{
+Let's look at this TO-DO item
+    Think about class Sprite's setTextureIndex() function and class Shape's setShapeIndex() function.
+    Do they need to be functions? Is it not bad that they can be called by other code except SpritesBatch and ShapesBatch?
+    We require them to be called before calling getVertices() so why don't we make this index be a parameter to getVertices() ?
+
+Fair enough, let's just do it.
+Did it. Easy, nothing much to say.
+Instead of having setShapeIndex() and setTextureIndex() functions in Shape and Sprite we have a getVertices() function
+that takes in a shapeIndex parameter in class Shape and a textureIndex parameter in class Sprite.
+    virtual const Vertex2D* getVertices(float shapeIndex) const = 0;
+    const Vertex2D* getVertices(float textureIndex) const;
+The shapeIndex parameter exists only when PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH is enabled.
+Otherwise we don't need any parameter in Shape's getVertices()
+    virtual const Vertex2D* getVertices() const = 0;
+As for the implementation of the 2 getVertices() functions we need to set m_shapeIndex and m_textureIndex to the given index
+    m_shapeIndex = shapeIndex;
+    m_textureIndex = textureIndex;
+This, of course, has to be done per shape type for all classes dervied from Shape. Class Sprite is fine, it's only one, doesn't have hierarchy.
+Just setting the index is not enough though, we also need to mark world vertices for update,
+because they might not get updated with the new index otherwise.
+And we need to mark them for update specifically if the given index is different from the index that we already have.
+So for Sprite's getVertices() function this would look like
+    if (m_textureIndex != textureIndex)
+    {
+        m_textureIndex = textureIndex;
+        m_needUpdateVerticesWorld = true;
+    }
+and for all shape types, classes derived from Shape, it will look like:
+    if (m_shapeIndex != shapeIndex)
+    {
+        m_shapeIndex = shapeIndex;
+        m_needUpdateVerticesWorld = true;
+    }
+Of course, this needs to be done for shapes only if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH is enabled. Otherwise we don't have a shape index at all.
+
+That's about it.
+Did a few other small changes, but nothing major.
+
+It works, same as before.
+Done.
+}

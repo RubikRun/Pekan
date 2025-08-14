@@ -155,15 +155,12 @@ namespace Renderer2D
 	{
 		PK_ASSERT(m_isValid, "Trying to add a shape to a RenderBatch2D that is not yet created.", "Pekan");
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		// Set shape's index,
-		// letting it know what its index is inside of the batch,
-		// so that it can set the "shapeIndex" attribute to its vertices.
-		shape.setShapeIndex(float(m_colorsCount));
-#endif
-
 		// Get shape's vertices
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+		const Vertex2D* vertices = shape.getVertices(float(m_colorsCount));
+#else
 		const Vertex2D* vertices = shape.getVertices();
+#endif
 		const int verticesCount = shape.getVerticesCount();
 		// Get shape's indices
 		const unsigned* zeroBasedIndices = shape.getIndices();
@@ -221,13 +218,8 @@ namespace Renderer2D
 		const unsigned oldVerticesSize = unsigned(m_vertices.size());
 		const size_t oldIndicesSize = m_indices.size();
 
-		// Set sprite's texture's index,
-		// letting the sprite know what its texture index is inside of the batch,
-		// so that it can set the "textureIndex" attribute to its vertices.
-		sprite.setTextureIndex(float(m_textures.size()));
-
 		// Get sprite's vertices
-		const Vertex2D* vertices = sprite.getVertices();
+		const Vertex2D* vertices = sprite.getVertices(float(m_textures.size()));
 		// Add sprite's vertices to the batch
 		m_vertices.insert(m_vertices.end(), vertices, vertices + 4);
 

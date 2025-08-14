@@ -169,7 +169,7 @@
 
 0059 07.08.2025 (DONE): Add API to class Sprite allowing sprite's texture to be changed after having created the sprite.
 
-0060 07.08.2025 (TODO): Think about class Sprite's setTextureIndex() function and class Shape's setShapeIndex() function.
+0060 07.08.2025 (DONE): Think about class Sprite's setTextureIndex() function and class Shape's setShapeIndex() function.
                         Do they need to be functions? Is it not bad that they can be called by other code except SpritesBatch and ShapesBatch?
                         We require them to be called before calling getVertices() so why don't we make this index be a parameter to getVertices() ?
 

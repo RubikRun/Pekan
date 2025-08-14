@@ -31,7 +31,11 @@ namespace Renderer2D
 		inline float getRadius() const { return m_radius; }
 		inline int getSegmentsCount() const { return NSegments; }
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+		const Vertex2D* getVertices(float shapeIndex) const override;
+#else
 		const Vertex2D* getVertices() const override;
+#endif
 		int getVerticesCount() const override { return NSegments; };
 
 		const unsigned* getIndices() const override { return m_indices; }

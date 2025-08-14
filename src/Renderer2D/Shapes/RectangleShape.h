@@ -25,7 +25,11 @@ namespace Renderer2D
 		inline float getWidth() const { return m_width; }
 		inline float getHeight() const { return m_height; }
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+		const Vertex2D* getVertices(float shapeIndex) const override;
+#else
 		const Vertex2D* getVertices() const override;
+#endif
 		int getVerticesCount() const override { return 4; };
 
 		const unsigned* getIndices() const override { return s_indices; }

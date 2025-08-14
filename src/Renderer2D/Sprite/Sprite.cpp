@@ -92,9 +92,16 @@ namespace Renderer2D
         return m_texture;
     }
 
-    const Vertex2D* Sprite::getVertices() const
+    const Vertex2D* Sprite::getVertices(float textureIndex) const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a Sprite that is not yet created.", "Pekan");
+        PK_ASSERT(textureIndex >= 0.0f, "Trying to get vertices of a Sprite but giving it a negative texture index.", "Pekan");
+
+        if (m_textureIndex != textureIndex)
+        {
+            m_textureIndex = textureIndex;
+            m_needUpdateVerticesWorld = true;
+        }
 
         if (m_needUpdateVerticesLocal)
         {
@@ -105,12 +112,6 @@ namespace Renderer2D
             updateVerticesWorld();
         }
         return m_verticesWorld;
-    }
-
-    void Sprite::setTextureIndex(float textureIndex) const
-    {
-        PK_ASSERT(isValid(), "Trying to set texture index of a Sprite that is not yet created.", "Pekan");
-        m_textureIndex = textureIndex;
     }
 
     void Sprite::updateVerticesLocal() const

@@ -26,17 +26,6 @@ namespace Renderer2D
 #endif
     }
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-    void Shape::setShapeIndex(float shapeIndex) const
-    {
-        PK_ASSERT(m_isValid, "Trying to set shape index of a Shape that is not yet created.", "Pekan");
-        PK_ASSERT(shapeIndex >= 0.0f, "Trying to set a negative shape index to a Shape.", "Pekan");
-
-        m_shapeIndex = shapeIndex;
-        m_needUpdateVerticesWorld = true;
-    }
-#endif
-
     void Shape::_create(bool dynamic)
     {
         PK_ASSERT(!isValid(), "Trying to create a Shape instance that is already created.", "Pekan");

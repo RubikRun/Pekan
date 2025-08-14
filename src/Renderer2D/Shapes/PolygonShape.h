@@ -25,7 +25,11 @@ namespace Renderer2D
 		// Sets a specific vertex of polygon, in local space
 		void setVertex(int index, glm::vec2 vertex);
 
+#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+		const Vertex2D* getVertices(float shapeIndex) const override;
+#else
 		const Vertex2D* getVertices() const override;
+#endif
 		int getVerticesCount() const override { return m_verticesLocal.size(); };
 
 		const unsigned* getIndices() const override;

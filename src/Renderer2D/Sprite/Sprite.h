@@ -41,16 +41,13 @@ namespace Renderer2D
 		const Graphics::Texture2D_ConstPtr& getTexture() const;
 
 		// Returns sprite's vertex data, in world space
-		const Vertex2D* getVertices() const;
+		// @param[in] textureIndex - Index of sprite's texture inside of sprite's batch. Determines the value of the "textureIndex" attribute of sprite's vertices
+		const Vertex2D* getVertices(float textureIndex) const;
 
 		// Checks if sprite is dynamic,
 		// meaning it will be changed/transformed often,
 		// and it's better to use dynamic buffers for its vertices and indices.
 		bool isDynamic() const { return m_isDynamic; }
-
-		// Sets sprite's texture's index inside of its batch.
-		// This index will determine the value of the "textureIndex" attribute of sprite's vertices
-		void setTextureIndex(float textureIndex) const;
 
 	private: /* functions */
 
