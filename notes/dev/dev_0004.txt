@@ -4877,3 +4877,47 @@ It's fine though, the drop in performance is not big, and now we have correct or
 
 Done.
 }
+
+----------
+14.08.2025
+----------
+
+{
+Let's do this TO-DO item
+    Add API to class Sprite allowing sprite's texture to be changed after having created the sprite.
+
+To see it working in action let's add a small sprite in the corner of Demo08
+displaying a short animation.
+Created some silly animation of 10 frames, in Paint
+under Demo08/resources/
+    anim00.png
+    anim01.png
+    ...
+    anim09.png
+
+Currently we can make that happen by destroying and creating the sprite anew
+each time when we want to change its texture, so let's first do that.
+Did it. And indeed, it works, but the code is awkward and it's probably bad for performance
+    currAnimTextureIndex = (currAnimTextureIndex + 1) % m_animTextures.size();
+    const glm::vec2 windowSize = glm::vec2(PekanEngine::getWindow().getSize());
+    const float spriteSize = windowSize.x * ANIMATION_SIZE_FACTOR;
+    m_animSprite.destroy();
+    m_animSprite.create(m_animTextures[currAnimTextureIndex], spriteSize, spriteSize);
+    m_animSprite.setPosition({ -windowSize.x / 2.0f + spriteSize / 2.0f, windowSize.y / 2.0f - spriteSize / 2.0f });
+
+Let's implement the new API now for changing sprite's texture.
+Okay, it was actually super easy and straightforward.
+We just need a setTexture() function in class Sprite
+    void setTexture(const Graphics::Texture2D_ConstPtr& texture);
+It just needs to set m_texture to the given texture
+    void Sprite::setTexture(const Graphics::Texture2D_ConstPtr& texture)
+    {
+        ... some error checking ...
+        m_texture = texture;
+    }
+That's it.
+It works immediately, because a Sprite just maintains its internal texture m_texture
+and then at render time SpritesBatch retrieves Sprite's texture, inserts it in a brand new textures list, sets texture index, etc.
+
+Done.
+}

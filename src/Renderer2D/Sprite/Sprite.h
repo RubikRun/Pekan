@@ -30,17 +30,18 @@ namespace Renderer2D
 		void setWidth(float width);
 		// Sets sprite's height, in local space
 		void setHeight(float height);
+		// Sets sprite's texture
+		void setTexture(const Graphics::Texture2D_ConstPtr& texture);
 
 		// Returns sprite's width, in local space
-		float getWidth() const { return m_width; }
+		float getWidth() const;
 		// Returns sprite's height, in local space
-		float getHeight() const { return m_height; }
+		float getHeight() const;
+		// Returns (a pointer to) underlying texture
+		const Graphics::Texture2D_ConstPtr& getTexture() const;
 
 		// Returns sprite's vertex data, in world space
 		const Vertex2D* getVertices() const;
-
-		// Returns (a pointer to) underlying texture
-		const Graphics::Texture2D_ConstPtr& getTexture() const { return m_texture; }
 
 		// Checks if sprite is dynamic,
 		// meaning it will be changed/transformed often,
@@ -49,7 +50,7 @@ namespace Renderer2D
 
 		// Sets sprite's texture's index inside of its batch.
 		// This index will determine the value of the "textureIndex" attribute of sprite's vertices
-		void setTextureIndex(float textureIndex) const { m_textureIndex = textureIndex; }
+		void setTextureIndex(float textureIndex) const;
 
 	private: /* functions */
 

@@ -37,8 +37,10 @@ namespace Demo
 		void createCamera();
 		void createSprites();
 		void createCenterSquare();
+		void createAnimSprite();
 
 		void updateSprites(float dt);
+		void updateAnimSprite(float dt);
 
 	private: /* variables */
 
@@ -46,6 +48,10 @@ namespace Demo
 		std::vector<glm::vec2> m_spritesVelocities;
 
 		Pekan::Renderer2D::RectangleShape m_centerSquare;
+
+		Pekan::Renderer2D::Sprite m_animSprite;
+		std::vector<Pekan::Graphics::Texture2D_Ptr> m_animTextures;
+		int m_currAnimTextureIndex = 0;
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 
@@ -55,6 +61,9 @@ namespace Demo
 		std::shared_ptr<Demo08_GUIWindow> m_guiWindow;
 
 		float t = 0.0f;
+
+		// Time until the next update of the animation sprite
+		float m_timeTilAnimUpdate = 0.0f;
 	};
 
 } // namespace Demo

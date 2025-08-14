@@ -12,6 +12,7 @@ namespace Demo
 		gui.numberOfSpritesLabel->create(this, "Number Of Sprites");
 		gui.numberOfSpritesWidget->create(this, "", 4000, 1, 10000);
 		gui.mouseStrengthWidget->create(this, "Mouse Strength", 1.0f, 0.5f, 16.0f, "%.1f");
+		gui.animSpeedWidget->create(this, "Animation Speed", 2.0f, 1.0f, 20.0f, "%.1f");
 
 		gui.fpsDisplayWidget->create(this);
 

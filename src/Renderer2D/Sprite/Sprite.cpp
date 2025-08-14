@@ -62,6 +62,36 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
     }
 
+    void Sprite::setTexture(const Graphics::Texture2D_ConstPtr& texture)
+    {
+        PK_ASSERT(isValid(), "Trying to set height of a Sprite that is not yet created.", "Pekan");
+        if (texture == nullptr)
+        {
+            PK_LOG_ERROR("Trying to set a null texture to a Sprite.", "Pekan");
+            return;
+        }
+
+        m_texture = texture;
+    }
+
+    float Sprite::getWidth() const
+    {
+        PK_ASSERT(isValid(), "Trying to get width of a Sprite that is not yet created.", "Pekan");
+        return m_width;
+    }
+
+    float Sprite::getHeight() const
+    {
+        PK_ASSERT(isValid(), "Trying to get height of a Sprite that is not yet created.", "Pekan");
+        return m_height;
+    }
+
+    const Graphics::Texture2D_ConstPtr& Sprite::getTexture() const
+    {
+        PK_ASSERT(isValid(), "Trying to get the texture of a Sprite that is not yet created.", "Pekan");
+        return m_texture;
+    }
+
     const Vertex2D* Sprite::getVertices() const
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a Sprite that is not yet created.", "Pekan");
@@ -75,6 +105,12 @@ namespace Renderer2D
             updateVerticesWorld();
         }
         return m_verticesWorld;
+    }
+
+    void Sprite::setTextureIndex(float textureIndex) const
+    {
+        PK_ASSERT(isValid(), "Trying to set texture index of a Sprite that is not yet created.", "Pekan");
+        m_textureIndex = textureIndex;
     }
 
     void Sprite::updateVerticesLocal() const

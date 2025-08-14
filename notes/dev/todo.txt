@@ -167,7 +167,7 @@
                         disregarding the order in which client code called render() on their shapes and sprites.
                         Example: In Demo08 we render m_centerSquare after the sprites, but the sprites appear on top.
 
-0059 07.08.2025 (TODO): Add API to class Sprite allowing sprite's texture to be changed after having created the sprite.
+0059 07.08.2025 (DONE): Add API to class Sprite allowing sprite's texture to be changed after having created the sprite.
 
 0060 07.08.2025 (TODO): Think about class Sprite's setTextureIndex() function and class Shape's setShapeIndex() function.
                         Do they need to be functions? Is it not bad that they can be called by other code except SpritesBatch and ShapesBatch?
@@ -178,3 +178,5 @@
 0062 09.08.2025 (TODO): Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()
 
 0063 12.08.2025 (TODO): Move class RenderObject to module Graphics
+
+0064 14.08.2025 (TODO): Remove m_isDynamic member from class Shape and class Sprite. Make sure it's not used anywhere.

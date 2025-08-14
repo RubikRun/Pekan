@@ -24,10 +24,18 @@ namespace Demo
 	// and named "00.png", "01.png", "02.png", etc.
 	static constexpr int TEXTURES_COUNT = 44;
 
+	// Number of textures to be used for the animation sprite.
+	// Textures will be loaded from .png files that are expected to be under "resources" directory
+	// and named "anim00.png", "anim01.png", "anim02.png", etc.
+	static constexpr int ANIMATION_LENGTH = 10;
+
+	// Size of animation sprite will be this factor times window's width.
+	static constexpr float ANIMATION_SIZE_FACTOR = 0.02f;
+
 	// Loads textures to be used for the sprites
 	//
 	// NOTE: this works only for two-digit filenames, so it supports at most 100 textures (00 to 99).
-	static void loadTextures(std::vector<Texture2D_Ptr>& textures)
+	static void loadSpritesTextures(std::vector<Texture2D_Ptr>& textures)
 	{
 		textures.clear();
 		textures.resize(TEXTURES_COUNT);
@@ -35,6 +43,30 @@ namespace Demo
 		{
 			// Generate image file's name
 			std::string filename = "resources/";
+			if (i < 10)
+			{
+				filename += "0";
+			}
+			filename += std::to_string(i) + ".png";
+			// Load image
+			Image image(filename.c_str());
+			// Create texture
+			textures[i] = std::make_shared<Texture2D>();
+			textures[i]->create(image);
+		}
+	}
+
+	// Loads textures to be used for the animation sprite.
+	//
+	// NOTE: this works only for two-digit filenames, so it supports at most 100 textures (00 to 99).
+	static void loadAnimTextures(std::vector<Texture2D_Ptr>& textures)
+	{
+		textures.clear();
+		textures.resize(ANIMATION_LENGTH);
+		for (size_t i = 0; i < ANIMATION_LENGTH; i++)
+		{
+			// Generate image file's name
+			std::string filename = "resources/anim";
 			if (i < 10)
 			{
 				filename += "0";
@@ -68,6 +100,7 @@ namespace Demo
 		createCamera();
 		createSprites();
 		createCenterSquare();
+		createAnimSprite();
 
         return true;
 	}
@@ -78,6 +111,7 @@ namespace Demo
 		m_spritesCount = m_guiWindow->getNumberOfSprites();
 
 		updateSprites(float(dt));
+		updateAnimSprite(float(dt));
 
 		t += float(dt);
 	}
@@ -92,6 +126,7 @@ namespace Demo
 			m_sprites[i].render();
 		}
 		m_centerSquare.render();
+		m_animSprite.render();
 
 		Renderer2DSystem::endFrame();
 	}
@@ -103,6 +138,7 @@ namespace Demo
 			m_sprites[i].destroy();
 		}
 		m_centerSquare.destroy();
+		m_animSprite.destroy();
 		m_camera->destroy();
 	}
 
@@ -124,7 +160,7 @@ namespace Demo
 
 		// Load textures
 		std::vector<Texture2D_Ptr> textures;
-		loadTextures(textures);
+		loadSpritesTextures(textures);
 
 		// Define randomization parameters
 		const float minDim = std::min(windowSize.x, windowSize.y);
@@ -153,6 +189,19 @@ namespace Demo
 	{
 		m_centerSquare.create(100.0f, 100.0f, false);
 		m_centerSquare.setColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+	}
+
+	void Demo08_Scene::createAnimSprite()
+	{
+		const glm::vec2 windowSize = glm::vec2(PekanEngine::getWindow().getSize());
+
+		// Load animation textures
+		loadAnimTextures(m_animTextures);
+
+		const float spriteSize = windowSize.x * ANIMATION_SIZE_FACTOR;
+		m_currAnimTextureIndex = 0;
+		m_animSprite.create(m_animTextures[m_currAnimTextureIndex], spriteSize, spriteSize);
+		m_animSprite.setPosition({ -windowSize.x / 2.0f + spriteSize / 2.0f, windowSize.y / 2.0f - spriteSize / 2.0f });
 	}
 
 	void Demo08_Scene::updateSprites(float dt)
@@ -194,6 +243,19 @@ namespace Demo
 				{ 0.98f, 1.02f },
 				{ 0.98f, 1.02f }
 			));
+		}
+	}
+
+	void Demo08_Scene::updateAnimSprite(float dt)
+	{
+		m_timeTilAnimUpdate -= dt;
+		if (m_timeTilAnimUpdate <= 0.0f)
+		{
+			// Change sprite's texture to be the next texture of the animation
+			m_currAnimTextureIndex = (m_currAnimTextureIndex + 1) % m_animTextures.size();
+			m_animSprite.setTexture(m_animTextures[m_currAnimTextureIndex]);
+			// Set time until next animation update according to animation speed parameter in GUI
+			m_timeTilAnimUpdate = 1.0f / m_guiWindow->getAnimSpeed();
 		}
 	}
 
