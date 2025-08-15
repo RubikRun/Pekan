@@ -10,15 +10,6 @@ namespace Pekan
 		m_layers.push_back(layer);
 	}
 
-	void LayerStack::popLayer(const Layer_Ptr& layer)
-	{
-		auto it = std::find(m_layers.begin(), m_layers.end(), layer);
-		if (it != m_layers.end())
-		{
-			m_layers.erase(it);
-		}
-	}
-
 	void LayerStack::initAll()
 	{
 		for (const Layer_Ptr& layer : m_layers)
@@ -31,10 +22,33 @@ namespace Pekan
 	{
 		for (const Layer_Ptr& layer : m_layers)
 		{
+			PK_ASSERT_QUICK(layer != nullptr);
 			if (layer != nullptr)
 			{
 				layer->exit();
 				layer->m_isInitialized = false;
+			}
+		}
+	}
+
+	void LayerStack::renderAll()
+	{
+		for (Layer_Ptr layer : m_layers)
+		{
+			if (layer != nullptr)
+			{
+				layer->render();
+			}
+		}
+	}
+
+	void LayerStack::updateAll(double deltaTime)
+	{
+		for (Layer_Ptr layer : m_layers)
+		{
+			if (layer != nullptr)
+			{
+				layer->update(deltaTime);
 			}
 		}
 	}

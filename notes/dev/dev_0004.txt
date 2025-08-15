@@ -5118,3 +5118,37 @@ Now this will work on all systems, no matter what their texture slot maximum is.
 
 Done.
 }
+
+{
+Believe it or not, everything is ready!
+
+All features planned for v0.2 are implemented + some additional ones.
+All TO-DO items are done.
+Code is pretty stable and clean.
+
+Let's take a final look, go through the code, play around with demos.
+
+Okay, found something (+ many small things).
+I don't like how LayerStack is designed.
+Specifically I don't like how it has begin(), end(), rbegin() and rend() iterators.
+Removed them.
+Instead added these 2 new functions
+    void renderAll();
+    void updateAll(double deltaTime);
+so that layers can be rendered and updated together only, not allowing callers to update/render layers separately.
+We need to add 1 more function, but this one is a bit trickier. We need this:
+    template<typename EventT>
+    bool dispatchEvent
+    (
+        std::unique_ptr<EventT>& event,
+        bool (EventListener::* onEventFunc)(const EventT&)
+    );
+A template function that sends an event through layers of the layer stack.
+We need this in PekanApplication's
+    _dispatchEvent()
+static function.
+Nothing essential going on here, just moving things around.
+Looks better now.
+Works same way as before.
+
+}

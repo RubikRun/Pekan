@@ -13,10 +13,14 @@ namespace Pekan
 {
     bool PekanApplication::init()
     {
+        PK_ASSERT(!isValid(), "Trying to initialize a PekanApplication instance that is already initialized.", "Pekan");
+
+        m_isInitialized = true;
+
         // Initialize Pekan
         if (!PekanEngine::init(this))
         {
-            PK_LOG_ERROR("Engine failed to initialize.", "Pekan");
+            PK_LOG_ERROR("PekanEngine failed to initialize.", "Pekan");
             return false;
         }
 
@@ -39,15 +43,18 @@ namespace Pekan
 
     void PekanApplication::run()
 	{
+        PK_ASSERT(isValid(), "Trying to run a PekanApplication that is not yet initialized.", "Pekan");
+
         const ApplicationProperties properties = getProperties();
         const double fps = properties.fps;
         const bool useVSync = properties.useVSync;
 
-        // If there is no target FPS and user wants to use VSync, then enable VSync
+        // If there is no target FPS and derived application wants to use VSync, then enable VSync
         if (fps <= 0.0 && useVSync)
         {
             PekanEngine::s_window.enableVSync();
         }
+        // Create an FPS limiter with our target FPS
         FpsLimiter fpsLimiter(fps);
 
         Window& window = PekanEngine::s_window;
@@ -66,22 +73,9 @@ namespace Pekan
             // Get delta time - time passed since last frame
             const double deltaTime = m_deltaTimer.getDeltaTime();
 
-            // Update all layers
-            for (Layer_Ptr layer : m_layerStack)
-            {
-                if (layer != nullptr)
-                {
-                    layer->update(deltaTime);
-                }
-            }
-            // Render all layers
-            for (Layer_Ptr layer : m_layerStack)
-            {
-                if (layer != nullptr)
-                {
-                    layer->render();
-                }
-            }
+            // Update and render all layers of the layer stack
+            m_layerStack.updateAll(deltaTime);
+            m_layerStack.renderAll();
 
             // Swap buffers to show the new frame on screen.
             // If we are using VSync this function will automatically wait
@@ -97,15 +91,21 @@ namespace Pekan
 
     void PekanApplication::exit()
     {
+        PK_ASSERT(isValid(), "Trying to exit a PekanApplication that is not yet initialized.", "Pekan");
+
         // Exit all layers of the layer stack
         m_layerStack.exitAll();
 
         // Exit engine
         PekanEngine::exit();
+
+        m_isInitialized = false;
     }
 
     void PekanApplication::registerEventListener(const std::shared_ptr<EventListener>& listener)
     {
+        PK_ASSERT(isValid(), "Trying to register an event listener in a PekanApplication that is not yet initialized.", "Pekan");
+
         if (listener == nullptr)
         {
             PK_LOG_ERROR("Trying to register a NULL event listener in PekanApplication. It will be ignored.", "Pekan");
@@ -116,6 +116,8 @@ namespace Pekan
 
     void PekanApplication::unregisterEventListener(const std::shared_ptr<EventListener>& listener)
     {
+        PK_ASSERT(isValid(), "Trying to unregister an event listener from a PekanApplication that is not yet initialized.", "Pekan");
+
         m_eventListeners.erase
         (
             std::remove_if
@@ -133,6 +135,8 @@ namespace Pekan
 
     void PekanApplication::stopRunning()
     {
+        PK_ASSERT(isValid(), "Trying to stop running a PekanApplication that is not yet initialized.", "Pekan");
+
         // Set window's "should be closed" state to true,
         // so that the main loop is stopped on the next iteration.
         PekanEngine::s_window.setShouldBeClosed(true);
@@ -154,19 +158,16 @@ namespace Pekan
         bool (EventListener::*onEventFunc)(const EventT&)
     )
     {
-        // Call the onEventFunc on all layers of the layer stack
-        for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
+        // Dispatch event to the layer stack
+        if (layerStack.dispatchEvent(event, onEventFunc))
         {
-            EventListener* layer = static_cast<EventListener*>((*it).get());
-            if (layer != nullptr && (layer->*onEventFunc)(*event.get()))
-            {
-                return;
-            }
+            return;
         }
 
         bool handled = false;
 
-        // Call the onEventFunc on all registered event listeners
+        // If event was not handled by the layer stack,
+        // call the onEventFunc on all registered event listeners
         for (auto it = eventListeners.begin(); it != eventListeners.end(); )
         {
             if (auto listener = it->lock())
@@ -193,6 +194,8 @@ namespace Pekan
 
     void PekanApplication::handleKeyEvent(KeyCode key, int scancode, int action, int mods)
     {
+        PK_ASSERT(isValid(), "Trying to handle key event in a PekanApplication that is not yet initialized.", "Pekan");
+
         switch (action)
         {
             case GLFW_PRESS:
@@ -218,18 +221,24 @@ namespace Pekan
 
     void PekanApplication::handleMouseMovedEvent(double xPos, double yPos)
     {
+        PK_ASSERT(isValid(), "Trying to handle a mouse-moved event in a PekanApplication that is not yet initialized.", "Pekan");
+
         std::unique_ptr<MouseMovedEvent> event = std::make_unique<MouseMovedEvent>(float(xPos), float(yPos));
         _dispatchEvent(event, m_layerStack, m_eventListeners, m_eventQueue, &EventListener::onMouseMoved);
     }
 
     void PekanApplication::handleMouseScrolledEvent(double xOffset, double yOffset)
     {
+        PK_ASSERT(isValid(), "Trying to handle a mouse-scrolled event in a PekanApplication that is not yet initialized.", "Pekan");
+
         std::unique_ptr<MouseScrolledEvent> event = std::make_unique<MouseScrolledEvent>(float(xOffset), float(yOffset));
         _dispatchEvent(event, m_layerStack, m_eventListeners, m_eventQueue, &EventListener::onMouseScrolled);
     }
 
     void PekanApplication::handleMouseButtonEvent(MouseButton button, int action, int mods)
     {
+        PK_ASSERT(isValid(), "Trying to handle a mouse button event in a PekanApplication that is not yet initialized.", "Pekan");
+
         switch (action)
         {
             case GLFW_PRESS:
@@ -249,12 +258,16 @@ namespace Pekan
 
     void PekanApplication::handleWindowResizedEvent(int width, int height)
     {
+        PK_ASSERT(isValid(), "Trying to handle a window-resized event in a PekanApplication that is not yet initialized.", "Pekan");
+
         std::unique_ptr<WindowResizedEvent> event = std::make_unique<WindowResizedEvent>(width, height);
         _dispatchEvent(event, m_layerStack, m_eventListeners, m_eventQueue, &EventListener::onWindowResized);
     }
 
     void PekanApplication::handleWindowClosedEvent()
     {
+        PK_ASSERT(isValid(), "Trying to handle a window-closed event in a PekanApplication that is not yet initialized.", "Pekan");
+
         std::unique_ptr<WindowClosedEvent> event = std::make_unique<WindowClosedEvent>();
         _dispatchEvent(event, m_layerStack, m_eventListeners, m_eventQueue, &EventListener::onWindowClosed);
     }

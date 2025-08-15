@@ -12,7 +12,7 @@
 namespace Pekan
 {
 
-	// An application's properties, grouped together in a struct
+	// Properties of a Pekan application, grouped together in a struct
 	struct ApplicationProperties
 	{
 		// Properties of the window where application will run
@@ -24,7 +24,7 @@ namespace Pekan
 		// Flag indicating if application should use VSync,
 		// meaning to target FPS equal to monitor's refresh rate.
 		//
-		// NOTE: Only used if there is no target FPS set (see "fps" property)
+		// NOTE: Has effect only if there is no target FPS set
 		bool useVSync = true;
 
 		// Number of samples per pixel to be used for multisampling
@@ -63,6 +63,9 @@ namespace Pekan
 
 		// Stops running the application, and closes the window.
 		void stopRunning();
+
+		// Checks if application is valid, meaning that it has been initialized and not yet exited
+		bool isValid() const { return m_isInitialized; }
 
 	private: /* functions */
 
@@ -106,6 +109,9 @@ namespace Pekan
 
 		// Delta timer used to keep track of time passed since last frame was rendered
 		DeltaTimer m_deltaTimer;
+
+		// A flag indicating if application has been initialized and not yet exited
+		bool m_isInitialized = false;
 	};
 
 } // namespace Pekan

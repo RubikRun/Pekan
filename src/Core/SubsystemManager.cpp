@@ -23,7 +23,7 @@ namespace Pekan
 		{
 			return;
 		}
-		// If subsystem has a parent that is not yet initialized, initialize the parent first.
+		// If subsystem has a parent that is not yet initialized, initialize the parent first
 		ISubsystem* parent = subsystem->getParent();
 		if (parent != nullptr && !parent->m_isInitialized)
 		{
@@ -47,11 +47,11 @@ namespace Pekan
 
 	void SubsystemManager::exitAll()
 	{
-		for (auto it = g_subsystems.rbegin(); it != g_subsystems.rend(); ++it)
+		for (ISubsystem* subsystem : g_subsystems)
 		{
-			PK_ASSERT((*it)->m_isInitialized, "Trying to exit a subsystem that is not yet initialized.", "Pekan");
-			(*it)->exit();
-			(*it)->m_isInitialized = false;
+			PK_ASSERT(subsystem->m_isInitialized, "Trying to exit a subsystem that is not yet initialized.", "Pekan");
+			subsystem->exit();
+			subsystem->m_isInitialized = false;
 		}
 	}
 }

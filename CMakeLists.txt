@@ -64,8 +64,6 @@ endif()
 
 # Add a static library Core, compiling the following source files
 add_library(Core STATIC
-    src/Core/Logger/PekanLogger.h
-    src/Core/Logger/PekanLogger.cpp
     src/Core/PekanEngine.h
     src/Core/PekanEngine.cpp
     src/Core/PekanApplication.h
@@ -78,6 +76,8 @@ add_library(Core STATIC
     src/Core/ISubsystem.h
     src/Core/SubsystemManager.h
     src/Core/SubsystemManager.cpp
+    src/Core/Logger/PekanLogger.h
+    src/Core/Logger/PekanLogger.cpp
     src/Core/Utils/PekanUtils.h
     src/Core/Utils/PekanUtils.cpp
     src/Core/Utils/FileUtils.h

@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "ISubsystem.h"
 
 namespace Pekan
@@ -23,7 +22,7 @@ namespace Pekan
 
         // Initializes all registered subsystems in order from parents to leafs
         static void initAll();
-        // Exits all registered subsystems, in reverse order of registration
+        // Exits all registered subsystems
         static void exitAll();
     };
 

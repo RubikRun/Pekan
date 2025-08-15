@@ -9,51 +9,55 @@ namespace Pekan
 
     Window PekanEngine::s_window;
     PekanApplication* PekanEngine::s_application = nullptr;
-    bool PekanEngine::isInitialized = false;
+    bool PekanEngine::s_isInitialized = false;
 
     bool PekanEngine::init(PekanApplication* application)
     {
-        if (isInitialized)
+        if (s_isInitialized)
         {
-            PK_LOG_ERROR("Trying to initialize the engine more than once.", "Pekan");
+            PK_LOG_ERROR("Trying to initialize PekanEngine but it's already initialized.", "Pekan");
             return false;
         }
         if (s_application != nullptr)
         {
-            PK_LOG_ERROR("Multiple applications are trying to initialize the engine. Pekan supports only one application at a time.", "Pekan");
+            PK_LOG_ERROR("Multiple applications are trying to initialize PekanEngine. Pekan supports only one application at a time.", "Pekan");
             return false;
         }
         if (application == nullptr)
         {
-            PK_LOG_ERROR("A null application is given when trying to initialize the engine.", "Pekan");
+            PK_LOG_ERROR("A null application is trying to initialize PekanEngine.", "Pekan");
             return false;
         }
         s_application = application;
 
+        // Get application's properties
         const ApplicationProperties properties = application->getProperties();
+        // Create a window with application's properties
         if (!s_window.create(properties))
         {
             return false;
         }
 
+        // Initialize all subsystems
         SubsystemManager::initAll();
 
-        isInitialized = true;
+        s_isInitialized = true;
         return true;
     }
 
     void PekanEngine::exit()
     {
-        if (!isInitialized)
+        if (!s_isInitialized)
         {
-            PK_LOG_ERROR("Trying to exit engine but engine is not yet initialized.", "Pekan");
+            PK_LOG_ERROR("Trying to exit PekanEngine but it's not yet initialized.", "Pekan");
             return;
         }
         s_window.destroy();
 
+        // Exit all subsystems
         SubsystemManager::exitAll();
 
-        isInitialized = false;
+        s_isInitialized = false;
     }
 
     bool PekanEngine::isKeyPressed(KeyCode key)

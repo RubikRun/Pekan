@@ -29,6 +29,7 @@ namespace Pekan
 		// If a NULL parent is returned, subsystem's parent will be Core.
 		virtual ISubsystem* getParent() { return nullptr; }
 
+		// A flag indicating if subsystem has been initialized and not yet exited
 		bool m_isInitialized = false;
 	};
 

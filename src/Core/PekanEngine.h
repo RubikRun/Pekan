@@ -75,7 +75,7 @@ namespace Pekan
 		static PekanApplication* s_application;
 
 		// Flag indicating if engine is initialized
-		static bool isInitialized;
+		static bool s_isInitialized;
 	};
 
 } // namespace Pekan
