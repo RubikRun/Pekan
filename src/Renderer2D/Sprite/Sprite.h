@@ -15,12 +15,8 @@ namespace Renderer2D
 	public:
 
 		// Creates a sprite with a given texture and a given size
-		// @param[in] dynamic - Indicates if sprite will be changed/transformed often. Used for optimization.
-		void create(const Graphics::Texture2D_ConstPtr& texture, float width, float height, bool dynamic = true);
+		void create(const Graphics::Texture2D_ConstPtr& texture, float width, float height);
 		void destroy();
-
-		// Checks if sprite is valid, meaning that it has been created and not yet destroyed
-		bool isValid() const { return m_isValid; }
 
 		// Submits sprite for rendering in Renderer2DSystem.
 		// Actual rendering might happen at a later stage.
@@ -44,10 +40,8 @@ namespace Renderer2D
 		// @param[in] textureIndex - Index of sprite's texture inside of sprite's batch. Determines the value of the "textureIndex" attribute of sprite's vertices
 		const Vertex2D* getVertices(float textureIndex) const;
 
-		// Checks if sprite is dynamic,
-		// meaning it will be changed/transformed often,
-		// and it's better to use dynamic buffers for its vertices and indices.
-		bool isDynamic() const { return m_isDynamic; }
+		// Checks if sprite is valid, meaning that it has been created and not yet destroyed
+		bool isValid() const { return m_isValid; }
 
 	private: /* functions */
 
@@ -78,11 +72,6 @@ namespace Renderer2D
 		mutable bool m_needUpdateVerticesLocal = true;
 		// Flag indicating if world vertices need to be updated before use
 		mutable bool m_needUpdateVerticesWorld = true;
-
-		// Flag indicating if dynamic buffers should be used for sprite's vertices.
-		// Set to true if sprite's vertices are going to be changed often.
-		// Used for optimization.
-		bool m_isDynamic = true;
 
 		// Sprite's texture's index inside of its batch.
 		//

@@ -26,7 +26,7 @@ namespace Renderer2D
 #endif
     }
 
-    void Shape::_create(bool dynamic)
+    void Shape::_create()
     {
         PK_ASSERT(!isValid(), "Trying to create a Shape instance that is already created.", "Pekan");
 
@@ -34,7 +34,6 @@ namespace Renderer2D
 
         m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         m_isValid = true;
-        m_isDynamic = dynamic;
         m_needUpdateVerticesWorld = true;
     }
 

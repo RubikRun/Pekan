@@ -18,17 +18,16 @@ namespace Pekan
 namespace Renderer2D
 {
 
-	void Line::create(glm::vec2 pointA, glm::vec2 pointB, bool dynamic)
+	void Line::create(glm::vec2 pointA, glm::vec2 pointB)
 	{
-		const BufferDataUsage vertexDataUsage = (dynamic ? BufferDataUsage::DynamicDraw : BufferDataUsage::StaticDraw);
-
 		m_vertices[0] = pointA;
 		m_vertices[1] = pointB;
 
 		m_renderObject.create
 		(
 			m_vertices, VERTEX_DATA_SIZE,
-			{ { ShaderDataType::Float2, "position" } }, vertexDataUsage,
+			{ { ShaderDataType::Float2, "position" } },
+			BufferDataUsage::DynamicDraw,
 			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);

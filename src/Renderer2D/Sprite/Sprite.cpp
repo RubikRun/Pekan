@@ -10,7 +10,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-	void Sprite::create(const Texture2D_ConstPtr& texture, float width, float height, bool dynamic)
+	void Sprite::create(const Texture2D_ConstPtr& texture, float width, float height)
 	{
         PK_ASSERT(!isValid(), "Trying to create a Sprite instance that is already created.", "Pekan");
 
@@ -24,7 +24,6 @@ namespace Renderer2D
         m_texture = texture;
         m_width = width;
         m_height = height;
-        m_isDynamic = dynamic;
         m_isValid = true;
 	}
 

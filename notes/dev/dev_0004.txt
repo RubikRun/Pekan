@@ -5016,3 +5016,34 @@ Easy.
 
 Done.
 }
+
+{
+Next TO-DO item is
+    Remove m_isDynamic member from class Shape and class Sprite. Make sure it's not used anywhere.
+
+Okay, that was quite easy.
+Nothing to say really. Now all shapes and sprites are dynamic.
+Their "dynamicness" comes from RenderBatch2D's create() function
+where the underlying render object is created with DynamicDraw data usage
+    BufferDataUsage::DynamicDraw
+for both the vertex buffer and the index buffer.
+
+While we're at it let's also remove "dynamic" parameter from class Line's create() function.
+It will also be always dynamic.
+
+Decided to do some timing just to see if DynamicDraw is faster than StaticDraw in RenderBatch2D.
+Timed Demo08:
+    Demo08, DynamicDraw, 20s
+    28.7 30.4 29.0 29.2 29.3
+    ----avg----> 29.3
+
+    Demo08, StaticDraw, 20s
+    28.6 27.9 28.8 32.3 29.6
+    ----avg----> 29.4
+sooo there's no difference.
+The reason is probably that we change all vertex data and all index data each frame.
+The dynamic vs static optimization probably takes effect if you change part of the data only.
+Nevermind, not important, I was just curious.
+
+Done.
+}

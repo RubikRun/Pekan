@@ -11,11 +11,11 @@ namespace Renderer2D
 {
 
     template <unsigned NSegments>
-    void CircleShapeStatic<NSegments>::create(float radius, bool dynamic)
+    void CircleShapeStatic<NSegments>::create(float radius)
     {
         PK_ASSERT(radius > 0.0f, "CircleShapeStatic's radius must be greater than 0.", "Pekan");
 
-        Shape::_create(dynamic);
+        Shape::_create();
 
         m_radius = radius;
         m_needUpdateVerticesLocal = true;

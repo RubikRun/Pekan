@@ -27,8 +27,7 @@ namespace Renderer2D
 	public:
 
 		// Creates a line between 2 points
-		// @param[in] dynamic - Specifies if line is going to be moved often. Used for optimization.
-		void create(glm::vec2 pointA, glm::vec2 pointB, bool dynamic = true);
+		void create(glm::vec2 pointA, glm::vec2 pointB);
 		void destroy();
 
 		void update();

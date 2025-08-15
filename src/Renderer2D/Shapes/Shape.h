@@ -16,9 +16,6 @@ namespace Renderer2D
 	{
 	public:
 
-		// Checks if shape is valid, meaning that it has been created and not yet destroyed
-		bool isValid() const { return m_isValid; }
-
 		void render() const;
 
 		// Returns shape's color
@@ -42,19 +39,16 @@ namespace Renderer2D
 		// Can be overriden by derived classes to return the number of their indices, if indices are used at all.
 		virtual int getIndicesCount() const { return 0; }
 
-		// Checks if shape is dynamic,
-		// meaning it will be changed/transformed often,
-		// and it's better to use dynamic buffers for its vertices and indices.
-		bool isDynamic() const { return m_isDynamic; }
+		// Checks if shape is valid, meaning that it has been created and not yet destroyed
+		bool isValid() const { return m_isValid; }
 
 	protected: /* functions */
 
 		// Creates a shape.
-		// @param[in] dynamic - Indicates if shape will be changed/transformed often. Used for optimization.
 		//
 		// NOTE: Cannot be used directly on this class.
 		//       To be used by derived classes' create() function.
-		void _create(bool dynamic);
+		void _create();
 		// Destroys a shape.
 		//
 		// NOTE: Cannot be used directly on this class.
@@ -92,11 +86,6 @@ namespace Renderer2D
 
 		// Flag indicating if shape is valid, meaning that it has been created and not yet destroyed
 		bool m_isValid = false;
-
-		// Flag indicating if dynamic buffers should be used for shape's vertices and indices.
-		// Set to true if shape's vertices/indices are going to be changed often.
-		// Used for optimization.
-		bool m_isDynamic = true;
 	};
 
 } // namespace Renderer2D

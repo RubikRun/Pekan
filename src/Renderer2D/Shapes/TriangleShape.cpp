@@ -16,9 +16,9 @@ namespace Renderer2D
     const unsigned TriangleShape::s_indices[3] = { 0, 1, 2 };
 #endif
 
-    void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC, bool dynamic)
+    void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC)
     {
-        Shape::_create(dynamic);
+        Shape::_create();
 
         m_verticesLocal[0] = vertexA;
         m_verticesLocal[1] = vertexB;

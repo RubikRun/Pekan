@@ -10,11 +10,11 @@ namespace Renderer2D
 
     const unsigned LineShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
 
-    void LineShape::create(glm::vec2 pointA, glm::vec2 pointB, float thickness, bool dynamic)
+    void LineShape::create(glm::vec2 pointA, glm::vec2 pointB, float thickness)
     {
         PK_ASSERT(thickness > 0.0f, "LineShape's thickness must be greater than 0.", "Pekan");
 
-        Shape::_create(dynamic);
+        Shape::_create();
 
         m_pointA = pointA;
         m_pointB = pointB;

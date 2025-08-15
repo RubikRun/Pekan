@@ -15,8 +15,7 @@ namespace Renderer2D
 	public:
 
 		// Creates a line between 2 points.
-		// @param[in] dynamic - Indicates if line will be changed/transformed often. Used for optimization.
-		void create(glm::vec2 pointA, glm::vec2 pointB, float thickness = 0.002f, bool dynamic = true);
+		void create(glm::vec2 pointA, glm::vec2 pointB, float thickness = 0.002f);
 		void destroy() { Shape::_destroy(); }
 
 		// Sets point A/B of the line, in local space

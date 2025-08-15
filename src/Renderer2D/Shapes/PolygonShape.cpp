@@ -14,9 +14,9 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    void PolygonShape::create(const std::vector<glm::vec2>& vertices, bool dynamic)
+    void PolygonShape::create(const std::vector<glm::vec2>& vertices)
     {
-        Shape::_create(dynamic);
+        Shape::_create();
 
         m_verticesLocal = vertices;
         m_isReversedVerticesLocal = false;

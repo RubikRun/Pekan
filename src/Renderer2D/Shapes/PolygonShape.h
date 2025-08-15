@@ -16,8 +16,7 @@ namespace Renderer2D
 	public:
 
 		// Creates a polygon shape with given vertices
-		// @param[in] dynamic - Indicates if polygon will be changed/transformed often. Used for optimization.
-		void create(const std::vector<glm::vec2>& vertices, bool dynamic = true);
+		void create(const std::vector<glm::vec2>& vertices);
 		void destroy() { Shape::_destroy(); }
 
 		// Sets vertices of polygon, in local space
