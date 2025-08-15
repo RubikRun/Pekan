@@ -27,6 +27,8 @@ add_library(Graphics STATIC
     RenderComponents/Texture2D.cpp
     Image.h
     Image.cpp
+    ShaderPreprocessor.h
+    ShaderPreprocessor.cpp
 )
 
 # Group RenderComponents files under a virtual folder called "RenderComponents"

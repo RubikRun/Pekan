@@ -32,8 +32,8 @@ namespace Demo
             vertices, sizeof(vertices),
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
             BufferDataUsage::StaticDraw,
-            Pekan::FileUtils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::FileUtils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
+            Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
         m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 

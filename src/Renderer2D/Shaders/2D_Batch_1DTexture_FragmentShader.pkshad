@@ -2,15 +2,18 @@
 
 in vec2 vTexCoord;
 in float vTexIndex;
-in vec4 vColor;
+in float vShapeIndex;
 out vec4 FragColor;
 
-#define MAX_TEXTURES 32
-
-uniform sampler2D uTextures[MAX_TEXTURES];
+uniform sampler1D uColorsTexture;
+uniform int uColorsCount;
+uniform sampler2D uTextures[{{MAX_TEXTURE_SLOTS}} - 1];
 
 void main()
 {
+    // Sample shape's color from the 1D colors texture
+    vec4 shapeColor = texture(uColorsTexture, vShapeIndex / float(uColorsCount - 1));
+
     // Sample sprite's color from sprite's 2D texture
     vec4 spriteColor = texture(uTextures[int(vTexIndex + 0.5)], vTexCoord);
 
@@ -19,5 +22,5 @@ void main()
 
     // Output either shape's color or sprite's color
     // depending on whether we are rendering a shape or a sprite
-    FragColor = mix(vColor, spriteColor, isSprite);
+    FragColor = mix(shapeColor, spriteColor, isSprite);
 }

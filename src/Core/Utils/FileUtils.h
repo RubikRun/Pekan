@@ -8,7 +8,12 @@ namespace FileUtils
 {
 
 	// Reads a text file's contents into a string
-	std::string readFileToString(const char* filePath);
+	std::string readTextFileToString(const char* filepath);
+
+	// Writes a string into a text file.
+	// If the file doesn't exist, it will be created.
+	// If the file exists, it will be overwritten.
+	void writeStringToTextFile(const char* filepath, const char* content);
 
 	// Reads an image file.
 	// Returns raw pixel data, where each byte is a component of a pixel.

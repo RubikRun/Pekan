@@ -3,6 +3,7 @@
 #include "PekanLogger.h"
 #include "SubsystemManager.h"
 #include "GraphicsSystem.h"
+#include "ShaderPreprocessor.h"
 
 using namespace Pekan::Graphics;
 
@@ -10,6 +11,17 @@ namespace Pekan
 {
 namespace Renderer2D
 {
+
+	// A list of .pkshad files that need to be preprocessed when Renderer2D is initialized
+	static const size_t PKSHAD_FILES_COUNT = 2;
+	static const char* PKSHAD_FILES[PKSHAD_FILES_COUNT] =
+	{
+		PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_1DTexture_FragmentShader.pkshad",
+		PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_FragmentShader.pkshad"
+	};
+
+	// Preprocesses all .pkshad files needed by Renderer2D
+	static void preprocessPkshadFiles();
 
 	static Renderer2DSystem g_renderer2DSystem;
 	
@@ -51,6 +63,7 @@ namespace Renderer2D
 
 	bool Renderer2DSystem::init()
 	{
+		preprocessPkshadFiles();
 		s_batch.create();
 
 		return true;
@@ -101,6 +114,33 @@ namespace Renderer2D
 			{
 				PK_LOG_ERROR("Failed to add a sprite to the internal RenderBatch2D that was just cleared.", "Pekan");
 			}
+		}
+	}
+
+	static void preprocessPkshadFiles()
+	{
+		const int maxTextureSlots = RenderState::getMaxTextureSlots();
+		const std::string maxTextureSlotsString = std::to_string(maxTextureSlots);
+
+		// A list of substitution lists, one for each .pkshad file
+		const std::unordered_map<std::string, std::string> PKSHAD_FILES_SUBSTITUTIONS[PKSHAD_FILES_COUNT] =
+		{
+			{
+				{ "MAX_TEXTURE_SLOTS", maxTextureSlotsString }
+			},
+			{
+				{ "MAX_TEXTURE_SLOTS", maxTextureSlotsString }
+			}
+		};
+
+		// Preprocess each .pkshad file
+		for (size_t i = 0; i < PKSHAD_FILES_COUNT; i++)
+		{
+			ShaderPreprocessor::preprocess
+			(
+				PKSHAD_FILES[i],
+				PKSHAD_FILES_SUBSTITUTIONS[i]
+			);
 		}
 	}
 

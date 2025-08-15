@@ -52,6 +52,7 @@ namespace Graphics {
 		PK_ASSERT(isValid(), "Trying to destroy a Texture2D instance that is not yet created.", "Pekan");
 
 		GLCall(glDeleteTextures(1, &m_id));
+		m_id = 0;
 	}
 
 	void Texture2D::setImage(const Image& image)

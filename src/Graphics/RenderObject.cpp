@@ -195,7 +195,7 @@ namespace Graphics
 		PK_ASSERT(isValid(), "Trying to set shader source to a RenderObject that is not yet created.", "Pekan");
 
 		m_shader.setSource(vertexShaderSource, fragmentShaderSource);
-		m_textures.clear();
+		clearTextures();
 	}
 
 	void RenderObject::setTextureImage(const Image& image, const char* uniformName, unsigned slot)
@@ -222,6 +222,21 @@ namespace Graphics
 		// Set shader's slot uniform to the given slot
 		m_shader.bind();
 		m_shader.setUniform1i(uniformName, slot);
+	}
+
+	void RenderObject::clearTextures()
+	{
+		// First manually destroy each texture
+		for (unsigned i = 0; i < m_textures.size(); i++)
+		{
+			if (m_textures[i] != nullptr)
+			{
+				PK_ASSERT(m_textures[i]->isValid(), "There is an invalid texture in a RenderObject.", "Pekan");
+				m_textures[i]->destroy();
+			}
+		}
+		// Then clear list of texture pointers
+		m_textures.clear();
 	}
 
 } // namespace Graphics

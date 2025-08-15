@@ -85,8 +85,8 @@ namespace Demo
             m_vertices.size() * sizeof(int),
             { { ShaderDataType::Int2, "position" } },
             BufferDataUsage::DynamicDraw,
-            Pekan::FileUtils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::FileUtils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
+            Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
         m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
 

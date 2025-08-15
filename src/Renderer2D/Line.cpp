@@ -28,8 +28,8 @@ namespace Renderer2D
 			m_vertices, VERTEX_DATA_SIZE,
 			{ { ShaderDataType::Float2, "position" } },
 			BufferDataUsage::DynamicDraw,
-			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+			FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+			FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);
 
 		// Set shader's view projection matrix uniform to an identity matrix

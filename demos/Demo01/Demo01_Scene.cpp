@@ -26,8 +26,8 @@ namespace Demo
         m_renderObject.create
         (
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
-            Pekan::FileUtils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::FileUtils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
+            Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
 
         t = 0.0f;

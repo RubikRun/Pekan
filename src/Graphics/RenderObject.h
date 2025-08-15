@@ -74,7 +74,12 @@ namespace Graphics
 		Shader& getShader() { return m_shader; }
 		const Shader& getShader() const { return m_shader; }
 
-	private:
+	private: /* functions */
+
+		// Clears all textures of render object, leaving it without textures
+		void clearTextures();
+
+	private: /* variables */
 
 		VertexArray m_vertexArray;
 

@@ -5047,3 +5047,74 @@ Nevermind, not important, I was just curious.
 
 Done.
 }
+
+{
+Getting to the final TO-DO item now
+    Dynamically insert maximum number of textures supported on current hardware in the shaders
+        2D_Batch_1DTexture_FragmentShader.glsl
+        2D_Batch_FragmentShader.glsl
+    instead of having this 32 hardcoded:
+        #define MAX_TEXTURES 32
+Let's see if it will spawn any new TO-DO items :D
+
+Okay, did it.
+Created a new class in Graphics
+    ShaderPreprocessor
+in new files
+    ShaderPreprocessor.h
+    ShaderPreprocessor.cpp
+We'll use this class to preprocess shaders.
+We'll have a custom Pekan extension for shaders
+    .pkshad
+.pkshad files will be basically standard .glsl shaders but with some placeholder values.
+Anything that goes between "{{" and "}}" in a .pkshad file will be treated like a placeholder
+and will be substituted with an actual value by ShaderPreprocessor.
+The ShaderPreprocessor class itself is really simple on the outside.
+It has a single static function
+    static void preprocess(const std::string& pkshadFilepath, const std::unordered_map<std::string, std::string>& substitutions);
+You can give it a filepath to a .pkshad file together with a list of substitutions to do.
+The function will do the substitutions, replacing each {{placeholder}} with its corresponding value from the given substitutions list.
+The resulting shader code will be written to a .glsl file with the same name and path as the given .pkshad file.
+
+Simple enough.
+Let's see how we'll use this.
+We'll need to rename these 2 shaders
+    2D_Batch_1DTexture_FragmentShader.glsl
+    2D_Batch_FragmentShader.glsl
+to be with the .pkshad extension
+    2D_Batch_1DTexture_FragmentShader.pkshad
+    2D_Batch_FragmentShader.pkshad
+and inside of them, instead of hardcoding 32 as we currently do it,
+we'll use a placeholder
+    {{MAX_TEXTURE_SLOTS}}
+
+Then, somewhere in our C++ code we need to preprocess these 2 .pkshad files with our new ShaderPreprocessor,
+providing the MAX_TEXTURE_SLOTS substitution.
+Since we need these 2 shaders in the Renderer2D system, a good place to do this is in Renderer2DSystem's init() function,
+importantly before anythin else, before creating the batch
+    bool Renderer2DSystem::init()
+    {
+        preprocessPkshadFiles();
+        s_batch.create();
+        ...
+    }
+This preprocessPkshadFiles is a new static function in the same .cpp
+    static void preprocessPkshadFiles()
+It just calls
+    ShaderPreprocessor::preprocess(...)
+on the 2 .pkshad files, giving them a list of substitutions with only 1 element - the MAX_TEXTURE_SLOTS substitution:
+    {
+        { "MAX_TEXTURE_SLOTS", maxTextureSlotsString }
+    }
+That's about it.
+
+It works!
+When you run a demo that uses the Renderer2D system, these 2 .glsl files are generated at initialization time:
+    2D_Batch_1DTexture_FragmentShader.glsl
+    2D_Batch_FragmentShader.glsl
+and they have "32" instead of "{{MAX_TEXTURE_SLOTS}}".
+
+Now this will work on all systems, no matter what their texture slot maximum is.
+
+Done.
+}

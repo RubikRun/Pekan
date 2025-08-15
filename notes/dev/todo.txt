@@ -181,7 +181,7 @@
 
 0064 14.08.2025 (DONE): Remove m_isDynamic member from class Shape and class Sprite. Make sure it's not used anywhere.
 
-0065 15.08.2025 (TODO): Dynamically insert maximum number of textures supported on current hardware in the shaders
+0065 15.08.2025 (DONE): Dynamically insert maximum number of textures supported on current hardware in the shaders
                             2D_Batch_1DTexture_FragmentShader.glsl
                             2D_Batch_FragmentShader.glsl
                         instead of having this 32 hardcoded:

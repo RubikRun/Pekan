@@ -47,6 +47,7 @@ namespace Graphics {
 		PK_ASSERT(isValid(), "Trying to destroy a Texture1D instance that is not yet created.", "Pekan");
 
 		GLCall(glDeleteTextures(1, &m_id));
+		m_id = 0;
 	}
 
 	void Texture1D::setColors(const std::vector<glm::vec4>& colors)

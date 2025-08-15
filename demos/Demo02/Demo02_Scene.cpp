@@ -101,8 +101,8 @@ namespace Demo
             m_vertices.size() * sizeof(Vertex),
             { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "color" } },
             BufferDataUsage::DynamicDraw,
-            Pekan::FileUtils::readFileToString(vertexShaderFilePath).c_str(),
-            Pekan::FileUtils::readFileToString(fragmentShaderFilePath).c_str()
+            Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
+            Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
         m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 

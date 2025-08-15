@@ -48,14 +48,6 @@ namespace Renderer2D
 #endif
 		}
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-		// TODO: temp
-		PK_ASSERT(textures.size() == 31, "(TEMP) Maximum number of texture slots on your hardware differs from the one hardcoded in Sprite_FragmentShader.glsl", "Pekan");
-#else
-		// TODO: temp
-		PK_ASSERT(textures.size() == 32, "(TEMP) Maximum number of texture slots on your hardware differs from the one hardcoded in Sprite_FragmentShader.glsl", "Pekan");
-#endif
-
 		shader.setUniform1iv("uTextures", textures.size(), textures.data());
 	}
 
@@ -112,8 +104,8 @@ namespace Renderer2D
 			},
 #endif
 			BufferDataUsage::DynamicDraw,
-			FileUtils::readFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-			FileUtils::readFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+			FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+			FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
 		);
 		// and empty index data
 		// (we need to explicitly set empty index data because we are also setting data usage)
