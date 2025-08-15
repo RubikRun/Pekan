@@ -15,15 +15,15 @@ namespace Graphics {
 
 	Texture1D::~Texture1D()
 	{
-		if (isValid())
-		{
-			destroy();
-		}
+		PK_ASSERT(!isValid(), "You forgot to destroy() a Texture1D instance.", "Pekan");
 	}
 
 	void Texture1D::create()
 	{
-		RenderComponent::create();
+		PK_ASSERT(!isValid(), "Trying to create a Texture1D instance that is already created.", "Pekan");
+
+		GLCall(glGenTextures(1, &m_id));
+		bind();
 
 		// Configure the default minify and magnify functions of the texture
 		setMinifyFunction(DEFAULT_TEXTURE_MINIFY_FUNCTION);
@@ -36,12 +36,23 @@ namespace Graphics {
 
 	void Texture1D::create(const std::vector<glm::vec4>& colors)
 	{
+		PK_ASSERT(!isValid(), "Trying to create a Texture1D instance that is already created.", "Pekan");
+
 		create();
 		setColors(colors);
 	}
 
+	void Texture1D::destroy()
+	{
+		PK_ASSERT(isValid(), "Trying to destroy a Texture1D instance that is not yet created.", "Pekan");
+
+		GLCall(glDeleteTextures(1, &m_id));
+	}
+
 	void Texture1D::setColors(const std::vector<glm::vec4>& colors)
 	{
+		PK_ASSERT(isValid(), "Trying to set colors to a Texture1D that is not yet created.", "Pekan");
+
 		bind();
 
 		// Set colors data to the texture object
@@ -51,22 +62,30 @@ namespace Graphics {
 
 	void Texture1D::bind() const
 	{
+		PK_ASSERT(isValid(), "Trying to bind a Texture1D that is not yet created.", "Pekan");
+
 		GLCall(glBindTexture(GL_TEXTURE_1D, m_id));
 	}
 
 	void Texture1D::unbind() const
 	{
+		PK_ASSERT(isValid(), "Trying to unbind a Texture1D that is not yet created.", "Pekan");
+
 		GLCall(glBindTexture(GL_TEXTURE_1D, 0));
 	}
 
 	void Texture1D::bind(unsigned slot) const
 	{
+		PK_ASSERT(isValid(), "Trying to bind a Texture1D that is not yet created to slot " << slot << ".", "Pekan");
+
 		activateSlot(slot);
 		GLCall(glBindTexture(GL_TEXTURE_1D, m_id));
 	}
 
 	void Texture1D::unbind(unsigned slot) const
 	{
+		PK_ASSERT(isValid(), "Trying to unbind a Texture1D that is not yet created from slot " << slot << ".", "Pekan");
+
 		activateSlot(slot);
 		GLCall(glBindTexture(GL_TEXTURE_1D, 0));
 	}
@@ -79,6 +98,8 @@ namespace Graphics {
 
 	void Texture1D::setMinifyFunction(TextureMinifyFunction function)
 	{
+		PK_ASSERT(isValid(), "Trying to set minify function of a Texture1D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameteri
 		(
@@ -90,6 +111,8 @@ namespace Graphics {
 
 	void Texture1D::setMagnifyFunction(TextureMagnifyFunction function)
 	{
+		PK_ASSERT(isValid(), "Trying to set magnify function of a Texture1D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameteri
 		(
@@ -101,6 +124,8 @@ namespace Graphics {
 
 	void Texture1D::setWrapMode(TextureWrapMode wrapMode)
 	{
+		PK_ASSERT(isValid(), "Trying to set wrap mode of a Texture1D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameteri
 		(
@@ -112,18 +137,10 @@ namespace Graphics {
 
 	void Texture1D::setBorderColor(glm::vec4 color)
 	{
+		PK_ASSERT(isValid(), "Trying to set border color of a Texture1D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameterfv(GL_TEXTURE_1D, GL_TEXTURE_BORDER_COLOR, &color.x));
-	}
-
-	void Texture1D::_create()
-	{
-		GLCall(glGenTextures(1, &m_id));
-	}
-
-	void Texture1D::_destroy()
-	{
-		GLCall(glDeleteTextures(1, &m_id));
 	}
 
 } // namespace Graphics

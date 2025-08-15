@@ -4964,3 +4964,33 @@ Did a few other small changes, but nothing major.
 It works, same as before.
 Done.
 }
+
+{
+Next TO-DO item is
+    Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()
+
+Actually there are a lot of places in the Graphics module that need error-checking.
+Let's address all of them now.
+
+Started doing it and I noticed that this class
+    RenderComponent
+is not needed at all, it's only cluterring the logic of render components.
+We don't need to have a base class for render components (VertexBuffer, IndexBuffer, Shader, etc.),
+they share almost no functionality and data, except having an ID and an isValid() function, but that's fine.
+They all have a bind() and unbind() function and we currently have these 2 functions as virtual in RenderComponent
+but we never call them polymorphically, and we probably never will, so it's not needed.
+Let's just remove class RenderComponent.
+
+Did it.
+Removed class RenderComponent, moved
+    bool m_id = 0;
+to each render component class, together with the
+    bool isValid() const;
+function.
+Also, added a destroy() function to each render component class.
+Did some error-checking and cleaned up things a bit.
+Looking much better now.
+
+Everything works as before.
+Done.
+}

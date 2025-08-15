@@ -1,7 +1,6 @@
 #pragma once
 
 #include "RenderState.h"
-#include "RenderComponent.h"
 
 #include "glm/glm.hpp"
 
@@ -12,22 +11,23 @@ namespace Pekan {
 namespace Graphics {
 
 	// A class representing a shader program on the GPU.
-	class Shader : public RenderComponent
+	class Shader
 	{
 	public:
 
 		~Shader();
 
-		// Make base class RenderComponent's version of create() be visible in this derived class
-		using RenderComponent::create;
+		// Creates the underlying shader program object
+		void create();
 		// Creates the underlying shader program object with given source code for vertex shader and fragment shader
 		void create(const char* vertexShaderSource, const char* fragmentShaderSource);
+		void destroy();
 
 		// Sets source code of vertex shader and fragment shader to be used for this shader program
 		void setSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 
-		void bind() const override;
-		void unbind() const override;
+		void bind() const;
+		void unbind() const;
 
 		// Functions for setting the value of a uniform inside the shader
 		void setUniform1f(const char* uniformName, float value);
@@ -38,10 +38,10 @@ namespace Graphics {
 		void setUniform4fv(const char* uniformName, const glm::vec4& value);
 		void setUniformMatrix4fv(const char* uniformName, const glm::mat4& value);
 
-	private: /* functions */
+		// Checks if shader is valid, meaning that it has been successfully created and not yet destroyed
+		bool isValid() const { return m_id != 0; }
 
-		void _create() override;
-		void _destroy() override;
+	private: /* functions */
 
 		// Compiles given shader's source code.
 		// "Shader" here means a single shader type, for example a vertex shader.
@@ -70,6 +70,9 @@ namespace Graphics {
 
 		// Flag indicating if shader program currently has any shaders attached
 		bool m_hasShadersAttached = false;
+
+		// Shader's ID on the GPU
+		unsigned m_id = 0;
 	};
 
 } // namespace Pekan

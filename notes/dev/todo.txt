@@ -175,7 +175,7 @@
 
 0061 08.08.2025 (DONE): Get rid of code duplication in the 2 render() overloads in ShapesBatch, same way as it's done in SpritesBatch
 
-0062 09.08.2025 (TODO): Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()
+0062 09.08.2025 (DONE): Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()
 
 0063 12.08.2025 (TODO): Move class RenderObject to module Graphics
 

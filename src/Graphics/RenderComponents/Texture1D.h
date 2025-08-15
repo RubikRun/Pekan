@@ -1,7 +1,6 @@
 #pragma once
 
 #include "RenderState.h"
-#include "RenderComponent.h"
 
 #include <glm/glm.hpp>
 #include <vector>
@@ -11,7 +10,7 @@ namespace Pekan {
 namespace Graphics {
 
 	// A class representing a 1D texture on the GPU.
-	class Texture1D : public RenderComponent
+	class Texture1D
 	{
 	public:
 
@@ -19,17 +18,16 @@ namespace Graphics {
 
 		// Creates an empty 1D texture
 		void create();
-
 		// Creates a 1D texture from a list of RGBA colors
 		void create(const std::vector<glm::vec4>& colors);
+		void destroy();
 
 		// Sets new colors to the texture
 		void setColors(const std::vector<glm::vec4>& colors);
 
 		// Binds/unbinds texture to currently active texture slot
-		void bind() const override;
-		void unbind() const override;
-
+		void bind() const;
+		void unbind() const;
 		// Binds/unbinds texture to given texture slot
 		void bind(unsigned slot) const;
 		void unbind(unsigned slot) const;
@@ -49,10 +47,13 @@ namespace Graphics {
 		// This color will be used to color pixels outside of the [0, 1] range if the wrap mode is ClampToBorder.
 		void setBorderColor(glm::vec4 color);
 
-	private: /* functions */
+		// Checks if texture is valid, meaning that it has been successfully created and not yet destroyed
+		bool isValid() const { return m_id != 0; }
 
-		void _create() override;
-		void _destroy() override;
+	private: /* variables */
+
+		// Texture's ID on the GPU
+		unsigned m_id = 0;
 	};
 
 	typedef std::shared_ptr<Texture1D> Texture1DPtr;

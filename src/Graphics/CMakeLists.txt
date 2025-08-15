@@ -11,8 +11,6 @@ add_library(Graphics STATIC
     RenderState.cpp
     RenderCommands.h
     RenderCommands.cpp
-    RenderComponents/RenderComponent.h
-    RenderComponents/RenderComponent.cpp
     RenderComponents/VertexBuffer.h
     RenderComponents/VertexBuffer.cpp
     RenderComponents/IndexBuffer.h
@@ -31,16 +29,14 @@ add_library(Graphics STATIC
 
 # Group RenderComponents files under a virtual folder called "RenderComponents"
 SOURCE_GROUP("Source Files\\RenderComponents" FILES
-    RenderComponents/RenderComponent.cpp
     RenderComponents/VertexBuffer.cpp
     RenderComponents/IndexBuffer.cpp
     RenderComponents/VertexArray.cpp
     RenderComponents/Shader.cpp
-    RenderComponents/Texture2D.cpp
+    RenderComponents/Texture1D.cpp
     RenderComponents/Texture2D.cpp
 )
 SOURCE_GROUP("Header Files\\RenderComponents" FILES
-    RenderComponents/RenderComponent.h
     RenderComponents/VertexBuffer.h
     RenderComponents/IndexBuffer.h
     RenderComponents/VertexArray.h

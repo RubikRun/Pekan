@@ -19,15 +19,15 @@ namespace Graphics {
 
 	Texture2D::~Texture2D()
 	{
-		if (isValid())
-		{
-			destroy();
-		}
+		PK_ASSERT(!isValid(), "You forgot to destroy() a Texture2D instance.", "Pekan");
 	}
 
 	void Texture2D::create()
 	{
-		RenderComponent::create();
+		PK_ASSERT(!isValid(), "Trying to create a Texture2D instance that is already created.", "Pekan");
+
+		GLCall(glGenTextures(1, &m_id));
+		bind();
 
 		// Configure the default minify and magnify functions of the texture
 		setMinifyFunction(DEFAULT_TEXTURE_MINIFY_FUNCTION);
@@ -41,12 +41,23 @@ namespace Graphics {
 
 	void Texture2D::create(const Image& image)
 	{
+		PK_ASSERT(!isValid(), "Trying to create a Texture2D instance that is already created.", "Pekan");
+
 		create();
 		setImage(image);
 	}
 
+	void Texture2D::destroy()
+	{
+		PK_ASSERT(isValid(), "Trying to destroy a Texture2D instance that is not yet created.", "Pekan");
+
+		GLCall(glDeleteTextures(1, &m_id));
+	}
+
 	void Texture2D::setImage(const Image& image)
 	{
+		PK_ASSERT(isValid(), "Trying to set image to a Texture2D that is not yet created.", "Pekan");
+
 		if (!image.isValid())
 		{
 			PK_LOG_ERROR("Trying to set an invalid image to a texture.", "Pekan");
@@ -65,22 +76,30 @@ namespace Graphics {
 
 	void Texture2D::bind() const
 	{
+		PK_ASSERT(isValid(), "Trying to bind a Texture2D that is not yet created.", "Pekan");
+
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
 	}
 
 	void Texture2D::unbind() const
 	{
+		PK_ASSERT(isValid(), "Trying to unbind a Texture2D that is not yet created.", "Pekan");
+
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
 	void Texture2D::bind(unsigned slot) const
 	{
+		PK_ASSERT(isValid(), "Trying to bind a Texture2D that is not yet created to slot " << slot << ".", "Pekan");
+
 		activateSlot(slot);
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_id));
 	}
 
 	void Texture2D::unbind(unsigned slot) const
 	{
+		PK_ASSERT(isValid(), "Trying to unbind a Texture2D that is not yet created from slot " << slot << ".", "Pekan");
+
 		activateSlot(slot);
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 	}
@@ -93,6 +112,8 @@ namespace Graphics {
 
 	void Texture2D::setMinifyFunction(TextureMinifyFunction function)
 	{
+		PK_ASSERT(isValid(), "Trying to set minify function of a Texture2D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameteri
 		(
@@ -104,6 +125,8 @@ namespace Graphics {
 
 	void Texture2D::setMagnifyFunction(TextureMagnifyFunction function)
 	{
+		PK_ASSERT(isValid(), "Trying to set magnify function of a Texture2D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameteri
 		(
@@ -115,6 +138,8 @@ namespace Graphics {
 
 	void Texture2D::setWrapModeX(TextureWrapMode wrapMode)
 	{
+		PK_ASSERT(isValid(), "Trying to set wrap mode for the X axis of a Texture2D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameteri
 		(
@@ -126,6 +151,8 @@ namespace Graphics {
 
 	void Texture2D::setWrapModeY(TextureWrapMode wrapMode)
 	{
+		PK_ASSERT(isValid(), "Trying to set wrap mode for the Y axis of a Texture2D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameteri
 		(
@@ -137,17 +164,10 @@ namespace Graphics {
 
 	void Texture2D::setBorderColor(glm::vec4 color)
 	{
+		PK_ASSERT(isValid(), "Trying to set border color of a Texture2D that is not yet created.", "Pekan");
+
 		bind();
 		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color.x));
-	}
-
-	void Texture2D::_create()
-	{
-		GLCall(glGenTextures(1, &m_id));
-	}
-	void Texture2D::_destroy()
-	{
-		GLCall(glDeleteTextures(1, &m_id));
 	}
 
 	void Texture2D::getFormat(const Image& image, unsigned& format, unsigned& internalFormat)

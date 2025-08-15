@@ -1,7 +1,6 @@
 #pragma once
 
 #include "RenderState.h"
-#include "RenderComponent.h"
 
 #include <memory>
 
@@ -11,7 +10,7 @@ namespace Graphics {
 	class Image;
 
 	// A class representing a 2D texture on the GPU.
-	class Texture2D : public RenderComponent
+	class Texture2D
 	{
 	public:
 
@@ -19,16 +18,16 @@ namespace Graphics {
 
 		// Creates an empty texture
 		void create();
-
 		// Creates a texture from a given image
 		void create(const Image& image);
+		void destroy();
 
 		// Sets a new image to the texture
 		void setImage(const Image& image);
 
 		// Binds/unbinds texture to currently active texture slot
-		void bind() const override;
-		void unbind() const override;
+		void bind() const;
+		void unbind() const;
 		// Binds/unbinds texture to given texture slot
 		void bind(unsigned slot) const;
 		void unbind(unsigned slot) const;
@@ -50,13 +49,18 @@ namespace Graphics {
 		// This color will be used to color pixels outside of the [0, 1] range if the wrap mode is ClampToBorder.
 		void setBorderColor(glm::vec4 color);
 
-	private: /* functions */
+		// Checks if texture is valid, meaning that it has been successfully created and not yet destroyed
+		bool isValid() const { return m_id != 0; }
 
-		void _create() override;
-		void _destroy() override;
+	private: /* functions */
 
 		// Determines the format (and internal format) that a texture must have to support a given image
 		static void getFormat(const Image& image, unsigned& format, unsigned& internalFormat);
+
+	private: /* variables */
+
+		// Texture's ID on the GPU
+		unsigned m_id = 0;
 	};
 
 	typedef std::shared_ptr<Texture2D> Texture2D_Ptr;

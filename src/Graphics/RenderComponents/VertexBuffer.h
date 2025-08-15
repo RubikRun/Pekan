@@ -1,7 +1,6 @@
 #pragma once
 
 #include "RenderState.h"
-#include "RenderComponent.h"
 
 #include <string>
 #include <vector>
@@ -51,8 +50,8 @@ namespace Graphics
 		VertexBufferLayout() = default;
 		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements);
 
-		inline unsigned getStride() const { return m_stride; }
-		inline const std::vector<VertexBufferElement>& getElements() const { return m_elements; }
+		unsigned getStride() const { return m_stride; }
+		const std::vector<VertexBufferElement>& getElements() const { return m_elements; }
 
 		// Iterators for beginning and end of layout's elements. Useful for range-based for loop.
 		std::vector<VertexBufferElement>::iterator begin() { return m_elements.begin(); }
@@ -75,34 +74,40 @@ namespace Graphics
 	};
 
 	// A class representing a vertex buffer on the GPU.
-	// A vertex buffer simply holds a buffer of data that can be used as an array of vertices.
-	class VertexBuffer : public RenderComponent
+	// A vertex buffer holds a buffer of data that can be used as an array of vertices.
+	class VertexBuffer
 	{
 	public:
 
 		~VertexBuffer();
 
-		// Make base class RenderComponent's version of create() be visible in this derived class
-		using RenderComponent::create;
+		// Creates the underlying vertex buffer object
+		void create();
 		// Creates the underlying vertex buffer object, fills it with given data, and binds it
 		void create(const void* data, long long size, BufferDataUsage dataUsage = BufferDataUsage::StaticDraw);
+		void destroy();
 
 		// Fills vertex buffer with given data. Any previous data is removed.
 		void setData(const void* data, long long size, BufferDataUsage dataUsage = BufferDataUsage::StaticDraw);
-
 		// Fills a region of the vertex buffer with given data. Previous data in this region is overwritten.
 		// @param[in] data - Data to be filled in to the region
 		// @param[in] offset - Offset from the beginning of the vertex buffer to where the region begins
 		// @param[in] size - Size of the region. Should match the size of given data.
 		void setSubData(const void* data, long long offset, long long size);
 
-		void bind() const override;
-		void unbind() const override;
+		void bind() const;
+		void unbind() const;
 
-	private: /* functions */
+		// Checks if vertex buffer is valid, meaning that it has been successfully created and not yet destroyed
+		bool isValid() const { return m_id != 0; }
 
-		void _create() override;
-		void _destroy() override;
+	private:
+
+		// Vertex buffer's size, in bytes
+		long long m_size = -1;
+
+		// Vertex buffer's ID on the GPU
+		unsigned m_id = 0;
 	};
 
 	// A binding between a vertex buffer and a layout
