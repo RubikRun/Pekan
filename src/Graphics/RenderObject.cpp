@@ -2,11 +2,9 @@
 
 #include "PekanLogger.h"
 
-using namespace Pekan::Graphics;
-
 namespace Pekan
 {
-namespace Renderer2D
+namespace Graphics
 {
 
 	static const BufferDataUsage DEFAULT_VERTEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
@@ -22,14 +20,10 @@ namespace Renderer2D
 		const char* fragmentShaderSource
 	)
 	{
-		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
-
-		if (isValid())
-		{
-			PK_LOG_WARNING("Creating a render object, but there is already a render object created"
-				" in this RenderObject instance. Old render object will be destroyed.", "Pekan");
-			destroy();
-		}
+		PK_ASSERT(!isValid(), "Trying to create a RenderObject instance that is not yet created.", "Pekan");
+		PK_ASSERT(vertexDataSize >= 0, "Trying to create a RenderObject with negative vertex data size.", "Pekan");
+		PK_ASSERT(vertexShaderSource != nullptr, "Trying to create a RenderObject with null vertex shader source.", "Pekan");
+		PK_ASSERT(fragmentShaderSource != nullptr, "Trying to create a RenderObject with null fragment shader source.", "Pekan");
 
 		m_vertexDataUsage = vertexDataUsage;
 
@@ -38,42 +32,28 @@ namespace Renderer2D
 		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
 		m_indexBuffer.create();
 		m_shader.create(vertexShaderSource, fragmentShaderSource);
+
+		m_isValid = true;
 	}
 
 	void RenderObject::create(const VertexBufferLayout& layout, const char* vertexShaderSource, const char* fragmentShaderSource)
 	{
-		PK_ASSERT_QUICK(vertexShaderSource != nullptr); PK_ASSERT_QUICK(fragmentShaderSource != nullptr);
-
-		if (isValid())
-		{
-			PK_LOG_WARNING("Creating a render object, but there is already a render object created"
-				" in this RenderObject instance. Old render object will be destroyed.", "Pekan");
-			destroy();
-		}
+		PK_ASSERT(!isValid(), "Trying to create a RenderObject instance that is not yet created.", "Pekan");
+		PK_ASSERT(vertexShaderSource != nullptr, "Trying to create a RenderObject with null vertex shader source.", "Pekan");
+		PK_ASSERT(fragmentShaderSource != nullptr, "Trying to create a RenderObject with null fragment shader source.", "Pekan");
 
 		m_vertexArray.create();
 		m_vertexBuffer.create();
 		m_vertexArray.addVertexBuffer(m_vertexBuffer, layout);
 		m_indexBuffer.create();
 		m_shader.create(vertexShaderSource, fragmentShaderSource);
-	}
 
-	bool RenderObject::isValid() const
-	{
-		// Assert that if vertex array is valid then all other components are valid (happens only in debug builds)
-		PK_ASSERT_QUICK
-		(
-			!m_vertexArray.isValid() ||
-			(m_vertexBuffer.isValid() || m_indexBuffer.isValid() || m_shader.isValid())
-		);
-		// Check only vertex array for validity in release builds
-		return m_vertexArray.isValid();
+		m_isValid = true;
 	}
 
 	void RenderObject::destroy()
 	{
-		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_indexBuffer.isValid());
-		PK_ASSERT_QUICK(m_vertexBuffer.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid());
+		PK_ASSERT(isValid(), "Trying to destroy a RenderObject that is not yet created.", "Pekan");
 
 		m_vertexDataUsage = BufferDataUsage::None;
 		m_indexDataUsage = BufferDataUsage::None;
@@ -87,24 +67,46 @@ namespace Renderer2D
 		{
 			if (texture != nullptr)
 			{
-				PK_ASSERT_QUICK(texture->isValid());
 				texture->destroy();
 			}
 		}
+
+		m_isValid = false;
+	}
+
+	bool RenderObject::isValid() const
+	{
+		// Assert that validity of RenderObject is equivalent to validity of all components
+		PK_DEBUG_CODE
+		(
+			if (m_isValid)
+			{
+				PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+				PK_ASSERT_QUICK(m_indexBuffer.isValid()); PK_ASSERT_QUICK(m_shader.isValid());
+			}
+			else
+			{
+				PK_ASSERT_QUICK(!m_vertexArray.isValid()); PK_ASSERT_QUICK(!m_vertexBuffer.isValid());
+				PK_ASSERT_QUICK(!m_indexBuffer.isValid()); PK_ASSERT_QUICK(!m_shader.isValid());
+			}
+		);
+
+		return m_isValid;
 	}
 
 	void RenderObject::bind() const
 	{
-		PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_shader.isValid());
+		PK_ASSERT(isValid(), "Trying to bind a RenderObject that is not yet created.", "RenderObject");
 
 		m_vertexArray.bind();
 		m_shader.bind();
 		// Bind textures
 		for (unsigned i = 0; i < m_textures.size(); i++)
 		{
+			PK_ASSERT(m_textures[i] != nullptr, "There is a null texture in a RenderObject.", "Pekan");
 			if (m_textures[i] != nullptr)
 			{
-				PK_ASSERT_QUICK(m_textures[i]->isValid());
+				PK_ASSERT(m_textures[i]->isValid(), "There is an invalid texture in a RenderObject.", "Pekan");
 				m_textures[i]->bind(i);
 			}
 		}
@@ -112,14 +114,15 @@ namespace Renderer2D
 
 	void RenderObject::unbind() const
 	{
-		PK_ASSERT_QUICK(m_shader.isValid()); PK_ASSERT_QUICK(m_vertexArray.isValid());
+		PK_ASSERT(isValid(), "Trying to unbind a RenderObject that is not yet created.", "RenderObject");
 
 		// Unbind textures
 		for (unsigned i = 0; i < m_textures.size(); i++)
 		{
+			PK_ASSERT(m_textures[i] != nullptr, "There is a null texture in a RenderObject.", "Pekan");
 			if (m_textures[i] != nullptr)
 			{
-				PK_ASSERT_QUICK(m_textures[i]->isValid());
+				PK_ASSERT(m_textures[i]->isValid(), "There is an invalid texture in a RenderObject.", "Pekan");
 				m_textures[i]->unbind(i);
 			}
 		}
@@ -129,7 +132,7 @@ namespace Renderer2D
 
 	void RenderObject::setVertexData(const void* data, long long size)
 	{
-		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+		PK_ASSERT(isValid(), "Trying to set vertex data to a RenderObject that is not yet created.", "Pekan");
 
 		if (m_vertexDataUsage == BufferDataUsage::None)
 		{
@@ -142,7 +145,7 @@ namespace Renderer2D
 
 	void RenderObject::setVertexData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
-		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+		PK_ASSERT(isValid(), "Trying to set vertex data to a RenderObject that is not yet created.", "Pekan");
 
 		m_vertexArray.bind();
 		m_vertexBuffer.setData(data, size, dataUsage);
@@ -151,14 +154,15 @@ namespace Renderer2D
 
 	void RenderObject::setVertexSubData(const void* data, long long offset, long long size)
 	{
-		PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+		PK_ASSERT(isValid(), "Trying to set vertex subdata to a RenderObject that is not yet created.", "Pekan");
+
 		m_vertexArray.bind();
 		m_vertexBuffer.setSubData(data, offset, size);
 	}
 
 	void RenderObject::setIndexData(const void* data, long long size)
 	{
-		PK_ASSERT_QUICK(m_indexBuffer.isValid());
+		PK_ASSERT(isValid(), "Trying to set index data to a RenderObject that is not yet created.", "Pekan");
 
 		if (m_indexDataUsage == BufferDataUsage::None)
 		{
@@ -171,7 +175,7 @@ namespace Renderer2D
 
 	void RenderObject::setIndexData(const void* data, long long size, BufferDataUsage dataUsage)
 	{
-		PK_ASSERT_QUICK(m_indexBuffer.isValid());
+		PK_ASSERT(isValid(), "Trying to set index data to a RenderObject that is not yet created.", "Pekan");
 
 		m_vertexArray.bind();
 		m_indexBuffer.setData(data, size, dataUsage);
@@ -180,27 +184,29 @@ namespace Renderer2D
 
 	void RenderObject::setIndexSubData(const void* data, long long offset, long long size)
 	{
-		PK_ASSERT_QUICK(m_indexBuffer.isValid());
+		PK_ASSERT(isValid(), "Trying to set index subdata to a RenderObject that is not yet created.", "Pekan");
+
 		m_vertexArray.bind();
 		m_indexBuffer.setSubData(data, offset, size);
 	}
 
 	void RenderObject::setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource)
 	{
-		PK_ASSERT_QUICK(m_shader.isValid());
+		PK_ASSERT(isValid(), "Trying to set shader source to a RenderObject that is not yet created.", "Pekan");
+
 		m_shader.setSource(vertexShaderSource, fragmentShaderSource);
 		m_textures.clear();
 	}
 
 	void RenderObject::setTextureImage(const Image& image, const char* uniformName, unsigned slot)
 	{
-		PK_ASSERT_QUICK(m_shader.isValid());
+		PK_ASSERT(isValid(), "Trying to set texture image to a RenderObject that is not yet created.", "Pekan");
 
 		// Check if requested slot is available on current hardware
 		if (int(slot) >= RenderState::getMaxTextureSlots())
 		{
 			PK_LOG_ERROR("Requested texture slot " << slot << " is not available on current hardware."
-				" Maximum available texture slot is " << RenderState::getMaxTextureSlots(), "Pekan");
+				" Maximum available texture slot is " << RenderState::getMaxTextureSlots() - 1, "Pekan");
 			return;
 		}
 
@@ -213,10 +219,10 @@ namespace Renderer2D
 		// Create texture with given image at the requested slot
 		m_textures[slot] = std::make_shared<Texture2D>();
 		m_textures[slot]->create(image);
-		// Set slot to shader's uniform
+		// Set shader's slot uniform to the given slot
 		m_shader.bind();
 		m_shader.setUniform1i(uniformName, slot);
 	}
 
-} // namespace Renderer2D
+} // namespace Graphics
 } // namespace Pekan

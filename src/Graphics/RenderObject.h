@@ -1,6 +1,5 @@
 #pragma once
 
-#include "RenderState.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -11,10 +10,10 @@
 
 namespace Pekan
 {
-namespace Renderer2D
+namespace Graphics
 {
 
-	// A class representing a renderable object in Pekan, consisting of:
+	// A class representing a render object in Pekan, consisting of:
 	// - vertices
 	// - indices (optional)
 	// - a shader
@@ -24,31 +23,28 @@ namespace Renderer2D
 	public:
 
 		// Creates a render object with vertices and a shader.
-		// Index data and textures can be configured later.
+		// Index data and textures can be provided later.
 		void create
 		(
 			const void* vertexData,
 			long long vertexDataSize,
-			const Graphics::VertexBufferLayout& layout,
-			Graphics::BufferDataUsage vertexDataUsage,
+			const VertexBufferLayout& layout,
+			BufferDataUsage vertexDataUsage,
 			const char* vertexShaderSource,
 			const char* fragmentShaderSource
 		);
-
 		// Creates a render object with a shader only.
-		// Vertex data, index data and textures can be configured later.
+		// Vertex data, index data and textures can be provided later.
 		void create
 		(
-			const Graphics::VertexBufferLayout& layout,
+			const VertexBufferLayout& layout,
 			const char* vertexShaderSource,
 			const char* fragmentShaderSource
 		);
-
-		// Checks if render object is valid,
-		// meaning that it has been created and not yet destroyed.
-		bool isValid() const;
-
 		void destroy();
+
+		// Checks if render object is valid, meaning that it has been successfully created and not yet destroyed.
+		bool isValid() const;
 
 		void bind() const;
 		void unbind() const;
@@ -56,44 +52,49 @@ namespace Renderer2D
 		// Sets new vertex data to the render object (old data usage will be used)
 		void setVertexData(const void* data, long long size);
 		// Sets new vertex data, with a new data usage, to the render object
-		void setVertexData(const void* data, long long size, Graphics::BufferDataUsage dataUsage);
+		void setVertexData(const void* data, long long size, BufferDataUsage dataUsage);
 		// Fills a region of render object's vertex data with given data. Previous data in this region is overwritten.
 		void setVertexSubData(const void* data, long long offset, long long size);
 
 		// Sets new index data to the render object (old data usage will be used)
 		void setIndexData(const void* data, long long size);
 		// Sets new index data, with a new data usage, to the render object
-		void setIndexData(const void* data, long long size, Graphics::BufferDataUsage dataUsage);
+		void setIndexData(const void* data, long long size, BufferDataUsage dataUsage);
 		// Fills a region of render object's index data with given data. Previous data in this region is overwritten.
 		void setIndexSubData(const void* data, long long offset, long long size);
 
 		// Sets new source code to be used for render object's shader
 		void setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 
-		// Sets a new image to be used as a texture inside render object's shader.
-		// @param[in] uniformName - Name of uniform inside the shader containing the slot where texture will be bound
+		// Sets an image to be used as a texture inside render object's shader.
+		// @param[in] uniformName - Name of uniform containing the texture inside the shader
 		// @param[in] slot - Slot where texture will be bound
-		void setTextureImage(const Graphics::Image& image, const char* uniformName, unsigned slot);
+		void setTextureImage(const Image& image, const char* uniformName, unsigned slot);
 
-		Graphics::Shader& getShader() { return m_shader; }
-		const Graphics::Shader& getShader() const { return m_shader; }
+		Shader& getShader() { return m_shader; }
+		const Shader& getShader() const { return m_shader; }
 
 	private:
 
-		Graphics::VertexArray m_vertexArray;
+		VertexArray m_vertexArray;
 
-		Graphics::VertexBuffer m_vertexBuffer;
+		VertexBuffer m_vertexBuffer;
 
-		Graphics::IndexBuffer m_indexBuffer;
+		IndexBuffer m_indexBuffer;
 
-		Graphics::Shader m_shader;
+		Shader m_shader;
 
 		// A vector of textures, where the index of each texture is the slot where it will be bound
-		std::vector<Graphics::Texture2D_Ptr> m_textures;
+		std::vector<Texture2D_Ptr> m_textures;
 
-		Graphics::BufferDataUsage m_vertexDataUsage = Graphics::BufferDataUsage::None;
-		Graphics::BufferDataUsage m_indexDataUsage = Graphics::BufferDataUsage::None;
+		// Data usage of the vertex buffer
+		BufferDataUsage m_vertexDataUsage = BufferDataUsage::None;
+		// Data usage of the index buffer
+		BufferDataUsage m_indexDataUsage = BufferDataUsage::None;
+
+		// A flag indicating if render object is valid, meaning that it has been successfully created and not yet destroyed.
+		bool m_isValid = false;
 	};
 
-} // namespace Renderer2D
+} // namespace Graphics
 } // namespace Pekan

@@ -45,7 +45,7 @@ namespace Renderer2D
 
 	private: /* variables */
 
-		RenderObject m_renderObject;
+		Graphics::RenderObject m_renderObject;
 
 		// The 2 vertices of the line, in world space
 		glm::vec2 m_vertices[2] = { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) };

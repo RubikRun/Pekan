@@ -29,7 +29,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer2D::RenderObject m_renderObject;
+		Pekan::Graphics::RenderObject m_renderObject;
 
 		// GUI window for controlling background's color
 		std::shared_ptr<const Demo00_GUIWindow> m_guiWindow;

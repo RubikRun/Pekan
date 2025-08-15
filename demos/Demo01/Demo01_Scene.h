@@ -39,7 +39,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer2D::RenderObject m_renderObject;
+		Pekan::Graphics::RenderObject m_renderObject;
 
 		std::shared_ptr<const Demo01_GUIWindow> m_guiWindow;
 

@@ -74,7 +74,7 @@ namespace Renderer2D
 #endif
 
 		// Underlying render object used for rendering all vertices and indices
-		RenderObject m_renderObject;
+		Graphics::RenderObject m_renderObject;
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Underlying 1D texture used for passing the colors of all shapes to the shader
 		Graphics::Texture1D m_colorsTexture;

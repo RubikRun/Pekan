@@ -177,6 +177,6 @@
 
 0062 09.08.2025 (DONE): Do some error-checking in VertexBuffer's setSubData() and IndexBuffer's setSubData()
 
-0063 12.08.2025 (TODO): Move class RenderObject to module Graphics
+0063 12.08.2025 (DONE): Move class RenderObject to module Graphics
 
 0064 14.08.2025 (TODO): Remove m_isDynamic member from class Shape and class Sprite. Make sure it's not used anywhere.

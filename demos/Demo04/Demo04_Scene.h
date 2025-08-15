@@ -40,7 +40,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer2D::RenderObject m_renderObject;
+		Pekan::Graphics::RenderObject m_renderObject;
 
 		Pekan::Renderer2D::TriangleShape m_triangle;
 		Pekan::Renderer2D::RectangleShape m_rectangle;

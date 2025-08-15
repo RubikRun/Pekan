@@ -4994,3 +4994,25 @@ Looking much better now.
 Everything works as before.
 Done.
 }
+
+----------
+15.08.2025
+----------
+
+{
+Next TO-DO item is
+    Move class RenderObject to module Graphics
+
+Before moving it, let's do some better error-checking there as well.
+
+Now let's actually move RenderObject to Graphics.
+Done.
+Nothing to say, just had to change
+    Renderer2D::RenderObject
+to
+    Graphics::RenderObject
+everywhere.
+Easy.
+
+Done.
+}

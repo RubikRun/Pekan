@@ -26,7 +26,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Renderer2D::RenderObject m_renderObject;
+		Pekan::Graphics::RenderObject m_renderObject;
 
 		// Vertices of apple's square
 		std::vector<int> m_vertices;

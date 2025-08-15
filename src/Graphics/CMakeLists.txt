@@ -11,6 +11,8 @@ add_library(Graphics STATIC
     RenderState.cpp
     RenderCommands.h
     RenderCommands.cpp
+    RenderObject.h
+    RenderObject.cpp
     RenderComponents/VertexBuffer.h
     RenderComponents/VertexBuffer.cpp
     RenderComponents/IndexBuffer.h

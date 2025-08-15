@@ -13,8 +13,6 @@ add_library(Renderer2D STATIC
     Renderer2DSystem.cpp
     RenderBatch2D.h
     RenderBatch2D.cpp
-    RenderObject.h
-    RenderObject.cpp
     Camera2D.h
     Camera2D.cpp
     Line.h
