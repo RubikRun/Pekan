@@ -5178,3 +5178,12 @@ but now caller code is a bit simpler, it just calls render().
 
 Done.
 }
+
+{
+We can continue forever looking for small things to improve, but let's stop here.
+
+Everything planned for v0.2 is ready, it works, looks good, and it's stable.
+
+Happy Release!
+v0.2 is ready!
+}

@@ -30,7 +30,7 @@ namespace Pekan
 		glm::ivec2 initialPosition = glm::ivec2(30, 40);
 
 		// Window's title appearing on the top bar
-		std::string title = "Pekan Engine v0.1";
+		std::string title = "Pekan Engine v0.2";
 
 		// Flag indicating if window should be full-screen,
 		// matching screen's resolution and having no top bar.

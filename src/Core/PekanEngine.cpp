@@ -4,6 +4,8 @@
 #include "PekanApplication.h"
 #include "SubsystemManager.h"
 
+#include <iostream>
+
 namespace Pekan
 {
 
@@ -37,6 +39,8 @@ namespace Pekan
         {
             return false;
         }
+
+        std::cout << "Welcome to Pekan v0.2!" << std::endl;
 
         // Initialize all subsystems
         SubsystemManager::initAll();
