@@ -6,7 +6,6 @@ namespace Pekan
     // An enum containing key codes for different keys of the keyboard
     enum class KeyCode
     {
-
         KEY_SPACE = 32,
         KEY_APOSTROPHE = 39,  /* ' */
         KEY_COMMA = 44,  /* , */
@@ -129,7 +128,6 @@ namespace Pekan
         KEY_RIGHT_ALT = 346,
         KEY_RIGHT_SUPER = 347,
         KEY_MENU = 348
-
     };
 
 } // namespace Pekan

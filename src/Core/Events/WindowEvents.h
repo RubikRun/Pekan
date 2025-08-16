@@ -7,6 +7,7 @@
 namespace Pekan
 {
 
+	// A type of event that occurs when a window is resized
 	class WindowResizedEvent : public Event
 	{
 	public:
@@ -30,6 +31,7 @@ namespace Pekan
 		unsigned int m_width, m_height;
 	};
 
+	// A type of event that occurs when a window is closed
 	class WindowClosedEvent : public Event
 	{
 	public:

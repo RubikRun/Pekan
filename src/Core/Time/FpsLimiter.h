@@ -33,11 +33,15 @@ namespace Pekan
 {
 
 #if PEKAN_FPS_LIMITER_IMPL_SLEEP_COMPENSATE
+    // A class used to limit FPS in a running application
+    // by waiting some amount of time between frames.
     class FpsLimiter
     {
     public:
         FpsLimiter(double targetFps);
 
+        // Waits some amount of time until enough time has passed
+        // since the last call to wait() such that we hit the target FPS
         void wait();
 
     private:
@@ -48,11 +52,16 @@ namespace Pekan
 #endif
 
 #if PEKAN_FPS_LIMITER_IMPL_WAIT_BLOCKING
+
+    // A class used to limit FPS in a running application
+    // by waiting some amount of time between frames.
     class FpsLimiter
     {
     public:
         FpsLimiter(double targetFps);
 
+        // Waits some amount of time until enough time has passed
+        // since the last call to wait() such that we hit the target FPS
         void wait();
 
     private:

@@ -8,6 +8,7 @@
 namespace Pekan
 {
 
+	// A type of event related to a key of the keyboard
 	class KeyEvent : public Event
 	{
 	public:
@@ -22,6 +23,7 @@ namespace Pekan
 		KeyCode m_keyCode;
 	};
 
+	// A type of event that occurs when a key of the keyboard is pressed
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
@@ -43,6 +45,7 @@ namespace Pekan
 		bool m_isRepeating;
 	};
 
+	// A type of event that occurs when a key of the keyboard is released, after being pressed
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:

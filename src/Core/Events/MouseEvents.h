@@ -8,6 +8,7 @@
 namespace Pekan
 {
 
+	// A type of event that occurs when the mouse is moved
 	class MouseMovedEvent : public Event
 	{
 	public:
@@ -31,6 +32,7 @@ namespace Pekan
 		float m_mouseX, m_mouseY;
 	};
 
+	// A type of event that occurs when the scroll wheel of the mouse is scrolled
 	class MouseScrolledEvent : public Event
 	{
 	public:
@@ -54,6 +56,7 @@ namespace Pekan
 		float m_xOffset, m_yOffset;
 	};
 
+	// A type of event related to a button of the mouse
 	class MouseButtonEvent : public Event
 	{
 	public:
@@ -68,6 +71,7 @@ namespace Pekan
 		MouseButton m_button;
 	};
 
+	// A type of event that occurs when a mouse button is pressed
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
@@ -85,6 +89,7 @@ namespace Pekan
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
+	// A type of event that occurs when a mouse button is released, after being pressed
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:

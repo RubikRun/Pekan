@@ -65,21 +65,26 @@ namespace Pekan
 	{
 	public:
 
+		// Pushes an event to the event queue
 		void push(std::unique_ptr<Event> event)
 		{
 			m_queue.push(std::move(event));
 		}
 
+		// Checks if the event queue is empty
 		bool empty() const
 		{
 			return m_queue.empty();
 		}
 
+		// Returns event queue's size
 		int size() const
 		{
 			return m_queue.size();
 		}
 
+		// Pops an event from the back of the event queue.
+		// Returns the popped event.
 		std::unique_ptr<Event> pop()
 		{
 			std::unique_ptr<Event> event = std::move(m_queue.front());
@@ -89,6 +94,7 @@ namespace Pekan
 
 	private:
 
+		// Underlying queue of event pointers
 		std::queue<std::unique_ptr<Event>> m_queue;
 	};
 
