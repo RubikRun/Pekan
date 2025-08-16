@@ -2,7 +2,6 @@
 
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
-#include "RenderCommands.h"
 #include "Renderer2DSystem.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_VertexShader.glsl"
@@ -66,8 +65,7 @@ namespace Renderer2D
 	void Line::render() const
 	{
 		PK_ASSERT(m_renderObject.isValid(), "Trying to render a Line that is not yet created.", "Pekan");
-		m_renderObject.bind();
-		RenderCommands::draw(2, DrawMode::Lines);
+		m_renderObject.render(DrawMode::Lines);
 	}
 
 	void Line::setPointA(glm::vec2 pointA)

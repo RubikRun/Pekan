@@ -1,7 +1,6 @@
 #include "Demo00_Scene.h"
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
-#include "RenderCommands.h"
 
 static const char* vertexShaderFilePath = "resources/00_vertex_shader.glsl";
 static const char* fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
@@ -66,9 +65,7 @@ namespace Demo
             RenderCommands::clear();
         }
 
-        m_renderObject.bind();
-        RenderCommands::drawIndexed(6, DrawMode::Triangles);
-        m_renderObject.unbind();
+        m_renderObject.render();
 	}
 
 	void Demo00_Scene::exit()

@@ -1,6 +1,5 @@
 #include "Snake.h"
 #include "Utils/FileUtils.h"
-#include "RenderCommands.h"
 
 static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
@@ -127,12 +126,7 @@ namespace Demo
 
     void Snake::render() const
     {
-        m_renderObject.bind();
-
-        // Draw snake
-        RenderCommands::drawIndexed(m_indices.size());
-
-        m_renderObject.unbind();
+        m_renderObject.render();
     }
 
     void Snake::destroy()

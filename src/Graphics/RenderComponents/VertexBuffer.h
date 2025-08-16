@@ -50,7 +50,11 @@ namespace Graphics
 		VertexBufferLayout() = default;
 		VertexBufferLayout(const std::initializer_list<VertexBufferElement>& elements);
 
+		// Returns stride, in bytes, between two consecutive vertices in the buffer
 		unsigned getStride() const { return m_stride; }
+		// Returns size of a single vertex, in bytes
+		unsigned getVertexSize() const { return m_stride; }
+		// Returns layout's elements
 		const std::vector<VertexBufferElement>& getElements() const { return m_elements; }
 
 		// Iterators for beginning and end of layout's elements. Useful for range-based for loop.
@@ -97,6 +101,12 @@ namespace Graphics
 
 		void bind() const;
 		void unbind() const;
+
+		// Returns size of vertex buffer's data, in bytes
+		long long getSize() const { return m_size; }
+
+		// Checks if vertex buffer contains any data
+		bool hasData() const { return m_size > 0; }
 
 		// Checks if vertex buffer is valid, meaning that it has been successfully created and not yet destroyed
 		bool isValid() const { return m_id != 0; }

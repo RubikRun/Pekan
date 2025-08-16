@@ -1,6 +1,5 @@
 #include "Demo02_Scene.h"
 #include "Utils/FileUtils.h"
-#include "RenderCommands.h"
 #include "PekanLogger.h"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -177,13 +176,8 @@ namespace Demo
 	void Demo02_Scene::render() const
 	{
         RenderCommands::clear(true);
-
-        m_renderObject.bind();
-
-        // Draw cube
-        RenderCommands::drawIndexed(36);
-
-        m_renderObject.unbind();
+        // Render cube
+        m_renderObject.render();
 	}
 
 	void Demo02_Scene::exit()

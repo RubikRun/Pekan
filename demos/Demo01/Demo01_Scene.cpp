@@ -2,7 +2,6 @@
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 #include "PekanEngine.h"
-#include "RenderCommands.h"
 
 using Pekan::PekanEngine;
 
@@ -66,9 +65,7 @@ namespace Demo
 	{
         RenderCommands::clear();
 
-        m_renderObject.bind();
-        RenderCommands::draw(m_vertices.size() / 6);
-        m_renderObject.unbind();
+        m_renderObject.render();
 	}
 
 	void Demo01_Scene::exit()

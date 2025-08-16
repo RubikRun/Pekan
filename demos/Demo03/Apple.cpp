@@ -3,7 +3,6 @@
 
 #include "Utils/FileUtils.h"
 #include "Utils/PekanUtils.h"
-#include "RenderCommands.h"
 
 static const char* vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
@@ -66,12 +65,7 @@ namespace Demo
 
     void Apple::render() const
     {
-        m_renderObject.bind();
-
-        // Draw apple
-        RenderCommands::drawIndexed(6);
-
-        m_renderObject.unbind();
+        m_renderObject.render();
     }
 
     void Apple::destroy()

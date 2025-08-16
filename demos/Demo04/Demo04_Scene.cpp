@@ -1,7 +1,6 @@
 #include "Demo04_Scene.h"
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
-#include "RenderCommands.h"
 #include "Renderer2DSystem.h"
 
 #include <glm/gtc/constants.hpp>
@@ -265,9 +264,7 @@ namespace Demo
             RenderCommands::clear();
         }
 
-        m_renderObject.bind();
-        RenderCommands::drawIndexed(6);
-        m_renderObject.unbind();
+        m_renderObject.render();
 
         if (m_guiWindow != nullptr && m_guiWindow->isEnabledShapes())
         {

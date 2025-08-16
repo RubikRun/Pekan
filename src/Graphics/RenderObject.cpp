@@ -26,6 +26,7 @@ namespace Graphics
 		PK_ASSERT(fragmentShaderSource != nullptr, "Trying to create a RenderObject with null fragment shader source.", "Pekan");
 
 		m_vertexDataUsage = vertexDataUsage;
+		m_vertexBufferLayout = layout;
 
 		m_vertexArray.create();
 		m_vertexBuffer.create(vertexData, vertexDataSize, vertexDataUsage);
@@ -41,6 +42,8 @@ namespace Graphics
 		PK_ASSERT(!isValid(), "Trying to create a RenderObject instance that is not yet created.", "Pekan");
 		PK_ASSERT(vertexShaderSource != nullptr, "Trying to create a RenderObject with null vertex shader source.", "Pekan");
 		PK_ASSERT(fragmentShaderSource != nullptr, "Trying to create a RenderObject with null fragment shader source.", "Pekan");
+
+		m_vertexBufferLayout = layout;
 
 		m_vertexArray.create();
 		m_vertexBuffer.create();
@@ -74,60 +77,20 @@ namespace Graphics
 		m_isValid = false;
 	}
 
-	bool RenderObject::isValid() const
+	void RenderObject::render(DrawMode mode) const
 	{
-		// Assert that validity of RenderObject is equivalent to validity of all components
-		PK_DEBUG_CODE
-		(
-			if (m_isValid)
-			{
-				PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_vertexBuffer.isValid());
-				PK_ASSERT_QUICK(m_indexBuffer.isValid()); PK_ASSERT_QUICK(m_shader.isValid());
-			}
-			else
-			{
-				PK_ASSERT_QUICK(!m_vertexArray.isValid()); PK_ASSERT_QUICK(!m_vertexBuffer.isValid());
-				PK_ASSERT_QUICK(!m_indexBuffer.isValid()); PK_ASSERT_QUICK(!m_shader.isValid());
-			}
-		);
+		bind();
 
-		return m_isValid;
-	}
-
-	void RenderObject::bind() const
-	{
-		PK_ASSERT(isValid(), "Trying to bind a RenderObject that is not yet created.", "RenderObject");
-
-		m_vertexArray.bind();
-		m_shader.bind();
-		// Bind textures
-		for (unsigned i = 0; i < m_textures.size(); i++)
+		if (m_indexBuffer.hasData())
 		{
-			PK_ASSERT(m_textures[i] != nullptr, "There is a null texture in a RenderObject.", "Pekan");
-			if (m_textures[i] != nullptr)
-			{
-				PK_ASSERT(m_textures[i]->isValid(), "There is an invalid texture in a RenderObject.", "Pekan");
-				m_textures[i]->bind(i);
-			}
+			const unsigned indicesCount = unsigned(m_indexBuffer.getCount());
+			RenderCommands::drawIndexed(indicesCount, mode);
 		}
-	}
-
-	void RenderObject::unbind() const
-	{
-		PK_ASSERT(isValid(), "Trying to unbind a RenderObject that is not yet created.", "RenderObject");
-
-		// Unbind textures
-		for (unsigned i = 0; i < m_textures.size(); i++)
+		else
 		{
-			PK_ASSERT(m_textures[i] != nullptr, "There is a null texture in a RenderObject.", "Pekan");
-			if (m_textures[i] != nullptr)
-			{
-				PK_ASSERT(m_textures[i]->isValid(), "There is an invalid texture in a RenderObject.", "Pekan");
-				m_textures[i]->unbind(i);
-			}
+			const unsigned verticesCount = unsigned(m_vertexBuffer.getSize()) / m_vertexBufferLayout.getVertexSize();
+			RenderCommands::draw(verticesCount, mode);
 		}
-		m_shader.unbind();
-		m_vertexArray.unbind();
 	}
 
 	void RenderObject::setVertexData(const void* data, long long size)
@@ -224,6 +187,26 @@ namespace Graphics
 		m_shader.setUniform1i(uniformName, slot);
 	}
 
+	bool RenderObject::isValid() const
+	{
+		// Assert that validity of RenderObject is equivalent to validity of all components
+		PK_DEBUG_CODE
+		(
+			if (m_isValid)
+			{
+				PK_ASSERT_QUICK(m_vertexArray.isValid()); PK_ASSERT_QUICK(m_vertexBuffer.isValid());
+				PK_ASSERT_QUICK(m_indexBuffer.isValid()); PK_ASSERT_QUICK(m_shader.isValid());
+			}
+			else
+			{
+				PK_ASSERT_QUICK(!m_vertexArray.isValid()); PK_ASSERT_QUICK(!m_vertexBuffer.isValid());
+				PK_ASSERT_QUICK(!m_indexBuffer.isValid()); PK_ASSERT_QUICK(!m_shader.isValid());
+			}
+				);
+
+		return m_isValid;
+	}
+
 	void RenderObject::clearTextures()
 	{
 		// First manually destroy each texture
@@ -237,6 +220,42 @@ namespace Graphics
 		}
 		// Then clear list of texture pointers
 		m_textures.clear();
+	}
+
+	void RenderObject::bind() const
+	{
+		PK_ASSERT(isValid(), "Trying to bind a RenderObject that is not yet created.", "RenderObject");
+
+		m_vertexArray.bind();
+		m_shader.bind();
+		// Bind textures
+		for (unsigned i = 0; i < m_textures.size(); i++)
+		{
+			PK_ASSERT(m_textures[i] != nullptr, "There is a null texture in a RenderObject.", "Pekan");
+			if (m_textures[i] != nullptr)
+			{
+				PK_ASSERT(m_textures[i]->isValid(), "There is an invalid texture in a RenderObject.", "Pekan");
+				m_textures[i]->bind(i);
+			}
+		}
+	}
+
+	void RenderObject::unbind() const
+	{
+		PK_ASSERT(isValid(), "Trying to unbind a RenderObject that is not yet created.", "RenderObject");
+
+		// Unbind textures
+		for (unsigned i = 0; i < m_textures.size(); i++)
+		{
+			PK_ASSERT(m_textures[i] != nullptr, "There is a null texture in a RenderObject.", "Pekan");
+			if (m_textures[i] != nullptr)
+			{
+				PK_ASSERT(m_textures[i]->isValid(), "There is an invalid texture in a RenderObject.", "Pekan");
+				m_textures[i]->unbind(i);
+			}
+		}
+		m_shader.unbind();
+		m_vertexArray.unbind();
 	}
 
 } // namespace Graphics

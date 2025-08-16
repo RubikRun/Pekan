@@ -120,10 +120,14 @@ namespace Tools
         //       If the camera is destroyed at some point, the camera controller will safely stop operating on it.
         Camera2D_WeakPtr m_camera;
 
+        // Cached mouse position, in window space
         glm::vec2 m_mousePos = glm::vec2(-1.0f, -1.0f);
 
+        // A flag indicating if camera controller is currently enabled
         bool m_enabled = true;
 
+        // Camera controller's zoom speed.
+        // Determines how much zoom will be done per mouse scroll.
         float m_zoomSpeed = DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED;
     };
 

@@ -133,7 +133,7 @@ namespace Graphics
 
 		// Enables Multisample Anti-Aliasing (MSAA) for removing jagged edges of shapes and lines.
 		// IMPORTANT: In order for MSAA to work you need to have a window
-		//            with numberOfSamples greater than 1, preferably 4 or 8.
+		//            with numberOfSamples greater than 1, preferably 4, 8, 16, 32 or 64.
 		//            You can set numberOfSamples in your WindowProperties when creating a window
 		//            in your application's initialization function.
 		static void enableMultisampleAntiAliasing();
@@ -153,7 +153,7 @@ namespace Graphics
 		// It's the maximum number of texels per dimension.
 		// For example, if the maximum size is 1024,
 		// this means that a 1D texture can have at most 1024 texels,
-		// and a 2D texture can have at most 1024*1024 texels.
+		// and a 2D texture can have at most 1024 * 1024 = 1048576 texels.
 		static int getMaxTextureSize();
 
 	private: /* functions */
@@ -192,6 +192,7 @@ namespace Graphics
 
 	private: /* variables */
 
+		// A flag indicating if face culling is enabled
 		static bool s_isEnabledFaceCulling;
 	};
 

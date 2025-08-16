@@ -5151,4 +5151,30 @@ Nothing essential going on here, just moving things around.
 Looks better now.
 Works same way as before.
 
+----------
+16.08.2025
+----------
+
+Today I continued scouting around for small things to improve.
+Noticed something.
+
+In class RenderObject we have these 2 functions
+    void bind() const;
+    void unbind() const;
+that are public and all users of RenderObject manually bind their RenderObject and then issue a draw call like this:
+    RenderCommands::draw(...)
+or
+    RenderCommands::drawIndexed(...)
+which is not needed.
+Instead, we can have a single
+    void render() const;
+public function in RenderObject that users of this class can just call.
+Internally, it will call either draw(...) or drawIndexed(...) depending on whether the index buffer has data or not,
+and it will calculate the correct number of vertices/indices to pass to the draw function.
+That's it.
+
+It works, same way as before,
+but now caller code is a bit simpler, it just calls render().
+
+Done.
 }

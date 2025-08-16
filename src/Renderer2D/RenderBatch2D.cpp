@@ -277,8 +277,8 @@ namespace Renderer2D
 		// Set the value of "uTextures" uniform inside the shader
 		setTexturesUniform(shader, size_t(m_capacityTextures));
 
-		// Draw all triangles making up all primitives from the batch
-		RenderCommands::drawIndexed(m_indices.size());
+		// Render the underlying render object, drawing all triangles making up all primitives from the batch
+		m_renderObject.render();
 	}
 
 	void RenderBatch2D::clear()

@@ -5,6 +5,7 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture2D.h"
+#include "RenderCommands.h"
 
 #include <vector>
 
@@ -13,7 +14,8 @@ namespace Pekan
 namespace Graphics
 {
 
-	// A class representing a render object in Pekan, consisting of:
+	// A class representing a render object in Pekan.
+	// A render object in Pekan is a standard set of render components needed to render something: 
 	// - vertices
 	// - indices (optional)
 	// - a shader
@@ -43,11 +45,8 @@ namespace Graphics
 		);
 		void destroy();
 
-		// Checks if render object is valid, meaning that it has been successfully created and not yet destroyed.
-		bool isValid() const;
-
-		void bind() const;
-		void unbind() const;
+		// Renders the object
+		void render(DrawMode mode = DrawMode::Triangles) const;
 
 		// Sets new vertex data to the render object (old data usage will be used)
 		void setVertexData(const void* data, long long size);
@@ -74,7 +73,13 @@ namespace Graphics
 		Shader& getShader() { return m_shader; }
 		const Shader& getShader() const { return m_shader; }
 
+		// Checks if render object is valid, meaning that it has been successfully created and not yet destroyed.
+		bool isValid() const;
+
 	private: /* functions */
+
+		void bind() const;
+		void unbind() const;
 
 		// Clears all textures of render object, leaving it without textures
 		void clearTextures();
@@ -88,6 +93,9 @@ namespace Graphics
 		IndexBuffer m_indexBuffer;
 
 		Shader m_shader;
+
+		// Layout of the vertex buffer
+		VertexBufferLayout m_vertexBufferLayout;
 
 		// A vector of textures, where the index of each texture is the slot where it will be bound
 		std::vector<Texture2D_Ptr> m_textures;

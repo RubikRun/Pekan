@@ -32,6 +32,14 @@ namespace Graphics
 		void bind() const;
 		void unbind() const;
 
+		// Returns size of index buffer's data, in bytes
+		long long getSize() const { return m_size; }
+		// Returns the number of indices in the index buffer
+		long long getCount() const { return m_size / sizeof(unsigned); }
+
+		// Checks if index buffer contains any data
+		bool hasData() const { return m_size > 0; }
+
 		// Checks if index buffer is valid, meaning that it has been successfully created and not yet destroyed
 		bool isValid() const { return m_id != 0; }
 
