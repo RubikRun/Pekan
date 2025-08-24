@@ -28,6 +28,17 @@ namespace Renderer2D
 		void setHeight(float height);
 		// Sets sprite's texture
 		void setTexture(const Graphics::Texture2D_ConstPtr& texture);
+		// Sets the min/max of sprite's texture coordinates
+		// determining the rectangle in texture space
+		// that this sprite maps to.
+		// The default rectangle in texture space is [0, 0] to [1, 1],
+		// which makes the sprite map to the texture exactly.
+		// If the rectangle in texture space is [0, 0] to [3, 2] for example,
+		// this will make the sprite repeat the texture 3 times horizontally, and 2 times vertically.
+		// If the rectangle in texture space is [0.25, 0.25] to [0.75, 0.75] for example,
+		// this will make the sprite show a zoomed in portion of the texture.
+		void setTextureCoordinatesMin(glm::vec2 textureCoordinatesMin);
+		void setTextureCoordinatesMax(glm::vec2 textureCoordinatesMax);
 
 		// Returns sprite's width, in local space
 		float getWidth() const;
@@ -35,6 +46,11 @@ namespace Renderer2D
 		float getHeight() const;
 		// Returns (a pointer to) underlying texture
 		const Graphics::Texture2D_ConstPtr& getTexture() const;
+		// Returns the min/max of sprite's texture coordinates
+		// determining the rectangle in texture space
+		// that this sprite maps to.
+		glm::vec2 getTextureCoordinatesMin();
+		glm::vec2 getTextureCoordinatesMax();
 
 		// Returns sprite's vertex data, in world space
 		// @param[in] textureIndex - Index of sprite's texture inside of sprite's batch. Determines the value of the "textureIndex" attribute of sprite's vertices
@@ -62,6 +78,12 @@ namespace Renderer2D
 		float m_width = 0.0f;
 		// Height of sprite, size across the Y acis in local space
 		float m_height = 0.0f;
+
+		// Min/max of sprite's texture coordinates,
+		// determining the rectangle in texture space
+		// that this sprite maps to.
+		glm::vec2 m_textureCoordinatesMin = { 0.0f, 0.0f };
+		glm::vec2 m_textureCoordinatesMax = { 1.0f, 1.0f };
 
 		// The 4 vertices (vertex positions) of the sprite, in local space
 		mutable glm::vec2 m_verticesLocal[4] = {};

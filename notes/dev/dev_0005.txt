@@ -51,3 +51,25 @@ All demos work as well.
 
 Done.
 }
+
+{
+Found a feature missing in Pekan and I need it for Gleam House.
+We need support for custom texture coordinates for the 4 corners of our Sprite class.
+Right now we always assign texture coordinates from [0, 1] to our Sprite's rectangle geometry.
+We want to allow client code to determine this range.
+
+Let's have these member variables
+    glm::vec2 m_textureCoordinatesMin = { 0.0f, 0.0f };
+    glm::vec2 m_textureCoordinatesMax = { 1.0f, 1.0f };
+that will determine the rectangle in texture space that the sprite will map to,
+instead of always mapping to the rectangle [0, 0] to [1, 1].
+Then, we'll have getters and setters for them, of course.
+And, most importantly, we'll use them in Sprite's
+    updateVerticesWorld()
+function when we set "textureCoordinates" attribute of the 4 vertices
+    m_verticesWorld[0].textureCoordinates = { m_textureCoordinatesMin.x, m_textureCoordinatesMin.y };
+    m_verticesWorld[1].textureCoordinates = { m_textureCoordinatesMax.x, m_textureCoordinatesMin.y };
+    m_verticesWorld[2].textureCoordinates = { m_textureCoordinatesMax.x, m_textureCoordinatesMax.y };
+    m_verticesWorld[3].textureCoordinates = { m_textureCoordinatesMin.x, m_textureCoordinatesMax.y };
+That's it.
+}

@@ -73,6 +73,18 @@ namespace Renderer2D
         m_texture = texture;
     }
 
+    void Sprite::setTextureCoordinatesMin(glm::vec2 textureCoordinatesMin)
+    {
+        m_textureCoordinatesMin = textureCoordinatesMin;
+        m_needUpdateVerticesWorld = true;
+    }
+
+    void Sprite::setTextureCoordinatesMax(glm::vec2 textureCoordinatesMax)
+    {
+        m_textureCoordinatesMax = textureCoordinatesMax;
+        m_needUpdateVerticesWorld = true;
+    }
+
     float Sprite::getWidth() const
     {
         PK_ASSERT(isValid(), "Trying to get width of a Sprite that is not yet created.", "Pekan");
@@ -89,6 +101,18 @@ namespace Renderer2D
     {
         PK_ASSERT(isValid(), "Trying to get the texture of a Sprite that is not yet created.", "Pekan");
         return m_texture;
+    }
+
+    glm::vec2 Sprite::getTextureCoordinatesMin()
+    {
+        PK_ASSERT(isValid(), "Trying to get the min texture coordinates of a Sprite that is not yet created.", "Pekan");
+        return m_textureCoordinatesMin;
+    }
+
+    glm::vec2 Sprite::getTextureCoordinatesMax()
+    {
+        PK_ASSERT(isValid(), "Trying to get the max texture coordinates of a Sprite that is not yet created.", "Pekan");
+        return m_textureCoordinatesMax;
     }
 
     const Vertex2D* Sprite::getVertices(float textureIndex) const
@@ -138,11 +162,17 @@ namespace Renderer2D
         m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
         m_verticesWorld[3].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
 
-        // Set "uvCoordinates" attribute of each vertex
-        m_verticesWorld[0].textureCoordinates = { 0.0f, 0.0f };
-        m_verticesWorld[1].textureCoordinates = { 1.0f, 0.0f };
-        m_verticesWorld[2].textureCoordinates = { 1.0f, 1.0f };
-        m_verticesWorld[3].textureCoordinates = { 0.0f, 1.0f };
+        // Set "textureCoordinates" attribute of each vertex
+        PK_ASSERT
+        (
+            m_textureCoordinatesMin.x < m_textureCoordinatesMax.x
+            && m_textureCoordinatesMin.y < m_textureCoordinatesMax.y,
+            "Sprite has invalid texture coordinates. Default [0, 1] texture coordinates will be used for this Sprite.", "Pekan"
+        );
+        m_verticesWorld[0].textureCoordinates = { m_textureCoordinatesMin.x, m_textureCoordinatesMin.y };
+        m_verticesWorld[1].textureCoordinates = { m_textureCoordinatesMax.x, m_textureCoordinatesMin.y };
+        m_verticesWorld[2].textureCoordinates = { m_textureCoordinatesMax.x, m_textureCoordinatesMax.y };
+        m_verticesWorld[3].textureCoordinates = { m_textureCoordinatesMin.x, m_textureCoordinatesMax.y };
 
         PK_ASSERT(m_textureIndex >= 0.0f, "Trying to update world vertices of a Sprite but texture index is negative.", "Pekan");
 
