@@ -12,7 +12,7 @@ uniform sampler2D uTextures[{{MAX_TEXTURE_SLOTS}} - 1];
 void main()
 {
     // Sample shape's color from the 1D colors texture
-    vec4 shapeColor = texture(uColorsTexture, vShapeIndex / float(uColorsCount - 1));
+    vec4 shapeColor = texture(uColorsTexture, (vShapeIndex + 0.5) / float(uColorsCount));
 
     // Sample sprite's color from sprite's 2D texture
     vec4 spriteColor = texture(uTextures[int(vTexIndex + 0.5)], vTexCoord);

@@ -1,0 +1,53 @@
+----------
+23.08.2025
+----------
+
+Started developing the game
+    Gleam House
+with Pekan, in a separate repository.
+
+----------
+24.08.2025
+----------
+
+{
+Found a bug in Pekan.
+While rendering a grid with a checkered pattern I noticed this weird bug.
+If the grid is sufficiently big (81x81 or bigger),
+then the second RectangleShape being rendered
+takes the color of the first RectangleShape being rendered.
+
+Why?
+The problem is this shader of Pekan:
+    2D_Batch_1DTexture_FragmentShader.pkshad
+Specifically, this line
+    vec4 shapeColor = texture(uColorsTexture, (vShapeIndex) / float(uColorsCount - 1));
+It samples the texture very close to the borders of the texels,
+and for bigger values of uColorsCount, the sampled texture coordinates become too small
+and maybe a floating point precision error happens?
+For example, if we have
+    uColorsCount = 5001
+and
+    vShapeIndex = 1
+then this expression
+    (vShapeIndex) / float(uColorsCount - 1)
+evaluates to
+    0.0002
+However, a texel's size in this texture is
+    1 / 5001 = 0.00019996
+So this value 0.0002 is almost on the border between texel 0 and texel 1.
+We know that since vShapeIndex is 1, we need it to sample from texel 1,
+so ideally it would sample at
+    (1 / 5001) + (1 / 5001) / 2
+which is the center of texel 1.
+So, basically we need to change this line
+    vec4 shapeColor = texture(uColorsTexture, (vShapeIndex) / float(uColorsCount - 1));
+to be
+    vec4 shapeColor = texture(uColorsTexture, (vShapeIndex + 0.5) / float(uColorsCount));
+instead.
+That's it. Now it works.
+
+All demos work as well.
+
+Done.
+}

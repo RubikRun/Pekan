@@ -1,0 +1,12 @@
+----------
+23.08.2025
+----------
+
+Pekan v0.2 is finished.
+Now I will spend some time building an actual game with Pekan,
+to see how it behaves in a real use case, how it feels to use it, get some ideas on what to improve
+and what to implement next, find some bugs, etc.
+
+The game will be called
+    Gleam House
+and it will be in a separate repository.
