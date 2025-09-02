@@ -268,4 +268,29 @@ That's about it.
 
 It works!
 
+Noticed a small bug.
+It looks like something is wrong with depth testing in Demo06.
+The center square appears to be behind all other shapes, although it's rendered last.
+This is definitely caused by the PostProcessor who enables depth testing in beginFrame().
+We don't want depth testing in Demo06.
+We want the depth testing enabled state to remain the same, whatever client code has set.
+So, let's not touch depth testing in beginFrame().
+However, we still need depth testing disabled in endFrame() when rendering the rectangle.
+Let's disable it but then bring it back to its original state.
+We'll disable it only if it's not already disabled by client code
+    bool originalIsEnabledDepthTest = RenderState::isEnabledDepthTest();
+    if (originalIsEnabledDepthTest)
+    {
+        RenderState::disableDepthTest();
+    }
+and then after rendering the rectangle we'll enable it back if needed
+    if (originalIsEnabledDepthTest)
+    {
+        RenderState::enableDepthTest();
+    }
+That's it.
+It works now.
+Center square in Demo06 is correctly drawn on top of all other shapes.
+
+Done.
 }

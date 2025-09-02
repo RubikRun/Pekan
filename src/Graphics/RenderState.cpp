@@ -4,7 +4,10 @@
 #include "GLCall.h"
 
 // Default number of samples to be used for Multisample Anti-Aliasing (MSAA)
-const int DEFAULT_NUMBER_OF_SAMPLES = 8;
+static constexpr int DEFAULT_NUMBER_OF_SAMPLES = 8;
+
+// A flag indicating if depth testing is currently enabled
+static bool g_isEnabledDepthTest = false;
 
 namespace Pekan
 {
@@ -30,11 +33,18 @@ namespace Graphics
 	void RenderState::enableDepthTest()
 	{
 		GLCall(glEnable(GL_DEPTH_TEST));
+		g_isEnabledDepthTest = true;
 	}
 
 	void RenderState::disableDepthTest()
 	{
 		GLCall(glDisable(GL_DEPTH_TEST));
+		g_isEnabledDepthTest = false;
+	}
+
+	bool RenderState::isEnabledDepthTest()
+	{
+		return g_isEnabledDepthTest;
 	}
 
 	void RenderState::enableMultisampleAntiAliasing()

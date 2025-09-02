@@ -112,9 +112,7 @@ namespace Graphics
 			g_frameBufferFinal.bind();
 		}
 		// Clear both color and depth from frame buffer
-		GLCall(RenderCommands::clear(true, true));
-		// Enable depth testing
-		GLCall(RenderState::enableDepthTest());
+		RenderCommands::clear(true, true);
 	}
 
 	void PostProcessor::endFrame()
@@ -135,14 +133,24 @@ namespace Graphics
 		// (It doesn't matter which one we unbind)
 		g_frameBufferFinal.unbind();
 
-		// Disable depth testing as we don't need it to render the post-processing result on the rectangle.
-		GLCall(RenderState::disableDepthTest());
+		// If depth testing is enabled, disable it as we don't need it to render the post-processed result onto the rectangle
+		bool originalIsEnabledDepthTest = RenderState::isEnabledDepthTest();
+		if (originalIsEnabledDepthTest)
+		{
+			RenderState::disableDepthTest();
+		}
 
 		// Bind final frame buffer's texture containing the rendered frame,
 		// because we want to access it in the post-processing shader
 		g_frameBufferFinal.bindTexture();
 		// Render the rectangle using the post-processing shader and the texture containing the rendered frame
 		g_renderObject.render();
+
+		// If depth testing was originally enabled, enable it again
+		if (originalIsEnabledDepthTest)
+		{
+			RenderState::enableDepthTest();
+		}
 	}
 
 } // namespace Graphics

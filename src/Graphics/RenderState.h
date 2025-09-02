@@ -133,6 +133,8 @@ namespace Graphics
 		// meaning that the ones in front will be rendered and the ones behind will be hidden.
 		static void enableDepthTest();
 		static void disableDepthTest();
+		// Checks if depth testing is enabled.
+		static bool isEnabledDepthTest();
 
 		// Enables Multisample Anti-Aliasing (MSAA) for removing jagged edges of shapes and lines.
 		// IMPORTANT: In order for MSAA to work you need to have a window
