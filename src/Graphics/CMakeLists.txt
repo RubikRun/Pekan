@@ -25,6 +25,8 @@ add_library(Graphics STATIC
     RenderComponents/Texture1D.cpp
     RenderComponents/Texture2D.h
     RenderComponents/Texture2D.cpp
+    RenderComponents/Texture2DMultisample.h
+    RenderComponents/Texture2DMultisample.cpp
     RenderComponents/FrameBuffer.h
     RenderComponents/FrameBuffer.cpp
     RenderComponents/RenderBuffer.h
@@ -45,6 +47,7 @@ SOURCE_GROUP("Source Files\\RenderComponents" FILES
     RenderComponents/Shader.cpp
     RenderComponents/Texture1D.cpp
     RenderComponents/Texture2D.cpp
+    RenderComponents/Texture2DMultisample.cpp
     RenderComponents/FrameBuffer.cpp
     RenderComponents/RenderBuffer.cpp
 )
@@ -55,6 +58,7 @@ SOURCE_GROUP("Header Files\\RenderComponents" FILES
     RenderComponents/Shader.h
     RenderComponents/Texture1D.h
     RenderComponents/Texture2D.h
+    RenderComponents/Texture2DMultisample.h
     RenderComponents/FrameBuffer.h
     RenderComponents/RenderBuffer.h
 )

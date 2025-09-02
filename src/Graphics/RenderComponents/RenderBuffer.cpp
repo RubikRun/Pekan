@@ -13,14 +13,23 @@ namespace Graphics
 		PK_ASSERT(!isValid(), "You forgot to destroy() a RenderBuffer instance.", "Pekan");
 	}
 
-	void RenderBuffer::create(int width, int height)
+	void RenderBuffer::create(int width, int height, int samplesPerPixel)
 	{
 		PK_ASSERT(!isValid(), "Trying to create a RenderBuffer instance that is already created.", "Pekan");
+		PK_ASSERT(samplesPerPixel > 0, "Trying to create a RenderBuffer with samples per pixel <= 0", "Pekan");
 
 		GLCall(glGenRenderbuffers(1, &m_id));
 		bind();
 		
-		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height));
+		if (samplesPerPixel > 1)
+		{
+			GLCall(glRenderbufferStorageMultisample(GL_RENDERBUFFER, samplesPerPixel, GL_DEPTH24_STENCIL8, width, height));
+
+		}
+		else
+		{
+			GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height));
+		}
 	}
 
 	void RenderBuffer::destroy()

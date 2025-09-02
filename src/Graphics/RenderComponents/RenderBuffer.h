@@ -17,7 +17,7 @@ namespace Graphics
 		~RenderBuffer();
 
 		// Creates the render buffer object, and binds it
-		void create(int width, int height);
+		void create(int width, int height, int samplesPerPixel = 1);
 		void destroy();
 
 		void bind() const;

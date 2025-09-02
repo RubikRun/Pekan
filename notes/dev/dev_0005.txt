@@ -191,4 +191,81 @@ Here's what I did:
 That's it.
 It almost works now.
 
+----------
+02.09.2025
+----------
+
+One last thing that we need in our post-processing is support for MSAA.
+Currently when we enable MSAA in our scene (Demo06_Scene for example)
+it is enabled only for the default frame buffer, which is the viewport,
+however we are rendering our shapes to a separate FrameBuffer and so they are not anti-aliased.
+Then, when we draw this separate FrameBuffer onto the viewport using a 2D texture
+we get anti-aliasing but it's of no use because the actual shapes are already drawn on the texture.
+
+Here's what I did to add support for MSAA in post-processing:
+1. Created a new class
+        Texture2DMultisample
+    which is similar to Texture2D but with multiple samples per texel.
+    Also it doesn't need most of the functionality of Texture2D, more specifically I removed these functions:
+        setMinifyFunction, setMagnifyFunction, setWrapModeX, setWrapModeY, setBorderColor, setImage
+    and the overload of create() taking in an Image.
+    Then, we need this new member variable
+        int m_samplesPerTexel = -1;
+    that will be taken in in create()
+        void create(int samplesPerTexel);
+    Finally, we use
+        GL_TEXTURE_2D_MULTISAMPLE
+    everywhere instead of GL_TEXTURE_2D
+    and in setSize() we call
+        glTexImage2DMultisample(...)
+    instead of glTexImage2D().
+    That's about it.
+2. Extend class RenderBuffer to support multiple samples.
+    Add an int "samplesPerPixel" parameter to the create() function
+        void create(int width, int height, int samplesPerPixel = 1);
+    Then, in create() check if samplesPerPixel > 1, and if so we'll call
+        glRenderbufferStorageMultisample(...)
+    Otherwise we'll call
+        glRenderbufferStorage(...)
+    as we did until now.
+    We don't need to keep this "samplesPerPixel" value in a member variable
+    because we use it only once in the create() function.
+    If we need it later, we'll add a member variable.
+3. Extend class FrameBuffer to support multiple samples.
+    Add an int "samplesPerPixel" parameter to the create() function
+        void create(int width, int height, int samplesPerPixel = 1);
+    together with a member variable
+        int m_samplesPerPixel = -1;
+    Add a new member variable
+        Texture2DMultisample m_textureMultisample;
+    We will use either m_texture or m_textureMultisample depending on the value of m_samplesPerPixel
+    Add a new function
+        void createTextureMultisample(int width, int height);
+    for creating a multisample texture instead of a normal one.
+    Then in create() call either createTexture() or createTextureMultisample()
+    depending on the value of m_samplesPerPixel.
+    Similarly in bindTexture() and destroy() use the correct texture depending on the value of m_samplesPerPixel
+    Then, in
+        createRenderBuffer()
+    pass m_samplesPerPixel when calling m_renderBuffer's create() function:
+        m_renderBuffer.create(width, height, m_samplesPerPixel);
+    Finally we need this function
+        void resolveMultisampleToSinglesample(FrameBuffer& targetFrameBuffer);
+    that copies a multisample FrameBuffer into a single-sample one.
+4. Extend class PostProcessor to support multiple samples.
+    Add an int "samplesPerPixel" parameter to the init() function
+        static bool init(const char* postProcessingShaderFilepath, int samplesPerPixel);
+    together with a global static variable in the .cpp file
+        static int g_samplesPerPixel = -1;
+    Then, we'll have 2 FrameBuffers instead of one, again as global static variables
+        static FrameBuffer g_frameBufferMultisample;
+        static FrameBuffer g_frameBufferFinal;
+    In the case of doing multisample rendering the draw calls will draw into g_frameBufferMultisample
+    and in the end in endFrame() we will copy all pixel data from g_frameBufferMultisample to g_frameBufferFinal
+    transforming the data from multisample to single-sample (we'll use the resolveMultisampleToSinglesample() function described above)
+    In the case of doing single-sample rendering the draw calls will go directly into g_frameBufferFinal.
+That's about it.
+
+It works!
+
 }

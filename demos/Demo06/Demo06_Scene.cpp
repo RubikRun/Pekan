@@ -5,6 +5,7 @@
 #include "RenderCommands.h"
 #include "Renderer2DSystem.h"
 #include "PostProcessor.h"
+#include "PekanApplication.h"
 
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"

@@ -112,6 +112,7 @@ namespace Graphics
 		friend class IndexBuffer;
 		friend class Texture1D;
 		friend class Texture2D;
+		friend class Texture2DMultisample;
 
 	public:
 

@@ -5,6 +5,8 @@
 #include "FrameBuffer.h"
 #include "Utils/FileUtils.h"
 #include "PekanLogger.h"
+#include "PekanEngine.h"
+#include "PekanApplication.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_GRAPHICS_ROOT_DIR "/Shaders/PostProcessor_VertexShader.glsl"
 
@@ -16,8 +18,21 @@ namespace Graphics
 	// A flag indicating if the post processor has been initialized
 	static bool g_isInitialized = false;
 
-	// Frame buffer where each frame will be rendered before post-processing
-	static FrameBuffer g_frameBuffer;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// The flow of data here is basically this:
+	//     -> draw call
+	//     -> g_frameBufferMultisample    (only if using multisample rendering)
+	//     -> g_frameBufferFinal
+	//     -> g_renderObject with a post-processing shader applied
+	//     -> screen
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// An intermediate frame buffer that will be used to render multisample frames.
+	// A multisample frame has to then be transferred to the final frame buffer before applying the post-processing shader.
+	static FrameBuffer g_frameBufferMultisample;
+
+	// The final frame buffer that will be passed to the post-processing shader.
+	static FrameBuffer g_frameBufferFinal;
 
 	// Vertices of a rectangle covering the whole window/viewport
 	static constexpr float RECTANGLE_VERTICES[] =
@@ -35,13 +50,34 @@ namespace Graphics
 	// used to render rectangle with post-processed frame.
 	static RenderObject g_renderObject;
 
+	// Number of samples per pixel
+	static int g_samplesPerPixel = -1;
+
 	bool PostProcessor::init(const char* postProcessingShaderFilepath)
 	{
 		PK_ASSERT(!g_isInitialized, "Trying to initialize the PostProcessor but it's already initialized.", "Pekan");
 
-		// Create underlying frame buffer with the size of the window
+		// Get number of samples per pixel from application
+		{
+			const PekanApplication* application = PekanEngine::getApplication();
+			if (application != nullptr)
+			{
+				g_samplesPerPixel = application->getProperties().numberOfSamples;
+			}
+			else
+			{
+				PK_LOG_ERROR("Trying to initialize the PostProcessor but there is no application registered in Pekan.", "Pekan");
+				g_samplesPerPixel = 1;
+			}
+		}
+
+		// Create underlying frame buffers with the size of the window
 		const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
-		g_frameBuffer.create(windowSize.x, windowSize.y);
+		if (g_samplesPerPixel > 1)
+		{
+			g_frameBufferMultisample.create(windowSize.x, windowSize.y, g_samplesPerPixel);
+		}
+		g_frameBufferFinal.create(windowSize.x, windowSize.y, 1);
 
 		// Create underlying render object with rectangle's vertices,
 		// default vertex shader, and given fragment shader
@@ -66,7 +102,15 @@ namespace Graphics
 	{
 		PK_ASSERT(g_isInitialized, "Trying to begin frame with the PostProcessor but it's not yet initialized.", "Pekan");
 
-		g_frameBuffer.bind();
+		// Bind the correct frame buffer depending on samples per pixel
+		if (g_samplesPerPixel > 1)
+		{
+			g_frameBufferMultisample.bind();
+		}
+		else
+		{
+			g_frameBufferFinal.bind();
+		}
 		// Clear both color and depth from frame buffer
 		GLCall(RenderCommands::clear(true, true));
 		// Enable depth testing
@@ -76,16 +120,27 @@ namespace Graphics
 	void PostProcessor::endFrame()
 	{
 		PK_ASSERT(g_isInitialized, "Trying to end frame with the PostProcessor but it's not yet initialized.", "Pekan");
-		// Unbind our frame buffer containing the rendered frame,
+
+		// If we are using the multisample frame buffer,
+		// resolve it to the final frame buffer.
+		// This will transform all pixel data from multisample to single-sample
+		// and copy it to the final frame buffer
+		if (g_samplesPerPixel > 1)
+		{
+			g_frameBufferMultisample.resolveMultisampleToSinglesample(g_frameBufferFinal);
+		}
+
+		// Unbind our frame buffer,
 		// effectively binding the default frame buffer which is the screen.
-		g_frameBuffer.unbind();
+		// (It doesn't matter which one we unbind)
+		g_frameBufferFinal.unbind();
 
 		// Disable depth testing as we don't need it to render the post-processing result on the rectangle.
 		GLCall(RenderState::disableDepthTest());
 
-		// Bind frame buffer's texture containing the rendered frame,
+		// Bind final frame buffer's texture containing the rendered frame,
 		// because we want to access it in the post-processing shader
-		g_frameBuffer.bindTexture();
+		g_frameBufferFinal.bindTexture();
 		// Render the rectangle using the post-processing shader and the texture containing the rendered frame
 		g_renderObject.render();
 	}
