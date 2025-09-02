@@ -8,6 +8,7 @@ namespace Pekan {
 namespace Graphics {
 
 	class Image;
+	class FrameBuffer;
 
 	// A class representing a 2D texture on the GPU.
 	class Texture2D
@@ -24,6 +25,10 @@ namespace Graphics {
 
 		// Sets a new image to the texture
 		void setImage(const Image& image);
+		// Sets texture's size,
+		// allocating memory for that many texels,
+		// but NOT filling them with data.
+		void setSize(int width, int height, int numChannels = 4);
 
 		// Binds/unbinds texture to currently active texture slot
 		void bind() const;
@@ -49,6 +54,9 @@ namespace Graphics {
 		// This color will be used to color pixels outside of the [0, 1] range if the wrap mode is ClampToBorder.
 		void setBorderColor(glm::vec4 color);
 
+		// Attaches texture to a given frame buffer
+		void attachToFrameBuffer(const FrameBuffer& frameBuffer) const;
+
 		// Checks if texture is valid, meaning that it has been successfully created and not yet destroyed
 		bool isValid() const { return m_id != 0; }
 
@@ -56,6 +64,9 @@ namespace Graphics {
 
 		// Determines the format (and internal format) that a texture must have to support a given image
 		static void getFormat(const Image& image, unsigned& format, unsigned& internalFormat);
+
+		// Determines the format (and internal format) that a texture must have to support a given number of channels
+		static void getFormat(int numChannels, unsigned& format, unsigned& internalFormat);
 
 	private: /* variables */
 

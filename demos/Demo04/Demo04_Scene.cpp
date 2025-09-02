@@ -256,13 +256,8 @@ namespace Demo
         {
             const glm::vec4 backgroundColor = m_guiWindow->getBackgroundColor();
             RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
-            RenderCommands::clear();
         }
-        else
-        {
-            // If there is no GUI window attached, just clear background with default color
-            RenderCommands::clear();
-        }
+        RenderCommands::clear();
 
         m_renderObject.render();
 

@@ -4,6 +4,7 @@
 #include "PekanTools.h"
 #include "RenderCommands.h"
 #include "Renderer2DSystem.h"
+#include "PostProcessor.h"
 
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"
@@ -12,6 +13,8 @@
 
 static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
 static const float ZOOM_SPEED = 1.1f;
+
+#define POST_PROCESSING_SHADER_FILEPATH "Shaders/PostProcessingShader.glsl"
 
 using namespace Pekan;
 using namespace Pekan::Graphics;
@@ -73,6 +76,11 @@ namespace Demo
 		createCameras();
 		createShapes();
 
+		if (!PostProcessor::init(POST_PROCESSING_SHADER_FILEPATH))
+		{
+			PK_LOG_ERROR("Failed to initialize PostProcessor.", "Demo06");
+		}
+
         return true;
 	}
 
@@ -91,6 +99,7 @@ namespace Demo
 
 	void Demo06_Scene::render() const
 	{
+		PostProcessor::beginFrame();
 		Renderer2DSystem::beginFrame();
 		RenderCommands::clear();
 
@@ -145,6 +154,7 @@ namespace Demo
 		m_centerSquare.render();
 
 		Renderer2DSystem::endFrame();
+		PostProcessor::endFrame();
 	}
 
 	void Demo06_Scene::exit()

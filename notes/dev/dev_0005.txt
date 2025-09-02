@@ -73,3 +73,122 @@ function when we set "textureCoordinates" attribute of the 4 vertices
     m_verticesWorld[3].textureCoordinates = { m_textureCoordinatesMin.x, m_textureCoordinatesMax.y };
 That's it.
 }
+
+----------
+31.08.2025
+----------
+
+{
+To continue Gleam House's development we need a new feature in Pekan.
+We need support for post-processing shaders.
+
+For that, we'll basically have to do our rendering to a FrameBuffer object
+instead of directly to the window.
+This FrameBuffer object will be linked to a 2D texture
+that we can then render on top of 2 triangles covering the whole window,
+using a custom fragment shader, which will be the "post-processing shader".
+
+Okay, did it.
+Here's what I did:
+1. Created a new class
+        class FrameBuffer
+    in 2 new files
+        FrameBuffer.h
+        FrameBuffer.cpp
+    It can be created with some width and height:
+        void create(int width, int height);
+    It has standard destroy(), bind(), unbind() and isValid() functions.
+    Internally it consists of a 2D texture and a render buffer
+        Texture2D m_texture;
+		RenderBuffer m_renderBuffer;
+    The 2D texture will contain the color channels of rendered pixel
+    and the render buffer will contain the depth and stencil channels of rendered pixels.
+    What is a RenderBuffer? See in next point.
+    The m_texture and m_renderBuffer are created in these 2 functions
+        void createTexture(int width, int height);
+		void createRenderBuffer(int width, int height);
+    which are called from create(...)
+    In createTexture() we create m_texture as a standard 2D texture with the same width and height as the frame buffer,
+    (however we only allocate memory for it, we don't put any data, see point 3)
+    and at the end we attach the texture to the frame buffer like that:
+        m_texture.attachToFrameBuffer(*this);
+    This attachToFrameBuffer() is a new function in class Textutre2D
+        void attachToFrameBuffer(const FrameBuffer& frameBuffer) const;
+    It basically needs to do this OpenGL call:
+        GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_id, 0));
+    Similarly in createRenderBuffer() we need to create a RenderBuffer with the same width and height and attach it to the frame buffer:
+        m_renderBuffer.attachToFrameBuffer(*this);
+    We'll see this attachToFrameBuffer() function of class RenderBuffer below when looking at class RenderBuffer
+    Finally, we have this function
+        void bindTexture() const;
+    which just binds the underlying texture
+        m_texture.bind();
+    We need this because binding the FrameBuffer and binding its texture are conceptually different,
+    and users of this class WILL need to bind the texture separately.
+    Also, in bind() we don't bind m_texture and we don't bind m_renderBuffer, we only bind the frame buffer.
+2. Created a new class
+        class RenderBuffer
+    in 2 new files
+        RenderBuffer.h
+        RenderBuffer.cpp
+    It can be created with some width and height:
+        void create(int width, int height);
+    It has standard destroy(), bind(), unbind() and isValid() functions.
+    In the create() function, after creating the render buffer object, we need to declare its storage:
+        GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height));
+    For now, we'll hardcode it to be 24 depth bits and 8 stencil bits. Later we might abstract this away into the API.
+    We need one more things, which is this function
+        void attachToFrameBuffer(const FrameBuffer& frameBuffer) const;
+    for attaching the render buffer to a frame buffer. It just needs to do this OpenGL call:
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_id);
+3. We need to add a function to Texture2D
+        void setSize(int width, int height, int numChannels = 4);
+    that just sets the size of the texture, allocates that much memory, but doesn't set any data.
+    We need this in FrameBuffer's createTexture() function to create the texture but leave its data empty.
+    The data will automatically get filled because the texture is attached to the frame buffer,
+    so whenever the frame buffer is bound and a draw call happens some pixel data will get filled to the texture.
+4. Created a new class
+        class PostProcessor
+    in 2 new files
+        PostProcessor.h
+        PostProcessor.cpp
+    The idea of this class is to tie together a FrameBuffer with a rectangle covering the whole window
+    where the final texture will be rendered with the post-processing shader applied.
+    Also, it will expose the API through which client code can use post-processing.
+    So, it will be a singleton/static class and it will have these 3 public functions
+        static bool init(const char* postProcessingShaderFilepath);
+        static void beginFrame();
+        static void endFrame();
+    Client code will need to initialize the PostProcessor if they want to use it,
+    and that's when they will provide the post-processing shader that they want to use.
+    Then, in scene's render() function client code will have to call
+        PostProcessor::beginFrame();
+        PostProcessor::endFrame();
+    if they want post-processing on that frame.
+    Internally, in the .cpp file we'll have a single global instance of a FrameBuffer
+        static FrameBuffer g_frameBuffer;
+    We will also have a single global instance of a RenderObject
+        static RenderObject g_renderObject;
+    This RenderObject will be the rectangle covering the whole window,
+    where g_frameBuffer's texture will be drawn and the post-processing shader will be applied.
+    In PostProcessor's init() function we need to create the FrameBuffer with window's size
+        const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
+        g_frameBuffer.create(windowSize.x, windowSize.y);
+    and then create g_renderObject as well - it's mostly straightforward, so skipping some details here,
+    but the important part is that it's a rectangle covering the whole window and it has the post-processing shader.
+    In PostProcessor's beginFrame() function we need to bind the frame buffer
+        g_frameBuffer.bind();
+    because we want any subsequent draw calls to go on this frame buffer, NOT directly on the screen.
+    Then, in PostProcessor's endFrame() function we need to unbind the frame buffer
+        g_frameBuffer.unbind();
+    because it already contains the full rendered frame, we don't want to draw to it anymore,
+    instead we want to draw to the screen now. Unbinding a frame buffer binds the default frame buffer which is the screen.
+    After that we will bind frame buffer's texture which contains the rendered frame, but without post-processing yet
+        g_frameBuffer.bindTexture();
+    and we will render g_renderObject
+        g_renderObject.render();
+    which will render, on screen, the contents of the texture, which is the rendered frame, but with the post-processing shader applied.
+That's it.
+It almost works now.
+
+}

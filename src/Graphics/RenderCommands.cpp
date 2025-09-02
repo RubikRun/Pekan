@@ -18,15 +18,19 @@ namespace Graphics
 		GLCall(glDrawElements(getDrawModeOpenGLEnum(mode), elementsCount, GL_UNSIGNED_INT, 0));
 	}
 
-	void RenderCommands::clear(bool clearDepthBuffer)
+	void RenderCommands::clear(bool doClearColorBuffer, bool doClearDepthBuffer)
 	{
-		if (clearDepthBuffer)
+		if (doClearColorBuffer && doClearDepthBuffer)
 		{
 			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT))
 		}
-		else
+		else if (doClearColorBuffer)
 		{
 			GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		}
+		else if (doClearDepthBuffer)
+		{
+			GLCall(glClear(GL_DEPTH_BUFFER_BIT));
 		}
 	}
 

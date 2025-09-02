@@ -15,7 +15,7 @@ namespace Pekan
 	typedef std::shared_ptr<const Layer> Layer_ConstPtr;
 
 	// A base class for a layer in Pekan.
-	// A layer in Pekan is responsible for rendering a part of an application,  updating itself between frames.
+	// A layer in Pekan is responsible for rendering a part of an application, updating itself between frames.
 	// Layers in Pekan are usually composed together in a LayerStack which makes up the visuals of an application.
 	// ----
 	// For example, in a 3D game we might have a layer for the game world, and another layer for the GUI.

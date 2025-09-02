@@ -32,6 +32,11 @@ namespace Graphics
 		GLCall(glEnable(GL_DEPTH_TEST));
 	}
 
+	void RenderState::disableDepthTest()
+	{
+		GLCall(glDisable(GL_DEPTH_TEST));
+	}
+
 	void RenderState::enableMultisampleAntiAliasing()
 	{
 		GLCall(glEnable(GL_MULTISAMPLE));

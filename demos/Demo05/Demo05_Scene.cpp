@@ -82,13 +82,8 @@ namespace Demo
         {
             const glm::vec3 backgroundColor = m_guiWindow->getBackgroundColor();
             RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
-            RenderCommands::clear();
         }
-        else
-        {
-            // If there is no GUI window attached, just clear background with default color
-            RenderCommands::clear();
-        }
+        RenderCommands::clear();
 
         for (int i = 0; i < MTT0_SUBDIVS; i++)
         {

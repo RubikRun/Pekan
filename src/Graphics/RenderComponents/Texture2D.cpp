@@ -3,6 +3,7 @@
 #include "PekanLogger.h"
 #include "GLCall.h"
 #include "Image.h"
+#include "FrameBuffer.h"
 
 #include <glm/glm.hpp>
 
@@ -67,12 +68,25 @@ namespace Graphics {
 
 		bind();
 
-		// Set image data to the texture object
+		// Set texture's image data to the data of given image
 		unsigned format = 0, internalFormat = 0;
 		getFormat(image, format, internalFormat);
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.getWidth(), image.getHeight(), 0, format, DEFAULT_PIXEL_TYPE, image.getData()));
 		// Generate mipmaps
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+	}
+
+	void Texture2D::setSize(int width, int height, int numChannels)
+	{
+		PK_ASSERT(isValid(), "Trying to set size of a Texture2D that is not yet created.", "Pekan");
+
+		bind();
+
+		// Set texture's image data to null,
+		// but providing given size, effectively allocating memory for that many texels, leaving the data empty
+		unsigned format = 0, internalFormat = 0;
+		getFormat(numChannels, format, internalFormat);
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, DEFAULT_PIXEL_TYPE, nullptr));
 	}
 
 	void Texture2D::bind() const
@@ -171,17 +185,28 @@ namespace Graphics {
 		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color.x));
 	}
 
+	void Texture2D::attachToFrameBuffer(const FrameBuffer& frameBuffer) const
+	{
+		frameBuffer.bind();
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_id, 0));
+	}
+
 	void Texture2D::getFormat(const Image& image, unsigned& format, unsigned& internalFormat)
 	{
-		PK_ASSERT_QUICK(image.getNumChannels() >= 0);
+		getFormat(image.getNumChannels(), format, internalFormat);
+	}
 
-		switch (image.getNumChannels())
+	void Texture2D::getFormat(int numChannels, unsigned& format, unsigned& internalFormat)
+	{
+		PK_ASSERT_QUICK(numChannels >= 0);
+
+		switch (numChannels)
 		{
 			case 1:    format = GL_RED;     internalFormat = GL_R8;       break;
 			case 2:    format = GL_RG;      internalFormat = GL_RG8;      break;
 			case 3:    format = GL_RGB;     internalFormat = GL_RGB8;     break;
 			case 4:    format = GL_RGBA;    internalFormat = GL_RGBA8;    break;
-			default: PK_LOG_ERROR("Trying to use an unsupported image format for a texture.", "Pekan"); break;
+			default: PK_LOG_ERROR("Trying to get texture format for an unsupported number of channels.", "Pekan"); break;
 		}
 	}
 

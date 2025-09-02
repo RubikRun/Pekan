@@ -91,7 +91,7 @@ namespace Graphics
 		void create(const void* data, long long size, BufferDataUsage dataUsage = BufferDataUsage::StaticDraw);
 		void destroy();
 
-		// Fills vertex buffer with given data. Any previous data is removed.
+		// Fills vertex buffer with given data. Any previous data is overwritten.
 		void setData(const void* data, long long size, BufferDataUsage dataUsage = BufferDataUsage::StaticDraw);
 		// Fills a region of the vertex buffer with given data. Previous data in this region is overwritten.
 		// @param[in] data - Data to be filled in to the region

@@ -37,8 +37,9 @@ namespace Graphics
 		static void drawIndexed(unsigned elementsCount, DrawMode mode = DrawMode::Triangles);
 
 		// Clears everything rendered on window.
-		// @param[in] clearDepthBuffer - Optional parameter to clear depth buffer as well
-		static void clear(bool clearDepthBuffer = false);
+		// @param[in] doClearColorBuffer - a flag indicating whether color buffer should be cleared
+		// @param[in] doClearDepthBuffer - a flag indicating whether depth buffer should be cleared
+		static void clear(bool doClearColorBuffer = true, bool doClearDepthBuffer = false);
 
 	private:
 

@@ -6,6 +6,7 @@ namespace Pekan
 {
 namespace Graphics
 {
+
 	IndexBuffer::~IndexBuffer()
 	{
 		PK_ASSERT(!isValid(), "You forgot to destroy() an IndexBuffer instance.", "Pekan");

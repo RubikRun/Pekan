@@ -57,13 +57,8 @@ namespace Demo
         {
             glm::vec4 clearColor = m_guiWindow->getClearColor();
             RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-            RenderCommands::clear();
         }
-        else
-        {
-            // If there is no GUI window attached, just clear background with default color
-            RenderCommands::clear();
-        }
+        RenderCommands::clear();
 
         m_renderObject.render();
 	}
