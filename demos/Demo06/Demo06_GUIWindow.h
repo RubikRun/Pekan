@@ -5,6 +5,7 @@
 #include "TextWidget.h"
 #include "SliderIntWidget.h"
 #include "CheckboxWidget.h"
+#include "ComboBoxWidget.h"
 #include "FPSDisplayWidget.h"
 
 namespace Demo
@@ -30,6 +31,9 @@ namespace Demo
 		bool isEnabledPolygons() const { return gui.showPolygonsWidget->isChecked(); }
 		bool isEnabledLines() const { return gui.showLinesWidget->isChecked(); }
 
+		// Returns index of selected post-processing shader
+		int getPpsIndex() const { return gui.ppsComboBoxWidget->getIndex(); }
+
 	private: /* functions */
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
@@ -46,6 +50,8 @@ namespace Demo
 			Pekan::GUI::CheckboxWidget_Ptr showTrianglesWidget =        std::make_shared<Pekan::GUI::CheckboxWidget>();
 			Pekan::GUI::CheckboxWidget_Ptr showPolygonsWidget =         std::make_shared<Pekan::GUI::CheckboxWidget>();
 			Pekan::GUI::CheckboxWidget_Ptr showLinesWidget =            std::make_shared<Pekan::GUI::CheckboxWidget>();
+			Pekan::GUI::ComboBoxWidget_Ptr ppsComboBoxWidget =          std::make_shared<Pekan::GUI::ComboBoxWidget>();
+			Pekan::GUI::TextWidget_Ptr ppsLabel =                       std::make_shared<Pekan::GUI::TextWidget>();
 			Pekan::GUI::FPSDisplayWidget_Ptr fpsDisplayWidget =         std::make_shared<Pekan::GUI::FPSDisplayWidget>();
 		} gui;
 	};

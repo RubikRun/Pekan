@@ -68,6 +68,9 @@ namespace Demo
 		void updatePolygons(float dt);
 		void updateLines(float dt);
 
+		// Updates post-processing shader
+		void updatePps();
+
 		bool onKeyPressed(const Pekan::KeyPressedEvent& event) override;
 
 	private: /* variables */

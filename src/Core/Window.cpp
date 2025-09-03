@@ -153,6 +153,26 @@ namespace Pekan
         return { width, height };
     }
 
+    int Window::getSizeSmaller() const
+    {
+        const glm::ivec2 size = getSize();
+        if (size.x < size.y)
+        {
+            return size.x;
+        }
+        return size.y;
+    }
+
+    int Window::getSizeBigger() const
+    {
+        const glm::ivec2 size = getSize();
+        if (size.x > size.y)
+        {
+            return size.x;
+        }
+        return size.y;
+    }
+
     glm::ivec2 Window::getFrameBufferSize() const
     {
         int width, height;

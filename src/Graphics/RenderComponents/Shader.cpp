@@ -101,6 +101,15 @@ namespace Graphics {
 		GLCall(glUniform1f(location, value));
 	}
 
+	void Shader::setUniform1fv(const char* uniformName, int count, const float* values)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform1fv to a Shader that is not yet created.", "Pekan");
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform1fv(location, count, values));
+	}
+
 	void Shader::setUniform1i(const char* uniformName, int value)
 	{
 		PK_ASSERT(isValid(), "Trying to set a uniform1i to a Shader that is not yet created.", "Pekan");
@@ -110,13 +119,13 @@ namespace Graphics {
 		GLCall(glUniform1i(location, value));
 	}
 
-	void Shader::setUniform1iv(const char* uniformName, int count, const int* value)
+	void Shader::setUniform1iv(const char* uniformName, int count, const int* values)
 	{
 		PK_ASSERT(isValid(), "Trying to set a uniform1iv to a Shader that is not yet created.", "Pekan");
 
 		bind();
 		const int location = getUniformLocation(uniformName);
-		GLCall(glUniform1iv(location, count, value));
+		GLCall(glUniform1iv(location, count, values));
 	}
 
 	void Shader::setUniform2fv(const char* uniformName, const glm::vec2& value)

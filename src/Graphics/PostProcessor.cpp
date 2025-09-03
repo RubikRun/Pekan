@@ -153,5 +153,10 @@ namespace Graphics
 		}
 	}
 
+	Shader* PostProcessor::getShader()
+	{
+		return &g_renderObject.getShader();
+	}
+
 } // namespace Graphics
 } // namespace Pekan

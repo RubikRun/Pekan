@@ -31,8 +31,9 @@ namespace Graphics {
 
 		// Functions for setting the value of a uniform inside the shader
 		void setUniform1f(const char* uniformName, float value);
+		void setUniform1fv(const char* uniformName, int count, const float* values);
 		void setUniform1i(const char* uniformName, int value);
-		void setUniform1iv(const char* uniformName, int count, const int* value);
+		void setUniform1iv(const char* uniformName, int count, const int* values);
 		void setUniform2fv(const char* uniformName, const glm::vec2& value);
 		void setUniform3fv(const char* uniformName, const glm::vec3& value);
 		void setUniform4fv(const char* uniformName, const glm::vec4& value);

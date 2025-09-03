@@ -294,3 +294,15 @@ Center square in Demo06 is correctly drawn on top of all other shapes.
 
 Done.
 }
+
+----------
+03.09.2025
+----------
+
+{
+While we're at it, let's test post-processing shaders.
+Let's add 5 different post-processing shaders in Demo06
+and a combo box in GUI to choose between them.
+
+Done. Works pretty good and looks cool.
+}

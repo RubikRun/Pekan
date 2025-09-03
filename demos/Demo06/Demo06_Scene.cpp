@@ -6,22 +6,82 @@
 #include "Renderer2DSystem.h"
 #include "PostProcessor.h"
 #include "PekanApplication.h"
+#include "ShaderPreprocessor.h"
 
 #include "Events/MouseEvents.h"
 #include "Events/KeyEvents.h"
 
 #include <algorithm>
 
-static glm::vec2 BBOX_MIN = glm::vec2(- 500.0f, -25.0f);
-static const float ZOOM_SPEED = 1.1f;
-
-#define POST_PROCESSING_SHADER_FILEPATH "Shaders/PostProcessingShader.glsl"
+#define POST_PROCESSING_SHADER_FILEPATH_PKSHAD "Shaders/PostProcessingShader.pkshad"
+#define POST_PROCESSING_SHADER_FILEPATH_GLSL "Shaders/PostProcessingShader.glsl"
 
 using namespace Pekan;
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
 using namespace Pekan::Utils;
 using namespace Pekan::Tools;
+
+static glm::vec2 BBOX_MIN = glm::vec2(-500.0f, -25.0f);
+static const float ZOOM_SPEED = 1.1f;
+
+static constexpr float kernelIdentity[9] = {
+	0.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 0.0f, 0.0f
+};
+
+static void lerpKernels(const float* a, const float* b, float* out, float w)
+{
+	for (int i = 0; i < 9; i++)
+	{
+		out[i] = (1.0f - w) * a[i] + w * b[i];
+	}
+}
+
+static void getKernelSharpen(float* kernel, float t)
+{
+	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+	static const float base[9] = {
+		 0.0f, -1.0f,  0.0f,
+		-1.0f,  5.0f, -1.0f,
+		 0.0f, -1.0f,  0.0f
+	};
+	lerpKernels(kernelIdentity, base, kernel, w);
+}
+
+static void getKernelBlur(float* kernel, float t)
+{
+	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+	static const float base[9] = {
+		1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+		1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+		1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f
+	};
+	lerpKernels(kernelIdentity, base, kernel, w);
+}
+
+static void getKernelEdgeDetection(float* kernel, float t)
+{
+	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+	static const float base[9] = {
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -8.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f
+	};
+	lerpKernels(kernelIdentity, base, kernel, w);
+}
+
+static void getKernelEmboss(float* kernel, float t)
+{
+	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+	static const float base[9] = {
+		-2.0f, -1.0f,  0.0f,
+		-1.0f,  1.0f,  1.0f,
+		 0.0f,  1.0f,  2.0f
+	};
+	lerpKernels(kernelIdentity, base, kernel, w);
+}
 
 namespace Demo
 {
@@ -77,9 +137,24 @@ namespace Demo
 		createCameras();
 		createShapes();
 
-		if (!PostProcessor::init(POST_PROCESSING_SHADER_FILEPATH))
+		ShaderPreprocessor::preprocess
+		(
+			POST_PROCESSING_SHADER_FILEPATH_PKSHAD,
+			{
+				{ "NEIGHBORS_SAMPLE_OFFSET_INVERSE_X", std::to_string(PekanEngine::getWindow().getSize().x / 3) },
+				{ "NEIGHBORS_SAMPLE_OFFSET_INVERSE_Y", std::to_string(PekanEngine::getWindow().getSize().y / 3) }
+			}
+		);
+
+		if (!PostProcessor::init(POST_PROCESSING_SHADER_FILEPATH_GLSL))
 		{
 			PK_LOG_ERROR("Failed to initialize PostProcessor.", "Demo06");
+			return false;
+		}
+		if (PostProcessor::getShader() == nullptr)
+		{
+			PK_LOG_ERROR("PostProcessor's shader is null.", "Demo06");
+			return false;
 		}
 
         return true;
@@ -94,6 +169,8 @@ namespace Demo
 		}
 
 		updateShapes(float(dt));
+
+		updatePps();
 
 		t += float(dt);
 	}
@@ -494,6 +571,24 @@ namespace Demo
 				{ 0.98f, 1.02f }
 			));
 		}
+	}
+
+	void Demo06_Scene::updatePps()
+	{
+		Shader* postProcessorShader = PostProcessor::getShader();
+		PK_ASSERT_QUICK(postProcessorShader != nullptr);
+		static float kernel[9];
+		const int ppsIndex = m_guiWindow->getPpsIndex();
+		switch (ppsIndex)
+		{
+			case 0: postProcessorShader->setUniform1fv("kernel", 9, kernelIdentity); return;
+			case 1: getKernelSharpen(kernel, t); break;
+			case 2: getKernelBlur(kernel, t); break;
+			case 3: getKernelEdgeDetection(kernel, t); break;
+			case 4: getKernelEmboss(kernel, t); break;
+			default: PK_LOG_ERROR("Invalid post-processing shader selected in GUI.", "Demo06");
+		}
+		postProcessorShader->setUniform1fv("kernel", 9, kernel);
 	}
 
 	bool Demo06_Scene::onKeyPressed(const Pekan::KeyPressedEvent& event)

@@ -18,6 +18,8 @@ namespace Demo
 		gui.showTrianglesWidget->create(this, "Show Triangles", true);
 		gui.showPolygonsWidget->create(this, "Show Polygons", true);
 		gui.showLinesWidget->create(this, "Show Lines", true);
+		gui.ppsLabel->create(this, "Post-Processing Shader");
+		gui.ppsComboBoxWidget->create(this, { "Identity", "Sharpen", "Blur", "Edge Detection", "Emboss" });
 		gui.fpsDisplayWidget->create(this);
 
 		return true;
@@ -26,7 +28,7 @@ namespace Demo
 	GUIWindowProperties Demo06_GUIWindow::getProperties() const
 	{
 		GUIWindowProperties props;
-		props.size = { 300, 360 };
+		props.size = { 300, 420 };
 		props.name = "Demo06";
 		return props;
 	}
