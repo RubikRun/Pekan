@@ -89,7 +89,7 @@ namespace Demo
         );
         m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
 
-        m_renderObject.getShader().setUniform2fv("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
+        m_renderObject.getShader().setUniform2f("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
 
         return true;
 	}

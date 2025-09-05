@@ -78,7 +78,7 @@ namespace Tools
                 return false;
             }
 
-            const glm::vec2 mousePosWorldBefore = camera->windowToWorld(m_mousePos);
+            const glm::vec2 mousePosWorldBefore = camera->windowToWorldPosition(m_mousePos);
 
             // NOTE: Scroll amount will be mostly 1.0 or -1.0.
             //       If scrolled really fast it could sometimes be 2.0 or -2.0.
@@ -97,7 +97,7 @@ namespace Tools
             // Use the difference between mouse position in world space before zooming,
             // and mouse position in world space after zooming,
             // to move the camera, so that zooming is done in the direction of the mouse, NOT towards the center.
-            const glm::vec2 mousePosWorldAfter = camera->windowToWorld(m_mousePos);
+            const glm::vec2 mousePosWorldAfter = camera->windowToWorldPosition(m_mousePos);
             const glm::vec2 cameraPosDelta = mousePosWorldBefore - mousePosWorldAfter;
             camera->move(cameraPosDelta);
 

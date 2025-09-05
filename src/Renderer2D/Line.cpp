@@ -84,7 +84,7 @@ namespace Renderer2D
 	{
 		PK_ASSERT(m_renderObject.isValid(), "Trying to set color of a Line that is not yet created.", "Pekan");
 		m_color = color;
-		m_renderObject.getShader().setUniform4fv("uColor", color);
+		m_renderObject.getShader().setUniform4f("uColor", color);
 	}
 
 } // namespace Renderer2D

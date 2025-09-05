@@ -46,7 +46,7 @@ namespace Demo
         // Set "uPosition" uniform inside of the shader
         Shader& shader = m_renderObject.getShader();
         shader.bind();
-        shader.setUniform2fv("uPosition", position);
+        shader.setUniform2f("uPosition", position);
         shader.unbind();
 	}
 

@@ -209,7 +209,7 @@ namespace Demo
             // Get position from GUI
             const glm::vec2 position = m_guiWindow->getPosition();
             // Set "uPosition" uniform inside of the shader
-            texRectShader.setUniform2fv("uPosition", position);
+            texRectShader.setUniform2f("uPosition", position);
         }
 
         texRectShader.setUniform1f("uTime", t);

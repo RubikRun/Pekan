@@ -29,14 +29,30 @@ namespace Graphics {
 		void bind() const;
 		void unbind() const;
 
+		/////////////////////////////////////////////////////////////////
 		// Functions for setting the value of a uniform inside the shader
+		/////////////////////////////////////////////////////////////////
+
 		void setUniform1f(const char* uniformName, float value);
 		void setUniform1fv(const char* uniformName, int count, const float* values);
 		void setUniform1i(const char* uniformName, int value);
 		void setUniform1iv(const char* uniformName, int count, const int* values);
-		void setUniform2fv(const char* uniformName, const glm::vec2& value);
-		void setUniform3fv(const char* uniformName, const glm::vec3& value);
-		void setUniform4fv(const char* uniformName, const glm::vec4& value);
+
+		void setUniform2f(const char* uniformName, glm::vec2 value);
+		void setUniform2fv(const char* uniformName, int count, const glm::vec2* values);
+		void setUniform2i(const char* uniformName, glm::ivec2 value);
+		void setUniform2iv(const char* uniformName, int count, const glm::ivec2* values);
+
+		void setUniform3f(const char* uniformName, glm::vec3 value);
+		void setUniform3fv(const char* uniformName, int count, const glm::vec3* values);
+		void setUniform3i(const char* uniformName, glm::ivec3 value);
+		void setUniform3iv(const char* uniformName, int count, const glm::ivec3* values);
+
+		void setUniform4f(const char* uniformName, glm::vec4 value);
+		void setUniform4fv(const char* uniformName, int count, const glm::vec4* values);
+		void setUniform4i(const char* uniformName, glm::ivec4 value);
+		void setUniform4iv(const char* uniformName, int count, const glm::ivec4* values);
+
 		void setUniformMatrix4fv(const char* uniformName, const glm::mat4& value);
 
 		// Checks if shader is valid, meaning that it has been successfully created and not yet destroyed

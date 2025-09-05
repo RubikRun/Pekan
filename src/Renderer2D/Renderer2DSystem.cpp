@@ -57,7 +57,7 @@ namespace Renderer2D
 		// Get mouse position in window space
 		const glm::vec2 mousePosWindow = PekanEngine::getMousePosition();
 		// Convert mouse position from window space to world space
-		const glm::vec2 mousePosWorld = camera->windowToWorld(mousePosWindow);
+		const glm::vec2 mousePosWorld = camera->windowToWorldPosition(mousePosWindow);
 		return mousePosWorld;
 	}
 

@@ -54,11 +54,20 @@ namespace Renderer2D
         // It can be used to multiply a world-space point to get the corresponding NDC (-1 to 1) point.
         const glm::mat4& getViewProjectionMatrix() const;
 
-        // Converts a given position from window space to world space, using the camera.
-        glm::vec2 windowToWorld(glm::vec2 windowPosition) const;
-        // Converts a given position from NDC (Normalized Device Coordinates) to world space, using the camera
+        // Converts a given position/size from window space to world space, using the camera.
+        glm::vec2 windowToWorldPosition(glm::vec2 positionInWindow) const;
+        glm::vec2 windowToWorldSize(glm::vec2 sizeInWindow) const;
+        // Converts a given position/size from world space to window space, using the camera.
+        glm::vec2 worldToWindowPosition(glm::vec2 positionInWorld) const;
+        glm::vec2 worldToWindowSize(glm::vec2 sizeInWorld) const;
+        // Converts a given position/size from NDC space to world space, using the camera.
         // (NDC means from -1 to 1 in both the X and Y axes, and the Y axis is pointing upwards)
-        glm::vec2 ndcToWorld(glm::vec2 ndcPosition) const;
+        glm::vec2 ndcToWorldPosition(glm::vec2 positionInNdc) const;
+        glm::vec2 ndcToWorldSize(glm::vec2 sizeInNdc) const;
+        // Converts a given position/size from world space to NDC* space, using the camera.
+        // (NDC means from -1 to 1 in both the X and Y axes, and the Y axis is pointing upwards)
+        glm::vec2 worldToNdcPosition(glm::vec2 positionInWorld) const;
+        glm::vec2 worldToNdcSize(glm::vec2 sizeInWorld) const;
 
         // Checks if camera is valid, meaning that it has been created and not yet destroyed.
         bool isValid() const { return m_isValid; }
