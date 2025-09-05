@@ -104,6 +104,11 @@ namespace Graphics {
 	void Shader::setUniform1fv(const char* uniformName, int count, const float* values)
 	{
 		PK_ASSERT(isValid(), "Trying to set a uniform1fv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform1fv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
 
 		bind();
 		const int location = getUniformLocation(uniformName);
@@ -122,37 +127,153 @@ namespace Graphics {
 	void Shader::setUniform1iv(const char* uniformName, int count, const int* values)
 	{
 		PK_ASSERT(isValid(), "Trying to set a uniform1iv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform1iv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
 
 		bind();
 		const int location = getUniformLocation(uniformName);
 		GLCall(glUniform1iv(location, count, values));
 	}
 
-	void Shader::setUniform2fv(const char* uniformName, const glm::vec2& value)
+	void Shader::setUniform2f(const char* uniformName, glm::vec2 value)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform2f to a Shader that is not yet created.", "Pekan");
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform2f(location, value.x, value.y));
+	}
+
+	void Shader::setUniform2fv(const char* uniformName, int count, const glm::vec2* values)
 	{
 		PK_ASSERT(isValid(), "Trying to set a uniform2fv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform2fv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
 
 		bind();
 		const int location = getUniformLocation(uniformName);
-		GLCall(glUniform2fv(location, 1, glm::value_ptr(value)));
+		GLCall(glUniform2fv(location, count, glm::value_ptr(*values)));
 	}
 
-	void Shader::setUniform3fv(const char* uniformName, const glm::vec3& value)
+	void Shader::setUniform2i(const char* uniformName, glm::ivec2 value)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform2i to a Shader that is not yet created.", "Pekan");
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform2i(location, value.x, value.y));
+	}
+
+	void Shader::setUniform2iv(const char* uniformName, int count, const glm::ivec2* values)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform2iv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform2iv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform2iv(location, count, glm::value_ptr(*values)));
+	}
+
+	void Shader::setUniform3f(const char* uniformName, glm::vec3 value)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform3f to a Shader that is not yet created.", "Pekan");
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform3f(location, value.x, value.y, value.z));
+	}
+
+	void Shader::setUniform3fv(const char* uniformName, int count, const glm::vec3* values)
 	{
 		PK_ASSERT(isValid(), "Trying to set a uniform3fv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform3fv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
 
 		bind();
 		const int location = getUniformLocation(uniformName);
-		GLCall(glUniform3fv(location, 1, glm::value_ptr(value)));
+		GLCall(glUniform3fv(location, count, glm::value_ptr(*values)));
 	}
 
-	void Shader::setUniform4fv(const char* uniformName, const glm::vec4& value)
+	void Shader::setUniform3i(const char* uniformName, glm::ivec3 value)
 	{
-		PK_ASSERT(isValid(), "Trying to set a uniform4fv to a Shader that is not yet created.", "Pekan");
+		PK_ASSERT(isValid(), "Trying to set a uniform3i to a Shader that is not yet created.", "Pekan");
 
 		bind();
 		const int location = getUniformLocation(uniformName);
-		GLCall(glUniform4fv(location, 1, glm::value_ptr(value)));
+		GLCall(glUniform3i(location, value.x, value.y, value.z));
+	}
+
+	void Shader::setUniform3iv(const char* uniformName, int count, const glm::ivec3* values)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform3iv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform3iv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform3iv(location, count, glm::value_ptr(*values)));
+	}
+
+	void Shader::setUniform4f(const char* uniformName, glm::vec4 value)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform4f to a Shader that is not yet created.", "Pekan");
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform4f(location, value.x, value.y, value.z, value.w));
+	}
+
+	void Shader::setUniform4fv(const char* uniformName, int count, const glm::vec4* values)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform4fv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform4fv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform4fv(location, count, glm::value_ptr(*values)));
+	}
+
+	void Shader::setUniform4i(const char* uniformName, glm::ivec4 value)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform4i to a Shader that is not yet created.", "Pekan");
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform4i(location, value.x, value.y, value.z, value.w));
+	}
+
+	void Shader::setUniform4iv(const char* uniformName, int count, const glm::ivec4* values)
+	{
+		PK_ASSERT(isValid(), "Trying to set a uniform4iv to a Shader that is not yet created.", "Pekan");
+		if (values == nullptr)
+		{
+			PK_LOG_ERROR("Trying to set a uniform4iv to a Shader but given values pointer is null.", "Pekan");
+			return;
+		}
+
+		bind();
+		const int location = getUniformLocation(uniformName);
+		GLCall(glUniform4iv(location, count, glm::value_ptr(*values)));
 	}
 
 	void Shader::setUniformMatrix4fv(const char* uniformName, const glm::mat4& value)

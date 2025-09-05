@@ -56,9 +56,13 @@ namespace Renderer2D
 
         // Converts a given position from window space to world space, using the camera.
         glm::vec2 windowToWorld(glm::vec2 windowPosition) const;
+        // Converts a given position from world space to window space, using the camera.
+        glm::vec2 worldToWindow(glm::vec2 worldPosition) const;
         // Converts a given position from NDC (Normalized Device Coordinates) to world space, using the camera
         // (NDC means from -1 to 1 in both the X and Y axes, and the Y axis is pointing upwards)
         glm::vec2 ndcToWorld(glm::vec2 ndcPosition) const;
+        // Converts a given world position to NDC (Normalized Device Coordinates)
+        glm::vec2 worldToNdc(glm::vec2 worldPosition) const;
 
         // Checks if camera is valid, meaning that it has been created and not yet destroyed.
         bool isValid() const { return m_isValid; }

@@ -183,6 +183,16 @@ namespace Renderer2D
         return ndcToWorld(ndcPosition);
     }
 
+    glm::vec2 Camera2D::worldToWindow(glm::vec2 worldPosition) const
+    {
+        PK_ASSERT(m_isValid, "Trying to convert a window position to a world position with a Camera2D instance that is not yet created.", "Pekan");
+
+        const glm::vec2 ndcPosition = worldToNdc(worldPosition);
+        const glm::vec2 windowSize = glm::vec2(PekanEngine::getWindow().getSize());
+        const glm::vec2 windowPosition = (ndcPosition + glm::vec2(1.0f, 1.0f)) * windowSize / 2.0f;
+        return windowPosition;
+    }
+
     glm::vec2 Camera2D::ndcToWorld(glm::vec2 ndcPosition) const
     {
         PK_ASSERT(m_isValid, "Trying to convert an NDC position to a world position with a Camera2D instance that is not yet created.", "Pekan");
@@ -193,6 +203,18 @@ namespace Renderer2D
         // then add camera's position to get the final position in world space.
         const glm::vec2 worldPos = (ndcPosition * (cameraSize * 0.5f)) / m_zoom + m_position;
         return worldPos;
+    }
+
+    glm::vec2 Camera2D::worldToNdc(glm::vec2 worldPosition) const
+    {
+        PK_ASSERT(m_isValid, "Trying to convert a world position to an NDC position with a Camera2D instance that is not yet created.", "Pekan");
+
+        const glm::vec2 cameraSize = getSize();
+        // Subtract camera position to bring into camera space,
+        // scale by zoom,
+        // then divide by half camera size to normalize to NDC range.
+        const glm::vec2 ndcPos = ((worldPosition - m_position) * m_zoom) / (cameraSize * 0.5f);
+        return ndcPos;
     }
 
 } // namespace Renderer2D
