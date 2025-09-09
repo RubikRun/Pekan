@@ -306,3 +306,41 @@ and a combo box in GUI to choose between them.
 
 Done. Works pretty good and looks cool.
 }
+
+----------
+09.09.2025
+----------
+
+{
+While working on Gleam House I found a very sneaky bug.
+If you create a texture in the init() function of Gleam House's scene,
+but after initializing PostProcessor,
+you get black screen.
+Why?
+Still not fully sure, but it has something to do with the fact that
+creating a texture binds it to the currently active slot,
+and the fact that
+in PostProcessor we expect frame buffer's texture to be bound on slot 0,
+because that's where shader expects it to be.
+So, when we create a texture like that we probably bind it to slot 0.
+This unbinds the frame buffer's texture from slot 0 and leaves our random texture bound there instead.
+Then, in PostProcessor's beginFrame() and endFrame() function it expects that slot 0
+will contain frame buffer's texture, but nope, it contains our random texture.
+
+Solution is simple.
+In PostProcessor's endFrame() function we need to explicitly bind frame buffer's texture to slot 0,
+not just "bind wherever".
+We need to do this:
+    g_frameBufferFinal.bindTexture(0);
+instead of just
+    g_frameBufferFinal.bindTexture();
+Of course, we don't have a bindTexture() overload that takes in a slot, but we can easily add it.
+It just needs to pass the given slot to the underlying texture's bind() function, like this:
+    m_textureMultisample.bind(slot);
+or
+    m_texture.bind(slot);
+That's it.
+
+It works now.
+Done.
+}

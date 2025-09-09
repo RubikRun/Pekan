@@ -26,6 +26,7 @@ namespace Graphics
 		// Binds the underlying texture so that its contents can be accessed
 		// from outside the frame buffer.
 		void bindTexture() const;
+		void bindTexture(unsigned slot) const;
 
 		// Resolves a multisample frame buffer to a given target single-sample buffer,
 		// effectively copying all pixel data, but changing it from multisample to single-sample.

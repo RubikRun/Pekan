@@ -87,6 +87,20 @@ namespace Graphics
 		}
 	}
 
+	void FrameBuffer::bindTexture(unsigned slot) const
+	{
+		PK_ASSERT(isValid(), "Trying to bind a FrameBuffer's texture but FrameBuffer is not yet created.", "Pekan");
+
+		if (m_samplesPerPixel > 1)
+		{
+			m_textureMultisample.bind(slot);
+		}
+		else
+		{
+			m_texture.bind(slot);
+		}
+	}
+
 	void FrameBuffer::resolveMultisampleToSinglesample(FrameBuffer& targetFrameBuffer)
 	{
 		PK_ASSERT(m_samplesPerPixel > 1, "Trying to resolve a multisample FrameBuffer to a single-sample FrameBuffer,"

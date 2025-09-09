@@ -141,8 +141,9 @@ namespace Graphics
 		}
 
 		// Bind final frame buffer's texture containing the rendered frame,
-		// because we want to access it in the post-processing shader
-		g_frameBufferFinal.bindTexture();
+		// because we want to access it in the post-processing shader.
+		// (Importantly, bind it to slot 0 because shader expects it there)
+		g_frameBufferFinal.bindTexture(0);
 		// Render the rectangle using the post-processing shader and the texture containing the rendered frame
 		g_renderObject.render();
 
