@@ -66,9 +66,6 @@ namespace Renderer2D
 		// Updates world vertices from current local vertices and current transform matrix
 		void updateVerticesWorld() const;
 
-		// Called by base class Transformable2D when transform changes
-		void onTransformChanged() override;
-
 	private: /* variables */
 
 		// Sprite's underlying texture containing sprite's image
@@ -94,6 +91,9 @@ namespace Renderer2D
 		mutable bool m_needUpdateVerticesLocal = true;
 		// Flag indicating if world vertices need to be updated before use
 		mutable bool m_needUpdateVerticesWorld = true;
+
+		// Change ID of transform used in currently cached world vertices
+		mutable unsigned m_transformChangeIdUsedInVerticesWorld = 0;
 
 		// Sprite's texture's index inside of its batch.
 		//

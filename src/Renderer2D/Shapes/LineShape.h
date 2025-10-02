@@ -25,10 +25,10 @@ namespace Renderer2D
 		void setThickness(float thickness);
 
 		// Returns point A/B of the line, in local space
-		inline glm::vec2 getPointA() const { return m_verticesLocal[0]; }
-		inline glm::vec2 getPointB() const { return m_verticesLocal[1]; }
+		glm::vec2 getPointA() const { return m_pointA; }
+		glm::vec2 getPointB() const { return m_pointB; }
 		// Returns line's thickness
-		inline float getThickness() const { return m_thickness; }
+		float getThickness() const { return m_thickness; }
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		const Vertex2D* getVertices(float shapeIndex) const override;

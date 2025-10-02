@@ -20,6 +20,7 @@ namespace Renderer2D
         // that will not be explicitly initialized here or updated later
         m_needUpdateVerticesLocal = true;
         m_needUpdateVerticesWorld = true;
+        m_transformChangeIdUsedInVerticesWorld = 0;
 
         m_texture = texture;
         m_width = width;
@@ -126,6 +127,11 @@ namespace Renderer2D
             m_needUpdateVerticesWorld = true;
         }
 
+        if (m_transformChangeIdUsedInVerticesWorld < Transformable2D::getChangeId())
+        {
+            m_needUpdateVerticesWorld = true;
+        }
+
         if (m_needUpdateVerticesLocal)
         {
             updateVerticesLocal();
@@ -155,12 +161,12 @@ namespace Renderer2D
     {
         PK_ASSERT(isValid(), "Trying to update world vertices of a Sprite that is not yet created.", "Pekan");
 
-        const glm::mat3& transformMatrix = getTransformMatrix();
+        const glm::mat3& worldMatrix = getWorldMatrix();
         // Calculate world vertex positions by applying the transform matrix to the local vertex positions
-        m_verticesWorld[0].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
-        m_verticesWorld[1].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
-        m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
-        m_verticesWorld[3].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
+        m_verticesWorld[0].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
+        m_verticesWorld[1].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
+        m_verticesWorld[2].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+        m_verticesWorld[3].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[3], 1.0f));
 
         // Set "textureCoordinates" attribute of each vertex
         PK_ASSERT
@@ -182,12 +188,10 @@ namespace Renderer2D
         m_verticesWorld[2].textureIndex = float(m_textureIndex);
         m_verticesWorld[3].textureIndex = float(m_textureIndex);
 
-        m_needUpdateVerticesWorld = false;
-    }
+        // Cache change ID of the transform that we just used to update world vertices
+        m_transformChangeIdUsedInVerticesWorld = Transformable2D::getChangeId();
 
-    void Sprite::onTransformChanged()
-    {
-        m_needUpdateVerticesWorld = true;
+        m_needUpdateVerticesWorld = false;
     }
 
 } // namespace Renderer2D

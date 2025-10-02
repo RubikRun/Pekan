@@ -46,10 +46,5 @@ namespace Renderer2D
         Transformable2D::_destroy();
     }
 
-    void Shape::onTransformChanged()
-    {
-        m_needUpdateVerticesWorld = true;
-    }
-
 } // namespace Renderer2D
 } // namespace Renderer2D

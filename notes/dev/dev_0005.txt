@@ -344,3 +344,223 @@ That's it.
 It works now.
 Done.
 }
+
+----------
+21.09.2025
+----------
+
+{
+To continue work on Gleam House
+we need to add support for composing Transformable2D objects in parent-child hierarchies.
+The idea is fundamentally very simple.
+Each Transformable2D object can have a parent which is another Transformable2D object.
+A child will always be transformed relative to its parent.
+
+Until now each object had position, rotation and scale,
+that together formed a 3x3 matrix that can transform 2D points from local space to world space.
+Now we'll need to consider parent's transform as well.
+Let's define 2 terms:
+- An object's "world matrix":
+    A 3x3 matrix that transforms 2D points from an object's local space to world space
+- An object's "local matrix":
+    A 3x3 matrix that transforms 2D points from an object's local space to parent's local space
+    (or to world space, if there is no parent)
+While we're at it, let's also define:
+- An object's "local space":
+    A coordinate system relative to the object itself.
+    Used for defining the object.
+- "world space":
+    The coordinate system for the entire scene.
+    Used for determining where objects actually appear when rendered.
+With these definitions in mind,
+we already know how to calculate an object's local matrix - we just use its position, rotation and scale.
+That's what we've been doing so far,
+we just didn't call it a local matrix because we didn't need a distinction between a local matrix and a world matrix.
+Question now is how to calculate an object's world matrix?
+We'll define it recursively:
+    Let P be parent's world matrix.
+    Let L be child's local matrix.
+    Then child's world matrix is:
+        P * L
+    If there is no parent, child's world matrix is:
+        L
+That's it.
+In other words, to transform a 2D point from an object's local space to world space
+we need to multiply it first by object's local matrix, then by parent's local matrix,
+then by parent's parent's local matrix, etc... until there is no parent.
+
+How will we implement this?
+First, we need a parent pointer as a member variable in class Transformable2D:
+    const Transformable2D* m_parent = nullptr;
+together with a setter
+    void setParent(const Transformable2D* parent);
+that needs to do just this:
+    m_parent = parent;
+Then we will need to rename the function
+    const glm::mat3& getTransformMatrix() const;
+to be
+    const glm::mat3& getLocalMatrix() const;
+and add a new function:
+    const glm::mat3& getWorldMatrix() const;
+Implementing it is quite simple, given the recursive definition above:
+    const glm::mat3& localMatrix = getLocalMatrix();
+    if (m_parent != nullptr)
+    {
+        const glm::mat3& parentWorldMatrix = m_parent->getWorldMatrix();
+        const glm::mat3 worldMatrix = parentWorldMatrix * localMatrix;
+        return worldMatrix;
+    }
+    return localMatrix;
+Finally, in all places that call getTransformMatrix()
+we need to call getWorldMatrix() instead.
+That's about it.
+It works now.
+
+Optimization time!
+It works fine like that, but it can become quite slow if have big hierarchies.
+Why?
+Because if an object has N levels of parents,
+then calling getWorldMatrix() on it will do N recursive calls
+and N matrix multiplications.
+In a real scene this will almost always be wasteful.
+What can we do?
+We can cache the world matrix, in a similar way to how we cache the local matrix in
+    mutable glm::mat3 m_transformMatrix = glm::mat3(1.0f);
+Let's rename this cached matrix to
+    mutable glm::mat3 m_localMatrix = glm::mat3(1.0f);
+and add a new cached matrix:
+    mutable glm::mat3 m_worldMatrix = glm::mat3(1.0f);
+Also, let's rename this flag
+    mutable bool m_needUpdateTransformMatrix = false;
+that is related to the cached local matrix to
+    mutable bool m_isDirtyLocalMatrix = true;
+and add a new flag
+    mutable bool m_isDirtyWorldMatrix = true;
+So far, whenever we change position, rotation or scale,
+we mark local matrix as dirty by setting the flag to true:
+    m_isDirtyLocalMatrix = true;
+Now in all of these cases we also want to mark the world matrix as dirty:
+    m_isDirtyWorldMatrix = true;
+because a local change definitely means a world change as well.
+Are there other cases where we need to mark the world matrix dirty?
+Yes, definitely.
+One of them is setParent() - whenever a new parent is set we definitely want to recalculate the world matrix when requested.
+Another, more subtle one, is when parent's world matrix changes.
+How do we know when parent's world matrix changes?
+That's a bit tricky.
+We can make the parent inform all of its children when a change occurs,
+but this will require having a list of children pointers in each Transformable2D object
+which is not ideal, I want to keep Transformable2D lightweight.
+Without the parent knowing about its own children, there is no way for parent to inform them when a change occurs.
+So, instead it will be child's responsibility to ask if parent has changed.
+At what point should it ask that?
+When asked for the world matrix.
+So far in getWorldMatrix() we update the world matrix only if the dirty flag is on:
+    if (m_isDirtyWorldMatrix)
+    {
+        updateWorldMatrix();
+    }
+but now we'll also need to check if parent has changed since the last world matrix calculation.
+How exactly can we do that?
+We could cache parent's world matrix in updateWorldMatrix()
+and then in getWorldMatrix() we can ask for parent's world matrix again and compare with our cached one,
+but this would defeat the purpose of this whole optimization,
+because we'll still need to do N recursive calls for this, and N matrix comparisons,
+so basically back to square one.
+Is there a better way?
+Yes! We will introduce the concept of a "change ID".
+Each Transformable2D object will have a change ID
+which will uniquely encapsulate the current state of the transformable object,
+including the state of the parent.
+This change ID will be just a number
+with the special property that it changes whenever something in the object changes.
+    --begin SIDE NOTE
+    By the way, we also need this change ID for something else.
+    We need it in class Sprite and class Shape because they are doing a dirty flag optimization
+    on their vertices and they want to know when the underlying Transformable2D object changes.
+    So far we did this with this callback:
+        virtual void onTransformChanged() {}
+    but we will no longer be able to do that because now this callback would have to be called
+    when parent changes as well, which we can't do since parent doesn't know about its children.
+    Instead of this callback, class Sprite and class Shape will cache the change ID, then later ask for current change ID
+    and compare with the cached one, to know if they need to recalculate vertices.
+    --end SIDE NOTE
+So let's implement this change ID. Add a new member
+    mutable unsigned m_changeId = 0;
+together with a getter
+    unsigned getChangeId() const;
+Whenever position, rotation or scale changes, or a new parent is set, we will increase the change ID
+    m_changeId++;
+but there is also a more subtle place where we need to increase it.
+What if the parent changes? Do we need to change our change ID then?
+Yep, definitely.
+How are we going to do that if parent can't inform its children of its own changes?
+Once again it will be child's responsibility to ask its parent if it has changed.
+At what point should it ask?
+When asked for its changed ID, so in getChangeId()
+For that we'll need to cache parent's change ID
+    mutable unsigned m_cachedParentChangeId = 0;
+More specifically this is the parent's change ID that has been last used for our own change ID.
+Then in getChangeId() we can ask for parent's change ID and compare with our cached one.
+If they are different we need to increase our change id, and cache the new parent's change ID
+    if (m_parent != nullptr)
+    {
+        const unsigned parentChangeId = m_parent->getChangeId();
+        if (m_cachedParentChangeId < parentChangeId)
+        {
+            m_cachedParentChangeId = parentChangeId;
+            m_changeId++;
+        }
+    }
+The logic here is a bit confusing, gotta admit,
+because why are we checking for changes in parent only when we get asked for our change ID?
+Is it not possible that parent will change many times between our getChangeId() calls?
+Yes, it's 100% possible, but it's not a problem.
+Imagine code A is some outside code that cares about our change ID.
+At some point it will ask us:
+    getChangeId()
+and we will give it, let's say
+    5
+Then, our parent can change 10 times, and we will not react at all,
+our internal change ID will still be 5, which may seem wrong.
+But it's not.
+Because later when we get asked for our change ID again
+    getChangeId()
+we will notice parent's change and we will increase our change ID to 6, and asnwer
+    6
+Then code A will notice that 5 < 6 and will react to a change.
+Code A doesn't care if 1 change has occured in the meantime, or 10 changes, or whatever,
+it just cares that a change occured.
+So, as long as this change ID is used just to check for "is there a change?"
+and NOT for "how many changes were there?" we're good.
+Okay, now that we have a reliable change ID,
+let's get back to the problem of checking if parent's world matrix has changed
+since the last time we updated our world matrix.
+We can very easily cache parent's change ID at the moment of calculating our world matrix in updateWorldMatrix()
+in this new member variable:
+    mutable unsigned m_parentChangeIdUsedInWorldMatrix = 0;
+like this:
+    m_parentChangeIdUsedInWorldMatrix = m_parent->getChangeId();
+Then in getWorldMatrix() we need to check if parent's current change ID is greater than the cached one
+    if (... && m_parentChangeIdUsedInWorldMatrix < m_parent->getChangeId())
+and if so we need to mark world matrix as dirty:
+    m_isDirtyWorldMatrix = true;
+Oooookay, that's about it.
+There are quite a few details that I'm missing but they are not that important.
+This here is the gist of it.
+
+Future note,
+this whole optimization mess that I did might not actually be worth it.
+It might have been better to keep a list of children in each parent
+and inform children when a change occurs.
+Because with the current approach we are still doing N recursive calls in getChangeId().
+Yes, they are much simpler and they don't carry with themselves a matrix operation
+but still - N recursive calls every time we want to get the world matrix of an object.
+Can't really decide if wasting a bit of memory on a list of children
+or wasting a bit of CPU cycles on N recursive calls is better.
+I guess we'll see in the future, when we can test with a bigger scene.
+
+Okay, it works!
+And it's supposedly fast, we'll see in the future if we can make it even faster.
+Done.
+}

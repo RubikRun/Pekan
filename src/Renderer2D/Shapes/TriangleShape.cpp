@@ -93,6 +93,11 @@ namespace Renderer2D
         }
 #endif
 
+        if (m_transformChangeIdUsedInVerticesWorld < Transformable2D::getChangeId())
+        {
+            m_needUpdateVerticesWorld = true;
+        }
+
         if (m_needUpdateVerticesWorld)
         {
             updateVerticesWorld();
@@ -118,6 +123,11 @@ namespace Renderer2D
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
     void TriangleShape::updateIndices() const
     {
+        if (m_transformChangeIdUsedInVerticesWorld < Transformable2D::getChangeId())
+        {
+            m_needUpdateVerticesWorld = true;
+        }
+
         // If face culling is disabled it doesn't matter if triangle is CW or CCW
         // so we can keep indices in whatever order they are.
         if (!RenderState::isEnabledFaceCulling())
@@ -149,11 +159,11 @@ namespace Renderer2D
     {
         PK_ASSERT(isValid(), "Trying to update world vertices of a TriangleShape that is not yet created.", "Pekan");
 
-        const glm::mat3& transformMatrix = getTransformMatrix();
+        const glm::mat3& worldMatrix = getWorldMatrix();
         // Calculate world vertex positions by applying the transform matrix to the local vertex positions
-        m_verticesWorld[0].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
-        m_verticesWorld[1].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
-        m_verticesWorld[2].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
+        m_verticesWorld[0].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[0], 1.0f));
+        m_verticesWorld[1].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[1], 1.0f));
+        m_verticesWorld[2].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[2], 1.0f));
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
         // Set "shapeIndex" attribute of each vertex to be shape's index
@@ -166,6 +176,9 @@ namespace Renderer2D
         m_verticesWorld[1].color = m_color;
         m_verticesWorld[2].color = m_color;
 #endif
+
+        // Cache change ID of the transform that we just used to update world vertices
+        m_transformChangeIdUsedInVerticesWorld = Transformable2D::getChangeId();
 
         m_needUpdateVerticesWorld = false;
     }

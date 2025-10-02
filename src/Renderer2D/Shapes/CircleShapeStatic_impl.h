@@ -49,6 +49,11 @@ namespace Renderer2D
         }
 #endif
 
+        if (m_transformChangeIdUsedInVerticesWorld < Transformable2D::getChangeId())
+        {
+            m_needUpdateVerticesWorld = true;
+        }
+
         if (m_needUpdateVerticesLocal)
         {
             updateVerticesLocal();
@@ -82,11 +87,11 @@ namespace Renderer2D
     {
         PK_ASSERT(isValid(), "Trying to update world vertices of a CircleShape that is not yet created.", "Pekan");
 
-        const glm::mat3& transformMatrix = getTransformMatrix();
+        const glm::mat3& worldMatrix = getWorldMatrix();
         for (size_t i = 0; i < size_t(NSegments); i++)
         {
             // Calculate world vertex positions by applying the transform matrix to the local vertex positions
-            m_verticesWorld[i].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
+            m_verticesWorld[i].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
             // Set "shapeIndex" attribute to be shape's index
@@ -96,6 +101,9 @@ namespace Renderer2D
             m_verticesWorld[i].color = m_color;
 #endif
         }
+
+        // Cache change ID of the transform that we just used to update world vertices
+        m_transformChangeIdUsedInVerticesWorld = Transformable2D::getChangeId();
 
         m_needUpdateVerticesWorld = false;
     }

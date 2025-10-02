@@ -60,6 +60,9 @@ namespace Renderer2D
 		// Flag indicating if world vertices in derived class need to be updated before use
 		mutable bool m_needUpdateVerticesWorld = true;
 
+		// Change ID of transform used in currently cached world vertices in derived class
+		mutable unsigned m_transformChangeIdUsedInVerticesWorld = 0;
+
 		glm::vec4 m_color = glm::vec4(-1.0f, -1.0f, -1.0f, -1.0f);
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
@@ -76,11 +79,6 @@ namespace Renderer2D
 		// in order to add the "shapeIndex" attribute to them.
 		mutable float m_shapeIndex = -1.0f;
 #endif
-
-	private: /* functions */
-
-		// Called by base class Transformable2D when transform changes
-		void onTransformChanged() override;
 
 	private: /* variables */
 

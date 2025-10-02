@@ -74,6 +74,11 @@ namespace Renderer2D
         }
 #endif
 
+        if (m_transformChangeIdUsedInVerticesWorld < Transformable2D::getChangeId())
+        {
+            m_needUpdateVerticesWorld = true;
+        }
+
         if (m_needUpdateVerticesLocal)
         {
             updateVerticesLocal();
@@ -87,6 +92,11 @@ namespace Renderer2D
 
     const unsigned* PolygonShape::getIndices() const
     {
+        if (m_transformChangeIdUsedInVerticesWorld < Transformable2D::getChangeId())
+        {
+            m_needUpdateVerticesWorld = true;
+        }
+
         // Indices are updated together with local vertices and world vertices,
         // so update local vertices and world vertices here if needed.
         if (m_needUpdateVerticesLocal)
@@ -175,12 +185,12 @@ namespace Renderer2D
     {
         PK_ASSERT(isValid(), "Trying to update world vertices of a PolygonShape that is not yet created.", "Pekan");
 
-        const glm::mat3& transformMatrix = getTransformMatrix();
+        const glm::mat3& worldMatrix = getWorldMatrix();
         m_verticesWorld.resize(m_verticesLocal.size());
         for (size_t i = 0; i < m_verticesLocal.size(); i++)
         {
             // Calculate world vertex positions by applying the transform matrix to the local vertex positions
-            m_verticesWorld[i].position = glm::vec2(transformMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
+            m_verticesWorld[i].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
             // Set "shapeIndex" attribute to be shape's index
@@ -190,8 +200,6 @@ namespace Renderer2D
             m_verticesWorld[i].color = m_color;
 #endif
         }
-
-        m_needUpdateVerticesWorld = false;
 
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
         if (RenderState::isEnabledFaceCulling())
@@ -208,6 +216,11 @@ namespace Renderer2D
             }
         }
 #endif
+
+        // Cache change ID of the transform that we just used to update world vertices
+        m_transformChangeIdUsedInVerticesWorld = Transformable2D::getChangeId();
+
+        m_needUpdateVerticesWorld = false;
     }
 
 } // namespace Renderer2D

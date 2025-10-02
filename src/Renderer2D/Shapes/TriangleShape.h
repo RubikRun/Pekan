@@ -26,9 +26,9 @@ namespace Renderer2D
 		void setVertices(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC);
 
 		// Returns vertex A/B/C of the triangle, in local space
-		inline glm::vec2 getVertexA() const { return m_verticesLocal[0]; }
-		inline glm::vec2 getVertexB() const { return m_verticesLocal[1]; }
-		inline glm::vec2 getVertexC() const { return m_verticesLocal[2]; }
+		glm::vec2 getVertexA() const { return m_verticesLocal[0]; }
+		glm::vec2 getVertexB() const { return m_verticesLocal[1]; }
+		glm::vec2 getVertexC() const { return m_verticesLocal[2]; }
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		const Vertex2D* getVertices(float shapeIndex) const override;
