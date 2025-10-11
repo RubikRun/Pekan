@@ -175,7 +175,7 @@ namespace Demo
 
 	void Demo02_Scene::render() const
 	{
-        RenderCommands::clear(true);
+        RenderCommands::clear(true, true);
         // Render cube
         m_renderObject.render();
 	}

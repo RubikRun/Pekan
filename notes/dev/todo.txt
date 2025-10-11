@@ -196,7 +196,7 @@
                         where used for global variables that are constant, defined in a single .cpp, and not supposed to be visible outside.
                         It's redundant. Global constants have internal linkage by default.
 
-0069 02.10.2025 (TODO): In Demo02_Scene.cpp call
+0069 02.10.2025 (DONE): In Demo02_Scene.cpp call
                             RenderCommands::clear(true, true);
                         instead of
                             RenderCommands::clear(true);

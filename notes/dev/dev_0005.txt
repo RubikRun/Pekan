@@ -564,3 +564,20 @@ Okay, it works!
 And it's supposedly fast, we'll see in the future if we can make it even faster.
 Done.
 }
+
+----------
+11.10.2025
+----------
+
+{
+We're done with Gleam House for now.
+To close off this development chapter I'll just do this quick TO-DO item:
+    In Demo02_Scene.cpp call
+        RenderCommands::clear(true, true);
+    instead of
+        RenderCommands::clear(true);
+    because since the "Add support for post-processing shaders" commit this clear()
+    function does NOT clear depth buffer by default.
+
+Done.
+}
