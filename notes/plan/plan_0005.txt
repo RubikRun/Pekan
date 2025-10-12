@@ -10,3 +10,76 @@ and what to implement next, find some bugs, etc.
 The game will be called
     Gleam House
 and it will be in a separate repository.
+
+----------
+11.10.2025
+----------
+
+A sum up of v0.2 so far:
+Pekan is made up of 5 modules:
+- Core
+- Graphics
+- GUI
+- Renderer2D
+- Tools
+1. The Core module provides an abstract class PekanApplication.
+Client code can derive their own application type from PekanApplication
+and they need to implement this function:
+    virtual bool _fillLayerStack(LayerStack& layerStack) = 0;
+filling the given LayerStack with the layers of their application.
+What are the layers? Pekan provides class Layer that essentially consists of these 4 functions:
+    virtual void update(double deltaTime) {}
+    virtual void render() const {}
+    virtual bool init() { return true; }
+    virtual void exit() {}
+that can be implemented by client code in their own classes derived from Layer.
+Then, internally Core will run the main loop and update/render/init/exit layers accordingly.
+Another thing that the Core module does is it manages subsystems.
+Some of the other modules (Graphics, GUI, Renderer2D) are subsystems of Pekan.
+Client code can decide which of these subsystems they need and include/register them.
+It provides a class ISubsystem that consists essentially of these 2 functions:
+    virtual bool init() = 0;
+    virtual void exit() = 0;
+and a class SubsystemManager that provides this public function:
+    static void registerSubsystem(ISubsystem* subsystem);
+and internally can do:
+    static void initAll();
+    static void exitAll();
+initializing and exiting all registered subsystems.
+2. The Graphics module consists of classes and functions
+that form an abstraction layer over OpenGL.
+For example, we have classes VertexBuffer, IndexBuffer, Shader, VertexArray, Texture1D, Texture2D, RenderBuffer, FrameBuffer, etc.
+and functions like draw(), drawIndexed(), clear(), enableBlending(), enableFaceCulling(), getMaxTextureSize(), etc.
+Client code can use all of these in their layer's render() or update() functions or wherever they see fit.
+Another thing that the Graphics module provides is a class called PostProcessor.
+It's a static class that allows client code to provide a post-processing shader to be used after rendering a frame.
+3. The GUI module provides a class GUIWindow that derives from Layer.
+Internally it uses ImGui.
+Client code can derive their own GUI window type from GUIWindow
+and they can implement the init() function where they can call this GUIWindow's function:
+    void addWidget(const Widget_Ptr& widget);
+to construct the GUI of their window out of widgets.
+Class Widget is another class provided by the GUI module.
+It's a base class for different widget types like ButtonWidget, CheckboxWidget, ColorEdit3Widget, TextWidget, etc.
+Widgets added by calling addWidget() will be automatically rendered in the order they were added.
+If client code wants more control over their widgets they can NOT use addWidget()
+and instead override the render() function with custom rendering behavior.
+4. The Renderer2D module works on top of Graphics
+providing different classes and rendering functionality specific to a 2D scene/world.
+Most notably, it has class Sprite and class Shape where Shape is a base class
+to a few different shape types like CircleShape, RectangleShape, PolygonShape, etc.
+These classes can be used in a layer, for example by having a member variable:
+    Sprite m_sprite;
+that can be updated in layer's update() function
+and rendered in layer's render() function by calling m_sprite.render().
+Both classes Sprite and Shape are batch-rendered through a class called RenderBatch2D.
+The Renderer2D module also has class Transformable2D which is a base class to both Sprite and Shape
+and it supports transform hierarchies - each Transformable2D object can have a parent Transformable2D object.
+We also have class Camera2D there.
+A Camera2D instance can be set to be "the camera" globally
+in class Renderer2DSystem which is the central point of Renderer2D and it's the subsystem that gets registerted in Core. 
+5. The Tools module has some additional game dev tools that can be useful but are not essential
+to any other module. So far it only has this static function:
+    static void enableCameraController2D(const Renderer2D::Camera2D_Ptr& camera);
+that enables the camera controller for a given 2D camera,
+which means that from now on this camera will be controllable by the user.

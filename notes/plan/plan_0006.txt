@@ -1,0 +1,16 @@
+----------
+11.10.2025
+----------
+
+Finished work on Gleam House for now.
+Pekan v0.2 feels quite stable, but very limited in terms of functionality.
+Gathered "user feedback" from myself, for what Pekan needs for v0.3
+A lot of features had to be implemented in Gleam House. Features that are engine logic and can be part of Pekan. 
+
+Here's a list of features needed for v0.3:
+1. Entity Component System
+2. A file format for scenes
+3. Transitioning between layers
+4. Collision detection in 2D
+5. Lights in 2D
+6. Debug Overlay
