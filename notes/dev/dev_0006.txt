@@ -1,0 +1,66 @@
+----------
+13.10.2025
+----------
+
+Before starting work on v0.3 features
+let's first do all TO-DO items
+
+{
+First TO-DO item is:
+    Create a mechanism in Core where client code can register a callback function
+    to be called every N seconds automatically. Use it for Gleam House's updateFireColors() function, for example.
+
+1. This mechanism will work on an application level so we need some API in class PekanApplication
+for registering a callback function to be called repeatedly automatically by Pekan.
+Let's call such callback a "recurring callback" and let's create a new public function in PekanApplication:
+    void registerRecurringCallback(std::function<void()> callback, float interval);
+2. Internally, to store a list of such recurring callbacks we'll create a new struct
+    struct RecurringCallback
+in 2 new files in Core
+    Time/RecurringCallback.h
+    Time/RecurringCallback.cpp
+It will, of course, store the callback function and the time interval between calls:
+    std::function<void()> callback;        
+    float interval = 0.0f;
+but it will also store the elapsed time since last call
+    float elapsed = 0.0f;
+3. Then in PekanApplication we can have a vector of such recurring callbacks:
+    std::vector<RecurringCallback> m_recurringCallbacks;
+and, of course, in registerRecurringCallback() we will create a new RecurringCallback instance
+from the given parameters and push it into the m_recurringCallbacks list,
+or more directly we will use emplace_back:
+    m_recurringCallbacks.emplace_back(std::move(callback), interval);
+4. In PekanApplication's main loop which is in the run() function we'll need to
+update all registered recurring callbacks. Let's create a function in PekanApplication for that:
+    void updateRecurringCallbacks(float deltaTime);
+It needs to loop over all registered recurring callbacks
+    for (RecurringCallback& recurringCallback : m_recurringCallbacks)
+and increase the elapsed time of each one with current frame's delta time:
+    recurringCallback.elapsed += deltaTime;
+If a recurring callback's interval elapses we need to call the actual callback
+and reset the elapsed time to 0:
+    if (recurringCallback.elapsed >= recurringCallback.interval)
+    {
+        recurringCallback.callback();
+        recurringCallback.elapsed = 0.0f;
+    }
+5. That's it.
+Tested it in Demo07 by creating 2 new member functions in Demo07_Scene
+    void changeBackgroundColor();
+    void changeRectangleColor();
+that change background's color and rectangle's color, just switching it between 2 hardcoded colors.
+Then in Demo07_Scene we can register these 2 functions as recurring callbacks in m_application:
+    m_application->registerRecurringCallback
+    (
+        [this]() { this->changeBackgroundColor(); },
+        1.0f
+    );
+    m_application->registerRecurringCallback
+    (
+        [this]() { this->changeRectangleColor(); },
+        0.4f
+    );
+It works!
+
+Done.
+}

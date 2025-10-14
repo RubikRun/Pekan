@@ -96,6 +96,8 @@ add_library(Core STATIC
     src/Core/Time/FpsLimiter.cpp
     src/Core/Time/DeltaTimer.h
     src/Core/Time/DeltaTimer.cpp
+    src/Core/Time/RecurringCallback.h
+    src/Core/Time/RecurringCallback.cpp
 )
 
 # Group Logger files under a virtual folder called "Logger"
@@ -115,8 +117,16 @@ SOURCE_GROUP("Header Files\\Events" FILES
     src/Core/Events/EventListener.h
 )
 # Group Time files under a virtual folder called "Time"
-SOURCE_GROUP("Source Files\\Time" FILES src/Core/Time/FpsLimiter.cpp src/Core/Time/DeltaTimer.cpp)
-SOURCE_GROUP("Header Files\\Time" FILES src/Core/Time/FpsLimiter.h src/Core/Time/DeltaTimer.h)
+SOURCE_GROUP("Source Files\\Time" FILES
+    src/Core/Time/FpsLimiter.cpp
+    src/Core/Time/DeltaTimer.cpp
+    src/Core/Time/RecurringCallback.cpp
+)
+SOURCE_GROUP("Header Files\\Time" FILES
+    src/Core/Time/FpsLimiter.h
+    src/Core/Time/DeltaTimer.h
+    src/Core/Time/RecurringCallback.h
+)
 
 # Set link libraries for Core
 target_link_libraries(Core PRIVATE glfw)

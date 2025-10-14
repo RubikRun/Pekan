@@ -187,7 +187,7 @@
                         instead of having this 32 hardcoded:
                             #define MAX_TEXTURES 32
 
-0066 14.09.2025 (TODO): Create a mechanism in Core where client code can register a callback function
+0066 14.09.2025 (DONE): Create a mechanism in Core where client code can register a callback function
                         to be called every N seconds automatically. Use it for Gleam House's updateFireColors() function, for example.
 
 0067 14.09.2025 (TODO): Create a getRandomColor() overload in PekanUtils.h/cpp that takes in an RGB range where R, G and B's min/max can be different.

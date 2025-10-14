@@ -73,6 +73,9 @@ namespace Pekan
             // Get delta time - time passed since last frame
             const double deltaTime = m_deltaTimer.getDeltaTime();
 
+            // Update all registered recurring callbacks
+            updateRecurringCallbacks(float(deltaTime));
+
             // Update and render all layers of the layer stack
             m_layerStack.updateAll(deltaTime);
             m_layerStack.renderAll();
@@ -131,6 +134,15 @@ namespace Pekan
             ),
             m_eventListeners.end()
         );
+    }
+
+    void PekanApplication::registerRecurringCallback
+    (
+        std::function<void()> callback,
+        float interval
+    )
+    {
+        m_recurringCallbacks.emplace_back(std::move(callback), interval);
     }
 
     void PekanApplication::stopRunning()
@@ -270,6 +282,22 @@ namespace Pekan
 
         std::unique_ptr<WindowClosedEvent> event = std::make_unique<WindowClosedEvent>();
         _dispatchEvent(event, m_layerStack, m_eventListeners, m_eventQueue, &EventListener::onWindowClosed);
+    }
+
+    void PekanApplication::updateRecurringCallbacks(float deltaTime)
+    {
+        for (RecurringCallback& recurringCallback : m_recurringCallbacks)
+        {
+            recurringCallback.elapsed += deltaTime;
+            // If recurring callback's interval has elapsed
+            if (recurringCallback.elapsed >= recurringCallback.interval)
+            {
+                // call the callback function
+                recurringCallback.callback();
+                // and restart the "elapsed" timer
+                recurringCallback.elapsed = 0.0f;
+            }
+        }
     }
 
 } // namespace Pekan

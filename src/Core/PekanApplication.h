@@ -5,6 +5,7 @@
 #include "LayerStack.h"
 #include "Time/DeltaTimer.h"
 #include "Window.h"
+#include "Time/RecurringCallback.h"
 
 #include <string>
 #include <memory>
@@ -57,6 +58,11 @@ namespace Pekan
 		// Unregisters an event listener. It will no longer be notified when an event occurs in this application.
 		void unregisterEventListener(const std::shared_ptr<EventListener>& eventListener);
 
+		// Registers a recurring callback to be automatically called by the application
+		// every N seconds (every time when given time interval elapses).
+		// @param[in] interval - time interval between calls (in seconds)
+		void registerRecurringCallback(std::function<void()> callback, float interval);
+
 		// Can be overriden by derived classes to return specific application properties.
 		// If not overriden, default application properties will be used.
 		virtual ApplicationProperties getProperties() const { return {}; }
@@ -96,6 +102,10 @@ namespace Pekan
 		// NOTE: Make sure to pop all events from the queue, otherwise they will keep piling up.
 		virtual void handleEventQueue() { while (!m_eventQueue.empty()) { m_eventQueue.pop(); } }
 
+		// Updates all registered recurring callbacks
+		// with current frame's delta time.
+		void updateRecurringCallbacks(float deltaTime);
+
 	private: /* variables */
 
 		// Stack of layers making up the application
@@ -109,6 +119,9 @@ namespace Pekan
 
 		// Delta timer used to keep track of time passed since last frame was rendered
 		DeltaTimer m_deltaTimer;
+
+		// Recurring callbacks registered in this application
+		std::vector<RecurringCallback> m_recurringCallbacks;
 
 		// A flag indicating if application has been initialized and not yet exited
 		bool m_isInitialized = false;
