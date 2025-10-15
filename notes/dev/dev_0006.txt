@@ -64,3 +64,30 @@ It works!
 
 Done.
 }
+
+----------
+15.10.2025
+----------
+
+{
+Next TO-DO item is:
+    Create a getRandomColor() overload in PekanUtils.h/cpp that takes in an RGB range where R, G and B's min/max can be different.
+
+Now looking at
+    PekanUtils.h
+    PekanUtils.cpp
+all functions there are for generating random stuff,
+so let's rename these files to
+    RandomizationUtils.h
+    RandomizationUtils.cpp
+
+Let's create 2 new functions for generating a random color:
+    glm::vec4 getRandomColor(glm::vec3 rgbMin, glm::vec3 rgbMax, bool randomizeAlpha = false);
+    glm::vec4 getRandomColor(glm::vec4 rgbaMin, glm::vec4 rgbaMax);
+Done. Easy.
+Also noticed the API is not very consistent across functions in this file,
+so I changed all functions to take in min/max, NOT xRange, yRange, etc.
+Nothing important about this change, it's just for consistency.
+
+Done.
+}

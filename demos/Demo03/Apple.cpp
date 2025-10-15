@@ -2,14 +2,14 @@
 #include "Snake.h"
 
 #include "Utils/FileUtils.h"
-#include "Utils/PekanUtils.h"
+#include "Utils/RandomizationUtils.h"
 
 static const char* vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
 static const char* fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
 static const float APPLE_SIZE = 0.03f;
 
 using Pekan::PekanEngine;
-using Pekan::Utils::getRandomInt;
+using Pekan::RandomizationUtils::getRandomInt;
 using namespace Pekan::Graphics;
 
 namespace Demo

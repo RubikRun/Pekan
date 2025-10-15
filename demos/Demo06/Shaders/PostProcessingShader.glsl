@@ -5,8 +5,8 @@ in vec2 texCoords;
 uniform sampler2D screenTexture;
 
 // Offsets for sampling neighbors
-const float offset_x = 1.0 / 573.0;
-const float offset_y = 1.0 / 326.0;
+const float offset_x = 1.0 / 428.0;
+const float offset_y = 1.0 / 233.0;
 vec2 offsets[9] = vec2[](
     vec2(-offset_x,     offset_y), // top-left
     vec2( 0.0f,         offset_y), // top-center

@@ -1,6 +1,6 @@
 #include "Demo08_Scene.h"
 #include "PekanLogger.h"
-#include "Utils/PekanUtils.h"
+#include "Utils/RandomizationUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
 #include "Renderer2DSystem.h"
@@ -13,7 +13,7 @@ static const float ZOOM_SPEED = 1.1f;
 using namespace Pekan;
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
-using namespace Pekan::Utils;
+using namespace Pekan::RandomizationUtils;
 using namespace Pekan::Tools;
 
 namespace Demo
@@ -169,16 +169,21 @@ namespace Demo
 			minDim * 0.01f,
 			minDim * 0.04f
 		};
-		const glm::vec2 positionXRange = { -windowSize.x / 2.0f + widthHeightRange.y / 2.0f, windowSize.x / 2.0f - widthHeightRange.y / 2.0f };
-		const glm::vec2 positionYRange = { -windowSize.y / 2.0f + widthHeightRange.y / 2.0f, windowSize.y / 2.0f - widthHeightRange.y / 2.0f };
+		const glm::vec2 positionMin = { -windowSize.x / 2.0f + widthHeightRange.y / 2.0f, -windowSize.y / 2.0f + widthHeightRange.y / 2.0f };
+		const glm::vec2 positionMax = { windowSize.x / 2.0f - widthHeightRange.y / 2.0f, windowSize.y / 2.0f - widthHeightRange.y / 2.0f };
 
 		// Generate sprites with random textures with a random size at a random position
 		m_sprites.resize(m_spritesMaxCount);
 		for (size_t i = 0; i < m_spritesMaxCount; i++)
 		{
 			const size_t textureIndex = getRandomInt(0, textures.size() - 1);
-			m_sprites[i].create(textures[textureIndex], getRandomFloat(widthHeightRange), getRandomFloat(widthHeightRange));
-			m_sprites[i].setPosition(getRandomVec2(positionXRange, positionYRange));
+			m_sprites[i].create
+			(
+				textures[textureIndex],
+				getRandomFloat(widthHeightRange.x, widthHeightRange.y),
+				getRandomFloat(widthHeightRange.x, widthHeightRange.y)
+			);
+			m_sprites[i].setPosition(getRandomVec2(positionMin, positionMax));
 		}
 
 		// Initialize velocities list with { 0, 0 } velocity for each sprite
@@ -225,11 +230,11 @@ namespace Demo
 
 			// Move sprite with its velocity
 			m_sprites[i].move(m_spritesVelocities[i]);
-			// Move sprite randomly a little bit
+			// Move sprite randomly
 			m_sprites[i].move(getRandomVec2
 			(
-				{ -float((i * 4 + 2) % 30) * 0.8f, float((i * 3 + 11) % 30) * 0.8f },
-				{ -float((i * 7 + 6) % 30) * 0.8f, float((i * 11 + 3) % 30) * 0.8f }
+				{ -float((i * 4 + 2) % 30) * 0.8f, -float((i * 7 + 6) % 30) * 0.8f },
+				{ float((i * 3 + 11) % 30) * 0.8f, float((i * 11 + 3) % 30) * 0.8f }
 			) * dt);
 
 			// Apply some "air friction" decreasing sprite's velocity with time
@@ -240,8 +245,8 @@ namespace Demo
 			// Scale sprite randomly
 			m_sprites[i].setScale(m_sprites[i].getScale() * getRandomVec2
 			(
-				{ 0.98f, 1.02f },
-				{ 0.98f, 1.02f }
+				{ 0.98f, 0.98f },
+				{ 1.02f, 1.02f }
 			));
 		}
 	}

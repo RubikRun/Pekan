@@ -1,6 +1,6 @@
 #include "Demo06_Scene.h"
 #include "PekanLogger.h"
-#include "Utils/PekanUtils.h"
+#include "Utils/RandomizationUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
 #include "Renderer2DSystem.h"
@@ -19,11 +19,21 @@
 using namespace Pekan;
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
-using namespace Pekan::Utils;
+using namespace Pekan::RandomizationUtils;
 using namespace Pekan::Tools;
 
 static glm::vec2 BBOX_MIN = glm::vec2(-500.0f, -25.0f);
 static const float ZOOM_SPEED = 1.1f;
+
+// Returns a random color for a shape
+static glm::vec4 generateShapeColor()
+{
+	return getRandomColor
+	(
+		glm::vec3(0.1f, 0.1f, 0.1f),
+		glm::vec3(0.9f, 0.9f, 0.9f)
+	);
+}
 
 static constexpr float kernelIdentity[9] = {
 	0.0f, 0.0f, 0.0f,
@@ -88,14 +98,14 @@ namespace Demo
 
 	// Generates random vertices forming a normal polygon.
 	// A "normal" polygon is a polygon whose sides do NOT intersect. It could be either convex or concave.
-	static std::vector<glm::vec2> getRandomPolygonVertices(int numPoints, glm::vec2 xRange, glm::vec2 yRange)
+	static std::vector<glm::vec2> getRandomPolygonVertices(int numPoints, glm::vec2 min, glm::vec2 max)
 	{
 		std::vector<glm::vec2> points;
 
 		// Generate random points in the given XY range
 		for (int i = 0; i < numPoints; ++i)
 		{
-			points.emplace_back(getRandomVec2(xRange, yRange));
+			points.emplace_back(getRandomVec2(min, max));
 		}
 
 		// Compute centroid (average point) of points
@@ -312,16 +322,20 @@ namespace Demo
 			minDim * 0.001f,
 			minDim * 0.005f
 		};
-		const glm::vec2 positionXRange = { m_bbox.min.x + widthHeightRange.y / 2.0f, m_bbox.max.x - widthHeightRange.y / 2.0f };
-		const glm::vec2 positionYRange = { m_bbox.min.y + widthHeightRange.y / 2.0f, m_bbox.max.y - widthHeightRange.y / 2.0f };
+		const glm::vec2 positionMin = { m_bbox.min.x + widthHeightRange.y / 2.0f, m_bbox.min.y + widthHeightRange.y / 2.0f };
+		const glm::vec2 positionMax = { m_bbox.max.x - widthHeightRange.y / 2.0f, m_bbox.max.y - widthHeightRange.y / 2.0f };
 
 		m_rectangles.resize(m_perShapeTypeMaxCount);
 
 		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
-			m_rectangles[i].create(getRandomFloat(widthHeightRange), getRandomFloat(widthHeightRange));
-			m_rectangles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
-			m_rectangles[i].setColor(getRandomColor(0.1f, 0.9f));
+			m_rectangles[i].create
+			(
+				getRandomFloat(widthHeightRange.x, widthHeightRange.y),
+				getRandomFloat(widthHeightRange.x, widthHeightRange.y)
+			);
+			m_rectangles[i].setPosition(getRandomVec2(positionMin, positionMax));
+			m_rectangles[i].setColor(generateShapeColor());
 		}
 	}
 
@@ -329,17 +343,17 @@ namespace Demo
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
 		const glm::vec2 radiusRange = { minDim * 0.001f, minDim * 0.006f };
-		const glm::vec2 positionXRange = { m_bbox.min.x + radiusRange.y, m_bbox.max.x - radiusRange.y };
-		const glm::vec2 positionYRange = { m_bbox.min.y + radiusRange.y, m_bbox.max.y - radiusRange.y };
+		const glm::vec2 positionMin = { m_bbox.min.x + radiusRange.y, m_bbox.min.y + radiusRange.y };
+		const glm::vec2 positionMax = { m_bbox.max.x - radiusRange.y, m_bbox.max.y - radiusRange.y };
 
 		m_circles.resize(m_perShapeTypeMaxCount / 2);
 
 		for (int i = 0; i < m_perShapeTypeMaxCount / 2; i++)
 		{
-			m_circles[i].create(getRandomFloat(radiusRange));
-			m_circles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
-			m_circles[i].setColor(getRandomColor(0.1f, 0.9f));
-			m_circles[i].setSegmentsCount(getRandomInt({ 8, 60 }));
+			m_circles[i].create(getRandomFloat(radiusRange.x, radiusRange.y));
+			m_circles[i].setPosition(getRandomVec2(positionMin, positionMax));
+			m_circles[i].setColor(generateShapeColor());
+			m_circles[i].setSegmentsCount(getRandomInt(8, 60));
 		}
 	}
 
@@ -347,26 +361,26 @@ namespace Demo
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
 		const glm::vec2 radiusRange = { minDim * 0.001f, minDim * 0.006f };
-		const glm::vec2 positionXRange = { m_bbox.min.x + radiusRange.y, m_bbox.max.x - radiusRange.y };
-		const glm::vec2 positionYRange = { m_bbox.min.y + radiusRange.y, m_bbox.max.y - radiusRange.y };
+		const glm::vec2 positionMin = { m_bbox.min.x + radiusRange.y, m_bbox.min.y + radiusRange.y };
+		const glm::vec2 positionMax = { m_bbox.max.x - radiusRange.y, m_bbox.max.y - radiusRange.y };
 
 		m_circlesStatic.resize(m_perShapeTypeMaxCount / 2);
 
 		for (int i = 0; i < m_perShapeTypeMaxCount / 2; i++)
 		{
-			m_circlesStatic[i].create(getRandomFloat(radiusRange));
-			m_circlesStatic[i].setPosition(getRandomVec2(positionXRange, positionYRange));
-			m_circlesStatic[i].setColor(getRandomColor(0.1f, 0.9f));
+			m_circlesStatic[i].create(getRandomFloat(radiusRange.x, radiusRange.y));
+			m_circlesStatic[i].setPosition(getRandomVec2(positionMin, positionMax));
+			m_circlesStatic[i].setColor(generateShapeColor());
 		}
 	}
 
 	void Demo06_Scene::createTriangles()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 pointXRange ={ -minDim * 0.003f, minDim * 0.003f };
-		const glm::vec2 pointYRange = { -minDim * 0.003f, minDim * 0.003f };
-		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
-		const glm::vec2 positionYRange = { m_bbox.min.y - pointYRange.x, m_bbox.max.y - pointYRange.y };
+		const glm::vec2 pointMin ={ -minDim * 0.003f, -minDim * 0.003f };
+		const glm::vec2 pointMax = { minDim * 0.003f, minDim * 0.003f };
+		const glm::vec2 positionMin = { m_bbox.min.x - pointMin.x, m_bbox.min.y - pointMin.y };
+		const glm::vec2 positionMax = { m_bbox.max.x - pointMax.x, m_bbox.max.y - pointMax.y };
 
 		m_triangles.resize(m_perShapeTypeMaxCount);
 
@@ -374,40 +388,40 @@ namespace Demo
 		{
 			m_triangles[i].create
 			(
-				getRandomVec2(pointXRange, pointYRange),
-				getRandomVec2(pointXRange, pointYRange),
-				getRandomVec2(pointXRange, pointYRange)
+				getRandomVec2(pointMin, pointMax),
+				getRandomVec2(pointMin, pointMax),
+				getRandomVec2(pointMin, pointMax)
 			);
-			m_triangles[i].setPosition(getRandomVec2(positionXRange, positionYRange));
-			m_triangles[i].setColor(getRandomColor(0.1f, 0.9f));
+			m_triangles[i].setPosition(getRandomVec2(positionMin, positionMax));
+			m_triangles[i].setColor(generateShapeColor());
 		}
 	}
 
 	void Demo06_Scene::createPolygons()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 pointXRange = { -minDim * 0.0025f, minDim * 0.0025f };
-		const glm::vec2 pointYRange = { -minDim * 0.0025f, minDim * 0.0025f };
-		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
-		const glm::vec2 positionYRange = { m_bbox.min.y + pointYRange.y, m_bbox.max.y - pointYRange.y };
+		const glm::vec2 pointMin = { -minDim * 0.0025f, -minDim * 0.0025f };
+		const glm::vec2 pointMax = { minDim * 0.0025f, minDim * 0.0025f };
+		const glm::vec2 positionMin = { m_bbox.min.x - pointMin.x, m_bbox.min.y - pointMin.y };
+		const glm::vec2 positionMax = { m_bbox.max.x - pointMax.x, m_bbox.max.y - pointMax.y };
 
 		m_polygons.resize(m_perShapeTypeMaxCount);
 		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
-			const std::vector<glm::vec2> vertices = getRandomPolygonVertices(getRandomInt(6, 18), pointXRange, pointYRange);
+			const std::vector<glm::vec2> vertices = getRandomPolygonVertices(getRandomInt(6, 18), pointMin, pointMax);
 			m_polygons[i].create(vertices);
-			m_polygons[i].setPosition(getRandomVec2(positionXRange, positionYRange));
-			m_polygons[i].setColor(getRandomColor(0.1f, 0.9f));
+			m_polygons[i].setPosition(getRandomVec2(positionMin, positionMax));
+			m_polygons[i].setColor(generateShapeColor());
 		}
 	}
 
 	void Demo06_Scene::createLines()
 	{
 		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 pointXRange = { -minDim * 0.004f, minDim * 0.004f };
-		const glm::vec2 pointYRange = { -minDim * 0.004f, minDim * 0.004f };
-		const glm::vec2 positionXRange = { m_bbox.min.x - pointXRange.x, m_bbox.max.x - pointXRange.y };
-		const glm::vec2 positionYRange = { m_bbox.min.y - pointYRange.x, m_bbox.max.y - pointYRange.y };
+		const glm::vec2 pointMin = { -minDim * 0.004f, -minDim * 0.004f };
+		const glm::vec2 pointMax = { minDim * 0.004f, minDim * 0.004f };
+		const glm::vec2 positionMin = { m_bbox.min.x - pointMin.x, m_bbox.min.y - pointMin.y };
+		const glm::vec2 positionMax = { m_bbox.max.x - pointMax.x, m_bbox.max.y - pointMax.y };
 
 		m_lines.resize(m_perShapeTypeMaxCount);
 
@@ -415,12 +429,12 @@ namespace Demo
 		{
 			m_lines[i].create
 			(
-				getRandomVec2(pointXRange, pointYRange),
-				getRandomVec2(pointXRange, pointYRange),
+				getRandomVec2(pointMin, pointMax),
+				getRandomVec2(pointMin, pointMax),
 				getRandomFloat(0.1f, 0.6f)
 			);
-			m_lines[i].setPosition(getRandomVec2(positionXRange, positionYRange));
-			m_lines[i].setColor(getRandomColor(0.3f, 0.65f));
+			m_lines[i].setPosition(getRandomVec2(positionMin, positionMax));
+			m_lines[i].setColor(generateShapeColor());
 		}
 	}
 
@@ -471,14 +485,14 @@ namespace Demo
 		{
 			m_rectangles[i].move(getRandomVec2
 			(
-				{ -float((i * 4 + 2) % 30) * 1.0f, float((i * 3 + 11) % 30) * 1.0f },
-				{ -float((i * 7 + 6) % 30) * 1.0f, float((i * 11 + 3) % 30) * 1.0f }
+				{ -float((i * 4 + 2) % 30) * 1.0f, -float((i * 7 + 6) % 30) * 1.0f },
+				{ float((i * 3 + 11) % 30) * 1.0f, float((i * 11 + 3) % 30) * 1.0f }
 			) * dt);
 			m_rectangles[i].setRotation(dt * sin(t * float(i % 7)) * float(i % 17) / 3.5f);
 			m_rectangles[i].setScale(m_rectangles[i].getScale() * getRandomVec2
 			(
-				{ 0.96f, 1.04f },
-				{ 0.96f, 1.04f }
+				{ 0.96f, 0.96f },
+				{ 1.04f, 1.04f }
 			));
 		}
 	}
@@ -489,14 +503,14 @@ namespace Demo
 		{
 			m_circles[i].move(getRandomVec2
 			(
-				{ -float((i * 7 + 1) % 30), float((i * 7 + 6) % 30) },
-				{ -float((i * 7 + 2) % 30), float((i * 13 + 4) % 30) }
+				{ -float((i * 7 + 1) % 30), -float((i * 7 + 2) % 30) },
+				{ float((i * 7 + 6) % 30), float((i * 13 + 4) % 30) }
 			) * dt);
 			m_circles[i].setRotation(dt * sin(t * float(i % 5)) * float(i % 17 + 7) / 3.0f);
 			m_circles[i].setScale(m_circles[i].getScale() * getRandomVec2
 			(
-				{ 0.96f, 1.04f },
-				{ 0.96f, 1.04f }
+				{ 0.96f, 0.96f },
+				{ 1.04f, 1.04f }
 			));
 		}
 	}
@@ -507,14 +521,14 @@ namespace Demo
 		{
 			m_circlesStatic[i].move(getRandomVec2
 			(
-				{ -float((i * 7 + 1) % 30), float((i * 7 + 6) % 30) },
-				{ -float((i * 7 + 2) % 30), float((i * 13 + 4) % 30) }
+				{ -float((i * 7 + 1) % 30), -float((i * 7 + 2) % 30) },
+				{ float((i * 7 + 6) % 30), float((i * 13 + 4) % 30) }
 			) * dt);
 			m_circlesStatic[i].setRotation(dt * sin(t * float(i % 3)) * float(i % 17 + 7) / 3.0f);
 			m_circlesStatic[i].setScale(m_circles[i].getScale() * getRandomVec2
 			(
-				{ 0.96f, 1.04f },
-				{ 0.96f, 1.04f }
+				{ 0.96f, 0.96f },
+				{ 1.04f, 1.04f }
 			));
 		}
 	}
@@ -525,14 +539,14 @@ namespace Demo
 		{
 			m_triangles[i].move(getRandomVec2
 			(
-				{ -float((i * 7 + 2) % 30), float((i * 3 + 7) % 30) },
-				{ -float((i * 11 + 3) % 30), float((i * 33 + 17) % 30) }
+				{ -float((i * 7 + 2) % 30), -float((i * 11 + 3) % 30) },
+				{ float((i * 3 + 7) % 30), float((i * 33 + 17) % 30) }
 			) * dt);
 			m_triangles[i].setRotation(dt * sin(t * float(i % 9)) * float(i % 19 + 5) / 4.5f);
 			m_triangles[i].setScale(m_triangles[i].getScale() * getRandomVec2
 			(
-				{ 0.96f, 1.04f },
-				{ 0.96f, 1.04f }
+				{ 0.96f, 0.96f },
+				{ 1.04f, 1.04f }
 			));
 		}
 	}
@@ -543,14 +557,14 @@ namespace Demo
 		{
 			m_polygons[i].move(getRandomVec2
 			(
-				{ -float((i * 12 + 5) % 30), float((i * 11 + 6) % 30) },
-				{ -float((i * 9 + 2) % 30), float((i * 19 + 4) % 30) }
+				{ -float((i * 12 + 5) % 30), -float((i * 9 + 2) % 30) },
+				{ float((i * 11 + 6) % 30), float((i * 19 + 4) % 30) }
 			) * dt);
 			m_polygons[i].setRotation(dt * sin(t * float(i % 8)) * float(i % 23 + 3) / 3.0f);
 			m_polygons[i].setScale(m_polygons[i].getScale() * getRandomVec2
 			(
-				{ 0.96f, 1.04f },
-				{ 0.96f, 1.04f }
+				{ 0.96f, 0.96f },
+				{ 1.04f, 1.04f }
 			));
 		}
 	}
@@ -561,14 +575,14 @@ namespace Demo
 		{
 			m_lines[i].move(getRandomVec2
 			(
-				{ -float((i * 5 + 2) % 30), float((i * 17 + 11) % 30) },
-				{ -float((i * 7 + 3) % 30), float((i * 15 + 9) % 30) }
+				{ -float((i * 5 + 2) % 30), -float((i * 7 + 3) % 30) },
+				{ float((i * 17 + 11) % 30), float((i * 15 + 9) % 30) }
 			) * dt);
 			m_lines[i].setRotation(dt * sin(t * float(i % 9)) * float(i % 19 + 5) / 5.5f);
 			m_lines[i].setScale(m_lines[i].getScale() * getRandomVec2
 			(
-				{ 0.98f, 1.02f },
-				{ 0.98f, 1.02f }
+				{ 0.98f, 0.98f },
+				{ 1.02f, 1.02f }
 			));
 		}
 	}
