@@ -13,7 +13,6 @@ namespace Pekan
 {
 namespace Graphics
 {
-	bool RenderState::s_isEnabledFaceCulling = false;
 
 	void RenderState::setBackgroundColor(float r, float g, float b, float a)
 	{

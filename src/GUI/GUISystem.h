@@ -39,7 +39,7 @@ namespace GUI
 	private: /* variables */
 
 		// Next available ID for a GUI widget
-		static int m_nextWidgetId;
+		inline static int m_nextWidgetId = 0;
 	};
 
 } // namespace GUI

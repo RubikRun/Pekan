@@ -9,10 +9,6 @@
 namespace Pekan
 {
 
-    Window PekanEngine::s_window;
-    PekanApplication* PekanEngine::s_application = nullptr;
-    bool PekanEngine::s_isInitialized = false;
-
     bool PekanEngine::init(PekanApplication* application)
     {
         if (s_isInitialized)

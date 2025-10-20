@@ -203,6 +203,6 @@
                         because since the "Add support for post-processing shaders" commit this clear()
                         function does NOT clear depth buffer by default.
 
-0070 17.10.2025 (TODO): Use
+0070 17.10.2025 (DONE): Use
                             inline static const
                         everywhere to define static const member variables inside the class, instead of separately in the .cpp

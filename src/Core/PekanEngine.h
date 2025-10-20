@@ -69,13 +69,13 @@ namespace Pekan
 	private: /* variables */
 
 		// Window where current application is running
-		static Window s_window;
+		inline static Window s_window;
 
 		// Application currently using Pekan
-		static PekanApplication* s_application;
+		inline static PekanApplication* s_application = nullptr;
 
 		// Flag indicating if engine is initialized
-		static bool s_isInitialized;
+		inline static bool s_isInitialized = false;
 	};
 
 } // namespace Pekan

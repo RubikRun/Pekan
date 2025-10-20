@@ -14,19 +14,17 @@ namespace Pekan
 namespace GUI
 {
 
-    int GUISystem::m_nextWidgetId = 0;
+    static GUISystem g_guiSystem;
 
-	static GUISystem g_guiSystem;
+    void GUISystem::registerSubsystem()
+    {
+        SubsystemManager::registerSubsystem(&g_guiSystem);
+    }
 
-	void GUISystem::registerSubsystem()
-	{
-		SubsystemManager::registerSubsystem(&g_guiSystem);
-	}
-
-	GUISystem* GUISystem::getInstance()
-	{
-		return &g_guiSystem;
-	}
+    GUISystem* GUISystem::getInstance()
+    {
+        return &g_guiSystem;
+    }
 
     int GUISystem::generateWidgetId()
     {

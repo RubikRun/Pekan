@@ -138,3 +138,16 @@ Removed all other instance of "inline".
 
 Done.
 }
+
+----------
+20.10.2025
+----------
+
+{
+Next TO-DO item is
+    Use
+        inline static const
+    everywhere to define static const member variables inside the class, instead of separately in the .cpp
+
+Done.
+}

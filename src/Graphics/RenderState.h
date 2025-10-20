@@ -198,7 +198,7 @@ namespace Graphics
 	private: /* variables */
 
 		// A flag indicating if face culling is enabled
-		static bool s_isEnabledFaceCulling;
+		inline static bool s_isEnabledFaceCulling = false;
 	};
 
 } // namespace Graphics
