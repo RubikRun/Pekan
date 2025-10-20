@@ -22,14 +22,14 @@ namespace Renderer2D
 	// A batch's capacity for colors will be this fraction of the maximum texture size supported on current hardware.
 	// For example, if this fraction is 80% and hardware's maximum texture size is 1024,
 	// then colors capacity will be 0.8 * 1024 = 819.
-	static constexpr float CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE = 0.95f;
+	constexpr float CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE = 0.95f;
 #else
 	// A batch's capacity for vertices.
 	// Used only when nothing else limits the batch from growing infinitely.
-	static constexpr int CAPACITY_VERTICES = 100000;
+	constexpr int CAPACITY_VERTICES = 100000;
 	// A batch's capacity for indices.
 	// Used only when nothing else limits the batch from growing infinitely
-	static constexpr int CAPACITY_INDICES = 150000;
+	constexpr int CAPACITY_INDICES = 150000;
 #endif
 
 	// Sets "uTextures" uniform inside a given shader
@@ -63,7 +63,7 @@ namespace Renderer2D
 		else
 		{
 			// Set shader's view projection matrix uniform to a default view projection matrix
-			static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+			static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
 			shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 		}
 	}
@@ -112,7 +112,7 @@ namespace Renderer2D
 		m_renderObject.setIndexData(nullptr, 0, BufferDataUsage::DynamicDraw);
 
 		// Set shader's view projection matrix uniform to a default view projection matrix
-		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+		static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
 		m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH

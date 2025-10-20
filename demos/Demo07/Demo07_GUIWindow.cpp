@@ -7,9 +7,9 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
-	static const float CAMERA_SIZE = 10.0f;
+	constexpr float CAMERA_SIZE = 10.0f;
 
-	static const char* SHAPE_TYPE_NAMES[6] =
+	constexpr char* const SHAPE_TYPE_NAMES[6] =
 	{
 		"Rectangle",
 		"Circle",

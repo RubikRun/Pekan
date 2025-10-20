@@ -7,8 +7,8 @@
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_VertexShader.glsl"
 #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_SolidColor_FragmentShader.glsl"
 
-static constexpr long long VERTEX_DATA_SIZE = 4 * sizeof(float);
-static constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+constexpr long long VERTEX_DATA_SIZE = 4 * sizeof(float);
+constexpr glm::vec4 DEFAULT_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 using namespace Pekan::Graphics;
 
@@ -32,7 +32,7 @@ namespace Renderer2D
 		);
 
 		// Set shader's view projection matrix uniform to an identity matrix
-		static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+		static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
 		m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 
 		setColor(DEFAULT_COLOR);
@@ -57,7 +57,7 @@ namespace Renderer2D
 		else
 		{
 			// Set shader's view projection matrix uniform to a default view projection matrix
-			static const glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+			static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
 			m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 		}
 	}

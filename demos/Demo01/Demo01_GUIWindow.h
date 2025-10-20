@@ -28,7 +28,7 @@ namespace Demo
 		int getSquareRotation(size_t idx) const;
 		glm::vec4 getSquareColor(size_t idx) const;
 
-		inline int getNumberOfSquares() const { return gui.squares.size(); }
+		int getNumberOfSquares() const { return gui.squares.size(); }
 
 	private: /* functions */
 

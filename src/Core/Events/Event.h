@@ -46,7 +46,7 @@ namespace Pekan
 		virtual int getCategoryFlags() const = 0;
 		virtual std::string toString() const { return getName(); }
 
-		inline bool isInCategory(EventCategory category)
+		bool isInCategory(EventCategory category)
 		{
 			return getCategoryFlags() & category;
 		}

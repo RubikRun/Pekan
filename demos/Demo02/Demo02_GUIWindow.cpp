@@ -11,9 +11,9 @@ using Pekan::PekanEngine;
 namespace Demo
 {
 
-	static const float COLOR_DULLNESS = 0.9f;
+	constexpr float COLOR_DULLNESS = 0.9f;
 
-	static const glm::vec3 INITIAL_COLORS[6] =
+	constexpr glm::vec3 INITIAL_COLORS[6] =
 	{
 		{ COLOR_DULLNESS, 0.0f, 0.0f },
 		{ 0.0f, COLOR_DULLNESS, 0.0f },

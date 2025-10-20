@@ -74,7 +74,7 @@ namespace Pekan
 		bool isMinimized() const;
 
 		// Returns (a pointer to) the underlying GLFW window
-		inline GLFWwindow* getGlfwWindow() { return m_glfwWindow; }
+		GLFWwindow* getGlfwWindow() { return m_glfwWindow; }
 
 		///////////////////
 		// INPUT POLLING //

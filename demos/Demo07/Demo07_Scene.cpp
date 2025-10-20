@@ -13,10 +13,10 @@ using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
 using namespace Pekan::Tools;
 
-static const float CAMERA_SCALE = 10.0f;
-static const float DIVS_LENGTH = 0.1f;
-static const glm::vec4 COORD_SYS_COLOR = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
-static const float COORD_SYS_THICKNESS = 0.02f;
+constexpr float CAMERA_SCALE = 10.0f;
+constexpr float DIVS_LENGTH = 0.1f;
+constexpr glm::vec4 COORD_SYS_COLOR = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
+constexpr float COORD_SYS_THICKNESS = 0.02f;
 
 namespace Demo
 {
@@ -135,7 +135,7 @@ namespace Demo
 	{
 		// Number of divisions rendered on the coordinate system
 		// in each of the 4 directions, starting from the center
-		const int divsCount = int(CAMERA_SCALE) * 10;
+		static constexpr int divsCount = int(CAMERA_SCALE) * 10;
 
 		m_coordSys.resize(divsCount * 4 + 2);
 		// Create horizontal and vertical line

@@ -6,17 +6,17 @@
 #include "PekanTools.h"
 
 #include <glm/gtc/constants.hpp>
-static const float PI = glm::pi<float>();
+constexpr float PI = glm::pi<float>();
 
 // Parameters for Mandelbrot Times Table
-const glm::vec2 MTT0_CENTER = glm::vec2(-0.5f, 0.0f);
-const glm::vec2 MTT1_CENTER = glm::vec2(0.5f, 0.0f);
-const float MTT0_RADIUS = 0.45f;
-const float MTT1_RADIUS = 0.45f;
-const float MTT0_SPEED = 0.01f;
-const float MTT1_SPEED = 0.01f;
+constexpr glm::vec2 MTT0_CENTER = glm::vec2(-0.5f, 0.0f);
+constexpr glm::vec2 MTT1_CENTER = glm::vec2(0.5f, 0.0f);
+constexpr float MTT0_RADIUS = 0.45f;
+constexpr float MTT1_RADIUS = 0.45f;
+constexpr float MTT0_SPEED = 0.01f;
+constexpr float MTT1_SPEED = 0.01f;
 
-static const float CAMERA_SCALE = MTT0_RADIUS * 5.0f;
+constexpr float CAMERA_SCALE = MTT0_RADIUS * 5.0f;
 
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
@@ -129,7 +129,7 @@ namespace Demo
 
     void Demo05_Scene::updateMtt()
     {
-        const float arc0 = 2.0f * PI / float(MTT0_SUBDIVS);
+        static constexpr float arc0 = 2.0f * PI / float(MTT0_SUBDIVS);
         for (int i = 0; i < MTT0_SUBDIVS; i++)
         {
             const float angA = float(i) * arc0;
@@ -139,7 +139,7 @@ namespace Demo
             m_lines[i].update();
         }
 
-        const float arc1 = 2.0f * PI / float(MTT1_SUBDIVS);
+        static constexpr float arc1 = 2.0f * PI / float(MTT1_SUBDIVS);
         for (int i = 0; i < MTT1_SUBDIVS; i++)
         {
             const float angA = float(i) * arc1;

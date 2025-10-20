@@ -28,7 +28,7 @@ namespace Demo
 		// Grows the snake by 1 square. Should be called whenever the snake eats an apple.
 		void grow();
 
-		inline int getThickness() const { return m_thickness; }
+		int getThickness() const { return m_thickness; }
 
 	private: /* functions */
 

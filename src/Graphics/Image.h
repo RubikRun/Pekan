@@ -15,11 +15,11 @@ namespace Graphics
 		// Loads image from given image file
 		bool load(const char* filepath);
 
-		inline const unsigned char* getData() const { return m_data; }
+		const unsigned char* getData() const { return m_data; }
 
-		inline int getWidth() const { return m_width; }
-		inline int getHeight() const { return m_height; }
-		inline int getNumChannels() const { return m_numChannels; }
+		int getWidth() const { return m_width; }
+		int getHeight() const { return m_height; }
+		int getNumChannels() const { return m_numChannels; }
 
 		// Checks if image is valid, meaning it has been loaded successfully and contains valid data
 		bool isValid() const { return m_data != nullptr; }

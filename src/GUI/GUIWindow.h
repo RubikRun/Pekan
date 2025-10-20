@@ -44,7 +44,7 @@ namespace GUI
 
 		// Can be implemented by derived classes if they want a non-default name
 		// for the layer of their GUI window
-		virtual inline std::string getLayerName() const override { return "gui_layer"; }
+		virtual std::string getLayerName() const override { return "gui_layer"; }
 
 	private: /* functions*/
 

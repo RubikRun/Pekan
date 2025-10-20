@@ -12,7 +12,7 @@ namespace Pekan
 	class KeyEvent : public Event
 	{
 	public:
-		inline KeyCode getKeyCode() const { return m_keyCode; }
+		KeyCode getKeyCode() const { return m_keyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
@@ -31,7 +31,7 @@ namespace Pekan
 			: KeyEvent(keyCode), m_isRepeating(isRepeating)
 		{}
 
-		inline bool isRepeating() const { return m_isRepeating; }
+		bool isRepeating() const { return m_isRepeating; }
 
 		std::string toString() const override
 		{

@@ -13,15 +13,15 @@ using Pekan::PekanEngine;
 
 #define PI 3.14159265359f
 
-static const char* vertexShaderFilePath = "resources/02_vertex_shader.glsl";
-static const char* fragmentShaderFilePath = "resources/02_fragment_shader.glsl";
+constexpr char* const vertexShaderFilePath = "resources/02_vertex_shader.glsl";
+constexpr char* const fragmentShaderFilePath = "resources/02_fragment_shader.glsl";
 
-static const float COLOR_DULLNESS = 0.9f;
+constexpr float COLOR_DULLNESS = 0.9f;
 
 namespace Demo
 {
 
-    const unsigned indices[] =
+    constexpr unsigned indices[] =
     {
         0, 1, 2, 0, 2, 3, // Back
         4, 5, 6, 4, 6, 7, // Front
@@ -163,7 +163,7 @@ namespace Demo
 
             if (m_hideFourthFaceCache)
             {
-                const unsigned indicesReversed[] = { 14, 13, 12, 12, 15, 14 };
+                static constexpr unsigned indicesReversed[] = { 14, 13, 12, 12, 15, 14 };
                 m_renderObject.setIndexSubData(indicesReversed, 3 * 6 * sizeof(unsigned), 6 * sizeof(unsigned));
             }
             else

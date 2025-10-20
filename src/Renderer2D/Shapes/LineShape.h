@@ -37,7 +37,7 @@ namespace Renderer2D
 #endif
 		int getVerticesCount() const override { return 4; };
 
-		const unsigned* getIndices() const override { return s_indices; }
+		const unsigned* getIndices() const override;
 		int getIndicesCount() const override { return 6; };
 
 	private: /* functions */
@@ -60,9 +60,6 @@ namespace Renderer2D
 		glm::vec2 m_pointA = glm::vec2(0.0f, 0.0f);
 		glm::vec2 m_pointB = glm::vec2(0.0f, 0.0f);
 		float m_thickness = -1.0f;
-
-		// Indices of vertices of the 2 triangles making up the line
-		static const unsigned s_indices[6];
 	};
 
 } // namespace Renderer2D

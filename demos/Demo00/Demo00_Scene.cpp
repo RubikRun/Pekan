@@ -2,8 +2,8 @@
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 
-static const char* vertexShaderFilePath = "resources/00_vertex_shader.glsl";
-static const char* fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
+constexpr char* const vertexShaderFilePath = "resources/00_vertex_shader.glsl";
+constexpr char* const fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
 
 using namespace Pekan::Graphics;
 
@@ -13,14 +13,14 @@ namespace Demo
     bool Demo00_Scene::init()
 	{
         // Set up vertex data and configure vertex attributes
-        const float vertices[] =
+        constexpr float vertices[] =
         {
              0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
              0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
             -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
         };
-        const unsigned indices[] =
+        constexpr unsigned indices[] =
         {
             0, 1, 3,  // first triangle
             1, 2, 3   // second triangle

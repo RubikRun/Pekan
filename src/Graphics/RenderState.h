@@ -147,7 +147,7 @@ namespace Graphics
 		// Back-facing triangles will not be rendered.
 		static void enableFaceCulling();
 		static void disableFaceCulling();
-		static inline bool isEnabledFaceCulling() { return s_isEnabledFaceCulling; }
+		static bool isEnabledFaceCulling() { return s_isEnabledFaceCulling; }
 
 		// Returns the maximum number of texture slots supported on current hardware
 		static int getMaxTextureSlots();

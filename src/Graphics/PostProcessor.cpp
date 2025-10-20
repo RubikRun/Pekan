@@ -35,7 +35,7 @@ namespace Graphics
 	static FrameBuffer g_frameBufferFinal;
 
 	// Vertices of a rectangle covering the whole window/viewport
-	static constexpr float RECTANGLE_VERTICES[] =
+	constexpr float RECTANGLE_VERTICES[] =
 	{
 		// position     // texture coordinate
 		-1.0f, -1.0f,    0.0f, 0.0f,
@@ -44,7 +44,7 @@ namespace Graphics
 		-1.0f, 1.0f,     0.0f, 1.0f
 	};
 	// Indices of a rectangle covering the whole window/viewport
-	static constexpr unsigned RECTANGLE_INDICES[] = { 0, 1, 2, 0, 2, 3 };
+	constexpr unsigned RECTANGLE_INDICES[] = { 0, 1, 2, 0, 2, 3 };
 
 	// Underlying render object
 	// used to render rectangle with post-processed frame.

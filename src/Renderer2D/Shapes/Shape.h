@@ -69,7 +69,7 @@ namespace Renderer2D
 		// Shape's index inside of its batch.
 		// To be used by derived classes to set each vertex's "shapeIndex" attribute.
 		//
-		// NOTE: Marked as "mutable" because it doesn't reflect a shape's state exactly.
+		// NOTE: Marked as "mutable" because it doesn't exactly reflect a shape's state.
 		// It reflects the state of "a shape inside a batch".
 		// We want to be able to change a shape's index in a "const" way
 		// because it doesn't change the actual shape.

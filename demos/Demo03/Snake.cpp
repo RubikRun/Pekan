@@ -1,14 +1,14 @@
 #include "Snake.h"
 #include "Utils/FileUtils.h"
 
-static const char* vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
-static const char* fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
-static const float THICKNESS = 0.05f;
-static const float INITIAL_POSITION_X = 0.5f;
-static const float INITIAL_POSITION_Y = 0.5f;
-static const int INITIAL_SPEED = 20;
+constexpr char* const vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
+constexpr char* const fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
+constexpr float THICKNESS = 0.05f;
+constexpr float INITIAL_POSITION_X = 0.5f;
+constexpr float INITIAL_POSITION_Y = 0.5f;
+constexpr int INITIAL_SPEED = 20;
 
-static const int SPEED_MAP[] =
+constexpr int SPEED_MAP[] =
 {
     20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 11, 10, 10, 9, 9, 9, 8, 8, 8, 7, 7, 7,
     6, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,

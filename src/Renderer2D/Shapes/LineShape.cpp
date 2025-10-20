@@ -8,7 +8,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    const unsigned LineShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
+    constexpr unsigned g_indices[6] = { 0, 1, 2, 0, 2, 3 };
 
     void LineShape::create(glm::vec2 pointA, glm::vec2 pointB, float thickness)
     {
@@ -76,6 +76,11 @@ namespace Renderer2D
             updateVerticesWorld();
         }
         return m_verticesWorld;
+    }
+
+    const unsigned* LineShape::getIndices() const
+    {
+        return g_indices;
     }
 
     void LineShape::updateVerticesLocal() const

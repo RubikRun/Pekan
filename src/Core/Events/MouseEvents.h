@@ -16,8 +16,8 @@ namespace Pekan
 			: m_mouseX(x), m_mouseY(y)
 		{}
 
-		inline float getX() const { return m_mouseX; }
-		inline float getY() const { return m_mouseY; }
+		float getX() const { return m_mouseX; }
+		float getY() const { return m_mouseY; }
 
 		std::string toString() const override
 		{
@@ -40,8 +40,8 @@ namespace Pekan
 			: m_xOffset(xOffset), m_yOffset(yOffset)
 		{}
 
-		inline float getXOffset() const { return m_xOffset; }
-		inline float getYOffset() const { return m_yOffset; }
+		float getXOffset() const { return m_xOffset; }
+		float getYOffset() const { return m_yOffset; }
 
 		std::string toString() const override
 		{
@@ -60,7 +60,7 @@ namespace Pekan
 	class MouseButtonEvent : public Event
 	{
 	public:
-		inline MouseButton getMouseButton() const { return m_button; }
+		MouseButton getMouseButton() const { return m_button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	protected:

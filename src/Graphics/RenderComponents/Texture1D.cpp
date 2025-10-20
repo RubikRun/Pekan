@@ -8,10 +8,10 @@
 namespace Pekan {
 namespace Graphics {
 
-	static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::Nearest;
-	static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Nearest;
-	static const TextureWrapMode DEFAULT_WRAP_MODE = TextureWrapMode::ClampToBorder;
-	static const glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	constexpr TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::Nearest;
+	constexpr TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Nearest;
+	constexpr TextureWrapMode DEFAULT_WRAP_MODE = TextureWrapMode::ClampToBorder;
+	constexpr glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	Texture1D::~Texture1D()
 	{

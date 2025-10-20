@@ -5,7 +5,7 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
-	static const std::vector<std::string> SHADER_NAMES =
+	const std::vector<std::string> SHADER_NAMES =
 	{
 		"Standard Blend",
 		"Two Points Blend 1",

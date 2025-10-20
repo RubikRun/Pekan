@@ -13,7 +13,7 @@ namespace Renderer2D
 {
 
 #if !PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING
-    const unsigned TriangleShape::s_indices[3] = { 0, 1, 2 };
+    constexpr unsigned g_indices[3] = { 0, 1, 2 };
 #endif
 
     void TriangleShape::create(glm::vec2 vertexA, glm::vec2 vertexB, glm::vec2 vertexC)
@@ -116,7 +116,7 @@ namespace Renderer2D
         }
         return m_indices;
 #else
-        return s_indices;
+        return g_indices;
 #endif
     }
 

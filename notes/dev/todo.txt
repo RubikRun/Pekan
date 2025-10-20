@@ -192,7 +192,7 @@
 
 0067 14.09.2025 (DONE): Create a getRandomColor() overload in PekanUtils.h/cpp that takes in an RGB range where R, G and B's min/max can be different.
 
-0068 19.09.2025 (TODO): Remove "static" from "static const" and "static constexpr" everywhere
+0068 19.09.2025 (DONE): Remove "static" from "static const" and "static constexpr" everywhere
                         where used for global variables that are constant, defined in a single .cpp, and not supposed to be visible outside.
                         It's redundant. Global constants have internal linkage by default.
 
@@ -202,3 +202,7 @@
                             RenderCommands::clear(true);
                         because since the "Add support for post-processing shaders" commit this clear()
                         function does NOT clear depth buffer by default.
+
+0070 17.10.2025 (TODO): Use
+                            inline static const
+                        everywhere to define static const member variables inside the class, instead of separately in the .cpp

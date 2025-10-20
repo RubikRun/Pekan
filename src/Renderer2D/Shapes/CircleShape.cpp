@@ -5,8 +5,8 @@
 #include "Utils/MathUtils.h"
 #include <glm/gtc/constants.hpp>
 
-static const int DEFAULT_SEGMENTS_COUNT = 42;
-static const float PI = glm::pi<float>();
+constexpr int DEFAULT_SEGMENTS_COUNT = 42;
+constexpr float PI = glm::pi<float>();
 
 namespace Pekan
 {

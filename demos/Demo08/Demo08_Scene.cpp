@@ -8,7 +8,7 @@
 
 #include <algorithm>
 
-static const float ZOOM_SPEED = 1.1f;
+constexpr float ZOOM_SPEED = 1.1f;
 
 using namespace Pekan;
 using namespace Pekan::Graphics;
@@ -22,15 +22,15 @@ namespace Demo
 	// Number of textures to be used for the sprites.
 	// Textures will be loaded from .png files that are expected to be under "resources" directory
 	// and named "00.png", "01.png", "02.png", etc.
-	static constexpr int TEXTURES_COUNT = 44;
+	constexpr int TEXTURES_COUNT = 44;
 
 	// Number of textures to be used for the animation sprite.
 	// Textures will be loaded from .png files that are expected to be under "resources" directory
 	// and named "anim00.png", "anim01.png", "anim02.png", etc.
-	static constexpr int ANIMATION_LENGTH = 10;
+	constexpr int ANIMATION_LENGTH = 10;
 
 	// Size of animation sprite will be this factor times window's width.
-	static constexpr float ANIMATION_SIZE_FACTOR = 0.02f;
+	constexpr float ANIMATION_SIZE_FACTOR = 0.02f;
 
 	// Loads textures to be used for the sprites
 	//

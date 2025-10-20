@@ -62,9 +62,6 @@ namespace Renderer2D
 		mutable unsigned m_indices[3] = { 0, 1, 2 };
 		// Flag indicating if indices need to be updated before use
 		bool m_needUpdateIndices = true;
-#else
-		// Indices of the 3 vertices of the triangle, determining the order in which they will be drawn
-		static const unsigned s_indices[3];
 #endif
 	};
 

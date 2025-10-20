@@ -9,7 +9,7 @@
 namespace Pekan {
 namespace Graphics {
 
-	static const unsigned MAX_SHADERS_ATTACHED = 10;
+	constexpr unsigned MAX_SHADERS_ATTACHED = 10;
 
 	Shader::~Shader()
 	{

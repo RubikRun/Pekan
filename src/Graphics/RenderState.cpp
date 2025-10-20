@@ -4,7 +4,7 @@
 #include "GLCall.h"
 
 // Default number of samples to be used for Multisample Anti-Aliasing (MSAA)
-static constexpr int DEFAULT_NUMBER_OF_SAMPLES = 8;
+constexpr int DEFAULT_NUMBER_OF_SAMPLES = 8;
 
 // A flag indicating if depth testing is currently enabled
 static bool g_isEnabledDepthTest = false;

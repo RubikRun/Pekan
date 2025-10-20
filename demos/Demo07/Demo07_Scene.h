@@ -33,7 +33,7 @@ namespace Demo
 		
 		void attachGUIWindow(const std::shared_ptr<const Demo07_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
-		inline std::string getLayerName() const override { return "scene_layer"; }
+		std::string getLayerName() const override { return "scene_layer"; }
 
 	private: /* functions */
 

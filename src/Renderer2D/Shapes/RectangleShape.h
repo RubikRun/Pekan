@@ -21,8 +21,8 @@ namespace Renderer2D
 		void setWidth(float width);
 		void setHeight(float height);
 
-		inline float getWidth() const { return m_width; }
-		inline float getHeight() const { return m_height; }
+		float getWidth() const { return m_width; }
+		float getHeight() const { return m_height; }
 
 #if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		const Vertex2D* getVertices(float shapeIndex) const override;
@@ -31,7 +31,7 @@ namespace Renderer2D
 #endif
 		int getVerticesCount() const override { return 4; };
 
-		const unsigned* getIndices() const override { return s_indices; }
+		const unsigned* getIndices() const override;
 		int getIndicesCount() const override { return 6; };
 
 	private: /* functions */
@@ -55,9 +55,6 @@ namespace Renderer2D
 		float m_width = -1.0f;
 		// Height of rectangle, size across the Y acis in local space
 		float m_height = -1.0f;
-
-		// Indices of vertices of the 2 triangles making up the rectangle
-		static const unsigned s_indices[6];
 	};
 
 } // namespace Renderer2D

@@ -4,9 +4,9 @@
 #include "Utils/FileUtils.h"
 #include "Utils/RandomizationUtils.h"
 
-static const char* vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
-static const char* fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
-static const float APPLE_SIZE = 0.03f;
+constexpr char* const vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
+constexpr char* const fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
+constexpr float APPLE_SIZE = 0.03f;
 
 using Pekan::PekanEngine;
 using Pekan::RandomizationUtils::getRandomInt;
@@ -37,7 +37,7 @@ namespace Demo
             m_position.x + m_size, m_position.y
         };
 
-        const int indices[] =
+        constexpr int indices[] =
         {
             0, 1, 2,
             2, 3, 0

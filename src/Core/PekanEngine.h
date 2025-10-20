@@ -42,10 +42,10 @@ namespace Pekan
 		static void exit();
 
 		// Returns (a const reference to) the window where current application is running
-		inline static const Window& getWindow() { return s_window; }
+		static const Window& getWindow() { return s_window; }
 
 		// Returns (a pointer to) current application
-		inline static PekanApplication* getApplication() { return s_application; }
+		static PekanApplication* getApplication() { return s_application; }
 
 		///////////////////
 		// INPUT POLLING //

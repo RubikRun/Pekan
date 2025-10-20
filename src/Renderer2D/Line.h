@@ -36,10 +36,10 @@ namespace Renderer2D
 		void setPointA(glm::vec2 pointA);
 		void setPointB(glm::vec2 pointB);
 
-		inline glm::vec2 getPointA() const { return m_vertices[0]; }
-		inline glm::vec2 getPointB() const { return m_vertices[1]; }
+		glm::vec2 getPointA() const { return m_vertices[0]; }
+		glm::vec2 getPointB() const { return m_vertices[1]; }
 
-		inline glm::vec4 getColor() const { return m_color; }
+		glm::vec4 getColor() const { return m_color; }
 		void setColor(glm::vec4 color);
 
 	private: /* variables */

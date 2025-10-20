@@ -7,8 +7,8 @@ namespace Pekan
 namespace Graphics
 {
 
-	static const BufferDataUsage DEFAULT_VERTEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
-	static const BufferDataUsage DEFAULT_INDEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
+	constexpr BufferDataUsage DEFAULT_VERTEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
+	constexpr BufferDataUsage DEFAULT_INDEX_DATA_USAGE = BufferDataUsage::DynamicDraw;
 
 	void RenderObject::create
 	(

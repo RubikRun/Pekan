@@ -91,3 +91,50 @@ Nothing important about this change, it's just for consistency.
 
 Done.
 }
+
+----------
+17.10.2025
+----------
+
+{
+Next TO-DO item is:
+    Remove "static" from "static const" and "static constexpr" everywhere
+    where used for global variables that are constant, defined in a single .cpp, and not supposed to be visible outside.
+    It's redundant. Global constants have internal linkage by default.
+
+Okay, done.
+Went through the whole codebase, checked the usage of all "static const" occurrences
+and removed "static" from the ones that are global variables.
+
+Also, did an additional thing.
+Changed "const" to "constexpr" everywhere where the data is known at compile time, for example:
+    constexpr float COLOR_DULLNESS = 0.9f;
+or
+    constexpr char* const VERTEX_SHADER_FILEPATHS[] =
+    {
+        "resources/04_00_vertex_shader.glsl",
+        "resources/04_01_vertex_shader.glsl",
+        "resources/04_02_vertex_shader.glsl",
+        "resources/04_03_vertex_shader.glsl"
+    };
+If data is NOT known at compile time then we must use "const" and NOT "constexpr", for example:
+    const float cameraDist = m_guiWindow->getCameraDist();
+or
+    const int posX = int(INITIAL_POSITION_X * m_resolution.x);
+
+While, we're at it, let's do another similar thing.
+Let's remove "inline" from all functions defined inside a class.
+It's not needed.
+We only need "inline" if a function is defined outside a class but in the header file.
+There is only one place that does this, and it's this function:
+    inline std::ostream& operator<<(std::ostream& os, const Event& e)
+    {
+        return os << e.toString();
+    }
+in
+    Event.h
+so we'll keep this one as inline.
+Removed all other instance of "inline".
+
+Done.
+}

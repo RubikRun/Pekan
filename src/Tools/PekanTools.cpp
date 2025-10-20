@@ -6,7 +6,7 @@
 #include "Events/MouseEvents.h"
 #include "Events/EventListener.h"
 
-static const float DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED = 1.1f;
+constexpr float DEFAULT_CAMERA_CONTROLLER_2D_ZOOM_SPEED = 1.1f;
 
 using namespace Pekan::Renderer2D;
 
@@ -105,13 +105,13 @@ namespace Tools
         }
 
         // Enables/disables the camera controller
-        inline void setEnabled(bool enabled) { m_enabled = enabled; }
+        void setEnabled(bool enabled) { m_enabled = enabled; }
 
         // Sets a new camera to be controlled by the camera controller
-        inline void setCamera(const Camera2D_Ptr& camera) { m_camera = camera; }
+        void setCamera(const Camera2D_Ptr& camera) { m_camera = camera; }
 
         // Sets zoom speed for the 2D camera controller
-        inline void setZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
+        void setZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
 
     private:
 

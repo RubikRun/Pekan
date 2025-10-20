@@ -116,7 +116,7 @@ namespace Logger
         const std::string dateTimeId = getCurrentDateTimeStringId();
         return logDir + "pekan" + dateTimeId + ".log";
     }
-    static const std::string logFilePath = _getLogFilePath();
+    const std::string logFilePath = _getLogFilePath();
 
 #endif // PK_LOGGER_FILE_SUPPORT
 

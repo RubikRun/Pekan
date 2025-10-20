@@ -25,8 +25,8 @@ namespace Graphics
 		// Returns number of components of the buffer element
 		unsigned getComponentsCount() const;
 
-		inline unsigned getSize() const { return m_size; }
-		inline unsigned getOffset() const { return m_offset; }
+		unsigned getSize() const { return m_size; }
+		unsigned getOffset() const { return m_offset; }
 
 		// Name of buffer element, usually corresponding to the name of the vertex attribute
 		std::string name;

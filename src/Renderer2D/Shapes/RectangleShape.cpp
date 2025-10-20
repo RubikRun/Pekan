@@ -8,7 +8,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    const unsigned RectangleShape::s_indices[6] = { 0, 1, 2, 0, 2, 3 };
+    constexpr unsigned g_indices[6] = { 0, 1, 2, 0, 2, 3 };
 
     void RectangleShape::create(float width, float height)
     {
@@ -71,6 +71,11 @@ namespace Renderer2D
             updateVerticesWorld();
         }
         return m_verticesWorld;
+    }
+
+    const unsigned* RectangleShape::getIndices() const
+    {
+        return g_indices;
     }
 
     void RectangleShape::updateVerticesLocal() const

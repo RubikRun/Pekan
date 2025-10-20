@@ -7,16 +7,16 @@
 
 #include <glm/glm.hpp>
 
-static const unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
+constexpr unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
 
 namespace Pekan {
 namespace Graphics {
 
-	static const TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::LinearOnLinearMipmap;
-	static const TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Linear;
-	static const TextureWrapMode DEFAULT_WRAP_MODE_X = TextureWrapMode::ClampToEdge;
-	static const TextureWrapMode DEFAULT_WRAP_MODE_Y = TextureWrapMode::ClampToEdge;
-	static const glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(255, 0, 0, 255);
+	constexpr TextureMinifyFunction DEFAULT_TEXTURE_MINIFY_FUNCTION = TextureMinifyFunction::LinearOnLinearMipmap;
+	constexpr TextureMagnifyFunction DEFAULT_TEXTURE_MAGNIFY_FUNCTION = TextureMagnifyFunction::Linear;
+	constexpr TextureWrapMode DEFAULT_WRAP_MODE_X = TextureWrapMode::ClampToEdge;
+	constexpr TextureWrapMode DEFAULT_WRAP_MODE_Y = TextureWrapMode::ClampToEdge;
+	constexpr glm::vec4 DEFAULT_BORDER_COLOR = glm::vec4(255, 0, 0, 255);
 
 	Texture2D::~Texture2D()
 	{

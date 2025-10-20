@@ -11,13 +11,13 @@ namespace GUI
 {
 
 	// Number of times (approximately) per second that FPS will be updated in GUI
-	static constexpr float FPS_UPDATES_PER_SECOND = 4.0f;
+	constexpr float FPS_UPDATES_PER_SECOND = 4.0f;
 
 	// Maximum history length that we need to store, in seconds
-	static constexpr float MAX_HISTORY_SECONDS = 20.0f;
+	constexpr float MAX_HISTORY_SECONDS = 20.0f;
 
 	// Maximum history length that we need to store, in samples
-	static constexpr const size_t MAX_HISTORY_SAMPLES = size_t(MAX_HISTORY_SECONDS * FPS_UPDATES_PER_SECOND);
+	constexpr size_t MAX_HISTORY_SAMPLES = size_t(MAX_HISTORY_SECONDS * FPS_UPDATES_PER_SECOND);
 
 	void FPSDisplayWidget::create(GUIWindow* guiWindow)
 	{

@@ -22,7 +22,7 @@ namespace Demo
 
 		void exit() override;
 
-		inline std::string getLayerName() const override { return "scene_layer"; }
+		std::string getLayerName() const override { return "scene_layer"; }
 
 	private: /* functions */
 

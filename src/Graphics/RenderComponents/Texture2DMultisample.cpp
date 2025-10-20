@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 
-static const unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
+constexpr unsigned DEFAULT_PIXEL_TYPE = GL_UNSIGNED_BYTE;
 
 namespace Pekan {
 namespace Graphics {
