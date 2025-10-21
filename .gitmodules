@@ -1,3 +1,6 @@
 [submodule "dep/glm"]
 	path = dep/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "dep/entt"]
+	path = dep/entt
+	url = https://github.com/skypjack/entt.git

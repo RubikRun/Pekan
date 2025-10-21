@@ -151,3 +151,88 @@ Next TO-DO item is
 
 Done.
 }
+
+----------
+21.10.2025
+----------
+
+All TO-DO items are done now.
+
+{
+Time to start implementing v0.3 features.
+I'll start with
+    Entity Component System (ECS)
+
+Decided to use a third party Entity Component System
+because it's quite important that it's fast and reliable.
+In the future we might implement our own ECS,
+but for now let's integrate a third party one into Pekan
+and see how exactly we want to use it.
+After the usage of our ECS is clear we might reconsider and implement our own
+or we might stick with the third party one, we'll see.
+
+We will use
+    EnTT
+which is a free and open-source header-only ECS library for C++.
+A good resource to get an idea of how to use EnTT and how to integrate it in a game engine
+is, of course, The Cherno's Game Engine series.
+
+First step would be to actually get EnTT and make it be a part of our project.
+We'll get it as a git submodule. To do that, modify
+    .gitmodules
+appending this:
+    [submodule "dep/entt"]
+        path = dep/entt
+        url = https://github.com/skypjack/entt.git
+Then, to actually download the EnTT repository under
+    dep/entt
+we need to run
+    git submodule update --init --recursive
+(This, of course, will also have to be done on a freshly downloaded Pekan as well)
+
+Now that we have the EnTT library under
+    dep/entt
+we need to set it up in CMake.
+EnTT is a single-header library so we just need to be able to include this one header file:
+    dep/entt/single_include/entt/entt.hpp
+We can add this directory
+    dep/entt/single_include
+to Core's include directories in
+    CMakeLists.txt
+That way, we can include the header in our C++ files like this:
+    #include <entt/entt.hpp>
+
+To test if EnTT is setup correctly
+let's include the header file in
+    PekanApplication.cpp
+and do a small test in PekanApplication::init()
+We'll create an entt registry
+    entt::registry registry;
+Create 2 dummy structs that we'll use as components
+    struct Position { float x, y; };
+    struct Velocity { float vx, vy; };
+Create an entity
+    entt::entity e1 = registry.create();
+and add the 2 components Position and Velocity to it with some values for x, y and vx, vy
+    registry.emplace<Position>(e1, 1.0f, 2.0f);
+    registry.emplace<Velocity>(e1, 0.1f, 0.2f);
+Create another entity
+    entt::entity e2 = registry.create();
+and add just 1 of the components - Position - to it with some values for x, y
+    registry.emplace<Position>(e2, 3.0f, 4.0f);
+Then, we can get a "view" of all Position components in our registry, like this:
+    registry.view<Position>()
+and we can ask the size of this view
+    const size_t posCount = registry.view<Position>().size();
+which will give us the number of Position components in the registry: in this case 2
+We can do the same for the Velocity components - get a "view" of them, and ask for its size:
+    const size_t velCount = registry.view<Velocity>().size();
+That's it.
+Now we can debug and/or log the values of posCount and velCount
+to make sure that they are 2 and 1, and indeed, they are.
+It works!
+
+We succesfully set up EnTT in Pekan!
+
+Done.
+}

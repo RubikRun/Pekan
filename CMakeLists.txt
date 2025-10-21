@@ -132,8 +132,19 @@ SOURCE_GROUP("Header Files\\Time" FILES
 target_link_libraries(Core PRIVATE glfw)
 target_link_libraries(Core PUBLIC glm)
 
+# Require directory "dep/entt/single_include" to exist
+if(EXISTS "${CMAKE_SOURCE_DIR}/dep/entt/single_include")
+    set(ENTT_SINGLE_INCLUDE ${CMAKE_SOURCE_DIR}/dep/entt/single_include)
+else()
+    message(FATAL_ERROR "EnTT not found in dep/entt/single_include. You need to initialize EnTT as a git submodule.")
+endif()
+
 # Set include directories for Core
-target_include_directories(Core PUBLIC src/Core src/Core/Logger)
+target_include_directories(Core PUBLIC
+    src/Core
+    src/Core/Logger
+    ${ENTT_SINGLE_INCLUDE}
+)
 target_include_directories(Core PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)

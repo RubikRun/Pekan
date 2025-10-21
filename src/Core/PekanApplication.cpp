@@ -9,6 +9,9 @@
 
 #include <GLFW/glfw3.h>
 
+// TEMP
+#include <entt/entt.hpp>
+
 namespace Pekan
 {
     bool PekanApplication::init()
@@ -22,6 +25,33 @@ namespace Pekan
         {
             PK_LOG_ERROR("PekanEngine failed to initialize.", "Pekan");
             return false;
+        }
+
+        // TEMP
+        try
+        {
+            entt::registry registry;
+            PK_LOG_INFO("EnTT registry created.", "Pekan");
+
+            struct Position { float x, y; };
+            struct Velocity { float vx, vy; };
+
+            entt::entity e1 = registry.create();
+            registry.emplace<Position>(e1, 1.0f, 2.0f);
+            registry.emplace<Velocity>(e1, 0.1f, 0.2f);
+
+            entt::entity e2 = registry.create();
+            registry.emplace<Position>(e2, 3.0f, 4.0f);
+
+            // Query and log counts
+            const size_t posCount = registry.view<Position>().size();
+            PK_LOG_INFO("Position count = " << posCount, "Pekan");
+            const size_t velCount = registry.view<Velocity>().size();
+            PK_LOG_INFO("Velocity count = " << velCount, "Pekan");
+        }
+        catch (...)
+        {
+            PK_LOG_WARNING("EnTT threw an exception.", "Pekan");
         }
 
         // Initialize derived application
