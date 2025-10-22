@@ -236,3 +236,48 @@ We succesfully set up EnTT in Pekan!
 
 Done.
 }
+
+----------
+22.10.2025
+----------
+
+{
+Let's continue with ECS now.
+My idea for the next step is to implement a new class
+    class Scene
+that derives from class Layer
+and has its own Entity Component System registry, which is this:
+    entt::registry
+Inside a scene client code will be able to create entities
+and assign them different components.
+Still not sure how and where we would implement the systems, but we'll see.
+
+Let's start from somewhere.
+Create an new class derived from class Layer
+    class Scene : public Layer
+in 2 new files in Core
+    Scene.h
+    Scene.cpp
+We need just 2 things inside the class for now:
+First, the constructor - class Scene needs to only be able to be constructed with an application pointer,
+same way as the underlying Layer:
+    Scene(PekanApplication* application) : Layer(application) {}
+Second, we need to implement the getLayerName() function because it's pure virtual in class Layer
+    virtual std::string getLayerName() const override { return "scene_layer"; }
+Scene layers will be called
+    "scene_layer"
+by default. Client code can override this and provide another name.
+
+Let's also create a new demo
+as a playground where we can test the ECS while developing it.
+Created
+    Demo09
+in a standard way, copied from Demo00
+but removed everything from
+    class Demo09_Scene
+and made it derive from our new Scene class
+    class Demo09_Scene : public Pekan::Scene
+Only thing left in the class is the constructor:
+    Demo09_Scene(Pekan::PekanApplication* application) : Pekan::Scene(application) {}
+
+}

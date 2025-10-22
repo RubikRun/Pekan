@@ -206,3 +206,14 @@
 0070 17.10.2025 (DONE): Use
                             inline static const
                         everywhere to define static const member variables inside the class, instead of separately in the .cpp
+
+0071 22.10.2025 (TODO): Call
+                            RenderCommands::clear()
+                        by default between frames in PekanApplication's run() function.
+                        Example situation where this is needed: An application with a GUI window only,
+                        without a scene - the window is not cleared automatically and the GUI window
+                        leaves a trail behind it when moved. Of course, client code can clear window
+                        in their GUI window's render() function but that's awkward and doesn't make much sense.
+                        Better to let engine clear window by default between frames,
+                        and expose an option for disabling this default behavior,
+                        because some applications might want to control clearing more explicitly.

@@ -42,8 +42,8 @@ namespace GUI
 		// you can override _render() and render them manually there.
 		void addWidget(const Widget_Ptr& widget);
 
-		// Can be implemented by derived classes if they want a non-default name
-		// for the layer of their GUI window
+		// Can be implemented by derived classes
+		// if they want a non-default name for their GUI window's layer
 		virtual std::string getLayerName() const override { return "gui_layer"; }
 
 	private: /* functions*/
