@@ -279,5 +279,96 @@ and made it derive from our new Scene class
     class Demo09_Scene : public Pekan::Scene
 Only thing left in the class is the constructor:
     Demo09_Scene(Pekan::PekanApplication* application) : Pekan::Scene(application) {}
+}
+
+----------
+23.10.2025
+----------
+
+{
+Continuing with ECS.
+The goal now is:
+1. Change our Transformable2D class to be a component
+2. Change our Sprite class to be a component
+3. Create an entity with a Sprite component in Demo09
+
+For 1. we'll need to separate Transformable2D into 2 new classes (or a struct and a class):
+    struct TransformComponent2D
+    class TransformSystem2D
+into these 3 new files:
+    TransformComponent2D.h
+    TransformSystem2D.h
+    TransformSystem2D.cpp
+In simple terms we need TransformComponent2D to hold a transform's data
+and TransformSystem2D to provide functionality for operating on that data.
+It's good to keep components as minimal as possible,
+so our TransformComponent2D will only have these 4 members:
+    glm::vec2 position = { 0.0f, 0.0f };
+    float rotation = 0.0f;
+    glm::vec2 scale = { 1.0f, 1.0f };
+    entt::entity parent = entt::null;
+Let's not worry about optimization for now, and get rid of all "dirty flag" optimizations and caches.
+Later we might bring them back but they will probably operate a bit differently in ECS.
+(Created a TO-DO item for bringing them back)
+Then, in TransformSystem2D we need to have functions that operate on entities that have a TransformComponent2D.
+We'll keep those as simple as possible.
+For now we only need getters and setters for position, rotation and scale,
+and a getter for world matrix:
+    static glm::vec2 getPosition(const entt::registry& registry, entt::entity entity);
+    static float getRotation(const entt::registry& registry, entt::entity entity);
+    static glm::vec2 getScale(const entt::registry& registry, entt::entity entity);
+    static void setPosition(entt::registry& registry, entt::entity entity, glm::vec2 position);
+    static void setRotation(entt::registry& registry, entt::entity entity, float rotation);
+    static void setScale(entt::registry& registry, entt::entity entity, glm::vec2 scale);
+    static glm::mat3 getWorldMatrix(const entt::registry& registry, entt::entity entity);
+Just for completeness let's also add move(), rotate() and scale() as we had in Transformable2D:
+    static void move(entt::registry& registry, entt::entity entity, glm::vec2 deltaPosition);
+    static void rotate(entt::registry& registry, entt::entity entity, float deltaRotation);
+    static void scale(entt::registry& registry, entt::entity entity, glm::vec2 deltaScale);
+
+Okay, now we have a component and a system
+that can be used by both our code and client code.
+But to use them we need a registry.
+Where is this registry going to live?
+In the scene, of course.
+Every scene will have its own ECS registry.
+So let's add an entt::registry to our Scene class, as a private member:
+    entt::registry m_registry;
+together with protected getters (const and non-const):
+    entt::registry& getRegistry() { return m_registry; }
+    const entt::registry& getRegistry() const { return m_registry; }
+Now scene classes that derive from Scene can access this registry
+and use it together with our new TransformComponent2D and TransformSystem2D classes.
+We'll need one more thing in class Scene:
+(we don't strictly need it if we're being 100% minimal, but we'll add it for convenience)
+We need protected functions for creating and destroying an entity:
+    entt::entity createEntity();
+    void destroyEntity(entt::entity entity);
+Now derived scenes can easily create and destroy entities
+and they can access the registry and use it together with components and systems provided by Pekan,
+or with their own.
+
+Let's do an example in Demo09.
+We'll use a turkey texture for our sprite later on, so let's have an entity called
+    entt::entity m_turkey;
+in Demo09_Scene and let it have a default value of null
+    entt::entity m_turkey = entt::null;
+Then in Demo09_Scene's init() function we can create the turkey entity like this:
+    m_turkey = createEntity();
+and we can add a TransformComponent2D component to it like this:
+    registry.emplace<TransformComponent2D>(m_turkey);
+where on a previous line we get registry like this:
+    entt::registry& registry = getRegistry();
+If we want our turkey to be initialized with some initial position, not just at (0, 0), we can do this:
+    registry.emplace<TransformComponent2D>(m_turkey, TURKEY_INITIAL_POSITION);
+where TURKEY_INITIAL_POSITION is a global constexpr:
+    constexpr glm::vec2 TURKEY_INITIAL_POSITION = glm::vec2(-0.5f, -0.2f);
+Then in the update() function we can move the turkey slightly, like this:
+    TransformSystem2D::move(registry, m_turkey, glm::vec2(0.02f, 0.01f));
+Finally, to verify that everything works we can get turkey's world matrix:
+    const glm::mat3 turkeyMatrix = TransformSystem2D::getWorldMatrix(registry, m_turkey);
+and log it with PK_LOG_INFO so that we can see the world matrix every frame,
+and we can see how it changes as turkey moves.
+It works!
 
 }

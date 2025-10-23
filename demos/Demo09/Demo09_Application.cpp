@@ -29,6 +29,7 @@ namespace Demo
     {
         ApplicationProperties props;
         props.windowProperties.title = getName();
+        props.fps = 60.0;
         return props;
     }
 

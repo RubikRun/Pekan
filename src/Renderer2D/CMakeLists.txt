@@ -19,6 +19,9 @@ add_library(Renderer2D STATIC
     Line.cpp
     Transformable2D.h
     Transformable2D.cpp
+    TransformComponent2D.h
+    TransformSystem2D.h
+    TransformSystem2D.cpp
     Vertex2D.h
     Shapes/Shape.h
     Shapes/Shape.cpp
