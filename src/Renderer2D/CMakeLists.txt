@@ -1,10 +1,6 @@
 # Create project Renderer2D
 project(Renderer2D)
 
-option(PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-    "Use a 1D texture to hold the colors of different shapes in a 2D shapes batch. Otherwise, a vertex attribute will be used. Using a 1D texture is more stable, it's less likely to crash or work incorrectly, while a vertex attribute is generally faster, especially on newer GPUs."
-    ON
-)
 option(PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING "Enable orientation checking for 2D shapes" OFF)
 
 # Add a static library Renderer2D, compiling the following source files
@@ -81,6 +77,4 @@ target_compile_definitions(Renderer2D PRIVATE
 target_compile_definitions(Renderer2D PUBLIC
     # Set PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING definition to be 0 or 1 depending on the on/off state of the option
     PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING=$<IF:$<BOOL:${PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING}>,1,0>
-    # Set PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH definition to be 0 or 1 depending on the on/off state of the option
-    PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH=$<IF:$<BOOL:${PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH}>,1,0>
 )

@@ -30,11 +30,7 @@ namespace Renderer2D
 		glm::vec2 getVertexB() const { return m_verticesLocal[1]; }
 		glm::vec2 getVertexC() const { return m_verticesLocal[2]; }
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		const Vertex2D* getVertices(float shapeIndex) const override;
-#else
-		const Vertex2D* getVertices() const override;
-#endif
 		int getVerticesCount() const override { return 3; };
 
 		const unsigned* getIndices() const override;

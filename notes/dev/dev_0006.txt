@@ -371,4 +371,16 @@ and log it with PK_LOG_INFO so that we can see the world matrix every frame,
 and we can see how it changes as turkey moves.
 It works!
 
+----------
+24.10.2025
+----------
+
+{
+    Before continuing with ECS let's remove this CMake option
+        PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
+    It will simplify things a lot. We might bring it back later on, or not (it was not very needed to begin with).
+    We'll keep code as if the option is on.
+    Done.
+}
+
 }

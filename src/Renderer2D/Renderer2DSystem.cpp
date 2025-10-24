@@ -13,10 +13,9 @@ namespace Renderer2D
 {
 
 	// A list of .pkshad files that need to be preprocessed when Renderer2D is initialized
-	constexpr size_t PKSHAD_FILES_COUNT = 2;
+	constexpr size_t PKSHAD_FILES_COUNT = 1;
 	constexpr char* const PKSHAD_FILES[PKSHAD_FILES_COUNT] =
 	{
-		PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_1DTexture_FragmentShader.pkshad",
 		PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_FragmentShader.pkshad"
 	};
 
@@ -125,9 +124,6 @@ namespace Renderer2D
 		// A list of substitution lists, one for each .pkshad file
 		const std::unordered_map<std::string, std::string> PKSHAD_FILES_SUBSTITUTIONS[PKSHAD_FILES_COUNT] =
 		{
-			{
-				{ "MAX_TEXTURE_SLOTS", maxTextureSlotsString }
-			},
 			{
 				{ "MAX_TEXTURE_SLOTS", maxTextureSlotsString }
 			}

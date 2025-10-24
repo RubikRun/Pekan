@@ -21,9 +21,6 @@ namespace Renderer2D
         PK_ASSERT(m_isValid, "Trying to set color of a Shape that is not yet created.", "Pekan");
 
         m_color = color;
-#if !PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-        m_needUpdateVerticesWorld = true;
-#endif
     }
 
     void Shape::_create()

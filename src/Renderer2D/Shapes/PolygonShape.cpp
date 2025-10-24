@@ -57,22 +57,16 @@ namespace Renderer2D
         m_needUpdateVerticesLocal = true;
     }
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
     const Vertex2D* PolygonShape::getVertices(float shapeIndex) const
-#else
-    const Vertex2D* PolygonShape::getVertices() const
-#endif
     {
         PK_ASSERT(isValid(), "Trying to get vertices of a PolygonShape that is not yet created.", "Pekan");
-
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
         PK_ASSERT(shapeIndex >= 0.0f, "Trying to get vertices of a Shape but giving it a negative shape index.", "Pekan");
+
         if (m_shapeIndex != shapeIndex)
         {
             m_shapeIndex = shapeIndex;
             m_needUpdateVerticesWorld = true;
         }
-#endif
 
         if (m_transformChangeIdUsedInVerticesWorld < Transformable2D::getChangeId())
         {
@@ -191,14 +185,8 @@ namespace Renderer2D
         {
             // Calculate world vertex positions by applying the transform matrix to the local vertex positions
             m_verticesWorld[i].position = glm::vec2(worldMatrix * glm::vec3(m_verticesLocal[i], 1.0f));
-
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
             // Set "shapeIndex" attribute to be shape's index
             m_verticesWorld[i].shapeIndex = m_shapeIndex;
-#else
-            // Set "color" attribute to be shape's color
-            m_verticesWorld[i].color = m_color;
-#endif
         }
 
 #if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING

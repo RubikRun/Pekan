@@ -5,32 +5,18 @@
 
 using namespace Pekan::Graphics;
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
-	#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_1DTexture_VertexShader.glsl"
-	#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_1DTexture_FragmentShader.glsl"
-#else
-	#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_VertexShader.glsl"
-	#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_FragmentShader.glsl"
-#endif
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_VertexShader.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_FragmentShader.glsl"
 
 namespace Pekan
 {
 namespace Renderer2D
 {
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 	// A batch's capacity for colors will be this fraction of the maximum texture size supported on current hardware.
 	// For example, if this fraction is 80% and hardware's maximum texture size is 1024,
 	// then colors capacity will be 0.8 * 1024 = 819.
 	constexpr float CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE = 0.95f;
-#else
-	// A batch's capacity for vertices.
-	// Used only when nothing else limits the batch from growing infinitely.
-	constexpr int CAPACITY_VERTICES = 100000;
-	// A batch's capacity for indices.
-	// Used only when nothing else limits the batch from growing infinitely
-	constexpr int CAPACITY_INDICES = 150000;
-#endif
 
 	// Sets "uTextures" uniform inside a given shader
 	// to a list of texture slots { 0, 1, 2, 3, ... } or { 1, 2, 3, 4, ... }
@@ -41,11 +27,7 @@ namespace Renderer2D
 		std::vector<int> textures(capacityTextures);
 		for (size_t i = 0; i < capacityTextures; i++)
 		{
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 			textures[i] = int(i + 1);
-#else
-			textures[i] = int(i);
-#endif
 		}
 
 		shader.setUniform1iv("uTextures", textures.size(), textures.data());
@@ -72,37 +54,23 @@ namespace Renderer2D
 	{
 		PK_ASSERT(!m_isValid, "Trying to create a RenderBatch2D instance that is already created.", "Pekan");
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Set batch's capacity for textures to be the maximum number of texture slots supported on current hardware minus one.
 		// We subtract one because slot 0 will always be occupied by the 1D colors texture.
 		m_capacityTextures = RenderState::getMaxTextureSlots() - 1;
 		// Set batch's capacity for colors to be some fraction of the maximum texture size supported on current hardware
 		m_capacityColors = int(float(RenderState::getMaxTextureSize()) * CAPACITY_COLORS_FRACTION_OF_MAX_TEXTURE_SIZE);
-#else
-		// Set batch's capacity for textures to be the maximum number of texture slots supported on current hardware.
-		m_capacityTextures = RenderState::getMaxTextureSlots();
-#endif
 
 		// Create underlying render object with empty vertex data
 		m_renderObject.create
 		(
 			nullptr,
 			0,
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 			{
 				{ ShaderDataType::Float2, "position" },
 				{ ShaderDataType::Float2, "textureCoordinates" },
 				{ ShaderDataType::Float, "textureIndex" },
 				{ ShaderDataType::Float, "shapeIndex" }
 			},
-#else
-			{
-				{ ShaderDataType::Float2, "position" },
-				{ ShaderDataType::Float2, "textureCoordinates" },
-				{ ShaderDataType::Float, "textureIndex" },
-				{ ShaderDataType::Float4, "color" }
-			},
-#endif
 			BufferDataUsage::DynamicDraw,
 			FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
@@ -115,7 +83,6 @@ namespace Renderer2D
 		static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
 		m_renderObject.getShader().setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Create underlying texture object with empty data
 		m_colorsTexture.create();
 		// IMPORTANT: Set wrap mode to ClampToEdge, because for shader's calculations
@@ -124,7 +91,6 @@ namespace Renderer2D
 		m_colorsTexture.setWrapMode(TextureWrapMode::ClampToEdge);
 
 		m_colorsCount = 0;
-#endif
 
 		m_isValid = true;
 	}
@@ -134,9 +100,7 @@ namespace Renderer2D
 		PK_ASSERT(m_isValid, "Trying to destroy a RenderBatch2D instance that is not yet created.", "Pekan");
 
 		m_renderObject.destroy();
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		m_colorsTexture.destroy();
-#endif
 
 		clear();
 
@@ -148,19 +112,13 @@ namespace Renderer2D
 		PK_ASSERT(m_isValid, "Trying to add a shape to a RenderBatch2D that is not yet created.", "Pekan");
 
 		// Get shape's vertices
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		const Vertex2D* vertices = shape.getVertices(float(m_colorsCount));
-#else
-		const Vertex2D* vertices = shape.getVertices();
-#endif
 		const int verticesCount = shape.getVerticesCount();
 		// Get shape's indices
 		const unsigned* zeroBasedIndices = shape.getIndices();
 		const int indicesCount = shape.getIndicesCount();
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Get shape's color
 		glm::vec4 color = shape.getColor();
-#endif
 
 		// If adding this shape would overflow the batch, don't add it
 		if (wouldShapeOverflowBatch(verticesCount, indicesCount))
@@ -187,12 +145,9 @@ namespace Renderer2D
 			m_indices[i] = zeroBasedIndices[i - oldIndicesSize] + oldVerticesSize;
 		}
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Add shape's color to the batch
 		m_colors.push_back(color);
-
 		m_colorsCount++;
-#endif
 
 		return true;
 	}
@@ -247,16 +202,13 @@ namespace Renderer2D
 		m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(Vertex2D));
 		m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(unsigned));
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Set the colors of the underlying colors texture to our list of colors
 		m_colorsTexture.setColors(m_colors);
 		// Bind colors texture to slot 0
 		m_colorsTexture.bind(0);
-#endif
 
 		Shader& shader = m_renderObject.getShader();
 		setViewProjectionMatrixUniform(shader, camera);
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Set shader's "uColorsTexture" uniform to be 0, matching the slot where colors texture is bound.
 		shader.setUniform1i("uColorsTexture", 0);
 		// Set shader's "uColorsCount" uniform to be the number of colors in the batch.
@@ -267,13 +219,7 @@ namespace Renderer2D
 		{
 			m_textures[i]->bind(i + 1);
 		}
-#else
-		// Bind all textures to slots 0, 1, 2, ...
-		for (unsigned i = 0; i < m_textures.size(); i++)
-		{
-			m_textures[i]->bind(i);
-		}
-#endif
+
 		// Set the value of "uTextures" uniform inside the shader
 		setTexturesUniform(shader, size_t(m_capacityTextures));
 
@@ -288,21 +234,14 @@ namespace Renderer2D
 		m_vertices.clear();
 		m_indices.clear();
 		m_textures.clear();
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		m_colors.clear();
 
 		m_colorsCount = 0;
-#endif
 	}
 
 	bool RenderBatch2D::wouldShapeOverflowBatch(int verticesCount, int indicesCount) const
 	{
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		return (m_colors.size() + 1 > m_capacityColors);
-#else
-		return (m_vertices.size() + verticesCount > CAPACITY_VERTICES
-			|| m_indices.size() + indicesCount > CAPACITY_INDICES);
-#endif
 	}
 
 	bool RenderBatch2D::wouldSpriteOverflowBatch() const

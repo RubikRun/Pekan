@@ -23,14 +23,9 @@ namespace Renderer2D
 		// Sets shape's color
 		void setColor(glm::vec4 color);
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// To be implemented by derived classes to return their vertex data in world space.
 		// @param[in] shapeIndex - Shape's index inside of its batch. Determines the value of the "shapeIndex" attribute of shape's vertices
 		virtual const Vertex2D* getVertices(float shapeIndex) const = 0;
-#else
-		// To be implemented by derived classes to return their vertex data in world space.
-		virtual const Vertex2D* getVertices() const = 0;
-#endif
 		// To be implemented by derived classes to return the number of their vertices.
 		virtual int getVerticesCount() const = 0;
 
@@ -65,7 +60,6 @@ namespace Renderer2D
 
 		glm::vec4 m_color = glm::vec4(-1.0f, -1.0f, -1.0f, -1.0f);
 
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Shape's index inside of its batch.
 		// To be used by derived classes to set each vertex's "shapeIndex" attribute.
 		//
@@ -78,7 +72,6 @@ namespace Renderer2D
 		// but it would be inefficient, because then a batch will have to copy all vertices
 		// in order to add the "shapeIndex" attribute to them.
 		mutable float m_shapeIndex = -1.0f;
-#endif
 
 	private: /* variables */
 

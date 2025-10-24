@@ -14,13 +14,8 @@ namespace Renderer2D
 		glm::vec2 textureCoordinates = { -1.0f, -1.0f };
 		// Index of the texture to be used for this vertex, if applicable
 		float textureIndex = -1.0f;
-#if PEKAN_USE_1D_TEXTURE_FOR_2D_SHAPES_BATCH
 		// Index of the shape that this vertex belongs to, if applicable
 		float shapeIndex = -1.0f;
-#else
-		// Color of this vertex
-		glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-#endif
 	};
 
 } // namespace Renderer2D
