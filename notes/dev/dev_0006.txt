@@ -383,4 +383,210 @@ It works!
     Done.
 }
 
+----------
+25.10.2025
+----------
+
+For 2. we'll need to bypass RenderBatch2D and directly render our sprites.
+Later we must think about bringing back RenderBatch2D and making it part of ECS
+but for now we can't bother with that, we must first implement Sprite rendering
+and then Shape rendering in the most straightforward way possible,
+and only then bring back RenderBatch2D (or an alternative).
+
+Let's implement a sprite component and a sprite system now.
+We'll have 3 new files
+    SpriteComponent.h
+    SpriteSystem.h
+    SpriteSystem.cpp
+same as how we did with transform component and system.
+First, we'll have a struct
+    struct SpriteComponent
+that contains only the data of a sprite.
+A sprite needs width, height, a texture, and min/max of texture coordinates.
+So the struct will consists of:
+    float width = 0.0f;
+    float height = 0.0f;
+    Graphics::Texture2D_ConstPtr texture;
+    glm::vec2 textureCoordinatesMin = { 0.0f, 0.0f };
+    glm::vec2 textureCoordinatesMax = { 1.0f, 1.0f };
+That's it. Simple as that.
+Then we'll have a class
+    class SpriteSystem
+that will provide functionality over sprite components.
+What functionality do we need?
+Rendering.
+That's all we need. We need to be able to render an entity with a sprite component.
+    static void render(const entt::registry& registry, entt::entity entity);
+The complicated part is what this function will do internally, but externally it's dead simple, just render().
+So let's see how to implement this render function.
+We said that we'd bypass RenderBatch2D for now and directly render sprites then and there.
+So in this render function we will need to construct sprite's world vertices
+taking into account the SpriteComponent, obviously, but also the TransformComponent2D.
+Then once we have sprite's world vertices we'll need to create a render object with them,
+provide an appropriate shader and index data,
+and use SpriteComponent's texture.
+That's the basic plan.
+Implementing it is not that hard.
+{
+    Before proceeding to the implementation though let's think about
+    what data structure we'll use for sprite's world vertices.
+    Until now we used
+        Vertex2D
+    but this is a struct specifically targeted for batch rendering of sprites AND shapes together.
+    We'll not be doing this for now, so let's have a new struct
+        struct SpriteVertex
+    in a new file
+        SpriteVertex.h
+    and let it contain only the data needed for a sprite vertex (no batch metadata, no shape data):
+        glm::vec2 position = { -1.0f, -1.0f };
+        glm::vec2 textureCoordinates = { -1.0f, -1.0f };
+    That's it. That's our SpriteVertex that we'll use in SpriteSystem.
+}
+We first need to extract the SpriteComponent and TransformComponent2D from the given entity:
+    const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+    const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
+Before that we can assert that entity exists and it has those 2 components:
+    PK_ASSERT(registry.valid(entity), "Trying to render an entity that doesn't exist.", "Pekan");
+    PK_ASSERT(registry.all_of<SpriteSystem>(entity), "Trying to render an entity that doesn't have a SpriteComponent component.", "Pekan");
+    PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to render an entity that doesn't have a TransformComponent2D component.", "Pekan");
+Once we have entity's SpriteComponent and TransformComponent2D we will create a RenderObject out of them.
+For that we'll have a helper function that we'll use like this:
+    RenderObject renderObject;
+    createRenderObjectForSprite(registry, sprite, transform, 0, renderObject);
+The hardcoded 0 is the texture slot that we want the uniform inside the shader to be set to.
+And on the next line we'll bind sprite's texture to this same slot 0
+    sprite.texture->bind(0);
+Finally, we need to render the render object
+    renderObject.render();
+That's the end of SpriteSystem::render()
+Let's look at the implementation of
+    createRenderObjectForSprite()
+First we need to create world vertices out of sprite's components:
+    SpriteVertex verticesWorld[4];
+    getVerticesWorld(registry, sprite, transform, verticesWorld);
+Again using a helper function for that:
+    getVerticesWorld()
+Then we create the render object from the world vertices in a pretty standard way:
+    renderObject.create
+    (
+        verticesWorld,
+        sizeof(SpriteVertex) * 4,
+        {
+            { ShaderDataType::Float2, "position" },
+            { ShaderDataType::Float2, "textureCoordinates" }
+        },
+        BufferDataUsage::DynamicDraw,
+        FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+        FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+    );
+We know that a sprite will always have 4 vertices so we can hardcode this
+    sizeof(SpriteVertex) * 4
+and we know the exact vertex layout
+    {
+        { ShaderDataType::Float2, "position" },
+        { ShaderDataType::Float2, "textureCoordinates" }
+    }
+As for the 2 shaders they are these 2 new shaders:
+    #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Sprite_VertexShader.glsl"
+    #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Sprite_FragmentShader.glsl"
+that I got from
+    2D_Batch_VertexShader.glsl
+    2D_Batch_FragmentShader.glsl
+by removing batch metadata and shape data, and leaving only sprite rendering.
+Once we have created the render object we need to set index data to it:
+    static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
+    renderObject.setIndexData(indices, sizeof(unsigned) * 6);
+That's easy because a sprite's index data is always the same - 0, 1, 2, 0, 2, 3 - just forming a rectangle out of 2 triangles.
+And finally we need to set render object's shader's uniforms.
+More specifically we need to set
+    uniform mat4 uViewProjectionMatrix;
+and
+    uniform sampler2D uTexture;
+To set the view projection matrix we'll use the currently active camera in Renderer2DSystem:
+    Camera2D_ConstPtr camera = Renderer2DSystem::getCamera();
+    setViewProjectionMatrixUniform(shader, camera);
+using a helper function
+    setViewProjectionMatrixUniform()
+which is the same one from RenderBatch2D.cpp,
+it gets camera's view projection matrix and sets uniform to it, unless camera is null then it sets default identity matrix.
+To set the "uTexture" uniform we just set it to the given texture slot, easy as that:
+    shader.setUniform1i("uTexture", textureSlot);
+That's it.
+Our SpriteSystem now supports rendering of entities that have both SpriteComponent and TransformComponent2D.
+
+{
+    Side note, until now we had this strict create()/destroy() or init()/exit() logic going on
+    with mouse of our classes, which was very good for the more OOP design that we had,
+    but now with ECS it doesn't make that much sense.
+    Specifically, we don't want to manually call destroy() on things, we want it to be okay for them
+    to just go out of scope and get destroyed automatically.
+    So, what we need for now in this direction is to allow destructors to call destroy()
+    instead of asserting that the object is not valid.
+    Most of our classes in Graphics do this. It looks like:
+        VertexBuffer::~VertexBuffer()
+        {
+            PK_ASSERT(!isValid(), "You forgot to destroy() a VertexBuffer instance.", "Pekan");
+        }
+    TL;DR we need to change destructors to do this instead:
+        VertexBuffer::~VertexBuffer()
+        {
+            if (isValid())
+            {
+                destroy();
+            }
+        }
+    Done.
+}
+
+Client code can now just call
+    SpriteSystem::render()
+for each entity that it wants to render in its scene's render() function,
+but it will definitely be better that this rendering happens automatically.
+What I mean is that all sprite entities that exist in client's scene
+must get rendered automatically (unless specified otherwise, we might make an option like this later)
+How to do that?
+We can have another render() function in SpriteSystem that renders a whole ECS registry
+    static void render(const entt::registry& registry);
+That's a perfect use case to utilize the power of ECS.
+We can very easily get a view of all entities in the registry that have SpriteComponent and TransformComponent2D:
+    const auto view = registry.view<SpriteComponent, TransformComponent2D>();
+and then just render each one of them with the already implemented render() function:
+    for (entt::entity entity : view)
+    {
+        render(registry, entity);
+    }
+Now that we have this, client code can just do this in their render function:
+    SpriteSystem::render(getRegistry());
+and render all of their sprite entities.
+
+We can do slightly better.
+Let's have a new class
+    class Scene2D
+in 2 new files
+    Scene2D.h
+    Scene2D.cpp
+in module Renderer2D.
+This new Scene2D class will inherit from Scene, of course:
+    class Scene2D : public Scene
+and it will override the render function
+    void render() const override;
+with automatically calling SpriteSystem::render() on the scene's registry:
+    const entt::registry& registry = getRegistry();
+    SpriteSystem::render(registry);
+We can also make it always clear the window before that:
+    RenderCommands::clear();
+(it's not technically correct to clear in every scene, because we might have more than one scene)
+(we only need this temporarily until TO-DO item 0071 is done)
+And to allow some flexibility on the render logic we'll provide a virtual function
+    virtual void _render() const {}
+that client code can choose to override with custom rendering logic that will be done ON TOP OF Scene2D's render logic,
+so we need to call _render() in render() after doing the other stuff
+    _render();
+That's it.
+Now we can make Demo09_Scene derive from Scene2D instead of Scene
+and remove the render() function, and we have sprite entities being rendered by default.
+
+Also did 3. didn't even notice, but yeah, we've got a working example in Demo09.
+
+Done.
 }

@@ -22,10 +22,4 @@ namespace Demo
 		return props;
 	}
 
-	void Demo09_GUIWindow::_render() const
-	{
-		// TEMP: remove this once TO-DO item 0071 is done.
-		Graphics::RenderCommands::clear();
-	}
-
 } // namespace Demo

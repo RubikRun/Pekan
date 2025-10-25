@@ -20,7 +20,10 @@ namespace Graphics {
 
 	Texture2D::~Texture2D()
 	{
-		PK_ASSERT(!isValid(), "You forgot to destroy() a Texture2D instance.", "Pekan");
+		if (isValid())
+		{
+			destroy();
+		}
 	}
 
 	void Texture2D::create()

@@ -20,8 +20,6 @@ namespace Demo
     private: /* functions */
 
         Pekan::GUI::GUIWindowProperties getProperties() const override;
-
-        void _render() const override;
     };
 
 } // namespace Demo

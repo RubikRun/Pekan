@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TransformComponent2D.h"
+
 #include <glm/glm.hpp>
 #include <entt/entt.hpp>
 
@@ -25,6 +27,7 @@ namespace Renderer2D
         static void scale(entt::registry& registry, entt::entity entity, glm::vec2 deltaScale);
 
         static glm::mat3 getWorldMatrix(const entt::registry& registry, entt::entity entity);
+		static glm::mat3 getWorldMatrix(const entt::registry& registry, const TransformComponent2D& transform);
     };
 
 } // namespace Renderer2D

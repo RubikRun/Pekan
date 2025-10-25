@@ -13,7 +13,10 @@ namespace Graphics {
 
 	Shader::~Shader()
 	{
-		PK_ASSERT(!isValid(), "You forgot to destroy() a Shader instance.", "Pekan");
+		if (isValid())
+		{
+			destroy();
+		}
 	}
 
 	void Shader::create()

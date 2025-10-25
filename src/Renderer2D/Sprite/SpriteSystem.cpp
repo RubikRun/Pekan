@@ -1,0 +1,161 @@
+#include "SpriteSystem.h"
+
+#include "TransformComponent2D.h"
+#include "TransformSystem2D.h"
+#include "SpriteComponent.h"
+#include "SpriteVertex.h"
+#include "PekanLogger.h"
+#include "RenderObject.h"
+#include "Utils/FileUtils.h"
+#include "Camera2D.h"
+#include "Renderer2DSystem.h"
+
+using namespace Pekan::Graphics;
+
+#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Sprite_VertexShader.glsl"
+#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Sprite_FragmentShader.glsl"
+
+namespace Pekan
+{
+namespace Renderer2D
+{
+
+	// Computes local vertex positions for a given sprite
+	// @param[in] sprite - Sprite component to compute local vertex positions for
+	// @param[out] verticesLocal - Array of 4 glm::vec2 to store the computed local vertex positions
+    static void getVerticesLocal(const SpriteComponent& sprite, glm::vec2* verticesLocal)
+    {
+        verticesLocal[0] = glm::vec2(-sprite.width / 2.0f, -sprite.height / 2.0f);
+        verticesLocal[1] = glm::vec2(sprite.width / 2.0f, -sprite.height / 2.0f);
+        verticesLocal[2] = glm::vec2(sprite.width / 2.0f, sprite.height / 2.0f);
+        verticesLocal[3] = glm::vec2(-sprite.width / 2.0f, sprite.height / 2.0f);
+	}
+
+    // Computes world vertices for a given sprite
+	// @param[in] registry - Registry containing entity's components
+    // @param[in] sprite - Sprite component to compute local vertices for
+	// @param[in] transform - Transform component of the entity to compute world vertices for
+    // @param[out] verticesWorld - Array of 4 SpriteVertex's to store the computed world vertices
+    static void getVerticesWorld
+    (
+        const entt::registry& registry,
+        const SpriteComponent& sprite,
+        const TransformComponent2D& transform,
+        SpriteVertex* verticesWorld
+    )
+    {
+        glm::vec2 verticesLocal[4];
+        getVerticesLocal(sprite, verticesLocal);
+
+        const glm::mat3& worldMatrix = TransformSystem2D::getWorldMatrix(registry, transform);
+        // Calculate world vertex positions by applying the world matrix to the local vertex positions
+        verticesWorld[0].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[0], 1.0f));
+        verticesWorld[1].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[1], 1.0f));
+        verticesWorld[2].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[2], 1.0f));
+        verticesWorld[3].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[3], 1.0f));
+
+        // Set "textureCoordinates" attribute of each vertex
+        PK_ASSERT
+        (
+            sprite.textureCoordinatesMin.x < sprite.textureCoordinatesMax.x
+            && sprite.textureCoordinatesMin.y < sprite.textureCoordinatesMax.y,
+            "Trying to render an entity with a SpriteComponent that has invalid texture coordinates.", "Pekan"
+        );
+        verticesWorld[0].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMin.y };
+        verticesWorld[1].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMin.y };
+        verticesWorld[2].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMax.y };
+        verticesWorld[3].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMax.y };
+    }
+
+    // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera
+    static void setViewProjectionMatrixUniform(Shader& shader, const Camera2D_ConstPtr& camera)
+    {
+        if (camera != nullptr)
+        {
+            // Set shader's view projection matrix uniform to camera's view projection matrix
+            const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
+            shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
+        }
+        else
+        {
+            // Set shader's view projection matrix uniform to a default view projection matrix
+            static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
+            shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
+        }
+    }
+
+	// Creates a render object for a given sprite
+	// @param[in] registry - Registry containing entity's components
+	// @param[in] sprite - Sprite component to create render object for
+	// @param[in] transform - Transform component of the entity to create render object for
+	// @param[in] textureSlot - Texture slot to set in the shader uniform
+	// @param[out] renderObject - Render object to create
+    static void createRenderObjectForSprite
+    (
+        const entt::registry& registry,
+        const SpriteComponent& sprite,
+        const TransformComponent2D& transform,
+        int textureSlot,
+        RenderObject& renderObject
+    )
+    {
+		// Get sprite's world vertices
+        SpriteVertex verticesWorld[4];
+        getVerticesWorld(registry, sprite, transform, verticesWorld);
+		// Create render object with sprite's world vertices
+        renderObject.create
+        (
+            verticesWorld,
+            sizeof(SpriteVertex) * 4,
+            {
+                { ShaderDataType::Float2, "position" },
+                { ShaderDataType::Float2, "textureCoordinates" }
+            },
+            BufferDataUsage::DynamicDraw,
+            FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+            FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+        );
+        // Set render object's index data for a sprite formed by two triangles
+        static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
+        renderObject.setIndexData(indices, sizeof(unsigned) * 6);
+
+		// Set render object's shader uniforms
+        {
+            Shader& shader = renderObject.getShader();
+			// Set view projection matrix uniform using active camera
+            Camera2D_ConstPtr camera = Renderer2DSystem::getCamera();
+            setViewProjectionMatrixUniform(shader, camera);
+			// Set texture slot uniform
+            shader.setUniform1i("uTexture", textureSlot);
+        }
+    }
+
+    void SpriteSystem::render(const entt::registry& registry)
+    {
+        const auto view = registry.view<SpriteComponent, TransformComponent2D>();
+        for (entt::entity entity : view)
+        {
+            render(registry, entity);
+        }
+    }
+
+	void SpriteSystem::render(const entt::registry& registry, entt::entity entity)
+	{
+        PK_ASSERT(registry.valid(entity), "Trying to render an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to render an entity that doesn't have a SpriteComponent component.", "Pekan");
+        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to render an entity that doesn't have a TransformComponent2D component.", "Pekan");
+
+		// Get entity's sprite and transform components
+		const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+		const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
+		// Create render object for the sprite
+        RenderObject renderObject;
+		createRenderObjectForSprite(registry, sprite, transform, 0, renderObject);
+		// Bind sprite's texture
+        sprite.texture->bind(0);
+		// Render sprite's render object
+        renderObject.render();
+	}
+
+} // namespace Renderer2D
+} // namespace Pekan

@@ -17,10 +17,10 @@ namespace Pekan
 		// if they want a non-default name for their scene's layer
 		virtual std::string getLayerName() const override { return "scene_layer"; }
 
-	protected: /* functions */
-
 		entt::registry& getRegistry() { return m_registry; }
 		const entt::registry& getRegistry() const { return m_registry; }
+
+	protected: /* functions */
 
 		entt::entity createEntity();
 		void destroyEntity(entt::entity entity);

@@ -22,4 +22,4 @@ namespace Pekan
 		m_registry.destroy(entity);
 	}
 
-}
+} // namespace Pekan

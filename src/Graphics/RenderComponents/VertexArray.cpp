@@ -12,7 +12,10 @@ namespace Graphics
 
 	VertexArray::~VertexArray()
 	{
-		PK_ASSERT(!isValid(), "You forgot to destroy() a VertexArray instance.", "Pekan");
+		if (isValid())
+		{
+			destroy();
+		}
 	}
 
 	void VertexArray::create()

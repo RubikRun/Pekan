@@ -1,27 +1,35 @@
 #pragma once
 
-#include "Scene.h"
+#include "Scene2D.h"
+#include "Camera2D.h"
 
 namespace Demo
 {
 
-	class Demo09_Scene : public Pekan::Scene
+	class Demo09_Scene : public Pekan::Renderer2D::Scene2D
 	{
 	public:
 
-		Demo09_Scene(Pekan::PekanApplication* application) : Pekan::Scene(application) {}
+		Demo09_Scene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
 
 		bool init() override;
 
 		void update(double deltaTime) override;
 
-		void render() const override;
-
 		void exit() override;
 
-	private:
+	private: /* functions */
+
+		void createTurkey();
+		void createBull();
+		void createCamera();
+
+	private: /* variables */
 
 		entt::entity m_turkey = entt::null;
+		entt::entity m_bull = entt::null;
+
+		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 	};
 
 } // namespace Demo

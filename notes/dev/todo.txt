@@ -219,3 +219,12 @@
                         because some applications might want to control clearing more explicitly.
 
 0072 23.10.2025 (TODO): Implement "dirty flag" optimization in TransformComponent2D or/and TransformSystem2D
+
+0073 24.10.2025 (TODO): Rename Renderer2DSystem and other subsystem classes to avoid ambiguity with ECS systems.
+                        If you rename to Renderer2D then think about namespace vs class name ambiguity.
+                        (Everything in the Renderer2D subsystem is inside of namespace Renderer2D)
+
+0074 25.10.2025 (TODO): Think about creating a render batch in Graphics that can be used for RenderObject,
+                        and using that for RenderBatch2D.
+
+0075 25.10.2025 (TODO): Integrate RenderBatch2D in ECS once we have Sprite rendering and Shape rendering in ECS.

@@ -44,7 +44,10 @@ namespace Graphics
 
 	VertexBuffer::~VertexBuffer()
 	{
-		PK_ASSERT(!isValid(), "You forgot to destroy() a VertexBuffer instance.", "Pekan");
+		if (isValid())
+		{
+			destroy();
+		}
 	}
 
 	void VertexBuffer::create()

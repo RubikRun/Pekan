@@ -123,13 +123,17 @@ namespace Renderer2D
         PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to get world matrix of an entity that doesn't have a TransformComponent2D component.", "Pekan");
 
         const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
+		return getWorldMatrix(registry, transform);
+    }
 
+    glm::mat3 TransformSystem2D::getWorldMatrix(const entt::registry& registry, const TransformComponent2D& transform)
+    {
         // Get local matrix
         const glm::mat3 localMatrix = getLocalMatrix(transform);
-		// If there is a parent, get parent's world matrix and multiply
+        // If there is a parent, get parent's world matrix and multiply
         if (transform.parent != entt::null && registry.all_of<TransformComponent2D>(transform.parent))
         {
-			const glm::mat3 parentWorldMatrix = getWorldMatrix(registry, transform.parent);
+            const glm::mat3 parentWorldMatrix = getWorldMatrix(registry, transform.parent);
             const glm::mat3 worldMatrix = parentWorldMatrix * localMatrix;
             return worldMatrix;
         }
