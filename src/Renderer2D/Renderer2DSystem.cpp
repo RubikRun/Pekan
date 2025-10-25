@@ -116,6 +116,25 @@ namespace Renderer2D
 		}
 	}
 
+	void Renderer2DSystem::submitForRendering(const SpriteComponent& sprite, const TransformComponent2D& transform)
+	{
+		// Add sprite to batch.
+		// If it couldn't be added, this means that the batch is full,
+		if (!s_batch.addSprite(sprite))
+		{
+			Camera2D_ConstPtr camera = s_camera.lock();
+			// so we can render the batch and clear it, effectively starting a new one.
+			s_batch.render(camera);
+			s_batch.clear();
+			// Finally we need to add the sprite to the new batch.
+			// If it couldn't be added again, to a fresh new batch, something is definitely wrong.
+			if (!s_batch.addSprite(sprite))
+			{
+				PK_LOG_ERROR("Failed to add a sprite to the internal RenderBatch2D that was just cleared.", "Pekan");
+			}
+		}
+	}
+
 	static void preprocessPkshadFiles()
 	{
 		const int maxTextureSlots = RenderState::getMaxTextureSlots();

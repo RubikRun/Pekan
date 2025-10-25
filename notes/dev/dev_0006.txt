@@ -383,4 +383,9 @@ It works!
     Done.
 }
 
+CONTINUE: 
+I started implementing this in RenderBatch2D:
+    bool addSprite(const SpriteComponent& sprite, const TransformComponent2D& transform);
+but now I think it's better that this function takes in vertices and a texture only,
+and the actual extracting of vertices and texture from a given sprite should be done in Render2DSystem.
 }

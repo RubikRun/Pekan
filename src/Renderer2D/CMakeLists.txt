@@ -35,6 +35,9 @@ add_library(Renderer2D STATIC
     Shapes/LineShape.cpp
     Sprite/Sprite.h
     Sprite/Sprite.cpp
+    Sprite/SpriteComponent.h
+    Sprite/SpriteSystem.h
+    Sprite/SpriteSystem.cpp
 )
 
 # Group Shapes files under a virtual folder called "Shapes"

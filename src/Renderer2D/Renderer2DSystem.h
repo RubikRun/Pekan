@@ -8,6 +8,9 @@ namespace Pekan
 namespace Renderer2D
 {
 
+    struct TransformComponent2D;
+    struct SpriteComponent;
+
 // Use this macro in your application's main function to include the Renderer2D subsystem of Pekan
 #define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer2D::Renderer2DSystem::registerSubsystem()
 
@@ -51,6 +54,9 @@ namespace Renderer2D
         // Submits a sprite for rendering.
         // Actual rendering will happen later.
         static void submitForRendering(const Sprite& sprite);
+
+        // TODO: write comment
+        static void submitForRendering(const SpriteComponent& sprite, const TransformComponent2D& transform);
 
     private:
 
