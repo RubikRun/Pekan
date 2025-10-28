@@ -7,6 +7,8 @@ option(PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING "Enable orientation checking 
 add_library(Renderer2D STATIC
     Renderer2DSystem.h
     Renderer2DSystem.cpp
+    Renderer2DSystem_ECS.h
+    Renderer2DSystem_ECS.cpp
     RenderBatch2D.h
     RenderBatch2D.cpp
     Camera2D.h
@@ -35,12 +37,18 @@ add_library(Renderer2D STATIC
     Shapes/PolygonShape.cpp
     Shapes/LineShape.h
     Shapes/LineShape.cpp
+    Shapes/RectangleGeometryComponent.h
+    Shapes/RectangleGeometrySystem.h
+    Shapes/RectangleGeometrySystem.cpp
     Sprite/Sprite.h
     Sprite/Sprite.cpp
     Sprite/SpriteComponent.h
     Sprite/SpriteSystem.h
     Sprite/SpriteSystem.cpp
     Sprite/SpriteVertex.h
+    Materials/SolidColorMaterialComponent.h
+    Materials/SolidColorMaterialSystem.h
+    Materials/SolidColorMaterialSystem.cpp
 )
 
 # Group Shapes files under a virtual folder called "Shapes"
@@ -51,6 +59,7 @@ SOURCE_GROUP("Source Files\\Shapes" FILES
     Shapes/LineShape.cpp
     Shapes/CircleShape.cpp
     Shapes/PolygonShape.cpp
+    Shapes/RectangleGeometrySystem.cpp
 )
 SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/Shape.h
@@ -61,6 +70,8 @@ SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/CircleShapeStatic.h
     Shapes/CircleShapeStatic_impl.h
     Shapes/PolygonShape.h
+    Shapes/RectangleGeometryComponent.h
+    Shapes/RectangleGeometrySystem.h
 )
 # Group Sprite files under a virtual folder called "Sprite"
 SOURCE_GROUP("Source Files\\Sprite" FILES
@@ -73,9 +84,17 @@ SOURCE_GROUP("Header Files\\Sprite" FILES
     Sprite/SpriteSystem.h
     Sprite/SpriteVertex.h
 )
+# Group Materials files under a virtual folder called "Materials"
+SOURCE_GROUP("Header Files\\Materials" FILES
+    Materials/SolidColorMaterialComponent.h
+    Materials/SolidColorMaterialSystem.h
+)
+SOURCE_GROUP("Source Files\\Materials" FILES
+    Materials/SolidColorMaterialSystem.cpp
+)
 
 # Set include directories for Renderer2D
-target_include_directories(Renderer2D PUBLIC . Shapes Sprite)
+target_include_directories(Renderer2D PUBLIC . Shapes Sprite Materials)
 
 # Set link libraries for Renderer2D
 target_link_libraries(Renderer2D PUBLIC Graphics)

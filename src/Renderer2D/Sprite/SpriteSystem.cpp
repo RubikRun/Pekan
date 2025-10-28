@@ -21,9 +21,7 @@ namespace Renderer2D
 {
 
 	// Computes local vertex positions for a given sprite
-	// @param[in] sprite - Sprite component to compute local vertex positions for
-	// @param[out] verticesLocal - Array of 4 glm::vec2 to store the computed local vertex positions
-    static void getVerticesLocal(const SpriteComponent& sprite, glm::vec2* verticesLocal)
+    static void getVerticesLocal(const SpriteComponent& sprite, glm::vec2* verticesLocal /* output array of 4 vec2's */)
     {
         verticesLocal[0] = glm::vec2(-sprite.width / 2.0f, -sprite.height / 2.0f);
         verticesLocal[1] = glm::vec2(sprite.width / 2.0f, -sprite.height / 2.0f);
@@ -32,16 +30,12 @@ namespace Renderer2D
 	}
 
     // Computes world vertices for a given sprite
-	// @param[in] registry - Registry containing entity's components
-    // @param[in] sprite - Sprite component to compute local vertices for
-	// @param[in] transform - Transform component of the entity to compute world vertices for
-    // @param[out] verticesWorld - Array of 4 SpriteVertex's to store the computed world vertices
     static void getVerticesWorld
     (
         const entt::registry& registry,
         const SpriteComponent& sprite,
         const TransformComponent2D& transform,
-        SpriteVertex* verticesWorld
+		SpriteVertex* verticesWorld    // output array of 4 SpriteVertex's
     )
     {
         glm::vec2 verticesLocal[4];
@@ -85,18 +79,13 @@ namespace Renderer2D
     }
 
 	// Creates a render object for a given sprite
-	// @param[in] registry - Registry containing entity's components
-	// @param[in] sprite - Sprite component to create render object for
-	// @param[in] transform - Transform component of the entity to create render object for
-	// @param[in] textureSlot - Texture slot to set in the shader uniform
-	// @param[out] renderObject - Render object to create
     static void createRenderObjectForSprite
     (
         const entt::registry& registry,
         const SpriteComponent& sprite,
         const TransformComponent2D& transform,
-        int textureSlot,
-        RenderObject& renderObject
+        int textureSlot,              // texture slot to set in the shader uniform
+        RenderObject& renderObject    // render object to create
     )
     {
 		// Get sprite's world vertices
@@ -132,7 +121,9 @@ namespace Renderer2D
 
     void SpriteSystem::render(const entt::registry& registry)
     {
+        // Get a view of all entities with sprite and 2D transform components
         const auto view = registry.view<SpriteComponent, TransformComponent2D>();
+        // Render each such entity
         for (entt::entity entity : view)
         {
             render(registry, entity);

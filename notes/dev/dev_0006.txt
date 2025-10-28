@@ -590,3 +590,67 @@ Also did 3. didn't even notice, but yeah, we've got a working example in Demo09.
 
 Done.
 }
+
+----------
+27.10.2025
+----------
+
+{
+Next step for integrating ECS in Pekan is to integrate shapes.
+Until now we had a base class
+    class Shape
+and children classes RectangleShape, CircleShape, etc. for each specific shape type.
+We can't do this anymore.
+We have 2 options:
+Option A:
+    We can have 1 component and 1 system per shape type, for example:
+        for rectangles -> RectangleShapeComponent, RectangleShapeSystem
+        for triangles -> TriangleShapeComponent, TriangleShapeSystem
+        for circles -> CircleShapeComponent, CircleShapeSystem
+        etc.
+    Then each system renders all entities of a specific shape type
+Option B:
+    We can have 1 component and 1 system for all shape types:
+        ShapeComponent
+        ShapeSystem
+    with a "shape type" field in ShapeComponent.
+    Then ShapeSystem will do the rendering based on that "shape type" field.
+
+Option B is better for batching all shapes together no matter their type,
+but in Option B each ShapeComponent will contain some redundant data.
+For example if we have a ShapeComponent with "shape type" being "rectangle"
+then the "width" and "height" fields of ShapeComponent will be used,
+but for example the "radius" field will NOT be used.
+
+Option A is more straightforward and cleaner, I'd say.
+It does require us to batch different shape types separately, but that's fine,
+we have only a few shape types anyway, and we don't plan on having a big number of shape types in the future
+(at most 10 i can imagine).
+We can afford rendering a few batches of shapes instead of just one batch of shapes.
+
+We'll go with option A.
+
+Let's start with rectangles, because they are most similar to sprites.
+Okay, did rectangles.
+Decided it's time to separate geometry from materials,
+so I created
+1.
+    struct RectangleGeometryComponent
+    class RectangleGeometrySystem
+that are responsible for a rectangle's geometry:
+    - front end: width, height
+    - back end: API for generating vertex positions
+2.
+    struct SolidColorMaterialComponent
+that holds material data, in this case:
+    - fron end: color
+    - back end: API for generating vertex colors
+Then I also created
+    class Renderer2DSystem_ECS
+for doing the actual rendering of rectangles with solid color materials
+and I did all render code there.
+Not sure if that will be the final look of things,
+so I'll not dig into it too much.
+Let's continue with other shape types and we'll see how everything will come together.
+
+}

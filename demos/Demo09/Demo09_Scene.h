@@ -22,14 +22,18 @@ namespace Demo
 
 		void createTurkey();
 		void createBull();
+		void createGround();
 		void createCamera();
 
 	private: /* variables */
 
 		entt::entity m_turkey = entt::null;
 		entt::entity m_bull = entt::null;
+		entt::entity m_ground = entt::null;
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
+
+		float t = 0.0f;
 	};
 
 } // namespace Demo

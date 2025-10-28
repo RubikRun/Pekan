@@ -1,6 +1,6 @@
 #include "Scene2D.h"
 
-#include "SpriteSystem.h"
+#include "Renderer2DSystem_ECS.h"
 #include "RenderCommands.h"
 #include "RenderState.h"
 
@@ -16,7 +16,7 @@ namespace Renderer2D {
 		RenderCommands::clear();
 
 		const entt::registry& registry = getRegistry();
-		SpriteSystem::render(registry);
+		Renderer2DSystem_ECS::render(registry);
 
 		_render();
 	}

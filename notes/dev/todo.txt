@@ -228,3 +228,6 @@
                         and using that for RenderBatch2D.
 
 0075 25.10.2025 (TODO): Integrate RenderBatch2D in ECS once we have Sprite rendering and Shape rendering in ECS.
+
+0076 28.10.2025 (TODO): Think about using a 1D texture for ECS shapes, for example in
+                            renderRectangleWithSolidColorMaterial()    (Renderer2DSystem_ECS.cpp)
