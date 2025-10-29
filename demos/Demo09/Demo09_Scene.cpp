@@ -5,6 +5,7 @@
 #include "PekanLogger.h"
 #include "SpriteComponent.h"
 #include "RectangleGeometryComponent.h"
+#include "CircleGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
 #include "Image.h"
 #include "Renderer2DSystem.h"
@@ -22,9 +23,13 @@ namespace Demo
 
 	constexpr float CAMERA_SCALE = 10.0f;
 	constexpr glm::vec2 TURKEY_INITIAL_POSITION = glm::vec2(-CAMERA_SCALE / 2.0f, 0.0f);
+	constexpr glm::vec2 TURKEY_SIZE = glm::vec2(1.0f, 1.0f);
 	constexpr glm::vec2 BULL_INITIAL_POSITION = glm::vec2(CAMERA_SCALE / 2.0f, 0.0f);
-	constexpr glm::vec2 GROUND_POSITION = glm::vec2(-3.0f, -2.0f);
-	constexpr glm::vec4 GROUND_COLOR = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
+	constexpr glm::vec2 BULL_SIZE = glm::vec2(2.0f, 2.0f);
+	constexpr glm::vec2 RECTANGLE_INITIAL_POSITION = glm::vec2(-3.0f, -2.0f);
+	constexpr glm::vec4 RECTANGLE_INITIAL_COLOR = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
+	constexpr glm::vec2 CIRCLE_INITIAL_POSITION = glm::vec2(2.0f, 2.0f);
+	constexpr glm::vec4 CIRCLE_INITIAL_COLOR = glm::vec4(0.3f, 0.3f, 0.8f, 1.0f);
 
 	static float osc(float t)
 	{
@@ -43,7 +48,8 @@ namespace Demo
 
 		createTurkey();
 		createBull();
-		createGround();
+		createRectangle();
+		createCircle();
 		createCamera();
 
 		return true;
@@ -54,22 +60,59 @@ namespace Demo
 		entt::registry& registry = getRegistry();
 
 		// Move turkey
-		TransformSystem2D::move(registry, m_turkey, glm::vec2(0.02f, 0.0f));
-		// Move bull
-		TransformSystem2D::move(registry, m_bull, glm::vec2(-0.02f, 0.0f));
+		{
+			static glm::vec2 velocity = glm::vec2(0.02f, 0.0f);
+			TransformSystem2D::move(registry, m_turkey, velocity);
 
-		// Change color of ground over time
-		{
-			SolidColorMaterialComponent& groundMaterial = registry.get<SolidColorMaterialComponent>(m_ground);
-			groundMaterial.color.r = osc(t, 0.3f, 0.8f);
-			groundMaterial.color.g = osc(t + 2.0f, 0.3f, 0.8f);
-			groundMaterial.color.b = osc(t + 4.0f, 0.3f, 0.8f);
+			const float posX = TransformSystem2D::getPosition(registry, m_turkey).x;
+			// Reverse velocity if entity reaches left or right edge of the camera view
+			PK_ASSERT_QUICK(m_camera != nullptr);
+			if (posX < m_camera->getLeftEdgeInWorldSpace() || posX > m_camera->getRightEdgeInWorldSpace())
+			{
+				velocity.x = -velocity.x;
+			}
 		}
-		// Move ground up and down and rotate it over time
+		// Move bull
 		{
-			TransformComponent2D& groundTransform = registry.get<TransformComponent2D>(m_ground);
-			groundTransform.position.y = osc(t * 3.0f, -1.5f, -2.5f);
-			groundTransform.rotation = osc(t * 2.0f, -0.2f, 0.2f);
+			static glm::vec2 velocity = glm::vec2(-0.02f, 0.0f);
+			TransformSystem2D::move(registry, m_bull, velocity);
+
+			const float posX = TransformSystem2D::getPosition(registry, m_bull).x;
+			// Reverse velocity if entity reaches left or right edge of the camera view
+			PK_ASSERT_QUICK(m_camera != nullptr);
+			if (posX < m_camera->getLeftEdgeInWorldSpace() || posX > m_camera->getRightEdgeInWorldSpace())
+			{
+				velocity.x = -velocity.x;
+			}
+		}
+
+		// Change color of rectangle over time
+		{
+			SolidColorMaterialComponent& rectangleMaterial = registry.get<SolidColorMaterialComponent>(m_rectangle);
+			rectangleMaterial.color.r = osc(t, 0.3f, 0.8f);
+			rectangleMaterial.color.g = osc(t + 2.0f, 0.3f, 0.8f);
+			rectangleMaterial.color.b = osc(t + 4.0f, 0.3f, 0.8f);
+		}
+		// Move rectangle up and down and rotate it over time
+		{
+			TransformComponent2D& rectangleTransform = registry.get<TransformComponent2D>(m_rectangle);
+			rectangleTransform.position.y = osc(t * 3.0f, -1.75f, -2.25f);
+			rectangleTransform.rotation = osc(t * 2.0f, -0.1f, 0.1f);
+		}
+		// Change color of circle over time
+		{
+			SolidColorMaterialComponent& circleMaterial = registry.get<SolidColorMaterialComponent>(m_circle);
+			circleMaterial.color.r = osc(t * 2.2f + 4.0f, 0.5f, 0.8f);
+			circleMaterial.color.g = osc(t * 0.7f + 2.0f, 0.3f, 0.6f);
+			circleMaterial.color.b = osc(t * 1.0f + 0.0f, 0.1f, 0.9f);
+		}
+		// Move circle left and right and scale it over time
+		{
+			TransformComponent2D& circleTransform = registry.get<TransformComponent2D>(m_circle);
+			circleTransform.position.x = osc(t * 2.1f, 1.5f, 2.5f);
+			const float scaleX = osc(t * 3.2f, 0.75f, 1.25f);
+			const float scaleY = osc(t * 2.3f, 0.85f, 1.5f);
+			circleTransform.scale = glm::vec2(scaleX, scaleY);
 		}
 
 		t += static_cast<float>(deltaTime);
@@ -79,7 +122,8 @@ namespace Demo
 	{
 		destroyEntity(m_turkey);
 		destroyEntity(m_bull);
-		destroyEntity(m_ground);
+		destroyEntity(m_rectangle);
+		destroyEntity(m_circle);
 		m_camera->destroy();
 	}
 
@@ -93,8 +137,8 @@ namespace Demo
 		// Add sprite component to turkey entity
 		{
 			SpriteComponent sprite;
-			sprite.width = 1.0f;
-			sprite.height = 1.0f;
+			sprite.width = TURKEY_SIZE.x;
+			sprite.height = TURKEY_SIZE.y;
 			// Set sprite texture
 			{
 				Texture2D_Ptr texture = std::make_shared<Pekan::Graphics::Texture2D>();
@@ -122,8 +166,8 @@ namespace Demo
 		// Add sprite component to bull entity
 		{
 			SpriteComponent sprite;
-			sprite.width = 2.0f;
-			sprite.height = 2.0f;
+			sprite.width = BULL_SIZE.x;
+			sprite.height = BULL_SIZE.y;
 			// Set sprite texture
 			{
 				Texture2D_Ptr texture = std::make_shared<Pekan::Graphics::Texture2D>();
@@ -141,18 +185,26 @@ namespace Demo
 		}
 	}
 
-	void Demo09_Scene::createGround()
+	void Demo09_Scene::createRectangle()
 	{
-		m_ground = createEntity();
+		m_rectangle = createEntity();
+		// Add transform component to rectangle entity
+		getRegistry().emplace<TransformComponent2D>(m_rectangle, RECTANGLE_INITIAL_POSITION);
+		// Add rectangle geometry component to rectangle entity
+		getRegistry().emplace<RectangleGeometryComponent>(m_rectangle, 6.0f, 1.0f);
+		// Add solid color material component to rectangle entity
+		getRegistry().emplace<SolidColorMaterialComponent>(m_rectangle, RECTANGLE_INITIAL_COLOR);
+	}
 
-		// Add transform component to ground entity
-		getRegistry().emplace<TransformComponent2D>(m_ground, GROUND_POSITION);
-
-		// Add rectangle geometry component to ground entity
-		getRegistry().emplace<RectangleGeometryComponent>(m_ground, 6.0f, 1.0f);
-
-		// Add solid color material component to ground entity
-		getRegistry().emplace<SolidColorMaterialComponent>(m_ground, GROUND_COLOR);
+	void Demo09_Scene::createCircle()
+	{
+		m_circle = createEntity();
+		// Add transform component to circle entity
+		getRegistry().emplace<TransformComponent2D>(m_circle, glm::vec2(2.0f, 0.0f));
+		// Add circle geometry component to circle entity
+		getRegistry().emplace<CircleGeometryComponent>(m_circle, 1.0f, 64);
+		// Add solid color material component to circle entity
+		getRegistry().emplace<SolidColorMaterialComponent>(m_circle, CIRCLE_INITIAL_COLOR);
 	}
 
 	void Demo09_Scene::createCamera()

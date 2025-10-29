@@ -69,6 +69,12 @@ namespace Renderer2D
         glm::vec2 worldToNdcPosition(glm::vec2 positionInWorld) const;
         glm::vec2 worldToNdcSize(glm::vec2 sizeInWorld) const;
 
+		// Returns the world space coordinates of the left/right/top/bottom edge of camera's view area
+		float getLeftEdgeInWorldSpace() const;
+		float getRightEdgeInWorldSpace() const;
+		float getTopEdgeInWorldSpace() const;
+		float getBottomEdgeInWorldSpace() const;
+
         // Checks if camera is valid, meaning that it has been created and not yet destroyed.
         bool isValid() const { return m_isValid; }
 

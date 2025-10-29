@@ -62,7 +62,7 @@ namespace Renderer2D
         setVertexPosition(3, applyWorldMatrix(worldMatrix, verticesLocal[3]), vertices, vertexSize, offsetFromVertexStart);
     }
 
-	void Renderer2D::RectangleGeometrySystem::fillVertexPositions
+	void Renderer2D::RectangleGeometrySystem::getVertexPositions
     (
         const entt::registry& registry,
         entt::entity entity,

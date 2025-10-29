@@ -22,7 +22,7 @@ namespace Renderer2D
         *reinterpret_cast<glm::vec4*>(vertexPtr) = vertexColor;
 	}
 
-	void Renderer2D::SolidColorMaterialSystem::fillVertexColors
+	void Renderer2D::SolidColorMaterialSystem::getVertexColors
     (
         const entt::registry& registry,
         entt::entity entity,

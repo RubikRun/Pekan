@@ -3,6 +3,8 @@
 #include "TransformComponent2D.h"
 #include "RectangleGeometryComponent.h"
 #include "RectangleGeometrySystem.h"
+#include "CircleGeometryComponent.h"
+#include "CircleGeometrySystem.h"
 #include "SolidColorMaterialComponent.h"
 #include "SolidColorMaterialSystem.h"
 #include "SpriteSystem.h"
@@ -83,7 +85,7 @@ namespace Renderer2D
     {
         VertexOfShapeWithSolidColorMaterial vertices[4];
 		// Fill vertices array with rectangle's vertex positions
-		RectangleGeometrySystem::fillVertexPositions
+		RectangleGeometrySystem::getVertexPositions
         (
             registry, entity,
             vertices,
@@ -91,7 +93,7 @@ namespace Renderer2D
             offsetof(VertexOfShapeWithSolidColorMaterial, position)
         );
 		// Fill vertices array with rectangle's vertex colors
-        SolidColorMaterialSystem::fillVertexColors
+        SolidColorMaterialSystem::getVertexColors
         (
             registry, entity,
             vertices, 4,
@@ -125,11 +127,70 @@ namespace Renderer2D
         }
 	}
 
+    static void renderCircleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    {
+        // Get number of vertices needed for the circle geometry
+        const int verticesCount = CircleGeometrySystem::getNumberOfVertices(registry, entity);
+
+        // Create vertices array with that many vertices
+        std::vector<VertexOfShapeWithSolidColorMaterial> vertices(verticesCount);
+
+        // Fill vertices array with circle's vertex positions
+        CircleGeometrySystem::getVertexPositions
+        (
+            registry, entity,
+            vertices.data(),
+            verticesCount,
+            sizeof(VertexOfShapeWithSolidColorMaterial),
+            offsetof(VertexOfShapeWithSolidColorMaterial, position)
+        );
+        // Fill vertices array with circle's vertex colors
+        SolidColorMaterialSystem::getVertexColors
+        (
+            registry, entity,
+            vertices.data(), verticesCount,
+            sizeof(VertexOfShapeWithSolidColorMaterial),
+            offsetof(VertexOfShapeWithSolidColorMaterial, color)
+        );
+
+        // Create indices array for triangle fan
+        std::vector<unsigned> indices((verticesCount - 1) * 3);
+        for (int i = 1; i < verticesCount - 1; i++)
+        {
+            indices[i * 3 - 3] = 0;
+            indices[i * 3 - 2] = i;
+            indices[i * 3 - 1] = i + 1;
+        }
+
+        // Create render object from circle's vertices
+        RenderObject renderObject;
+        createRenderObjectForShapeWithSolidColorMaterial
+        (
+            vertices.data(), verticesCount,
+            indices.data(), indices.size(),
+            renderObject
+        );
+
+        // Render circle's render object
+        renderObject.render();
+    }
+
+    static void renderCirclesWithSolidColorMaterial(const entt::registry& registry)
+    {
+        // Get a view of all entities that have circle geometry, 2D transform and solid color material components
+        const auto view = registry.view<CircleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
+        // Render each such entity
+        for (entt::entity entity : view)
+        {
+            renderCircleWithSolidColorMaterial(registry, entity);
+        }
+    }
+
 	void Renderer2DSystem_ECS::render(const entt::registry& registry)
 	{
         renderRectanglesWithSolidColorMaterial(registry);
+        renderCirclesWithSolidColorMaterial(registry);
         SpriteSystem::render(registry);
-		// TODO: Add support for other geometry types with solid color material, and other material types
 	}
 
 } // namespace Renderer2D

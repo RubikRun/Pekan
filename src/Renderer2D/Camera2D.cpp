@@ -253,5 +253,25 @@ namespace Renderer2D
         return sizeInNdc;
     }
 
+    float Camera2D::getLeftEdgeInWorldSpace() const
+    {
+		return m_position.x - (m_width / 2.0f) / m_zoom;
+    }
+
+    float Camera2D::getRightEdgeInWorldSpace() const
+    {
+		return m_position.x + (m_width / 2.0f) / m_zoom;
+    }
+
+    float Camera2D::getTopEdgeInWorldSpace() const
+    {
+		return m_position.y + (m_height / 2.0f) / m_zoom;
+    }
+
+    float Camera2D::getBottomEdgeInWorldSpace() const
+    {
+		return m_position.y - (m_height / 2.0f) / m_zoom;
+    }
+
 } // namespace Renderer2D
 } // namespace Pekan

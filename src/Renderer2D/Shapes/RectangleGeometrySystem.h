@@ -11,8 +11,7 @@ namespace Renderer2D
     {
     public:
 
-		// Fills the given vertices array with positions from the entity's RectangleGeometryComponent and TransformComponent2D
-        static void fillVertexPositions
+        static void getVertexPositions
         (
             const entt::registry& registry,
             entt::entity entity,

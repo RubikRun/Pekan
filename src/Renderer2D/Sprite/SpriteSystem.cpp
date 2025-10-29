@@ -148,5 +148,59 @@ namespace Renderer2D
         renderObject.render();
 	}
 
+    float SpriteSystem::getWidth(const entt::registry& registry, entt::entity entity)
+    {
+        PK_ASSERT(registry.valid(entity), "Trying to get width of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to get width of an entity that doesn't have a SpriteComponent component.", "Pekan");
+
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        return sprite.width;
+    }
+
+    float SpriteSystem::getHeight(const entt::registry& registry, entt::entity entity)
+    {
+        PK_ASSERT(registry.valid(entity), "Trying to get height of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to get height of an entity that doesn't have a SpriteComponent component.", "Pekan");
+
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        return sprite.height;
+    }
+
+    glm::vec2 SpriteSystem::getSize(const entt::registry& registry, entt::entity entity)
+    {
+        PK_ASSERT(registry.valid(entity), "Trying to get size of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to get size of an entity that doesn't have a SpriteComponent component.", "Pekan");
+
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        return { sprite.width, sprite.height };
+    }
+
+    Graphics::Texture2D_ConstPtr SpriteSystem::getTexture(const entt::registry& registry, entt::entity entity)
+    {
+        PK_ASSERT(registry.valid(entity), "Trying to get texture of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to get texture of an entity that doesn't have a SpriteComponent component.", "Pekan");
+
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        return sprite.texture;
+    }
+
+    glm::vec2 SpriteSystem::getTextureCoordinatesMin(const entt::registry& registry, entt::entity entity)
+    {
+        PK_ASSERT(registry.valid(entity), "Trying to get texture coordinates min of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to get texture coordinates min of an entity that doesn't have a SpriteComponent component.", "Pekan");
+
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        return sprite.textureCoordinatesMin;
+    }
+
+    glm::vec2 SpriteSystem::getTextureCoordinatesMax(const entt::registry& registry, entt::entity entity)
+    {
+        PK_ASSERT(registry.valid(entity), "Trying to get texture coordinates max of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to get texture coordinates max of an entity that doesn't have a SpriteComponent component.", "Pekan");
+
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        return sprite.textureCoordinatesMax;
+    }
+
 } // namespace Renderer2D
 } // namespace Pekan

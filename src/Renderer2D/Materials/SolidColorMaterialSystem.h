@@ -7,17 +7,18 @@ namespace Pekan
 namespace Renderer2D
 {
 
-	class SolidColorMaterialSystem
+    class SolidColorMaterialSystem
     {
     public:
 
-		// Fills the given vertices array with colors from the entity's SolidColorMaterialComponent
-        static void fillVertexColors
+        // Retrieves the color from given entity's SolidColorMaterialComponent
+        // and sets it on the color attribute of each vertex in the given vertices array.
+        static void getVertexColors
         (
             const entt::registry& registry,
             entt::entity entity,
             void* vertices,              // output array of vertices
-            int verticesCount,           // number of vertices
+            int verticesCount,           // number of vertices in the array
             int vertexSize,              // size of a single vertex, in bytes
             int offsetFromVertexStart    // offset from the start of each vertex to the position data, in bytes
         );
