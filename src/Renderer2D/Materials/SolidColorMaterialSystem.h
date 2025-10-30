@@ -12,15 +12,15 @@ namespace Renderer2D
     public:
 
         // Retrieves the color from given entity's SolidColorMaterialComponent
-        // and sets it on the color attribute of each vertex in the given vertices array.
+        // and sets it as the color attribute of each vertex in the given array of vertices.
         static void getVertexColors
         (
             const entt::registry& registry,
             entt::entity entity,
-            void* vertices,              // output array of vertices
-            int verticesCount,           // number of vertices in the array
-            int vertexSize,              // size of a single vertex, in bytes
-            int offsetFromVertexStart    // offset from the start of each vertex to the position data, in bytes
+            void* vertices,             // output array of vertices
+            int verticesCount,          // number of vertices in the array
+            int vertexSize,             // size of a single vertex, in bytes
+            int colorAttributeOffset    // offset from the start of each vertex to the color attribute, in bytes
         );
     };
 

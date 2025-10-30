@@ -11,8 +11,8 @@ namespace Renderer2D
     {
     public:
 
-		// Retrieves the vertex positions from given entity's CircleGeometryComponent and TransformComponent2D
-		// and sets them on the position attribute of each vertex in the given vertices array.
+        // Retrieves the vertex positions from given entity's CircleGeometryComponent and TransformComponent2D,
+        // and sets them as position attributes in the given array of vertices.
         static void getVertexPositions
         (
             const entt::registry& registry,
