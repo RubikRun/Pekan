@@ -41,6 +41,9 @@ add_library(Renderer2D STATIC
     Shapes/RectangleGeometryComponent.h
     Shapes/RectangleGeometrySystem.h
     Shapes/RectangleGeometrySystem.cpp
+    Shapes/LineGeometryComponent.h
+    Shapes/LineGeometrySystem.h
+    Shapes/LineGeometrySystem.cpp
     Shapes/CircleGeometryComponent.h
     Shapes/CircleGeometrySystem.h
     Shapes/CircleGeometrySystem.cpp
@@ -69,6 +72,7 @@ SOURCE_GROUP("Source Files\\Shapes" FILES
     Shapes/CircleShape.cpp
     Shapes/PolygonShape.cpp
     Shapes/RectangleGeometrySystem.cpp
+    Shapes/LineGeometrySystem.cpp
     Shapes/CircleGeometrySystem.cpp
     Shapes/TriangleGeometrySystem.cpp
     Shapes/ShapeGeometryUtils.cpp
@@ -84,6 +88,8 @@ SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/PolygonShape.h
     Shapes/RectangleGeometryComponent.h
     Shapes/RectangleGeometrySystem.h
+    Shapes/LineGeometryComponent.h
+    Shapes/LineGeometrySystem.h
     Shapes/CircleGeometryComponent.h
     Shapes/CircleGeometrySystem.h
     Shapes/TriangleGeometryComponent.h

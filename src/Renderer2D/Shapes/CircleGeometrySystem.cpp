@@ -32,8 +32,7 @@ namespace Renderer2D
 
     void CircleGeometrySystem::getVertexPositions
     (
-        const entt::registry& registry,
-        entt::entity entity,
+        const entt::registry& registry, entt::entity entity,
         void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset
     )
     {

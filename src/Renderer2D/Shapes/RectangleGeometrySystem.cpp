@@ -11,12 +11,9 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    // Computes local vertex positions for a given rectangle geometry.
-    static void getVerticesLocal
-    (
-        const RectangleGeometryComponent& geometry,
-		glm::vec2* verticesLocal    // output array of local vertices, must have space for 4 elements
-    )
+    // Computes local vertex positions for a given line geometry.
+    // @param[in] verticesLocal - output array of local vertices, must have space for 4 elements
+    static void getVerticesLocal(const RectangleGeometryComponent& geometry, glm::vec2* verticesLocal)
     {
         verticesLocal[0] = glm::vec2(-geometry.width / 2.0f, -geometry.height / 2.0f);
         verticesLocal[1] = glm::vec2(geometry.width / 2.0f, -geometry.height / 2.0f);
@@ -26,8 +23,7 @@ namespace Renderer2D
 
 	void RectangleGeometrySystem::getVertexPositions
     (
-        const entt::registry& registry,
-        entt::entity entity,
+        const entt::registry& registry, entt::entity entity,
         void* vertices, int vertexSize, int positionAttributeOffset
     )
 	{

@@ -25,6 +25,7 @@ namespace Demo
 		void createRectangle();
 		void createTriangle();
 		void createCircle();
+		void createLine();
 		void createCamera();
 
 	private: /* variables */
@@ -34,6 +35,7 @@ namespace Demo
 		entt::entity m_rectangle = entt::null;
 		entt::entity m_triangle = entt::null;
 		entt::entity m_circle = entt::null;
+		entt::entity m_line = entt::null;
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 

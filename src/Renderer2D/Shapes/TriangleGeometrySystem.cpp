@@ -13,8 +13,7 @@ namespace Renderer2D
 
 	void TriangleGeometrySystem::getVertexPositions
     (
-        const entt::registry& registry,
-        entt::entity entity,
+        const entt::registry& registry, entt::entity entity,
         void* vertices, int vertexSize, int positionAttributeOffset
     )
 	{
