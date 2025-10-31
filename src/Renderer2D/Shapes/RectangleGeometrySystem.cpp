@@ -24,7 +24,7 @@ namespace Renderer2D
         verticesLocal[3] = glm::vec2(-geometry.width / 2.0f, geometry.height / 2.0f);
     }
 
-	void Renderer2D::RectangleGeometrySystem::getVertexPositions
+	void RectangleGeometrySystem::getVertexPositions
     (
         const entt::registry& registry,
         entt::entity entity,

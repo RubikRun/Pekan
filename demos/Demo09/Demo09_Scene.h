@@ -23,6 +23,7 @@ namespace Demo
 		void createTurkey();
 		void createBull();
 		void createRectangle();
+		void createTriangle();
 		void createCircle();
 		void createCamera();
 
@@ -31,6 +32,7 @@ namespace Demo
 		entt::entity m_turkey = entt::null;
 		entt::entity m_bull = entt::null;
 		entt::entity m_rectangle = entt::null;
+		entt::entity m_triangle = entt::null;
 		entt::entity m_circle = entt::null;
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;

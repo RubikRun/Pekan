@@ -5,6 +5,7 @@
 #include "PekanLogger.h"
 #include "SpriteComponent.h"
 #include "RectangleGeometryComponent.h"
+#include "TriangleGeometryComponent.h"
 #include "CircleGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
 #include "Image.h"
@@ -28,6 +29,8 @@ namespace Demo
 	constexpr glm::vec2 BULL_SIZE = glm::vec2(2.0f, 2.0f);
 	constexpr glm::vec2 RECTANGLE_INITIAL_POSITION = glm::vec2(-3.0f, -2.0f);
 	constexpr glm::vec4 RECTANGLE_INITIAL_COLOR = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
+	constexpr glm::vec2 TRIANGLE_INITIAL_POSITION = glm::vec2(-1.0f, 3.0f);
+	constexpr glm::vec4 TRIANGLE_INITIAL_COLOR = glm::vec4(0.8f, 0.3f, 0.3f, 1.0f);
 	constexpr glm::vec2 CIRCLE_INITIAL_POSITION = glm::vec2(2.0f, 2.0f);
 	constexpr glm::vec4 CIRCLE_INITIAL_COLOR = glm::vec4(0.3f, 0.3f, 0.8f, 1.0f);
 
@@ -49,6 +52,7 @@ namespace Demo
 		createTurkey();
 		createBull();
 		createRectangle();
+		createTriangle();
 		createCircle();
 		createCamera();
 
@@ -99,6 +103,29 @@ namespace Demo
 			rectangleTransform.position.y = osc(t * 3.0f, -1.75f, -2.25f);
 			rectangleTransform.rotation = osc(t * 2.0f, -0.1f, 0.1f);
 		}
+		// Change color of triangle over time
+		{
+			SolidColorMaterialComponent& triangleMaterial = registry.get<SolidColorMaterialComponent>(m_triangle);
+			triangleMaterial.color.r = osc(t * 1.5f + 1.0f, 0.5f, 1.0f);
+			triangleMaterial.color.g = osc(t * 0.9f + 3.0f, 0.2f, 0.5f);
+			triangleMaterial.color.b = osc(t * 1.2f + 5.0f, 0.2f, 0.4f);
+		}
+		// Move triangle's vertices, rotate and stretch the whole triangle over time
+		{
+			TriangleGeometryComponent& triangleGeometry = registry.get<TriangleGeometryComponent>(m_triangle);
+			// Make each vertex oscillate slightly
+			triangleGeometry.pointA = glm::vec2(0.0f + osc(t * 2.0f, -0.1f, 0.1f), 1.0f + osc(t * 1.5f, -0.05f, 0.05f));
+			triangleGeometry.pointB = glm::vec2(-1.0f + osc(t * 1.8f, -0.08f, 0.08f), -0.5f + osc(t * 2.2f, -0.06f, 0.06f));
+			triangleGeometry.pointC = glm::vec2(1.0f + osc(t * 2.3f, -0.09f, 0.09f), -0.5f + osc(t * 1.7f, -0.07f, 0.07f));
+
+			// Rotate the whole triangle
+			TransformComponent2D& triangleTransform = registry.get<TransformComponent2D>(m_triangle);
+			triangleTransform.rotation = osc(t * 1.3f, -0.3f, 0.3f);
+			// Stretch and squash the triangle
+			const float scaleX = osc(t * 1.6f, 0.8f, 1.2f);
+			const float scaleY = osc(t * 1.9f, 0.9f, 1.3f);
+			triangleTransform.scale = glm::vec2(scaleX, scaleY);
+		}
 		// Change color of circle over time
 		{
 			SolidColorMaterialComponent& circleMaterial = registry.get<SolidColorMaterialComponent>(m_circle);
@@ -123,6 +150,7 @@ namespace Demo
 		destroyEntity(m_turkey);
 		destroyEntity(m_bull);
 		destroyEntity(m_rectangle);
+		destroyEntity(m_triangle);
 		destroyEntity(m_circle);
 		m_camera->destroy();
 	}
@@ -194,6 +222,21 @@ namespace Demo
 		getRegistry().emplace<RectangleGeometryComponent>(m_rectangle, 6.0f, 1.0f);
 		// Add solid color material component to rectangle entity
 		getRegistry().emplace<SolidColorMaterialComponent>(m_rectangle, RECTANGLE_INITIAL_COLOR);
+	}
+
+	void Demo09_Scene::createTriangle()
+	{
+		m_triangle = createEntity();
+		// Add transform component to triangle entity
+		getRegistry().emplace<TransformComponent2D>(m_triangle, TRIANGLE_INITIAL_POSITION);
+		// Add triangle geometry component to triangle entity
+		TriangleGeometryComponent geometry;
+		geometry.pointA = glm::vec2(0.0f, 1.0f);
+		geometry.pointB = glm::vec2(-1.0f, -0.5f);
+		geometry.pointC = glm::vec2(1.0f, -0.5f);
+		getRegistry().emplace<TriangleGeometryComponent>(m_triangle, geometry);
+		// Add solid color material component to triangle entity
+		getRegistry().emplace<SolidColorMaterialComponent>(m_triangle, TRIANGLE_INITIAL_COLOR);
 	}
 
 	void Demo09_Scene::createCircle()

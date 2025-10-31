@@ -30,7 +30,7 @@ namespace Renderer2D
         return localVertexPositions;
     }
 
-    void Renderer2D::CircleGeometrySystem::getVertexPositions
+    void CircleGeometrySystem::getVertexPositions
     (
         const entt::registry& registry,
         entt::entity entity,

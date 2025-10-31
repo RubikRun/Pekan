@@ -5,6 +5,8 @@
 #include "RectangleGeometrySystem.h"
 #include "CircleGeometryComponent.h"
 #include "CircleGeometrySystem.h"
+#include "TriangleGeometryComponent.h"
+#include "TriangleGeometrySystem.h"
 #include "SolidColorMaterialComponent.h"
 #include "SolidColorMaterialSystem.h"
 #include "SpriteSystem.h"
@@ -12,6 +14,7 @@
 #include "Renderer2DSystem.h"
 #include "Camera2D.h"
 #include "Utils/FileUtils.h"
+#include "Utils/MathUtils.h"
 #include "PekanLogger.h"
 
 using namespace Pekan::Graphics;
@@ -81,41 +84,77 @@ namespace Renderer2D
         }
     }
 
-    static void renderRectangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    // Type alias for a vertex positions getter function
+    using VertexPositionsGetter = void(*)
+    (
+        const entt::registry& registry, entt::entity entity,
+        void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset
+    );
+
+    // Renders an entity with a shape geometry and a solid color material
+    static void renderShapeWithSolidColorMaterial
+    (
+        const entt::registry& registry,
+        entt::entity entity,
+        VertexPositionsGetter vertexPositionsGetter,    // a function for getting shape's vertex positions
+        int verticesCount,                              // number of shape's vertices
+        const unsigned* indices,                        // indices array
+        int indicesCount                                // number of indices
+    )
     {
-        VertexOfShapeWithSolidColorMaterial vertices[4];
-		// Fill vertices array with rectangle's vertex positions
-		RectangleGeometrySystem::getVertexPositions
+        // Create vertices array with given number of vertices
+        std::vector<VertexOfShapeWithSolidColorMaterial> vertices(verticesCount);
+
+        // Get vertex positions into the position attribute of vertices array
+        vertexPositionsGetter
         (
             registry, entity,
-            vertices,
+            vertices.data(), verticesCount,
             sizeof(VertexOfShapeWithSolidColorMaterial),
             offsetof(VertexOfShapeWithSolidColorMaterial, position)
         );
-		// Fill vertices array with rectangle's vertex colors
+        // Get vertex colors into the color attribute of vertices array
         SolidColorMaterialSystem::getVertexColors
         (
             registry, entity,
-            vertices, 4,
+            vertices.data(), verticesCount,
             sizeof(VertexOfShapeWithSolidColorMaterial),
             offsetof(VertexOfShapeWithSolidColorMaterial, color)
-		);
+        );
 
-        // Create render object from rectangle's vertices
-        // and indices forming a rectangle from two triangles.
-		static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
+        // Create render object from shape's vertices and indices
         RenderObject renderObject;
         createRenderObjectForShapeWithSolidColorMaterial
         (
-            vertices, 4,
-            indices, 6,
+            vertices.data(), verticesCount,
+            indices, indicesCount,
             renderObject
-		);
+        );
 
-        // Render rectangle's render object
+        // Render shape's render object
         renderObject.render();
-	}
+    }
 
+    // Renders an entity with rectangle geometry and a solid color material
+    static void renderRectangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    {
+        // Define indices for two triangles making up a rectangle
+        static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
+
+        // Render rectangle as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            [](const entt::registry& registry, entt::entity entity, void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset)
+            {
+                RectangleGeometrySystem::getVertexPositions(registry, entity, vertices, vertexSize, positionAttributeOffset);
+            },
+            4,
+            indices, 6
+        );
+    }
+
+	// Renders all entities with rectangle geometry and a solid color material in a given registry
     static void renderRectanglesWithSolidColorMaterial(const entt::registry& registry)
     {
 		// Get a view of all entities that have rectangle geometry, 2D transform and solid color material components
@@ -127,54 +166,58 @@ namespace Renderer2D
         }
 	}
 
+    // Renders an entity with triangle geometry and a solid color material
+    static void renderTriangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    {
+        // Define indices for a single triangle
+        static constexpr unsigned indices[3] = { 0, 1, 2 };
+
+        // Render triangle as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            [](const entt::registry& registry, entt::entity entity, void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset)
+            {
+                TriangleGeometrySystem::getVertexPositions(registry, entity, vertices, vertexSize, positionAttributeOffset);
+            },
+            3,
+            indices, 3
+        );
+    }
+
+    // Renders all entities with triangle geometry and a solid color material in a given registry
+    static void renderTrianglesWithSolidColorMaterial(const entt::registry& registry)
+    {
+        // Get a view of all entities that have triangle geometry, 2D transform and solid color material components
+        const auto view = registry.view<TriangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
+        // Render each such entity
+        for (entt::entity entity : view)
+        {
+            renderTriangleWithSolidColorMaterial(registry, entity);
+        }
+    }
+
+    // Renders an entity with circle geometry and a solid color material
     static void renderCircleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
     {
-        // Get number of vertices needed for the circle geometry
+        // Get number of vertices needed for entity's circle geometry
         const int verticesCount = CircleGeometrySystem::getNumberOfVertices(registry, entity);
-
-        // Create vertices array with that many vertices
-        std::vector<VertexOfShapeWithSolidColorMaterial> vertices(verticesCount);
-
-        // Fill vertices array with circle's vertex positions
-        CircleGeometrySystem::getVertexPositions
-        (
-            registry, entity,
-            vertices.data(),
-            verticesCount,
-            sizeof(VertexOfShapeWithSolidColorMaterial),
-            offsetof(VertexOfShapeWithSolidColorMaterial, position)
-        );
-        // Fill vertices array with circle's vertex colors
-        SolidColorMaterialSystem::getVertexColors
-        (
-            registry, entity,
-            vertices.data(), verticesCount,
-            sizeof(VertexOfShapeWithSolidColorMaterial),
-            offsetof(VertexOfShapeWithSolidColorMaterial, color)
-        );
 
         // Create indices array for triangle fan
         std::vector<unsigned> indices((verticesCount - 1) * 3);
-        for (int i = 1; i < verticesCount - 1; i++)
-        {
-            indices[i * 3 - 3] = 0;
-            indices[i * 3 - 2] = i;
-            indices[i * 3 - 1] = i + 1;
-        }
+		MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
 
-        // Create render object from circle's vertices
-        RenderObject renderObject;
-        createRenderObjectForShapeWithSolidColorMaterial
+        // Render circle as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
         (
-            vertices.data(), verticesCount,
-            indices.data(), indices.size(),
-            renderObject
-        );
-
-        // Render circle's render object
-        renderObject.render();
+            registry, entity,
+            CircleGeometrySystem::getVertexPositions,
+            verticesCount,
+            indices.data(), int(indices.size())
+		);
     }
 
+	// Renders all entities with circle geometry and a solid color material in a given registry
     static void renderCirclesWithSolidColorMaterial(const entt::registry& registry)
     {
         // Get a view of all entities that have circle geometry, 2D transform and solid color material components
@@ -186,12 +229,13 @@ namespace Renderer2D
         }
     }
 
-	void Renderer2DSystem_ECS::render(const entt::registry& registry)
-	{
+    void Renderer2DSystem_ECS::render(const entt::registry& registry)
+    {
         renderRectanglesWithSolidColorMaterial(registry);
+        renderTrianglesWithSolidColorMaterial(registry);
         renderCirclesWithSolidColorMaterial(registry);
         SpriteSystem::render(registry);
-	}
+    }
 
 } // namespace Renderer2D
 } // namespace Pekan
