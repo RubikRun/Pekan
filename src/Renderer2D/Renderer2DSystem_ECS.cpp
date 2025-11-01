@@ -1,6 +1,13 @@
 #include "Renderer2DSystem_ECS.h"
 
 #include "TransformComponent2D.h"
+#include "SpriteSystem.h"
+
+#include "RenderObject.h"
+#include "Renderer2DSystem.h"
+#include "Camera2D.h"
+
+////////// Geometry components and systems //////////
 #include "RectangleGeometryComponent.h"
 #include "RectangleGeometrySystem.h"
 #include "LineGeometryComponent.h"
@@ -9,15 +16,20 @@
 #include "CircleGeometrySystem.h"
 #include "TriangleGeometryComponent.h"
 #include "TriangleGeometrySystem.h"
+#include "PolygonGeometryComponent.h"
+#include "PolygonGeometrySystem.h"
+//////////////////////////////////////////////////////
+
+////////// Material components and systems //////////
 #include "SolidColorMaterialComponent.h"
 #include "SolidColorMaterialSystem.h"
-#include "SpriteSystem.h"
-#include "RenderObject.h"
-#include "Renderer2DSystem.h"
-#include "Camera2D.h"
+/////////////////////////////////////////////////////
+
+////////// Pekan Core includes //////////
 #include "Utils/FileUtils.h"
 #include "Utils/MathUtils.h"
 #include "PekanLogger.h"
+/////////////////////////////////////////
 
 using namespace Pekan::Graphics;
 
@@ -263,12 +275,48 @@ namespace Renderer2D
         }
     }
 
+    // Renders an entity with polygon geometry and a solid color material
+    static void renderPolygonWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    {
+        // TODO: Right now this function works only for convex CCW polygons.
+        //       We need to triangulate concave polygons as well and/or reverse CW polygons.
+
+        // Get number of vertices needed for entity's polygon geometry
+        const int verticesCount = PolygonGeometrySystem::getNumberOfVertices(registry, entity);
+
+        // Create indices array for triangle fan
+        std::vector<unsigned> indices((verticesCount - 1) * 3);
+        MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
+
+        // Render polygon as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            PolygonGeometrySystem::getVertexPositions,
+            verticesCount,
+            indices.data(), int(indices.size())
+        );
+    }
+
+    // Renders all entities with polygon geometry and a solid color material in a given registry
+    static void renderPolygonsWithSolidColorMaterial(const entt::registry& registry)
+    {
+        // Get a view of all entities that have polygon geometry, 2D transform and solid color material components
+        const auto view = registry.view<PolygonGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
+        // Render each such entity
+        for (entt::entity entity : view)
+        {
+            renderPolygonWithSolidColorMaterial(registry, entity);
+        }
+    }
+
     void Renderer2DSystem_ECS::render(const entt::registry& registry)
     {
         renderRectanglesWithSolidColorMaterial(registry);
         renderTrianglesWithSolidColorMaterial(registry);
         renderCirclesWithSolidColorMaterial(registry);
         renderLinesWithSolidColorMaterial(registry);
+        renderPolygonsWithSolidColorMaterial(registry);
         SpriteSystem::render(registry);
     }
 
