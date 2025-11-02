@@ -7,7 +7,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-	class Renderer2DSystem_ECS
+    class Renderer2DSystem_ECS
     {
     public:
 

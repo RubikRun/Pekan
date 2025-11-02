@@ -5,6 +5,7 @@
 #include "PekanLogger.h"
 #include "SpriteComponent.h"
 #include "RectangleGeometryComponent.h"
+#include "PolygonGeometryComponent.h"
 #include "LineGeometryComponent.h"
 #include "TriangleGeometryComponent.h"
 #include "CircleGeometryComponent.h"
@@ -16,6 +17,8 @@
 using namespace Pekan::Renderer2D;
 using namespace Pekan::Graphics;
 using namespace Pekan::Tools;
+
+#define PI 3.14159265359f
 
 #define TURKEY_IMAGE_FILEPATH "resources/Turkey_animation_without_shadow.png"
 #define BULL_IMAGE_FILEPATH "resources/Bull_animation_without_shadow.png"
@@ -32,6 +35,10 @@ namespace Demo
 	constexpr glm::vec4 RECTANGLE_INITIAL_COLOR = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
 	constexpr glm::vec2 TRIANGLE_INITIAL_POSITION = glm::vec2(-1.0f, 3.0f);
 	constexpr glm::vec4 TRIANGLE_INITIAL_COLOR = glm::vec4(0.8f, 0.3f, 0.3f, 1.0f);
+	constexpr glm::vec2 POLYGON1_INITIAL_POSITION = glm::vec2(-4.0f, 3.0f);
+	constexpr glm::vec4 POLYGON1_INITIAL_COLOR = glm::vec4(0.6f, 0.6f, 0.2f, 1.0f);
+	constexpr glm::vec2 POLYGON2_INITIAL_POSITION = glm::vec2(4.0f, -3.0f);
+	constexpr glm::vec4 POLYGON2_INITIAL_COLOR = glm::vec4(0.2f, 0.6f, 0.6f, 1.0f);
 	constexpr glm::vec2 CIRCLE_INITIAL_POSITION = glm::vec2(2.0f, 2.0f);
 	constexpr glm::vec4 CIRCLE_INITIAL_COLOR = glm::vec4(0.3f, 0.3f, 0.8f, 1.0f);
 	constexpr glm::vec4 LINE_INITIAL_COLOR = glm::vec4(0.8f, 0.8f, 0.2f, 1.0f);
@@ -55,6 +62,8 @@ namespace Demo
 		createBull();
 		createRectangle();
 		createTriangle();
+		createPolygon1();
+		createPolygon2();
 		createCircle();
 		createLine();
 		createCamera();
@@ -95,10 +104,10 @@ namespace Demo
 
 		// Change color of rectangle over time
 		{
-			SolidColorMaterialComponent& rectangleMaterial = registry.get<SolidColorMaterialComponent>(m_rectangle);
-			rectangleMaterial.color.r = osc(t, 0.3f, 0.8f);
-			rectangleMaterial.color.g = osc(t + 2.0f, 0.3f, 0.8f);
-			rectangleMaterial.color.b = osc(t + 4.0f, 0.3f, 0.8f);
+			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_rectangle);
+			material.color.r = osc(t, 0.3f, 0.8f);
+			material.color.g = osc(t + 2.0f, 0.3f, 0.8f);
+			material.color.b = osc(t + 4.0f, 0.3f, 0.8f);
 		}
 		// Move rectangle up and down and rotate it over time
 		{
@@ -108,10 +117,10 @@ namespace Demo
 		}
 		// Change color of triangle over time
 		{
-			SolidColorMaterialComponent& triangleMaterial = registry.get<SolidColorMaterialComponent>(m_triangle);
-			triangleMaterial.color.r = osc(t * 1.5f + 1.0f, 0.5f, 1.0f);
-			triangleMaterial.color.g = osc(t * 0.9f + 3.0f, 0.2f, 0.5f);
-			triangleMaterial.color.b = osc(t * 1.2f + 5.0f, 0.2f, 0.4f);
+			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_triangle);
+			material.color.r = osc(t * 1.5f + 1.0f, 0.5f, 1.0f);
+			material.color.g = osc(t * 0.9f + 3.0f, 0.2f, 0.5f);
+			material.color.b = osc(t * 1.2f + 5.0f, 0.2f, 0.4f);
 		}
 		// Move triangle's vertices, rotate and stretch the whole triangle over time
 		{
@@ -129,12 +138,68 @@ namespace Demo
 			const float scaleY = osc(t * 1.9f, 0.9f, 1.3f);
 			triangleTransform.scale = glm::vec2(scaleX, scaleY);
 		}
+		// Change color of polygon 1 over time
+		{
+			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_polygon1);
+			material.color.r = osc(t * 1.4f + 0.0f, 0.3f, 0.9f);
+			material.color.g = osc(t * 1.8f + 2.0f, 0.3f, 0.9f);
+			material.color.b = osc(t * 1.1f + 4.0f, 0.3f, 0.9f);
+		}
+		// Oscillate vertex positions of polygon 1 and rotate it over time
+		{
+
+			PolygonGeometryComponent& geometry = registry.get<PolygonGeometryComponent>(m_polygon1);
+			geometry.vertexPositions.resize(8);
+			// Base is an octagon-like shape; perturb each vertex slightly with different oscillation parameters
+			for (int i = 0; i < 8; ++i)
+			{
+				const float angle = (PI * 2.0f * i) / 8.0f;
+				const float baseR = 1.2f + 0.2f * ((i % 2) ? 1.0f : -0.6f);
+				// Each vertex gets unique oscillation parameters (frequency and amplitude)
+				const float freq = 1.0f + 0.23f * i;
+				const float amp = 0.04f + 0.01f * i;
+				const float r = baseR + osc(t * freq, -amp, amp);
+				geometry.vertexPositions[i] = glm::vec2(r * cos(angle), r * sin(angle));
+			}
+			TransformComponent2D& transform = registry.get<TransformComponent2D>(m_polygon1);
+			transform.rotation += 0.25f * float(deltaTime);
+		}
+		// Change color of polygon 2 over time
+		{
+			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_polygon2);
+			material.color.r = osc(t * 0.9f + 1.0f, 0.2f, 0.8f);
+			material.color.g = osc(t * 1.3f + 3.0f, 0.2f, 0.8f);
+			material.color.b = osc(t * 1.6f + 5.0f, 0.2f, 0.8f);
+		}
+		// Oscillate vertex positions of polygon 2 and scale it over time
+		{
+
+			PolygonGeometryComponent& geometry = registry.get<PolygonGeometryComponent>(m_polygon2);
+			geometry.vertexPositions.resize(11);
+			// Make a concave 11-gon: alternate inner and outer radius to form a star-like concavity
+			for (int i = 0; i < 11; ++i)
+			{
+				const float angle = (PI * 2.0f * i) / 11.0f;
+				const float outer = 1.4f;
+				const float inner = 0.6f;
+				const float baseR = (i % 2 == 0) ? outer : inner;
+				// Each vertex gets unique oscillation parameters
+				const float freq = 1.2f + 0.17f * i;
+				const float amp = 0.05f + 0.008f * i;
+				const float r = baseR + osc(t * freq, -amp, amp);
+				geometry.vertexPositions[i] = glm::vec2(r * cos(angle), r * sin(angle));
+			}
+			TransformComponent2D& transform = registry.get<TransformComponent2D>(m_polygon2);
+			const float scaleX = osc(t * 1.7f, 0.8f, 1.25f);
+			const float scaleY = osc(t * 2.2f, 0.8f, 1.25f);
+			transform.scale = glm::vec2(scaleX, scaleY);
+		}
 		// Change color of circle over time
 		{
-			SolidColorMaterialComponent& circleMaterial = registry.get<SolidColorMaterialComponent>(m_circle);
-			circleMaterial.color.r = osc(t * 2.2f + 4.0f, 0.5f, 0.8f);
-			circleMaterial.color.g = osc(t * 0.7f + 2.0f, 0.3f, 0.6f);
-			circleMaterial.color.b = osc(t * 1.0f + 0.0f, 0.1f, 0.9f);
+			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_circle);
+			material.color.r = osc(t * 2.2f + 4.0f, 0.5f, 0.8f);
+			material.color.g = osc(t * 0.7f + 2.0f, 0.3f, 0.6f);
+			material.color.b = osc(t * 1.0f + 0.0f, 0.1f, 0.9f);
 		}
 		// Move circle left and right and scale it over time
 		{
@@ -146,16 +211,16 @@ namespace Demo
 		}
 		// Change color of line over time
 		{
-			SolidColorMaterialComponent& lineMaterial = registry.get<SolidColorMaterialComponent>(m_line);
-			lineMaterial.color.r = osc(t * 1.7f + 3.0f, 0.4f, 0.9f);
-			lineMaterial.color.g = osc(t * 2.5f + 1.0f, 0.4f, 0.9f);
-			lineMaterial.color.b = osc(t * 1.3f + 5.0f, 0.4f, 0.9f);
+			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_line);
+			material.color.r = osc(t * 1.7f + 3.0f, 0.4f, 0.9f);
+			material.color.g = osc(t * 2.5f + 1.0f, 0.4f, 0.9f);
+			material.color.b = osc(t * 1.3f + 5.0f, 0.4f, 0.9f);
 		}
 		// Update line's endpoints so that they always connect rectangle's center with circle's center
 		{
-			LineGeometryComponent& lineGeometry = registry.get<LineGeometryComponent>(m_line);
-			lineGeometry.pointA = TransformSystem2D::getPosition(registry, m_rectangle);
-			lineGeometry.pointB = TransformSystem2D::getPosition(registry, m_circle);
+			LineGeometryComponent& geometry = registry.get<LineGeometryComponent>(m_line);
+			geometry.pointA = TransformSystem2D::getPosition(registry, m_rectangle);
+			geometry.pointB = TransformSystem2D::getPosition(registry, m_circle);
 		}
 
 		t += static_cast<float>(deltaTime);
@@ -167,6 +232,8 @@ namespace Demo
 		destroyEntity(m_bull);
 		destroyEntity(m_rectangle);
 		destroyEntity(m_triangle);
+		destroyEntity(m_polygon1);
+		destroyEntity(m_polygon2);
 		destroyEntity(m_circle);
 		destroyEntity(m_line);
 		m_camera->destroy();
@@ -251,9 +318,49 @@ namespace Demo
 		geometry.pointA = glm::vec2(0.0f, 1.0f);
 		geometry.pointB = glm::vec2(-1.0f, -0.5f);
 		geometry.pointC = glm::vec2(1.0f, -0.5f);
-		getRegistry().emplace<TriangleGeometryComponent>(m_triangle, geometry);
+		getRegistry().emplace<TriangleGeometryComponent>(m_triangle, std::move(geometry));
 		// Add solid color material component to triangle entity
 		getRegistry().emplace<SolidColorMaterialComponent>(m_triangle, TRIANGLE_INITIAL_COLOR);
+	}
+
+	void Demo09_Scene::createPolygon1()
+	{
+		m_polygon1 = createEntity();
+		// Add transform component to polygon 1's entity
+		getRegistry().emplace<TransformComponent2D>(m_polygon1, POLYGON1_INITIAL_POSITION);
+		// Add polygon geometry component to polygon 1's entity
+		PolygonGeometryComponent geometry;
+		geometry.vertexPositions.resize(8);
+		for (int i = 0; i < 8; ++i)
+		{
+			const float angle = (PI * 2.0f * i) / 8.0f;
+			const float r = 1.0f + 0.2f * ((i % 2) ? 1.0f : 0.0f);
+			geometry.vertexPositions[i] = glm::vec2(r * cos(angle), r * sin(angle));
+		}
+		getRegistry().emplace<PolygonGeometryComponent>(m_polygon1, std::move(geometry));
+		// Add solid color material component to polygon 1's entity
+		getRegistry().emplace<SolidColorMaterialComponent>(m_polygon1, POLYGON1_INITIAL_COLOR);
+	}
+
+	void Demo09_Scene::createPolygon2()
+	{
+		m_polygon2 = createEntity();
+		// Add transform component to polygon 2's entity
+		getRegistry().emplace<TransformComponent2D>(m_polygon2, POLYGON2_INITIAL_POSITION);
+		// Add polygon geometry component to polygon 2's entity
+		PolygonGeometryComponent geometry;
+		geometry.vertexPositions.resize(11);
+		for (int i = 0; i < 11; ++i)
+		{
+			const float angle = (PI * 2.0f * i) / 11.0f;
+			const float outer = 1.2f;
+			const float inner = 0.5f;
+			const float r = (i % 2 == 0) ? outer : inner;
+			geometry.vertexPositions[i] = glm::vec2(r * cos(angle), r * sin(angle));
+		}
+		getRegistry().emplace<PolygonGeometryComponent>(m_polygon2, std::move(geometry));
+		// Add solid color material component to polygon 1's entity
+		getRegistry().emplace<SolidColorMaterialComponent>(m_polygon2, POLYGON2_INITIAL_COLOR);
 	}
 
 	void Demo09_Scene::createCircle()

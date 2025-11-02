@@ -5,6 +5,7 @@
 #include "ShapeGeometryUtils.h"
 #include "VerticesAttributeView.h"
 #include "PekanLogger.h"
+#include "Utils/MathUtils.h"
 
 #include <vector>
 #include <glm/gtc/constants.hpp>
@@ -30,10 +31,11 @@ namespace Renderer2D
         return localVertexPositions;
     }
 
-    void CircleGeometrySystem::getVertexPositions
+    void CircleGeometrySystem::getVertexPositionsAndIndices
     (
         const entt::registry& registry, entt::entity entity,
-        void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset
+        void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
+        std::vector<unsigned>& indices
     )
     {
         PK_ASSERT(registry.valid(entity), "Trying to get vertex positions of an entity that doesn't exist.", "Pekan");
@@ -51,12 +53,15 @@ namespace Renderer2D
         ShapeGeometryUtils::getWorldVertexPositions
         (
             registry,
-            localVertexPositions.data(),
-            localVertexPositions.size(),
+            localVertexPositions.data(), localVertexPositions.size(),
             transform,
             VerticesAttributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset }
         );
-	}
+
+        // Generate triangle fan indices in the indices array
+        indices.resize((verticesCount - 2) * 3);
+        MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
+    }
 
     int CircleGeometrySystem::getNumberOfVertices(const entt::registry& registry, entt::entity entity)
     {
@@ -66,7 +71,7 @@ namespace Renderer2D
         // Get entity's geometry
         const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);
         // Number of vertices is equal to the number of segments
-        // because a polygon of N segments has N vertices.
+        // because a polygon of N segments has N vertices
         return geometry.segmentsCount;
     }
 

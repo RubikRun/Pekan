@@ -24,6 +24,8 @@ namespace Demo
 		void createBull();
 		void createRectangle();
 		void createTriangle();
+		void createPolygon1();
+		void createPolygon2();
 		void createCircle();
 		void createLine();
 		void createCamera();
@@ -34,6 +36,8 @@ namespace Demo
 		entt::entity m_bull = entt::null;
 		entt::entity m_rectangle = entt::null;
 		entt::entity m_triangle = entt::null;
+		entt::entity m_polygon1 = entt::null;
+		entt::entity m_polygon2 = entt::null;
 		entt::entity m_circle = entt::null;
 		entt::entity m_line = entt::null;
 
