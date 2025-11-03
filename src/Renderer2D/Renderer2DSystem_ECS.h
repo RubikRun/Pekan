@@ -11,6 +11,7 @@ namespace Renderer2D
     {
     public:
 
+        // Renders all renderable entities in the given registry
         static void render(const entt::registry& registry);
     };
 

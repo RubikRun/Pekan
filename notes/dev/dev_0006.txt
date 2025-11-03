@@ -653,4 +653,104 @@ Not sure if that will be the final look of things,
 so I'll not dig into it too much.
 Let's continue with other shape types and we'll see how everything will come together.
 
+----------
+03.11.2025
+----------
+
+Finished integrating shapes in ECS.
+Sum up:
+
+For each shape type we have a *Component struct:
+    struct RectangleGeometryComponent
+    struct LineGeometryComponent
+    struct CircleGeometryComponent
+    struct TriangleGeometryComponent
+    struct PolygonGeometryComponent
+Each of them contains the front-end data of shape's geoemtry,
+which are the parameters that we want to expose to the end user,
+and nothing more.
+
+For each shape type we have *System class:
+    class RectangleGeometrySystem
+    class LineGeometrySystem
+    class CircleGeometrySystem
+    class TriangleGeometrySystem
+    class PolygonGeometrySystem
+Each of them provide an API for getting shape's vertex positions
+    getVertexPositions()
+Some of them (CircleGeometrySystem and PolygonGeometrySystem)
+have this API get vertex positions AND indices as well:
+    getVertexPositionsAndIndices()
+For the rest (RectangleGeometrySystem, LineGeometrySystem, TriangleGeometrySystem)
+it's clear what the indices are because they do NOT change between specific instances of the shape type.
+However for CircleGeometrySystem and PolygonGeometrySystem the indices DO change between instances.
+(
+    For example a circle with 32 segments and a circle with 64 segments
+    will have different indices,
+    or a polygon with 8 vertices and a polygon with 11 vertices will have different indices.
+    Even polygons with the same number of vertices can have different indices because of triangulation.
+)
+So these 2 shape types generate vertex positions together with indices.
+It makes sense to generate those at once, and not separate the API into 2 APIs
+because indices are very much linked with what the vertices are.
+Together they form the shape's "geometry".
+
+What else?
+The actual rendering is separated from the generating of geometry.
+It happens in
+    class Renderer2D_ECS
+It has a single function
+    static void render(const entt::registry& registry);
+that just renders all entities that can be rendered.
+It renders all shape types and all sprites.
+
+A thing worth mentioning is how the geometry systems get vertex positions
+into Renderer2D_ECS and how the SolidColorMaterialSystem gets vertex colors
+into Renderer2D_ECS.
+It's not as straightforward as just returning an array of vertex positions
+or an array of vertex colors, unfortunatelly.
+The reason is that Renderer2D_ECS needs to have a single array of vertices,
+where each vertex has a position and a color,
+as opposed to having 2 arrays - one of positions and one of colors.
+So Renderer2D_ECS is responsible for creating an array of vertices
+    struct VertexOfShapeWithSolidColorMaterial
+    {
+        glm::vec2 position = { 0.0f, 0.0f };
+        glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    };
+    ...
+    std::vector<VertexOfShapeWithSolidColorMaterial> vertices(verticesCount);
+and then geometry systems and SolidColorMaterialSystem are responsible
+for filling the positions or colors into this array at the correct offsets.
+For example the API
+    getVertexPositions()
+of
+    RectangleGeometrySystem
+takes in these 3 parameters
+    void* vertices,
+    int vertexSize,
+    int positionAttributeOffset
+First one is a pointer to the actual array of vertices where vertex positions need to be filled.
+Second and third one tell it how exactly to fill them.
+In this case the API needs to put
+    - first vertex position in bytes 0-7    (8 bytes is the size of glm::vec2)
+    - then skip 16 bytes                    (16 bytes is the size of the color attribute which is glm::vec4)
+    - second vertex position in bytes 24-31
+    - then skip 16 bytes
+    - third vertex position in bytes 48-55
+    ...
+Same story with the API of SolidColorMaterialSystem.
+
+Another thing to note is that I created this helper class
+    ShapeGeometryUtils
+with utility functions for generating geometry of shapes.
+It has some common functions mostly for applying world matrix to local vertex positions.
+
+That's about it.
+All shape types are rendered correctly now in ECS.
+Demo09_Scene is testing each one of them and they seem to work fine.
+There are no optimizations, of course, I removed all of them to make this transition to ECS easier.
+We'll have to introduce them back in, one by one with the time.
+
+Done.
 }

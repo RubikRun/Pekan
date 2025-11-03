@@ -53,6 +53,8 @@ namespace Renderer2D
         void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
         std::vector<unsigned>& indices
     );
+    // Type alias for a function that renders an entity
+    using RenderFunction = void(*)(const entt::registry&, entt::entity);
 
     // Structure defining the layout of a vertex of a shape with solid color material
     struct VertexOfShapeWithSolidColorMaterial
@@ -60,6 +62,24 @@ namespace Renderer2D
         glm::vec2 position = { 0.0f, 0.0f };
         glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     };
+
+    // Renders all entities with given component types
+    // by calling a given render function for each entity
+    //
+    // @tparam ComponentTypes...  Component types that an entity must have to be rendered
+    // @param[in] registry        Registry containing entities to render
+    // @param[in] renderFunction  Function that renders a single entity
+    template<typename... ComponentTypes>
+    void renderAllEntitiesWith(const entt::registry& registry, RenderFunction renderFunction)
+    {
+        // Create a view over all entities that have the given components
+        auto view = registry.view<ComponentTypes...>();
+        // Iterate over entities and call the provided render function
+        for (auto entity : view)
+        {
+            renderFunction(registry, entity);
+        }
+    }
 
     // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera
     static void setViewProjectionMatrixUniform(Shader& shader, const Camera2D_ConstPtr& camera)
@@ -112,12 +132,11 @@ namespace Renderer2D
     }
 
     // Renders an entity with a shape geometry and a solid color material
-    // given shape's vertices with already filled position attributes
+    // given shape's vertices (with already filled position attributes)
     // and shape's indices
     static void renderShapeWithSolidColorMaterial
     (
-        const entt::registry& registry,
-        entt::entity entity,
+        const entt::registry& registry, entt::entity entity,
         VertexOfShapeWithSolidColorMaterial* vertices,    // array of shape's vertices with already filled position attributes
         int verticesCount,                                // number of shape's vertices
         const unsigned* indices,                          // indices array
@@ -193,8 +212,8 @@ namespace Renderer2D
         // Create vertices array with given number of vertices
         std::vector<VertexOfShapeWithSolidColorMaterial> vertices(verticesCount);
 
-        // Get vertex positions into the position attribute of vertices array and get indices
         std::vector<unsigned> indices;
+        // Get vertex positions into the position attribute of vertices array and get indices
         vertexPositionsAndIndicesGetter
         (
             registry, entity,
@@ -228,18 +247,6 @@ namespace Renderer2D
         );
     }
 
-    // Renders all entities with rectangle geometry and a solid color material in a given registry
-    static void renderRectanglesWithSolidColorMaterial(const entt::registry& registry)
-    {
-        // Get a view of all entities that have rectangle geometry, 2D transform and solid color material components
-        const auto view = registry.view<RectangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
-        // Render each such entity
-        for (entt::entity entity : view)
-        {
-            renderRectangleWithSolidColorMaterial(registry, entity);
-        }
-    }
-
     // Renders an entity with line geometry and a solid color material
     static void renderLineWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
     {
@@ -254,18 +261,6 @@ namespace Renderer2D
             LineGeometrySystem::getVertexPositions, 4,
             indices, 6
         );
-    }
-
-    // Renders all entities with line geometry and a solid color material in a given registry
-    static void renderLinesWithSolidColorMaterial(const entt::registry& registry)
-    {
-        // Get a view of all entities that have line geometry, 2D transform and solid color material components
-        const auto view = registry.view<LineGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
-        // Render each such entity
-        for (entt::entity entity : view)
-        {
-            renderLineWithSolidColorMaterial(registry, entity);
-        }
     }
 
     // Renders an entity with circle geometry and a solid color material
@@ -283,18 +278,6 @@ namespace Renderer2D
         );
     }
 
-    // Renders all entities with circle geometry and a solid color material in a given registry
-    static void renderCirclesWithSolidColorMaterial(const entt::registry& registry)
-    {
-        // Get a view of all entities that have circle geometry, 2D transform and solid color material components
-        const auto view = registry.view<CircleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
-        // Render each such entity
-        for (entt::entity entity : view)
-        {
-            renderCircleWithSolidColorMaterial(registry, entity);
-        }
-    }
-
     // Renders an entity with triangle geometry and a solid color material
     static void renderTriangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
     {
@@ -308,18 +291,6 @@ namespace Renderer2D
             TriangleGeometrySystem::getVertexPositions, 3,
             indices, 3
         );
-    }
-
-    // Renders all entities with triangle geometry and a solid color material in a given registry
-    static void renderTrianglesWithSolidColorMaterial(const entt::registry& registry)
-    {
-        // Get a view of all entities that have triangle geometry, 2D transform and solid color material components
-        const auto view = registry.view<TriangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
-        // Render each such entity
-        for (entt::entity entity : view)
-        {
-            renderTriangleWithSolidColorMaterial(registry, entity);
-        }
     }
 
     // Renders an entity with polygon geometry and a solid color material
@@ -337,25 +308,20 @@ namespace Renderer2D
         );
     }
 
-    // Renders all entities with polygon geometry and a solid color material in a given registry
-    static void renderPolygonsWithSolidColorMaterial(const entt::registry& registry)
-    {
-        // Get a view of all entities that have polygon geometry, 2D transform and solid color material components
-        const auto view = registry.view<PolygonGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>();
-        // Render each such entity
-        for (entt::entity entity : view)
-        {
-            renderPolygonWithSolidColorMaterial(registry, entity);
-        }
-    }
-
     void Renderer2DSystem_ECS::render(const entt::registry& registry)
     {
-        renderRectanglesWithSolidColorMaterial(registry);
-        renderTrianglesWithSolidColorMaterial(registry);
-        renderCirclesWithSolidColorMaterial(registry);
-        renderLinesWithSolidColorMaterial(registry);
-        renderPolygonsWithSolidColorMaterial(registry);
+        // Render all rectangles that have a solid color material
+        renderAllEntitiesWith<RectangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderRectangleWithSolidColorMaterial);
+        // Render all triangles that have a solid color material
+        renderAllEntitiesWith<TriangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderTriangleWithSolidColorMaterial);
+        // Render all circles that have a solid color material
+        renderAllEntitiesWith<CircleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderCircleWithSolidColorMaterial);
+        // Render all lines that have a solid color material
+        renderAllEntitiesWith<LineGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderLineWithSolidColorMaterial);
+        // Render all polygons that have a solid color material
+        renderAllEntitiesWith<PolygonGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderPolygonWithSolidColorMaterial);
+
+        // Render all sprites
         SpriteSystem::render(registry);
     }
 
