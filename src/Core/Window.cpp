@@ -153,6 +153,12 @@ namespace Pekan
         return { width, height };
     }
 
+    float Window::getAspectRatio() const
+    {
+		const glm::vec2 size = glm::vec2(getSize());
+		return size.x / size.y;
+    }
+
     int Window::getSizeSmaller() const
     {
         const glm::ivec2 size = getSize();

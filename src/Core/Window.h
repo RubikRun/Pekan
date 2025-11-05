@@ -92,6 +92,8 @@ namespace Pekan
 		bool isMouseButtonReleased(MouseButton button) const;
 		// Returns window's current size/resolution, in pixels
 		glm::ivec2 getSize() const;
+		// Returns window's current aspect ratio (width divided by height)
+		float getAspectRatio() const;
 		// Returns size of window's smaller dimension, in pixels
 		int getSizeSmaller() const;
 		// Returns size of window's bigger dimension, in pixels

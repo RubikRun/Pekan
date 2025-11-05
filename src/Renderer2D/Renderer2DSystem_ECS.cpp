@@ -4,8 +4,8 @@
 #include "SpriteSystem.h"
 
 #include "RenderObject.h"
-#include "Renderer2DSystem.h"
-#include "Camera2D.h"
+#include "CameraComponent2D.h"
+#include "CameraSystem2D.h"
 
 ////////// Geometry components and systems //////////
 #include "RectangleGeometryComponent.h"
@@ -81,26 +81,17 @@ namespace Renderer2D
         }
     }
 
-    // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera
-    static void setViewProjectionMatrixUniform(Shader& shader, const Camera2D_ConstPtr& camera)
+    // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera component
+    static void setViewProjectionMatrixUniform(Shader& shader, const CameraComponent2D& camera)
     {
-        if (camera != nullptr)
-        {
-            // Set shader's view projection matrix uniform to camera's view projection matrix
-            const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
-            shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
-        }
-        else
-        {
-            // Set shader's view projection matrix uniform to a default view projection matrix
-            static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-            shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
-        }
+        const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
+        shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
     }
 
     // Creates a render object from given vertices and indices of a shape with solid color material
     static void createRenderObjectForShapeWithSolidColorMaterial
     (
+        const entt::registry& registry,
         const VertexOfShapeWithSolidColorMaterial* vertices, int verticesCount,
         const unsigned *indices, int indicesCount,
         RenderObject& renderObject    // render object to create
@@ -125,8 +116,8 @@ namespace Renderer2D
         // Set render object's shader uniforms
         {
             Shader& shader = renderObject.getShader();
-            // Set view projection matrix uniform using active camera
-            Camera2D_ConstPtr camera = Renderer2DSystem::getCamera();
+            // Set view projection matrix uniform using the primary camera
+            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
             setViewProjectionMatrixUniform(shader, camera);
         }
     }
@@ -156,6 +147,7 @@ namespace Renderer2D
         RenderObject renderObject;
         createRenderObjectForShapeWithSolidColorMaterial
         (
+            registry,
             vertices, verticesCount,
             indices, indicesCount,
             renderObject

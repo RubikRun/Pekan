@@ -754,3 +754,107 @@ We'll have to introduce them back in, one by one with the time.
 
 Done.
 }
+
+----------
+08.11.2025
+----------
+
+{
+Integrated cameras in ECS.
+Here's a sum up:
+
+Created a struct
+    struct CameraComponent2D
+in 2 new files
+    CameraComponent2D.h
+    CameraComponent2D.cpp
+containing the data of a camera:
+    glm::vec2 size = { 0.0f, 0.0f };
+    glm::vec2 position = { 0.0f, 0.0f };
+    float zoomLevel = 1.0f;
+    bool isPrimary = true;
+    bool isControllable = true;
+Worth noting are the last 2 members - isPrimary and isControllable.
+We did NOT have those in Camera2D.
+They are flags for marking a camera component as "the primary camera"
+or "the controllable camera".
+The primary camera will be the one used for rendering,
+and the controllabe camera will be the one that user controls with the mouse.
+CameraComponent also contains some getter/setter type of functions
+    getViewProjectionMatrix()
+or
+    setWidth()
+    setHeight()
+for setting the width/height of a camera and having the option
+to lock the height/width to it so that it matches window's aspect ratio.
+And so on.
+Basically moved most of the functions from Camera2D to CameraComponent2D,
+or more specifically the ones that have to do with data only.
+Functionality that has to do with all cameras in the scene will be in the system, not the component.
+
+Then, created a class
+    class CameraSystem2D
+in 2 new files
+    CameraSystem2D.h
+    CameraSystem2D.cpp
+We need only 2 APIs there - one for getting the primary camera from a scene's registry
+and one for getting the controllable camera from a scene's registry:
+    static const CameraComponent2D& getPrimaryCamera(const entt::registry& registry);
+    static const CameraComponent2D* getControllableCamera(const entt::registry& registry);
+A thing worth mentioning is that getPrimaryCamera() will ALWAYS return a camera component,
+even if there is no primary camera in the scene or even if there is no camera at all in the scene.
+It will return a default camera, which we have as a static global variable in the .cpp file:
+    static constexpr CameraComponent2D g_defaultCamera = getDefaultCamera();
+Did it like that because the primary camera is used for rendering and we always want to render something.
+As opposed to that, getControllableCamera() might return a null pointer
+if there is no controllable camera in the scene
+and that's fine because then user will just NOT control any camera with the mouse.
+
+Probably the most interesting part is the way I did camera controller.
+Created a class
+    class CameraController2D
+in 2 new files
+    CameraController2D.h
+    CameraController2D.cpp
+It's a class that derives from EventListener:
+    class CameraController2D
+        : public EventListener
+because it will be registered as an event listener in PekanApplication
+The way it works is that every
+    Scene2D
+instance has its own CameraController2D instance
+and CameraController2D has an init() function
+that is called from Scene2D's init() function.
+That's how we make sure that CameraController2D's init() function
+will be called at the right time - when the application is initalized,
+and only if client code is using a 2D scene at all.
+Then, in CameraController2D's init() function we can register the CameraController2D instance
+as an event listener in the current PekanApplication:
+    application->registerEventListener(shared_from_this());
+Yes, I had to do the weird shenanigans with
+    std::enable_shared_from_this
+CameraController2D derives from this, so that we can pass
+    shared_from_this()
+to
+    registerEventListener()
+because otherwise the raw "this" pointer wouldn't work.
+I really don't love this approach, but what can you do,
+we may think of some alternative of smart pointers in the future,
+not sure yet. For now it's ok like that.
+What more?
+Upon initialization, in the init() function CameraComponent2D also saves a pointer to the Scene2D
+in this member variable:
+    Scene2D* m_scene = nullptr;
+so that it can use this scene to get the controllable camera from it using CameraSystem2D:
+    CameraSystem2D::getControllableCamera(m_scene->getRegistry());
+Everything else is pretty much the logic from the old camera controller, the one in
+    PekanTools
+Now CameraController2D works out of the box in a Scene2D.
+If there is an entity with a CameraComponent2D with isControllable = true
+then the camera controller will work for this camera.
+Tested it in Demo09. It works.
+
+All other aspects of the camer also work normally in Demo09.
+That's it, we have cameras in ECS!
+Done.
+}

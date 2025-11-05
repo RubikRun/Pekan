@@ -4,11 +4,13 @@
 #include "TransformSystem2D.h"
 #include "SpriteComponent.h"
 #include "SpriteVertex.h"
-#include "PekanLogger.h"
+#include "CameraComponent2D.h"
+#include "CameraSystem2D.h"
 #include "RenderObject.h"
 #include "Utils/FileUtils.h"
 #include "Camera2D.h"
 #include "Renderer2DSystem.h"
+#include "PekanLogger.h"
 
 using namespace Pekan::Graphics;
 
@@ -61,21 +63,11 @@ namespace Renderer2D
         verticesWorld[3].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMax.y };
     }
 
-    // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera
-    static void setViewProjectionMatrixUniform(Shader& shader, const Camera2D_ConstPtr& camera)
+    // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera component
+    static void setViewProjectionMatrixUniform(Shader& shader, const CameraComponent2D& camera)
     {
-        if (camera != nullptr)
-        {
-            // Set shader's view projection matrix uniform to camera's view projection matrix
-            const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
-            shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
-        }
-        else
-        {
-            // Set shader's view projection matrix uniform to a default view projection matrix
-            static constexpr glm::mat4 defaultViewProjectionMatrix = glm::mat4(1.0f);
-            shader.setUniformMatrix4fv("uViewProjectionMatrix", defaultViewProjectionMatrix);
-        }
+        const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
+        shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
     }
 
 	// Creates a render object for a given sprite
@@ -111,8 +103,8 @@ namespace Renderer2D
 		// Set render object's shader uniforms
         {
             Shader& shader = renderObject.getShader();
-			// Set view projection matrix uniform using active camera
-            Camera2D_ConstPtr camera = Renderer2DSystem::getCamera();
+            // Set view projection matrix uniform using the primary camera
+            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
             setViewProjectionMatrixUniform(shader, camera);
 			// Set texture slot uniform
             shader.setUniform1i("uTexture", textureSlot);

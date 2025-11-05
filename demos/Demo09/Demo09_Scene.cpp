@@ -10,6 +10,8 @@
 #include "TriangleGeometryComponent.h"
 #include "CircleGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
+#include "CameraComponent2D.h"
+#include "CameraSystem2D.h"
 #include "Image.h"
 #include "Renderer2DSystem.h"
 #include "PekanTools.h"
@@ -52,7 +54,7 @@ namespace Demo
 		return a + (b - a) * osc(t);
 	}
 
-	bool Demo09_Scene::init()
+	bool Demo09_Scene::_init()
 	{
 		RenderState::enableMultisampleAntiAliasing();
 		RenderState::enableBlending();
@@ -71,6 +73,19 @@ namespace Demo
 		return true;
 	}
 
+	void Demo09_Scene::_exit()
+	{
+		destroyEntity(m_turkey);
+		destroyEntity(m_bull);
+		destroyEntity(m_rectangle);
+		destroyEntity(m_triangle);
+		destroyEntity(m_polygon1);
+		destroyEntity(m_polygon2);
+		destroyEntity(m_circle);
+		destroyEntity(m_line);
+		destroyEntity(m_camera);
+	}
+
 	void Demo09_Scene::update(double deltaTime)
 	{
 		entt::registry& registry = getRegistry();
@@ -82,8 +97,7 @@ namespace Demo
 
 			const float posX = TransformSystem2D::getPosition(registry, m_turkey).x;
 			// Reverse velocity if entity reaches left or right edge of the camera view
-			PK_ASSERT_QUICK(m_camera != nullptr);
-			if (posX < m_camera->getLeftEdgeInWorldSpace() || posX > m_camera->getRightEdgeInWorldSpace())
+			if (posX < registry.get<CameraComponent2D>(m_camera).getLeftEdgeInWorldSpace() || posX > registry.get<CameraComponent2D>(m_camera).getRightEdgeInWorldSpace())
 			{
 				velocity.x = -velocity.x;
 			}
@@ -95,8 +109,7 @@ namespace Demo
 
 			const float posX = TransformSystem2D::getPosition(registry, m_bull).x;
 			// Reverse velocity if entity reaches left or right edge of the camera view
-			PK_ASSERT_QUICK(m_camera != nullptr);
-			if (posX < m_camera->getLeftEdgeInWorldSpace() || posX > m_camera->getRightEdgeInWorldSpace())
+			if (posX < registry.get<CameraComponent2D>(m_camera).getLeftEdgeInWorldSpace() || posX > registry.get<CameraComponent2D>(m_camera).getRightEdgeInWorldSpace())
 			{
 				velocity.x = -velocity.x;
 			}
@@ -224,19 +237,6 @@ namespace Demo
 		}
 
 		t += static_cast<float>(deltaTime);
-	}
-
-	void Demo09_Scene::exit()
-	{
-		destroyEntity(m_turkey);
-		destroyEntity(m_bull);
-		destroyEntity(m_rectangle);
-		destroyEntity(m_triangle);
-		destroyEntity(m_polygon1);
-		destroyEntity(m_polygon2);
-		destroyEntity(m_circle);
-		destroyEntity(m_line);
-		m_camera->destroy();
 	}
 
 	void Demo09_Scene::createTurkey()
@@ -387,11 +387,11 @@ namespace Demo
 
 	void Demo09_Scene::createCamera()
 	{
-		m_camera = std::make_shared<Camera2D>();
-		m_camera->create(CAMERA_SCALE);
-		Renderer2DSystem::setCamera(m_camera);
-		PekanTools::enableCameraController2D(m_camera);
-		PekanTools::setCameraController2DZoomSpeed(1.1f);
+		m_camera = createEntity();
+		// Add camera component to camera entity
+		CameraComponent2D cameraComponent;
+		cameraComponent.setHeight(CAMERA_SCALE);
+		getRegistry().emplace<CameraComponent2D>(m_camera, cameraComponent);
 	}
 
 } // namespace Demo
