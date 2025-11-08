@@ -3,6 +3,7 @@
 #include "Renderer2DSystem_ECS.h"
 #include "RenderCommands.h"
 #include "RenderState.h"
+#include "PostProcessor.h"
 
 using namespace Pekan::Graphics;
 
@@ -26,6 +27,8 @@ namespace Renderer2D {
 
 	void Scene2D::render() const
 	{
+		PostProcessor::beginFrame();
+
 		// TEMP: remove after TO-DO item 0071 is done
 		RenderCommands::clear();
 
@@ -33,6 +36,8 @@ namespace Renderer2D {
 		Renderer2DSystem_ECS::render(registry);
 
 		_render();
+
+		PostProcessor::endFrame();
 	}
 
 } // namespace Renderer2D

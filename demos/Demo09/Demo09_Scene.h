@@ -6,11 +6,15 @@
 namespace Demo
 {
 
+	class Demo09_GUIWindow;
+
 	class Demo09_Scene : public Pekan::Renderer2D::Scene2D
 	{
 	public:
 
 		Demo09_Scene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
+
+		void attachGUIWindow(const std::shared_ptr<Demo09_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
 
@@ -28,6 +32,11 @@ namespace Demo
 		void createCircle();
 		void createLine();
 		void createCamera();
+		// Initializes the post-processing shader
+		bool initPps();
+
+		// Updates the post-processing shader
+		void updatePps();
 
 	private: /* variables */
 
@@ -41,6 +50,8 @@ namespace Demo
 		entt::entity m_line = entt::null;
 
 		entt::entity m_camera = entt::null;
+
+		std::shared_ptr<Demo09_GUIWindow> m_guiWindow;
 
 		float t = 0.0f;
 	};

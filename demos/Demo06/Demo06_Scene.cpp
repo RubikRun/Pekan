@@ -156,16 +156,7 @@ namespace Demo
 			}
 		);
 
-		if (!PostProcessor::init(POST_PROCESSING_SHADER_FILEPATH_GLSL))
-		{
-			PK_LOG_ERROR("Failed to initialize PostProcessor.", "Demo06");
-			return false;
-		}
-		if (PostProcessor::getShader() == nullptr)
-		{
-			PK_LOG_ERROR("PostProcessor's shader is null.", "Demo06");
-			return false;
-		}
+		PostProcessor::setPostProcessingShader(POST_PROCESSING_SHADER_FILEPATH_GLSL);
 
         return true;
 	}

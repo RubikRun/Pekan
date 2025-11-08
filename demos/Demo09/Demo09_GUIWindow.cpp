@@ -11,6 +11,9 @@ namespace Demo
 
 	bool Demo09_GUIWindow::init()
 	{
+		gui.ppsLabel->create(this, "Post-Processing Shader");
+		gui.ppsComboBoxWidget->create(this, { "Identity", "Sharpen", "Blur", "Edge Detection", "Emboss" });
+
 		return true;
 	}
 

@@ -18,6 +18,9 @@ namespace Graphics
 	// A flag indicating if the post processor has been initialized
 	static bool g_isInitialized = false;
 
+	// A flag indicating if a post-processing shader has been set
+	static bool g_hasSetPostProcessingShader = false;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The flow of data here is basically this:
 	//     -> draw call
@@ -53,7 +56,8 @@ namespace Graphics
 	// Number of samples per pixel
 	static int g_samplesPerPixel = -1;
 
-	bool PostProcessor::init(const char* postProcessingShaderFilepath)
+	// Initializes the PostProcessor
+	static bool init()
 	{
 		PK_ASSERT(!g_isInitialized, "Trying to initialize the PostProcessor but it's already initialized.", "Pekan");
 
@@ -79,8 +83,35 @@ namespace Graphics
 		}
 		g_frameBufferFinal.create(windowSize.x, windowSize.y, 1);
 
+		g_isInitialized = true;
+		return true;
+	}
+
+	void PostProcessor::setPostProcessingShader(const char* postProcessingShaderFilepath)
+	{
+		// If PostProcessor is not yet initialized, initialize it now
+		if (!g_isInitialized)
+		{
+			if (!init())
+			{
+				PK_LOG_ERROR("Failed to initialize PostProcessor.", "Pekan");
+				return;
+			}
+		}
+
+		// If render object is already created, just set new shader source
+		if (g_renderObject.isValid())
+		{
+			g_renderObject.setShaderSource
+			(
+				FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+				FileUtils::readTextFileToString(postProcessingShaderFilepath).c_str()
+			);
+			return;
+		}
+
 		// Create underlying render object with rectangle's vertices,
-		// default vertex shader, and given fragment shader
+		// a default vertex shader, and use given post-processing shader as a fragment shader.
 		g_renderObject.create
 		(
 			RECTANGLE_VERTICES, 4 * 2 * 2 * sizeof(float),
@@ -94,13 +125,16 @@ namespace Graphics
 		// because we will always bind the frame buffer's texture on slot 0
 		g_renderObject.getShader().setUniform1i("screenTexture", 0);
 
-		g_isInitialized = true;
-		return true;
+		g_hasSetPostProcessingShader = true;
 	}
 
 	void PostProcessor::beginFrame()
 	{
-		PK_ASSERT(g_isInitialized, "Trying to begin frame with the PostProcessor but it's not yet initialized.", "Pekan");
+		// If PostProcessor is not initialized or there is no post-processing shader set, do nothing
+		if (!g_isInitialized || !g_hasSetPostProcessingShader)
+		{
+			return;
+		}
 
 		// Bind the correct frame buffer depending on samples per pixel
 		if (g_samplesPerPixel > 1)
@@ -117,7 +151,11 @@ namespace Graphics
 
 	void PostProcessor::endFrame()
 	{
-		PK_ASSERT(g_isInitialized, "Trying to end frame with the PostProcessor but it's not yet initialized.", "Pekan");
+		// If PostProcessor is not initialized or there is no post-processing shader set, do nothing
+		if (!g_isInitialized || !g_hasSetPostProcessingShader)
+		{
+			return;
+		}
 
 		// If we are using the multisample frame buffer,
 		// resolve it to the final frame buffer.
@@ -156,6 +194,14 @@ namespace Graphics
 
 	Shader* PostProcessor::getShader()
 	{
+		PK_ASSERT(g_isInitialized, "Trying to get shader from PostProcessor but it's not yet initialized.", "Pekan");
+		// If there is no post-processing shader set, return null
+		if (!g_hasSetPostProcessingShader)
+		{
+			return nullptr;
+		}
+		PK_ASSERT(g_renderObject.isValid(), "Trying to get shader from PostProcessor but underlying render object is not valid.", "Pekan");
+
 		return &g_renderObject.getShader();
 	}
 

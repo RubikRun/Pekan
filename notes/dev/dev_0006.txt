@@ -858,3 +858,59 @@ All other aspects of the camer also work normally in Demo09.
 That's it, we have cameras in ECS!
 Done.
 }
+
+----------
+09.11.2025
+----------
+
+{
+Decided to see if post-processing shaders will work normally with ECS.
+
+Tried doing the same post-processing logic from Demo06 in Demo09.
+It worked almost out of the box.
+Only thing I had to do was to put
+    PostProcessor::beginFrame()
+and
+    PostProcessor::endFrame()
+in Scene2D's render() function
+since client code in Demo09 does NOT have a render() function anymore.
+Rendering is handled by the base Scene2D class,
+client code is only responsible for creating renderable entities in ECS
+and they are rendered automatically by Scene2D's render() function.
+
+The obvious problem here is that this will fail when client code doesn't use a post-processing shader.
+If client code doesn't call
+    PostProcessor::init()
+passing a specific post-porcessing shader then the calls to beginFrame() and endFrame() will fail.
+
+Let's restructure PostProcessor a little bit.
+We'd want this new API in PostProcessor instead of the init() API:
+    static void setPostProcessingShader(const char* postProcessingShaderFilepath);
+So now there is a single thing that client code has to do to use a post-processing shader - just set it.
+First time it's set the PostProcessor will be internally initialized.
+For that, I changed the init() function to be a global static function inside the .cpp
+and it's automatically called the first time setPostProcessingShader() is called
+    if (!g_isInitialized)
+    {
+        if (!init())
+            ...
+    }
+Then, we also need to change beginFrame() and endFrame() to do nothing
+if PostProcessor is not initialized or if there is no post-porcessing shader set
+    if (!g_isInitialized || !g_hasSetPostProcessingShader)
+    {
+        return;
+    }
+Now it's perfectly safe for Scene2D's render() function to always call beginFrame() and endFrame()
+no matter if user is using a post-processing shader - this logic will be handled internally in PostProcessor.
+
+NOTE: This means that scenes that do NOT use ECS will have to manually call beginFrame() and endFrame()
+in their render() functions as they did until now.
+
+Okay, it works now.
+Considering PostProcessor "integrated" in ECS now.
+It's not really "integrated" because it's not part of ECS,
+but we made Scene2D and PostProcessor handle everything except the actual user choice.
+
+Done.
+}

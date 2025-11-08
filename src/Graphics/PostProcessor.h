@@ -17,13 +17,13 @@ namespace Graphics
 		//
 		// NOTE: Given shader MUST have a sampler2D uniform called "screenTexture".
 		//       Inside of it the shader will receive the rendered frame.
-		static bool init(const char* postProcessingShaderFilepath);
+		static void setPostProcessingShader(const char* postProcessingShaderFilepath);
 
-		// A function to be called before rendering a frame
-		// that needs to be post-processed.
+		// A function to be called before rendering a frame.
+		// Does nothing if there is no post-processing shader set.
 		static void beginFrame();
-		// A function to be called after rendering a frame
-		// that needs to be post-processed.
+		// A function to be called after rendering a frame.
+		// Does nothing if there is no post-processing shader set.
 		static void endFrame();
 
 		// Returns (a pointer to) underlying shader.

@@ -5,6 +5,7 @@
 #include "TextWidget.h"
 #include "ColorEdit3Widget.h"
 #include "DragFloat2Widget.h"
+#include "ComboBoxWidget.h"
 
 namespace Demo
 {
@@ -17,9 +18,18 @@ namespace Demo
 
         bool init() override;
 
+        // Returns index of selected post-processing shader
+        int getPpsIndex() const { return gui.ppsComboBoxWidget->getIndex(); }
+
     private: /* functions */
 
         Pekan::GUI::GUIWindowProperties getProperties() const override;
+
+		struct Widgets
+		{
+			Pekan::GUI::ComboBoxWidget_Ptr ppsComboBoxWidget = std::make_shared<Pekan::GUI::ComboBoxWidget>();
+			Pekan::GUI::TextWidget_Ptr ppsLabel = std::make_shared<Pekan::GUI::TextWidget>();
+		} gui;
     };
 
 } // namespace Demo

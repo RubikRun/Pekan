@@ -1,8 +1,8 @@
 #include "Demo09_Scene.h"
 
+#include "Demo09_GUIWindow.h"
 #include "TransformComponent2D.h"
 #include "TransformSystem2D.h"
-#include "PekanLogger.h"
 #include "SpriteComponent.h"
 #include "RectangleGeometryComponent.h"
 #include "PolygonGeometryComponent.h"
@@ -14,16 +14,22 @@
 #include "CameraSystem2D.h"
 #include "Image.h"
 #include "Renderer2DSystem.h"
-#include "PekanTools.h"
+#include "PostProcessor.h"
+#include "ShaderPreprocessor.h"
+#include "PekanEngine.h"
+#include "PekanLogger.h"
 
 using namespace Pekan::Renderer2D;
 using namespace Pekan::Graphics;
-using namespace Pekan::Tools;
+using namespace Pekan;
 
 #define PI 3.14159265359f
 
 #define TURKEY_IMAGE_FILEPATH "resources/Turkey_animation_without_shadow.png"
 #define BULL_IMAGE_FILEPATH "resources/Bull_animation_without_shadow.png"
+
+#define POST_PROCESSING_SHADER_FILEPATH_PKSHAD "Shaders/PostProcessingShader.pkshad"
+#define POST_PROCESSING_SHADER_FILEPATH_GLSL "Shaders/PostProcessingShader.glsl"
 
 namespace Demo
 {
@@ -54,8 +60,72 @@ namespace Demo
 		return a + (b - a) * osc(t);
 	}
 
+	constexpr float kernelIdentity[9] = {
+		0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f
+	};
+
+	static void lerpKernels(const float* a, const float* b, float* out, float w)
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			out[i] = (1.0f - w) * a[i] + w * b[i];
+		}
+	}
+
+	static void getKernelSharpen(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			 0.0f, -1.0f,  0.0f,
+			-1.0f,  5.0f, -1.0f,
+			 0.0f, -1.0f,  0.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
+
+	static void getKernelBlur(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+			1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+			1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
+
+	static void getKernelEdgeDetection(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			 1.0f,  1.0f,  1.0f,
+			 1.0f, -8.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
+
+	static void getKernelEmboss(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			-2.0f, -1.0f,  0.0f,
+			-1.0f,  1.0f,  1.0f,
+			 0.0f,  1.0f,  2.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
+
 	bool Demo09_Scene::_init()
 	{
+		if (m_guiWindow == nullptr)
+		{
+			PK_LOG_ERROR("Cannot initialize Demo09_Scene because there is no GUI window attached.", "Demo09");
+			return false;
+		}
+
 		RenderState::enableMultisampleAntiAliasing();
 		RenderState::enableBlending();
 		RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
@@ -69,6 +139,11 @@ namespace Demo
 		createCircle();
 		createLine();
 		createCamera();
+
+		if (!initPps())
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -236,6 +311,8 @@ namespace Demo
 			geometry.pointB = TransformSystem2D::getPosition(registry, m_circle);
 		}
 
+		updatePps();
+
 		t += static_cast<float>(deltaTime);
 	}
 
@@ -392,6 +469,40 @@ namespace Demo
 		CameraComponent2D cameraComponent;
 		cameraComponent.setHeight(CAMERA_SCALE);
 		getRegistry().emplace<CameraComponent2D>(m_camera, cameraComponent);
+	}
+
+	bool Demo09_Scene::initPps()
+	{
+		ShaderPreprocessor::preprocess
+		(
+			POST_PROCESSING_SHADER_FILEPATH_PKSHAD,
+			{
+				{ "NEIGHBORS_SAMPLE_OFFSET_INVERSE_X", std::to_string(PekanEngine::getWindow().getSize().x / 3) },
+				{ "NEIGHBORS_SAMPLE_OFFSET_INVERSE_Y", std::to_string(PekanEngine::getWindow().getSize().y / 3) }
+			}
+		);
+
+		PostProcessor::setPostProcessingShader(POST_PROCESSING_SHADER_FILEPATH_GLSL);
+
+		return true;
+	}
+
+	void Demo09_Scene::updatePps()
+	{
+		Shader* postProcessorShader = PostProcessor::getShader();
+		PK_ASSERT_QUICK(postProcessorShader != nullptr);
+		static float kernel[9];
+		const int ppsIndex = m_guiWindow->getPpsIndex();
+		switch (ppsIndex)
+		{
+			case 0: postProcessorShader->setUniform1fv("kernel", 9, kernelIdentity); return;
+			case 1: getKernelSharpen(kernel, t); break;
+			case 2: getKernelBlur(kernel, t); break;
+			case 3: getKernelEdgeDetection(kernel, t); break;
+			case 4: getKernelEmboss(kernel, t); break;
+			default: PK_LOG_ERROR("Invalid post-processing shader selected in GUI.", "Demo06");
+		}
+		postProcessorShader->setUniform1fv("kernel", 9, kernel);
 	}
 
 } // namespace Demo
