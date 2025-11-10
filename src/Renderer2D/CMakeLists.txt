@@ -9,6 +9,8 @@ add_library(Renderer2D STATIC
     Renderer2DSystem.cpp
     Renderer2DSystem_ECS.h
     Renderer2DSystem_ECS.cpp
+    Utils2D.h
+    Utils2D.cpp
     RenderBatch2D.h
     RenderBatch2D.cpp
     Camera2D.h
@@ -21,6 +23,9 @@ add_library(Renderer2D STATIC
     CameraController2D.cpp
     Line.h
     Line.cpp
+    LineComponent.h
+    LineSystem.h
+    LineSystem.cpp
     Transformable2D.h
     Transformable2D.cpp
     TransformComponent2D.h
@@ -59,8 +64,6 @@ add_library(Renderer2D STATIC
     Shapes/PolygonGeometryComponent.h
     Shapes/PolygonGeometrySystem.h
     Shapes/PolygonGeometrySystem.cpp
-    Shapes/ShapeGeometryUtils.h
-    Shapes/ShapeGeometryUtils.cpp
     Sprite/Sprite.h
     Sprite/Sprite.cpp
     Sprite/SpriteComponent.h
@@ -85,7 +88,6 @@ SOURCE_GROUP("Source Files\\Shapes" FILES
     Shapes/CircleGeometrySystem.cpp
     Shapes/TriangleGeometrySystem.cpp
     Shapes/PolygonGeometrySystem.cpp
-    Shapes/ShapeGeometryUtils.cpp
 )
 SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/Shape.h
@@ -106,7 +108,6 @@ SOURCE_GROUP("Header Files\\Shapes" FILES
     Shapes/TriangleGeometrySystem.h
     Shapes/PolygonGeometryComponent.h
     Shapes/PolygonGeometrySystem.h
-    Shapes/ShapeGeometryUtils.h
 )
 # Group Sprite files under a virtual folder called "Sprite"
 SOURCE_GROUP("Source Files\\Sprite" FILES

@@ -248,3 +248,6 @@
 0082 08.11.2025 (TODO): Add support for parent-child hierarchies in TransformComponent2D and TransformSystem2D
 
 0083 08.11.2025 (TODO): Think of an alternative to getMousePosition() from old Renderer2DSystem
+
+0084 12.11.2025 (TODO): Think about rendering shapes/sprites/lines that don't have a transform.
+                        They can just be rendered in the default [-1, 1] range, it kind of makes sense.

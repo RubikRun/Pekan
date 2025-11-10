@@ -2,7 +2,7 @@
 
 #include "PolygonGeometryComponent.h"
 #include "TransformComponent2D.h"
-#include "ShapeGeometryUtils.h"
+#include "Utils2D.h"
 #include "VerticesAttributeView.h"
 #include "PekanLogger.h"
 #include "Utils/MathUtils.h"
@@ -79,7 +79,7 @@ namespace Renderer2D
         generateIndices(localVertexPositions, indices);
 
         // Get world vertex positions using local vertex positions and entity's transform
-        ShapeGeometryUtils::getWorldVertexPositions
+        Utils2D::getWorldVertexPositions
         (
             registry,
             localVertexPositions.data(), localVertexPositions.size(),

@@ -10,6 +10,7 @@
 #include "TriangleGeometryComponent.h"
 #include "CircleGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
+#include "LineComponent.h"
 #include "CameraComponent2D.h"
 #include "CameraSystem2D.h"
 #include "Image.h"
@@ -49,7 +50,8 @@ namespace Demo
 	constexpr glm::vec4 POLYGON2_INITIAL_COLOR = glm::vec4(0.2f, 0.6f, 0.6f, 1.0f);
 	constexpr glm::vec2 CIRCLE_INITIAL_POSITION = glm::vec2(2.0f, 2.0f);
 	constexpr glm::vec4 CIRCLE_INITIAL_COLOR = glm::vec4(0.3f, 0.3f, 0.8f, 1.0f);
-	constexpr glm::vec4 LINE_INITIAL_COLOR = glm::vec4(0.8f, 0.8f, 0.2f, 1.0f);
+	constexpr glm::vec4 LINE1_INITIAL_COLOR = glm::vec4(0.8f, 0.8f, 0.2f, 1.0f);
+	constexpr glm::vec4 LINE2_INITIAL_COLOR = glm::vec4(0.4f, 0.7f, 0.3f, 1.0f);
 
 	static float osc(float t)
 	{
@@ -137,7 +139,8 @@ namespace Demo
 		createPolygon1();
 		createPolygon2();
 		createCircle();
-		createLine();
+		createLine1();
+		createLine2();
 		createCamera();
 
 		if (!initPps())
@@ -157,7 +160,8 @@ namespace Demo
 		destroyEntity(m_polygon1);
 		destroyEntity(m_polygon2);
 		destroyEntity(m_circle);
-		destroyEntity(m_line);
+		destroyEntity(m_line1);
+		destroyEntity(m_line2);
 		destroyEntity(m_camera);
 	}
 
@@ -297,18 +301,29 @@ namespace Demo
 			const float scaleY = osc(t * 2.3f, 0.85f, 1.5f);
 			circleTransform.scale = glm::vec2(scaleX, scaleY);
 		}
-		// Change color of line over time
+		// Change color of line 1 over time
 		{
-			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_line);
+			SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(m_line1);
 			material.color.r = osc(t * 1.7f + 3.0f, 0.4f, 0.9f);
 			material.color.g = osc(t * 2.5f + 1.0f, 0.4f, 0.9f);
 			material.color.b = osc(t * 1.3f + 5.0f, 0.4f, 0.9f);
 		}
-		// Update line's endpoints so that they always connect rectangle's center with circle's center
+		// Update line 1's endpoints so that they always connect rectangle's center with circle's center
 		{
-			LineGeometryComponent& geometry = registry.get<LineGeometryComponent>(m_line);
+			LineGeometryComponent& geometry = registry.get<LineGeometryComponent>(m_line1);
 			geometry.pointA = TransformSystem2D::getPosition(registry, m_rectangle);
 			geometry.pointB = TransformSystem2D::getPosition(registry, m_circle);
+		}
+		// Update line 2's endpoints so that they always connect polygon 1's center with polygon 2's center
+		// and change its color over time
+		{
+			LineComponent& line = registry.get<LineComponent>(m_line2);
+			line.pointA = TransformSystem2D::getPosition(registry, m_polygon1);
+			line.pointB = TransformSystem2D::getPosition(registry, m_polygon2);
+
+			line.color.r = osc(t * 1.2f + 4.0f, 0.4f, 0.9f);
+			line.color.g = osc(t * 3.5f + 2.0f, 0.2f, 0.9f);
+			line.color.b = osc(t * 1.9f + 3.5f, 0.4f, 0.9f);
 		}
 
 		updatePps();
@@ -451,15 +466,28 @@ namespace Demo
 		getRegistry().emplace<SolidColorMaterialComponent>(m_circle, CIRCLE_INITIAL_COLOR);
 	}
 
-	void Demo09_Scene::createLine()
+	void Demo09_Scene::createLine1()
 	{
-		m_line = createEntity();
-		// Add transform component to line entity
-		getRegistry().emplace<TransformComponent2D>(m_line);
-		// Add line geometry component to line entity
-		getRegistry().emplace<LineGeometryComponent>(m_line, RECTANGLE_INITIAL_POSITION, CIRCLE_INITIAL_POSITION);
-		// Add solid color material component to line entity
-		getRegistry().emplace<SolidColorMaterialComponent>(m_line, RECTANGLE_INITIAL_COLOR);
+		m_line1 = createEntity();
+		// Add transform component to line 1's entity
+		getRegistry().emplace<TransformComponent2D>(m_line1);
+		// Add line geometry component to line 1's entity
+		getRegistry().emplace<LineGeometryComponent>(m_line1, RECTANGLE_INITIAL_POSITION, CIRCLE_INITIAL_POSITION);
+		// Add solid color material component to line 1's entity
+		getRegistry().emplace<SolidColorMaterialComponent>(m_line1, LINE1_INITIAL_COLOR);
+	}
+
+	void Demo09_Scene::createLine2()
+	{
+		m_line2 = createEntity();
+		// Add transform component to line 2's entity
+		getRegistry().emplace<TransformComponent2D>(m_line2);
+		// Add line component to line 2's entity
+		LineComponent lineComponent;
+		lineComponent.pointA = POLYGON1_INITIAL_POSITION;
+		lineComponent.pointB = POLYGON2_INITIAL_POSITION;
+		lineComponent.color = LINE2_INITIAL_COLOR;
+		getRegistry().emplace<LineComponent>(m_line2, lineComponent);
 	}
 
 	void Demo09_Scene::createCamera()

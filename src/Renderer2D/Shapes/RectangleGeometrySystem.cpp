@@ -2,7 +2,7 @@
 
 #include "RectangleGeometryComponent.h"
 #include "TransformComponent2D.h"
-#include "ShapeGeometryUtils.h"
+#include "Utils2D.h"
 #include "VerticesAttributeView.h"
 #include "PekanLogger.h"
 
@@ -40,7 +40,7 @@ namespace Renderer2D
         getVerticesLocal(geometry, verticesLocal);
 
         // Get world vertex positions using local vertex positions and transform
-        ShapeGeometryUtils::getWorldVertexPositions
+        Utils2D::getWorldVertexPositions
         (
             registry,
             verticesLocal, 4,

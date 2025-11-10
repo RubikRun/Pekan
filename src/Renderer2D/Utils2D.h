@@ -12,7 +12,7 @@ namespace Renderer2D
 
 	struct VerticesAttributeView;
 
-	class ShapeGeometryUtils
+	class Utils2D
 	{
 	public:
 
@@ -36,7 +36,10 @@ namespace Renderer2D
         );
 
 		// Applies a world matrix to a local position to get world position
-		static glm::vec2 applyWorldMatrix(const glm::mat3& worldMatrix, const glm::vec2& localPosition);
+		static glm::vec2 applyWorldMatrix(const glm::mat3& worldMatrix, glm::vec2 localPosition);
+
+		// Applies a transform component to a local position to get world position
+		static glm::vec2 applyTransform(const entt::registry& registry, const TransformComponent2D& transform, glm::vec2 localPosition);
 	};
 
 } // namespace Renderer2D

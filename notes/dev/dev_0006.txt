@@ -914,3 +914,75 @@ but we made Scene2D and PostProcessor handle everything except the actual user c
 
 Done.
 }
+
+----------
+12.11.2025
+----------
+
+{
+Time to integrate line primitives in ECS now.
+We already have LineGeometryComponent and LineGeometrySystem
+but these are for rendering a line geometry - basically a thin rectangle.
+We want to also have support for line primitives - directly rendering a line,
+no thickness, just 2 vertices, basically what we had until now in class Line,
+as opposed to class LineShape which was the rectangular line.
+
+Okay, that was easy. Pretty straightforward.
+Created 3 new files
+    LineComponent.h
+    LineSystem.h
+    LineSystem.cpp
+with a new struct
+    struct LineComponent
+containing the 2 endpoints of the line:
+    glm::vec2 pointA = { 0.0f, 0.0f };
+    glm::vec2 pointB = { 0.0f, 0.0f };
+but this time also containing the color:
+    glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+(
+    Decided to include the color in LineComponent but NOT in LineGeometryComponent,
+    because LineGeometryComponent is a line's "geometry" only.
+    It's supposed to be used with a material - normally a SolidColorMaterial
+    would be appropriate for a line geometry, but who knows, there might be a use case
+    of attaching another material to a line geometry, that's why I decided to keep
+    the line's geometry separate from the material that can be attached, in the case of LineGeometryComponent.
+    However, in the case of LineComponent, this is not a line's geometry anymore,
+    it is the line itself - a line primitive. So it has color as part of its own definition.
+)
+and a new class
+    class LineSystem
+that has a single API for getting the vertex positions, same as all shape types until now:
+    static void getVertexPositions
+    (
+        const entt::registry& registry,
+        entt::entity entity,
+        void* vertices,                // output array of vertices
+        int vertexSize,                // size of a single vertex, in bytes
+        int positionAttributeOffset    // offset from the start of each vertex to the position attribute, in bytes
+    );
+It works very similarly to the systems of all shape types,
+but it does some things more directly, for example applying the tranform to the local vertex positions:
+    const glm::vec2 verticesWorld[2] =
+    {
+        Utils2D::applyTransform(registry, transform, line.pointA),
+        Utils2D::applyTransform(registry, transform, line.pointB)
+    };
+For that I created a new API in Utils2D
+(
+    by the way, renamed ShapeGeometryUtils to Utils2D
+)
+for directly applying a transform component to a local vertex position to get a world vertex position:
+    static glm::vec2 applyTransform(const entt::registry& registry, const TransformComponent2D& transform, glm::vec2 localPosition);
+
+Then, to render a line primitive I created a new function in Renderer2D_ECS.cpp:
+    static void renderLine(const entt::registry& registry, entt::entity entity)
+Again, it works very similarly to the render functions of shape types
+but it does some things more directly.
+And, importantly it renders the render object at the end with DrawMode::Lines :
+    renderObject.render(DrawMode::Lines);
+Nothing more to say there.
+
+Tested it in Demo09.
+Works fine.
+Done.
+}

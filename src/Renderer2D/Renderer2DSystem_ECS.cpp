@@ -20,6 +20,9 @@
 #include "PolygonGeometrySystem.h"
 //////////////////////////////////////////////////////
 
+#include "LineComponent.h"
+#include "LineSystem.h"
+
 ////////// Material components and systems //////////
 #include "SolidColorMaterialComponent.h"
 #include "SolidColorMaterialSystem.h"
@@ -32,8 +35,11 @@
 
 using namespace Pekan::Graphics;
 
-#define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Shape_SolidColorMaterial_VertexShader.glsl"
-#define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Shape_SolidColorMaterial_FragmentShader.glsl"
+#define SHAPE_WITH_SOLID_COLOR_MATERIAL_VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Shape_SolidColorMaterial_VertexShader.glsl"
+#define SHAPE_WITH_SOLID_COLOR_MATERIAL_FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Shape_SolidColorMaterial_FragmentShader.glsl"
+
+#define LINE_VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_VertexShader.glsl"
+#define LINE_FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_SolidColor_FragmentShader.glsl"
 
 namespace Pekan
 {
@@ -62,6 +68,9 @@ namespace Renderer2D
         glm::vec2 position = { 0.0f, 0.0f };
         glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     };
+
+    // Type alias for a vertex of a line
+    typedef glm::vec2 VertexOfLine;
 
     // Renders all entities with given component types
     // by calling a given render function for each entity
@@ -106,9 +115,9 @@ namespace Renderer2D
                 { ShaderDataType::Float2, "position" },
                 { ShaderDataType::Float4, "color" }
             },
-            BufferDataUsage::DynamicDraw,
-            FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
-            FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+            BufferDataUsage::StaticDraw,
+            FileUtils::readTextFileToString(SHAPE_WITH_SOLID_COLOR_MATERIAL_VERTEX_SHADER_FILEPATH).c_str(),
+            FileUtils::readTextFileToString(SHAPE_WITH_SOLID_COLOR_MATERIAL_FRAGMENT_SHADER_FILEPATH).c_str()
         );
         // Set given indices to the render object
         renderObject.setIndexData(indices, sizeof(unsigned) * indicesCount);
@@ -300,6 +309,42 @@ namespace Renderer2D
         );
     }
 
+    // Renders an entity with a line component
+    static void renderLine(const entt::registry& registry, entt::entity entity)
+    {
+        // Get line component from entity
+        const LineComponent& line = registry.get<LineComponent>(entity);
+
+        // Create an array for line's 2 vertices
+        VertexOfLine vertices[2];
+        // Get vertex positions into the vertices array
+        LineSystem::getVertexPositions(registry, entity, vertices, sizeof(VertexOfLine), 0);
+
+        // Create render object with line's vertices
+        RenderObject renderObject;
+        renderObject.create
+        (
+            vertices, 2 * sizeof(VertexOfLine),
+            { { ShaderDataType::Float2, "position" } },
+            BufferDataUsage::StaticDraw,
+            FileUtils::readTextFileToString(LINE_VERTEX_SHADER_FILEPATH).c_str(),
+            FileUtils::readTextFileToString(LINE_FRAGMENT_SHADER_FILEPATH).c_str()
+        );
+
+        // Set render object's shader uniforms
+        {
+            Shader& shader = renderObject.getShader();
+            // Set "uColor" uniform to line's color
+            shader.setUniform4f("uColor", line.color);
+            // Set view projection matrix uniform using the primary camera
+            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
+            setViewProjectionMatrixUniform(shader, camera);
+        }
+
+        // Render the render object
+        renderObject.render(DrawMode::Lines);
+    }
+
     void Renderer2DSystem_ECS::render(const entt::registry& registry)
     {
         // Render all rectangles that have a solid color material
@@ -312,6 +357,9 @@ namespace Renderer2D
         renderAllEntitiesWith<LineGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderLineWithSolidColorMaterial);
         // Render all polygons that have a solid color material
         renderAllEntitiesWith<PolygonGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderPolygonWithSolidColorMaterial);
+
+        // Render all lines
+        renderAllEntitiesWith<LineComponent, TransformComponent2D>(registry, renderLine);
 
         // Render all sprites
         SpriteSystem::render(registry);

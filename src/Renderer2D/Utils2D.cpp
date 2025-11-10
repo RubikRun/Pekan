@@ -1,4 +1,4 @@
-#include "ShapeGeometryUtils.h"
+#include "Utils2D.h"
 
 #include "VerticesAttributeView.h"
 #include "TransformSystem2D.h"
@@ -8,7 +8,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    void ShapeGeometryUtils::getWorldVertexPositions
+    void Utils2D::getWorldVertexPositions
     (
         const entt::registry& registry,
         const glm::vec2* localVertexPositions,
@@ -23,7 +23,7 @@ namespace Renderer2D
         applyWorldMatrix(worldMatrix, localVertexPositions, vertexPositionsCount, worldVertexPositions);
     }
 
-    void ShapeGeometryUtils::applyWorldMatrix
+    void Utils2D::applyWorldMatrix
     (
         const glm::mat3& worldMatrix,
         const glm::vec2* localVertexPositions,
@@ -38,10 +38,18 @@ namespace Renderer2D
         }
     }
 
-	glm::vec2 ShapeGeometryUtils::applyWorldMatrix(const glm::mat3& worldMatrix, const glm::vec2& localPosition)
+	glm::vec2 Utils2D::applyWorldMatrix(const glm::mat3& worldMatrix, glm::vec2 localPosition)
 	{
 		return glm::vec2(worldMatrix * glm::vec3(localPosition, 1.0f));
 	}
+
+    glm::vec2 Utils2D::applyTransform(const entt::registry& registry, const TransformComponent2D& transform, glm::vec2 localPosition)
+    {
+        // Get world matrix from the transform component
+        const glm::mat3& worldMatrix = TransformSystem2D::getWorldMatrix(registry, transform);
+
+		return applyWorldMatrix(worldMatrix, localPosition);
+    }
 
 } // namespace Renderer2D
 } // namespace Pekan

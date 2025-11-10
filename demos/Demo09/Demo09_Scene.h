@@ -30,7 +30,8 @@ namespace Demo
 		void createPolygon1();
 		void createPolygon2();
 		void createCircle();
-		void createLine();
+		void createLine1();
+		void createLine2();
 		void createCamera();
 		// Initializes the post-processing shader
 		bool initPps();
@@ -47,7 +48,8 @@ namespace Demo
 		entt::entity m_polygon1 = entt::null;
 		entt::entity m_polygon2 = entt::null;
 		entt::entity m_circle = entt::null;
-		entt::entity m_line = entt::null;
+		entt::entity m_line1 = entt::null; // with line geometry
+		entt::entity m_line2 = entt::null; // just a line primitive
 
 		entt::entity m_camera = entt::null;
 
