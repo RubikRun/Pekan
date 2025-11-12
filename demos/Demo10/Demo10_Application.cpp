@@ -1,0 +1,39 @@
+#include "Demo10_Application.h"
+
+#include "Demo10_Scene.h"
+#include "Demo10_GUIWindow.h"
+
+#include "PekanEngine.h"
+using Pekan::PekanEngine;
+using Pekan::ApplicationProperties;
+using Pekan::WindowProperties;
+using Pekan::LayerStack;
+
+namespace Demo
+{
+
+    bool Demo10_Application::_fillLayerStack(LayerStack& layerStack)
+    {
+        // Create demo scene and demo GUI window
+        std::shared_ptr<Demo10_Scene> demoScene = std::make_shared<Demo10_Scene>(this);
+        std::shared_ptr<Demo10_GUIWindow> demoGuiWindow = std::make_shared<Demo10_GUIWindow>(this);
+        // Attach demo GUI window to demo scene
+        demoScene->attachGUIWindow(demoGuiWindow);
+
+        // Add scene and GUI window to application's layers
+        layerStack.pushLayer(demoScene);
+        layerStack.pushLayer(demoGuiWindow);
+
+        return true;
+    }
+
+    ApplicationProperties Demo10_Application::getProperties() const
+    {
+        ApplicationProperties props;
+        props.windowProperties.title = getName();
+        props.numberOfSamples = 16;
+        props.fps = 60.0;
+        return props;
+    }
+
+} // namespace Demo

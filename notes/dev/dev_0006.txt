@@ -986,3 +986,17 @@ Tested it in Demo09.
 Works fine.
 Done.
 }
+
+{
+Now looking at TO-DO item 0082
+    Add support for parent-child hierarchies in TransformComponent2D and TransformSystem2D
+I realized that it's already done.
+When I integrated transforms in ECS I did the parent-child thingy and it works out of the box now.
+
+Tested this in a new demo to make sure
+    Demo10
+This demo is all about transform hierarchies.
+
+They work pretty well. Happy with that.
+Done.
+}

@@ -20,8 +20,6 @@ namespace Pekan
 		entt::registry& getRegistry() { return m_registry; }
 		const entt::registry& getRegistry() const { return m_registry; }
 
-	protected: /* functions */
-
 		entt::entity createEntity();
 		void destroyEntity(entt::entity entity);
 

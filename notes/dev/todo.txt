@@ -245,7 +245,7 @@
 
 0081 06.11.2025 (TODO): Add support for rotation in CameraComponent2D and/or CameraSystem2D
 
-0082 08.11.2025 (TODO): Add support for parent-child hierarchies in TransformComponent2D and TransformSystem2D
+0082 08.11.2025 (DONE): Add support for parent-child hierarchies in TransformComponent2D and TransformSystem2D
 
 0083 08.11.2025 (TODO): Think of an alternative to getMousePosition() from old Renderer2DSystem
 
