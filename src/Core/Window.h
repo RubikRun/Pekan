@@ -38,6 +38,9 @@ namespace Pekan
 
 		// Flag indicating if mouse's cursor should be hidden
 		bool hideCursor = false;
+
+		// Flag indicating if window's contents should be cleared automatically between frames
+		bool shouldClearAutomatically = true;
 	};
 
 	// A class representing an OS-independent window

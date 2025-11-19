@@ -1000,3 +1000,112 @@ This demo is all about transform hierarchies.
 They work pretty well. Happy with that.
 Done.
 }
+
+----------
+16.11.2025
+----------
+
+{
+Looked at TO-DO item 0071 today and yesterday.
+
+Unfortunatelly we can't directly call
+    RenderCommands::clear()
+in PekanApplication's run() function because PekanApplication
+is part of the Core module but RenderCommands is part of the Graphics module
+and Core is not supposed to depend on Graphics.
+
+The correct way to do this is to allow the Graphics subsystem to register
+a callback in PekanApplication upon initialization
+such that this callback is automatically called between frames by PekanApplication
+but PekanApplication doesn't know what the callback is,
+so that Core doesn't depend on Graphics.
+
+We can implement a very general mechanism for this
+that will probably be used for other things as well in the future.
+We can implement a list of "on frame begin" callbacks
+and a list of "on frame end" callbacks in PekanApplication
+that are automatically called before/after a frame has been rendered.
+Any code will be able to register a callback.
+Once we have this mechanism we can let the Graphics subsystem
+create a callback that clears the window and register that callback
+as a "on frame begin" callback in PekanApplication so that it's
+automatically called before every frame.
+More specifically this can be done in GraphicsSystem's init() function.
+
+So that's what I did.
+
+PekanApplication now has these 2 private lists of callbacks:
+    std::vector<OnFrameBeginCallback> m_onFrameBeginCallbacks;
+    std::vector<OnFrameEndCallback> m_onFrameEndCallbacks;
+and public APIs for registering a callback:
+    void registerOnFrameBeginCallback(OnFrameBeginCallback callback);
+    void registerOnFrameEndCallback(OnFrameEndCallback callback);
+It also has these 2 private functions
+    void callOnFrameBeginCallbacks();
+    void callOnFrameEndCallbacks();
+that just loop over the registered callbacks and call them.
+These 2 functions should be called in the main loop in PekanApplication's run() function.
+The question is where exactly.
+The answer depends on what we consider to be "the frame".
+That's kind of a subjective question, but I guess these 3 lines make sense
+for me to be "the frame":
+    updateRecurringCallbacks(float(deltaTime));
+    m_layerStack.updateAll(deltaTime);
+    m_layerStack.renderAll();
+so I called the 2 functions callOnFrameBeginCallbacks() and callOnFrameEndCallbacks()
+before and after those 3 lines.
+
+That's it on the Core side of things.
+
+Now that we have this general callbacks mechanism
+let's use it to actually clear the window between frames.
+In GraphicsSystem's init() function we need to first get the application pointer
+    PekanApplication* application = PekanEngine::getApplication();
+and check if it's not null.
+Then we can register an "on frame begin" callback that clears the window:
+    application->registerOnFrameBeginCallback
+    (
+        []()
+        {
+            RenderCommands::clear(true);
+        }
+    );
+A thing that we can do before that is to set clear color to black,
+just to make sure that the default is not something else:
+    RenderState::setBackgroundColor(0.0f, 0.0f, 0.0f, 1.0f);
+Also, how do we know if we need to clear the depth buffer as well?
+(
+    Calling only RenderCommands::clear(true) clears the color buffer only,
+    and calling RenderCommands::clear(true, true) clears both the color buffer
+    and the depth buffer.
+)
+Well we can just check if depth testing is enabled,
+that's a good enough criteria for now.
+So the lambda now becomes:
+    []()
+    {
+        const bool isEnabledDepthTest = RenderState::isEnabledDepthTest();
+        RenderCommands::clear(true, isEnabledDepthTest);
+    }
+One final thing that we need to do is to make this functionality optional.
+Clearing the window between frames shouldn't always happen.
+It should happen by default, but users should be able to disable it.
+To do that I introduced a new flag in WindowProperties
+    bool shouldClearAutomatically = true;
+that is true by default.
+We will use this flag in GraphicsSystem's init() function
+to do registration of the callback only if the flag is enabled
+    if (application->getProperties().windowProperties.shouldClearAutomatically)
+    {
+        RenderState::setBackgroundColor(0.0f, 0.0f, 0.0f, 1.0f);
+        application->registerOnFrameBeginCallback(...);
+    }
+
+That's it.
+Now window is automatically cleared between frames
+unless user disables this by setting
+    windowProperties.shouldClearAutomatically = false
+
+It works!
+Done.
+}

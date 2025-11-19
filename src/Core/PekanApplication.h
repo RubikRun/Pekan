@@ -9,9 +9,14 @@
 
 #include <string>
 #include <memory>
+#include "functional"
 
 namespace Pekan
 {
+
+	// Type definitions for frame begin/end callbacks
+	typedef std::function<void()> OnFrameBeginCallback;
+	typedef std::function<void()> OnFrameEndCallback;
 
 	// Properties of a Pekan application, grouped together in a struct
 	struct ApplicationProperties
@@ -63,6 +68,11 @@ namespace Pekan
 		// @param[in] interval - time interval between calls (in seconds)
 		void registerRecurringCallback(std::function<void()> callback, float interval);
 
+		// Registers a callback to be called at the beginning of each frame
+		void registerOnFrameBeginCallback(OnFrameBeginCallback callback);
+		// Registers a callback to be called at the end of each frame
+		void registerOnFrameEndCallback(OnFrameEndCallback callback);
+
 		// Can be overriden by derived classes to return specific application properties.
 		// If not overriden, default application properties will be used.
 		virtual ApplicationProperties getProperties() const { return {}; }
@@ -106,6 +116,11 @@ namespace Pekan
 		// with current frame's delta time.
 		void updateRecurringCallbacks(float deltaTime);
 
+		// Calls all registered callbacks that need to be called at the beginning of each frame
+		void callOnFrameBeginCallbacks();
+		// Calls all registered callbacks that need to be called at the end of each frame
+		void callOnFrameEndCallbacks();
+
 	private: /* variables */
 
 		// Stack of layers making up the application
@@ -122,6 +137,11 @@ namespace Pekan
 
 		// Recurring callbacks registered in this application
 		std::vector<RecurringCallback> m_recurringCallbacks;
+
+		// List of registered callbacks to be called at the beginning of each frame
+		std::vector<OnFrameBeginCallback> m_onFrameBeginCallbacks;
+		// List of registered callbacks to be called at the end of each frame
+		std::vector<OnFrameEndCallback> m_onFrameEndCallbacks;
 
 		// A flag indicating if application has been initialized and not yet exited
 		bool m_isInitialized = false;

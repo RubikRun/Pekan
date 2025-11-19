@@ -42,7 +42,7 @@ namespace Pekan
     }
 
     void PekanApplication::run()
-	{
+    {
         PK_ASSERT(isValid(), "Trying to run a PekanApplication that is not yet initialized.", "Pekan");
 
         const ApplicationProperties properties = getProperties();
@@ -73,12 +73,16 @@ namespace Pekan
             // Get delta time - time passed since last frame
             const double deltaTime = m_deltaTimer.getDeltaTime();
 
+            callOnFrameBeginCallbacks();
+
             // Update all registered recurring callbacks
             updateRecurringCallbacks(float(deltaTime));
 
             // Update and render all layers of the layer stack
             m_layerStack.updateAll(deltaTime);
             m_layerStack.renderAll();
+
+            callOnFrameEndCallbacks();
 
             // Swap buffers to show the new frame on screen.
             // If we are using VSync this function will automatically wait
@@ -90,7 +94,7 @@ namespace Pekan
                 fpsLimiter.wait();
             }
         }
-	}
+    }
 
     void PekanApplication::exit()
     {
@@ -143,6 +147,16 @@ namespace Pekan
     )
     {
         m_recurringCallbacks.emplace_back(std::move(callback), interval);
+    }
+
+    void PekanApplication::registerOnFrameBeginCallback(OnFrameBeginCallback callback)
+    {
+        m_onFrameBeginCallbacks.push_back(std::move(callback));
+    }
+
+    void PekanApplication::registerOnFrameEndCallback(OnFrameEndCallback callback)
+    {
+        m_onFrameEndCallbacks.push_back(std::move(callback));
     }
 
     void PekanApplication::stopRunning()
@@ -297,6 +311,22 @@ namespace Pekan
                 // and restart the "elapsed" timer
                 recurringCallback.elapsed = 0.0f;
             }
+        }
+    }
+
+    void PekanApplication::callOnFrameBeginCallbacks()
+    {
+        for (const OnFrameBeginCallback& callback : m_onFrameBeginCallbacks)
+        {
+            callback();
+        }
+    }
+
+    void PekanApplication::callOnFrameEndCallbacks()
+    {
+        for (const OnFrameBeginCallback& callback : m_onFrameEndCallbacks)
+        {
+            callback();
         }
     }
 

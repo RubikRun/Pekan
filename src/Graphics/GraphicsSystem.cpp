@@ -1,7 +1,10 @@
 #include "GraphicsSystem.h"
 
-#include "PekanLogger.h"
+#include "PekanApplication.h"
 #include "SubsystemManager.h"
+#include "RenderCommands.h"
+#include "RenderState.h"
+#include "PekanLogger.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -56,6 +59,32 @@ namespace Graphics
 			PK_LOG_ERROR("Failed to load OpenGL when initializing the Graphics subsystem.", "Pekan");
 			return false;
 		}
+
+		// Get application
+		PekanApplication* application = PekanEngine::getApplication();
+		if (application == nullptr)
+		{
+			PK_LOG_ERROR("No application found when initializing the Graphics subsystem.", "Pekan");
+			return false;
+		}
+		// If application wants automatic clearing of window between frames
+		if (application->getProperties().windowProperties.shouldClearAutomatically)
+		{
+			// Set default background color to black
+			RenderState::setBackgroundColor(0.0f, 0.0f, 0.0f, 1.0f);
+			// Register a callback to clear the window at the beginning of each frame
+			application->registerOnFrameBeginCallback
+			(
+				[]()
+				{
+					// Check if depth testing is enabled, so that we can clear depth buffer only if needed
+					const bool isEnabledDepthTest = RenderState::isEnabledDepthTest();
+
+					RenderCommands::clear(true, isEnabledDepthTest);
+				}
+			);
+		}
+
 		return true;
 	}
 

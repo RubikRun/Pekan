@@ -207,7 +207,7 @@
                             inline static const
                         everywhere to define static const member variables inside the class, instead of separately in the .cpp
 
-0071 22.10.2025 (TODO): Call
+0071 22.10.2025 (DONE): Call
                             RenderCommands::clear()
                         by default between frames in PekanApplication's run() function.
                         Example situation where this is needed: An application with a GUI window only,
@@ -251,3 +251,10 @@
 
 0084 12.11.2025 (TODO): Think about rendering shapes/sprites/lines that don't have a transform.
                         They can just be rendered in the default [-1, 1] range, it kind of makes sense.
+
+0085 16.11.2025 (TODO): Rename GraphicsSystem's registerSubsystem() function to registerAsSubsystem().
+                        Same for other subsystems.
+
+0086 16.11.2025 (TODO): Think about
+                            return false;
+                        statements in PekanApplication's init() function.

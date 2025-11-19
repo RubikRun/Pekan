@@ -35,6 +35,7 @@ namespace Demo
 	{
         RenderState::enableMultisampleAntiAliasing();
         RenderState::enableFaceCulling();
+        RenderState::enableDepthTest();
 
         if (m_guiWindow == nullptr)
         {
@@ -91,8 +92,6 @@ namespace Demo
             {{ 0.5f, -0.5f,  0.5f}, colors[5]},
             {{-0.5f, -0.5f,  0.5f}, colors[5]}
         };
-
-        RenderState::enableDepthTest();
 
         m_renderObject.create
         (
