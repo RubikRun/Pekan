@@ -1000,3 +1000,13 @@ This demo is all about transform hierarchies.
 They work pretty well. Happy with that.
 Done.
 }
+
+----------
+16.11.2025
+----------
+
+{
+Looked at TO-DO item 0071 today and yesterday.
+
+
+}

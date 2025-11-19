@@ -29,9 +29,6 @@ namespace Renderer2D {
 	{
 		PostProcessor::beginFrame();
 
-		// TEMP: remove after TO-DO item 0071 is done
-		RenderCommands::clear();
-
 		const entt::registry& registry = getRegistry();
 		Renderer2DSystem_ECS::render(registry);
 
