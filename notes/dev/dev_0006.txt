@@ -1109,3 +1109,28 @@ unless user disables this by setting
 It works!
 Done.
 }
+
+----------
+22.11.2025
+----------
+
+{
+Let's look at TO-DO task 0078.
+
+First such API that I see is
+    getVertexPositions()
+in
+    LineSystem
+However, this one is okay because it needs a registry, not just line data.
+It needs the registry to retrieve transform's world matrix.
+Even if it didn't, it needs the transform which is not part of line's data,
+so it would still make sense that this API is part of the LineSystem
+and NOT of the LineComponent.
+So yeah, this one is fine.
+
+Next such API that I see is
+    getVertexColors
+in
+    SolidColorMaterialSystem
+
+}

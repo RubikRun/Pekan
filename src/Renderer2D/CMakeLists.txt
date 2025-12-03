@@ -71,6 +71,7 @@ add_library(Renderer2D STATIC
     Sprite/SpriteSystem.cpp
     Sprite/SpriteVertex.h
     Materials/SolidColorMaterialComponent.h
+    Materials/SolidColorMaterialComponent.cpp
     Materials/SolidColorMaterialSystem.h
     Materials/SolidColorMaterialSystem.cpp
 )
@@ -127,6 +128,7 @@ SOURCE_GROUP("Header Files\\Materials" FILES
 )
 SOURCE_GROUP("Source Files\\Materials" FILES
     Materials/SolidColorMaterialSystem.cpp
+    Materials/SolidColorMaterialComponent.cpp
 )
 
 # Set include directories for Renderer2D

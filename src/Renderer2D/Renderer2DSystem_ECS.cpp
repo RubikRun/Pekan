@@ -7,6 +7,8 @@
 #include "CameraComponent2D.h"
 #include "CameraSystem2D.h"
 
+#include "VerticesAttributeView.h"
+
 ////////// Geometry components and systems //////////
 #include "RectangleGeometryComponent.h"
 #include "RectangleGeometrySystem.h"
@@ -25,7 +27,6 @@
 
 ////////// Material components and systems //////////
 #include "SolidColorMaterialComponent.h"
-#include "SolidColorMaterialSystem.h"
 /////////////////////////////////////////////////////
 
 ////////// Pekan Core includes //////////
@@ -143,14 +144,21 @@ namespace Renderer2D
         int indicesCount                                  // number of indices
     )
     {
-        // Get vertex colors into the color attribute of vertices array
-        SolidColorMaterialSystem::getVertexColors
-        (
-            registry, entity,
+        // Get material component from entity
+        PK_ASSERT(registry.all_of<SolidColorMaterialComponent>(entity), "Trying to get vertex colors of an entity that doesn't have a SolidColorMaterialComponent component.", "Pekan");
+        const SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(entity);
+
+        // Set vertex colors using material
+        VerticesAttributeView colorAttrView
+        {
             vertices, verticesCount,
             sizeof(VertexOfShapeWithSolidColorMaterial),
             offsetof(VertexOfShapeWithSolidColorMaterial, color)
-        );
+        };
+        for (int i = 0; i < verticesCount; i++)
+        {
+            colorAttrView.setVertexAttribute<glm::vec4>(i, material.color);
+        }
 
         // Create render object from shape's vertices and indices
         RenderObject renderObject;
