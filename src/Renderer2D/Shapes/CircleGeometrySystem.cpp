@@ -63,17 +63,5 @@ namespace Renderer2D
         MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
     }
 
-    int CircleGeometrySystem::getNumberOfVertices(const entt::registry& registry, entt::entity entity)
-    {
-        PK_ASSERT(registry.valid(entity), "Trying to get number of vertices for an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Trying to get number of vertices for an entity that doesn't have a CircleGeometryComponent component.", "Pekan");
-
-        // Get entity's geometry
-        const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);
-        // Number of vertices is equal to the number of segments
-        // because a polygon of N segments has N vertices
-        return geometry.segmentsCount;
-    }
-
 } // namespace Renderer2D
 } // namespace Pekan

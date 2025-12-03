@@ -88,16 +88,5 @@ namespace Renderer2D
         );
     }
 
-    int PolygonGeometrySystem::getNumberOfVertices(const entt::registry& registry, entt::entity entity)
-    {
-        PK_ASSERT(registry.valid(entity), "Trying to get number of vertices for an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<PolygonGeometryComponent>(entity), "Trying to get number of vertices for an entity that doesn't have a PolygonGeometryComponent component.", "Pekan");
-
-        // Get entity's geometry
-        const PolygonGeometryComponent& geometry = registry.get<PolygonGeometryComponent>(entity);
-        // A polygon's number of vertices is simply the size of its vertex positions array
-        return geometry.vertexPositions.size();
-    }
-
 } // namespace Renderer2D
 } // namespace Pekan

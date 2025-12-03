@@ -22,8 +22,9 @@ namespace Renderer2D
     // A default CameraComponent2D instance to use if there is no primary camera
     static constexpr CameraComponent2D g_defaultCamera = getDefaultCamera();
 
-
-
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // CameraSystem2D implementation
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     const CameraComponent2D& CameraSystem2D::getPrimaryCamera(const entt::registry& registry)
     {

@@ -194,13 +194,13 @@ namespace Demo
             TransformComponent2D& transform = registry.get<TransformComponent2D>(m_body);
             transform.position = guiWindow->getBodyPosition();
             transform.rotation = guiWindow->getBodyRotation();
-            transform.scale = guiWindow->getBodyScale();
+            transform.scaleFactor = guiWindow->getBodyScale();
         }
         // Update player left arm transform from GUI window
         {
             TransformComponent2D& transform = registry.get<TransformComponent2D>(m_leftArm);
             transform.position = guiWindow->getLeftArmPosition();
-            transform.scale = guiWindow->getLeftArmScale();
+            transform.scaleFactor = guiWindow->getLeftArmScale();
             TransformComponent2D& jointTransform = registry.get<TransformComponent2D>(m_leftArmJoint);
             jointTransform.rotation = guiWindow->getLeftArmRotation();
         }
@@ -208,7 +208,7 @@ namespace Demo
         {
             TransformComponent2D& transform = registry.get<TransformComponent2D>(m_rightArm);
             transform.position = guiWindow->getRightArmPosition();
-            transform.scale = guiWindow->getRightArmScale();
+            transform.scaleFactor = guiWindow->getRightArmScale();
             TransformComponent2D& jointTransform = registry.get<TransformComponent2D>(m_rightArmJoint);
             jointTransform.rotation = guiWindow->getRightArmRotation();
         }
@@ -216,7 +216,7 @@ namespace Demo
         {
             TransformComponent2D& transform = registry.get<TransformComponent2D>(m_leftLeg);
             transform.position = guiWindow->getLeftLegPosition();
-            transform.scale = guiWindow->getLeftLegScale();
+            transform.scaleFactor = guiWindow->getLeftLegScale();
             TransformComponent2D& jointTransform = registry.get<TransformComponent2D>(m_leftLegJoint);
             jointTransform.rotation = guiWindow->getLeftLegRotation();
         }
@@ -224,7 +224,7 @@ namespace Demo
         {
             TransformComponent2D& transform = registry.get<TransformComponent2D>(m_rightLeg);
             transform.position = guiWindow->getRightLegPosition();
-            transform.scale = guiWindow->getRightLegScale();
+            transform.scaleFactor = guiWindow->getRightLegScale();
             TransformComponent2D& jointTransform = registry.get<TransformComponent2D>(m_rightLegJoint);
             jointTransform.rotation = guiWindow->getRightLegRotation();
         }
@@ -233,14 +233,14 @@ namespace Demo
             TransformComponent2D& transform = registry.get<TransformComponent2D>(m_head);
             transform.position = guiWindow->getHeadPosition();
             transform.rotation = guiWindow->getHeadRotation();
-            transform.scale = guiWindow->getHeadScale();
+            transform.scaleFactor = guiWindow->getHeadScale();
         }
         // Update player sword transform from GUI window
         {
             TransformComponent2D& transform = registry.get<TransformComponent2D>(m_sword);
             transform.position = guiWindow->getSwordPosition();
             transform.rotation = guiWindow->getSwordRotation();
-            transform.scale = guiWindow->getSwordScale();
+            transform.scaleFactor = guiWindow->getSwordScale();
         }
     }
 

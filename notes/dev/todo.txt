@@ -234,7 +234,7 @@
 
 0077 03.11.2025 (TODO): Better assert messages in *System.cpp files in Renderer2D
 
-0078 03.11.2025 (TODO): Remove all single-instance APIs from all ECS systems.
+0078 03.11.2025 (DONE): Remove all single-instance APIs from all ECS systems.
                         For example getters and setters of a field of a single instance of a component.
                         If really needed those should be in the component struct itself.
 
@@ -258,3 +258,5 @@
 0086 16.11.2025 (TODO): Think about
                             return false;
                         statements in PekanApplication's init() function.
+
+0087 10.12.2025 (TODO): Why is application not terminated when user closes the window?

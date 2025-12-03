@@ -1109,3 +1109,87 @@ unless user disables this by setting
 It works!
 Done.
 }
+
+----------
+22.11.2025
+----------
+
+{
+Let's look at TO-DO task 0078.
+
+First such API that I see is
+    getVertexPositions()
+in
+    LineSystem
+However, this one is okay because it needs a registry, not just line data.
+It needs the registry to retrieve transform's world matrix.
+Even if it didn't, it needs the transform which is not part of line's data,
+so it would still make sense that this API is part of the LineSystem
+and NOT of the LineComponent.
+So yeah, this one is fine.
+
+Next such API that I see is
+    getVertexColors
+in
+    SolidColorMaterialSystem
+----------
+10.12.2025
+----------
+Moved that one to
+    SolidColorMaterialComponent
+leaving SolidColorMaterialSystem empty so I removed it.
+Looks good.
+
+Next such APIs that I see are
+    getPosition()
+    getRotation()
+    getScale()
+    setPosition()
+    setRotation()
+    setScale()
+    move()
+    rotate()
+    scale()
+in
+    TransformSystem2D
+All of these APIs don't really need to be part of the system, they can be part of the component,
+because they are related only to a single transform, they don't care about the transforms of other entities
+or anything else in the scene.
+The same is NOT true for
+    getWorldMatrix()
+There, we do, indeed, care for the transforms of other entities in the scene, because we need parent's world matrix.
+So, we can safely keep getWorldMatrix() in the system.
+We need to move all the rest to the component.
+Did that.
+
+----------
+11.12.2025
+----------
+
+Next such API that I see is
+    getNumberOfVertices()
+in
+    CircleGeometrySystem
+We can easily move this to CircleGeometryComponent
+
+Next such API that I see is
+    getNumberOfVertices()
+in
+    PolygonGeometrySystem
+Same thing, moving it to PolygonGeometryComponent
+
+Next such APIs that I see are
+    getWidth()
+    getHeight()
+    getSize()
+    getTexture()
+    getTextureCoordinatesMin()
+    getTextureCoordinatesMax()
+in
+    SpriteSystem
+These ones are not used at all, so literally just removing them.
+
+Okay, seems that's all.
+Looks good. Everything works as before but now we have cleaner ECS logic.
+Done.
+}

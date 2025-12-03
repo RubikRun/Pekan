@@ -172,9 +172,11 @@ namespace Demo
 		// Move turkey
 		{
 			static glm::vec2 velocity = glm::vec2(0.02f, 0.0f);
-			TransformSystem2D::move(registry, m_turkey, velocity);
 
-			const float posX = TransformSystem2D::getPosition(registry, m_turkey).x;
+			TransformComponent2D& transform = registry.get<TransformComponent2D>(m_turkey);
+			transform.move(velocity);
+
+			const float posX = transform.position.x;
 			// Reverse velocity if entity reaches left or right edge of the camera view
 			if (posX < registry.get<CameraComponent2D>(m_camera).getLeftEdgeInWorldSpace() || posX > registry.get<CameraComponent2D>(m_camera).getRightEdgeInWorldSpace())
 			{
@@ -184,9 +186,11 @@ namespace Demo
 		// Move bull
 		{
 			static glm::vec2 velocity = glm::vec2(-0.02f, 0.0f);
-			TransformSystem2D::move(registry, m_bull, velocity);
 
-			const float posX = TransformSystem2D::getPosition(registry, m_bull).x;
+			TransformComponent2D& transform = registry.get<TransformComponent2D>(m_bull);
+			transform.move(velocity);
+
+			const float posX = transform.position.x;
 			// Reverse velocity if entity reaches left or right edge of the camera view
 			if (posX < registry.get<CameraComponent2D>(m_camera).getLeftEdgeInWorldSpace() || posX > registry.get<CameraComponent2D>(m_camera).getRightEdgeInWorldSpace())
 			{
@@ -228,7 +232,7 @@ namespace Demo
 			// Stretch and squash the triangle
 			const float scaleX = osc(t * 1.6f, 0.8f, 1.2f);
 			const float scaleY = osc(t * 1.9f, 0.9f, 1.3f);
-			triangleTransform.scale = glm::vec2(scaleX, scaleY);
+			triangleTransform.scaleFactor = glm::vec2(scaleX, scaleY);
 		}
 		// Change color of polygon 1 over time
 		{
@@ -284,7 +288,7 @@ namespace Demo
 			TransformComponent2D& transform = registry.get<TransformComponent2D>(m_polygon2);
 			const float scaleX = osc(t * 1.7f, 0.8f, 1.25f);
 			const float scaleY = osc(t * 2.2f, 0.8f, 1.25f);
-			transform.scale = glm::vec2(scaleX, scaleY);
+			transform.scaleFactor = glm::vec2(scaleX, scaleY);
 		}
 		// Change color of circle over time
 		{
@@ -299,7 +303,7 @@ namespace Demo
 			circleTransform.position.x = osc(t * 2.1f, 1.5f, 2.5f);
 			const float scaleX = osc(t * 3.2f, 0.75f, 1.25f);
 			const float scaleY = osc(t * 2.3f, 0.85f, 1.5f);
-			circleTransform.scale = glm::vec2(scaleX, scaleY);
+			circleTransform.scaleFactor = glm::vec2(scaleX, scaleY);
 		}
 		// Change color of line 1 over time
 		{
@@ -311,15 +315,19 @@ namespace Demo
 		// Update line 1's endpoints so that they always connect rectangle's center with circle's center
 		{
 			LineGeometryComponent& geometry = registry.get<LineGeometryComponent>(m_line1);
-			geometry.pointA = TransformSystem2D::getPosition(registry, m_rectangle);
-			geometry.pointB = TransformSystem2D::getPosition(registry, m_circle);
+			const TransformComponent2D& rectangleTransform = registry.get<TransformComponent2D>(m_rectangle);
+			const TransformComponent2D& circleTransform = registry.get<TransformComponent2D>(m_circle);
+			geometry.pointA = rectangleTransform.position;
+			geometry.pointB = circleTransform.position;
 		}
 		// Update line 2's endpoints so that they always connect polygon 1's center with polygon 2's center
 		// and change its color over time
 		{
 			LineComponent& line = registry.get<LineComponent>(m_line2);
-			line.pointA = TransformSystem2D::getPosition(registry, m_polygon1);
-			line.pointB = TransformSystem2D::getPosition(registry, m_polygon2);
+			const TransformComponent2D& polygon1Transform = registry.get<TransformComponent2D>(m_polygon1);
+			const TransformComponent2D& polygon2Transform = registry.get<TransformComponent2D>(m_polygon2);
+			line.pointA = polygon1Transform.position;
+			line.pointB = polygon2Transform.position;
 
 			line.color.r = osc(t * 1.2f + 4.0f, 0.4f, 0.9f);
 			line.color.g = osc(t * 3.5f + 2.0f, 0.2f, 0.9f);

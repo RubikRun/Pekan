@@ -25,7 +25,6 @@
 
 ////////// Material components and systems //////////
 #include "SolidColorMaterialComponent.h"
-#include "SolidColorMaterialSystem.h"
 /////////////////////////////////////////////////////
 
 ////////// Pekan Core includes //////////
@@ -143,10 +142,12 @@ namespace Renderer2D
         int indicesCount                                  // number of indices
     )
     {
-        // Get vertex colors into the color attribute of vertices array
-        SolidColorMaterialSystem::getVertexColors
-        (
-            registry, entity,
+        // Get material component from entity
+        PK_ASSERT(registry.all_of<SolidColorMaterialComponent>(entity), "Trying to get vertex colors of an entity that doesn't have a SolidColorMaterialComponent component.", "Pekan");
+        const SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(entity);
+
+        // Get vertex colors using material
+        material.getVertexColors(
             vertices, verticesCount,
             sizeof(VertexOfShapeWithSolidColorMaterial),
             offsetof(VertexOfShapeWithSolidColorMaterial, color)
@@ -267,15 +268,14 @@ namespace Renderer2D
     // Renders an entity with circle geometry and a solid color material
     static void renderCircleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
     {
-        // Get number of vertices needed for entity's circle geometry
-        const int verticesCount = CircleGeometrySystem::getNumberOfVertices(registry, entity);
+        const CircleGeometryComponent& circleGeometry = registry.get<CircleGeometryComponent>(entity);
 
         // Render circle as a general shape with solid color material
         renderShapeWithSolidColorMaterial
         (
             registry, entity,
             CircleGeometrySystem::getVertexPositionsAndIndices,
-            verticesCount
+            circleGeometry.segmentsCount    // number of vertices is equal to number of segments
         );
     }
 
@@ -297,15 +297,14 @@ namespace Renderer2D
     // Renders an entity with polygon geometry and a solid color material
     static void renderPolygonWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
     {
-        // Get number of vertices needed for entity's polygon geometry
-        const int verticesCount = PolygonGeometrySystem::getNumberOfVertices(registry, entity);
+        const PolygonGeometryComponent& polygonGeometry = registry.get<PolygonGeometryComponent>(entity);
 
         // Render polygon as a general shape with solid color material
         renderShapeWithSolidColorMaterial
         (
             registry, entity,
             PolygonGeometrySystem::getVertexPositions,
-            verticesCount
+            polygonGeometry.vertexPositions.size()
         );
     }
 
@@ -347,15 +346,11 @@ namespace Renderer2D
 
     void Renderer2DSystem_ECS::render(const entt::registry& registry)
     {
-        // Render all rectangles that have a solid color material
+        // Render all rectangles, triangles, circles, lines, and polygons that have a solid color material
         renderAllEntitiesWith<RectangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderRectangleWithSolidColorMaterial);
-        // Render all triangles that have a solid color material
         renderAllEntitiesWith<TriangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderTriangleWithSolidColorMaterial);
-        // Render all circles that have a solid color material
         renderAllEntitiesWith<CircleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderCircleWithSolidColorMaterial);
-        // Render all lines that have a solid color material
         renderAllEntitiesWith<LineGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderLineWithSolidColorMaterial);
-        // Render all polygons that have a solid color material
         renderAllEntitiesWith<PolygonGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderPolygonWithSolidColorMaterial);
 
         // Render all lines

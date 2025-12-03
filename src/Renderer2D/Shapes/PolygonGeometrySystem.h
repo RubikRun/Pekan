@@ -24,9 +24,6 @@ namespace Renderer2D
             int positionAttributeOffset,      // offset from the start of each vertex to the position attribute, in bytes
             std::vector<unsigned>& indices    // output array of indices
         );
-
-        // Returns the number of vertices of the polygon geometry of the given entity
-        static int getNumberOfVertices(const entt::registry& registry, entt::entity entity);
     };
 
 } // namespace Renderer2D

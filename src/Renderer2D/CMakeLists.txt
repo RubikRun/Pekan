@@ -29,6 +29,7 @@ add_library(Renderer2D STATIC
     Transformable2D.h
     Transformable2D.cpp
     TransformComponent2D.h
+    TransformComponent2D.cpp
     TransformSystem2D.h
     TransformSystem2D.cpp
     Vertex2D.h
@@ -71,8 +72,7 @@ add_library(Renderer2D STATIC
     Sprite/SpriteSystem.cpp
     Sprite/SpriteVertex.h
     Materials/SolidColorMaterialComponent.h
-    Materials/SolidColorMaterialSystem.h
-    Materials/SolidColorMaterialSystem.cpp
+    Materials/SolidColorMaterialComponent.cpp
 )
 
 # Group Shapes files under a virtual folder called "Shapes"
@@ -123,10 +123,9 @@ SOURCE_GROUP("Header Files\\Sprite" FILES
 # Group Materials files under a virtual folder called "Materials"
 SOURCE_GROUP("Header Files\\Materials" FILES
     Materials/SolidColorMaterialComponent.h
-    Materials/SolidColorMaterialSystem.h
 )
 SOURCE_GROUP("Source Files\\Materials" FILES
-    Materials/SolidColorMaterialSystem.cpp
+    Materials/SolidColorMaterialComponent.cpp
 )
 
 # Set include directories for Renderer2D
