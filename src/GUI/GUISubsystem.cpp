@@ -1,4 +1,4 @@
-#include "GUISystem.h"
+#include "GUISubsystem.h"
 
 #include "PekanLogger.h"
 #include "SubsystemManager.h"
@@ -14,24 +14,24 @@ namespace Pekan
 namespace GUI
 {
 
-    static GUISystem g_guiSystem;
+    static GUISubsystem g_guiSystem;
 
-    void GUISystem::registerSubsystem()
+    void GUISubsystem::registerSubsystem()
     {
         SubsystemManager::registerSubsystem(&g_guiSystem);
     }
 
-    GUISystem* GUISystem::getInstance()
+    GUISubsystem* GUISubsystem::getInstance()
     {
         return &g_guiSystem;
     }
 
-    int GUISystem::generateWidgetId()
+    int GUISubsystem::generateWidgetId()
     {
         return m_nextWidgetId++;
     }
 
-    bool GUISystem::init()
+    bool GUISubsystem::init()
     {
         if (!initImGui())
         {
@@ -41,12 +41,12 @@ namespace GUI
         return true;
     }
 
-    void GUISystem::exit()
+    void GUISubsystem::exit()
     {
         exitImGui();
     }
 
-    bool GUISystem::initImGui()
+    bool GUISubsystem::initImGui()
     {
         // Setup ImGui context
         IMGUI_CHECKVERSION();
@@ -78,7 +78,7 @@ namespace GUI
         return true;
     }
 
-    void GUISystem::exitImGui()
+    void GUISubsystem::exitImGui()
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();

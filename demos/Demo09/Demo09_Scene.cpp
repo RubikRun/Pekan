@@ -14,7 +14,7 @@
 #include "CameraComponent2D.h"
 #include "CameraSystem2D.h"
 #include "Image.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 #include "PostProcessor.h"
 #include "ShaderPreprocessor.h"
 #include "PekanEngine.h"

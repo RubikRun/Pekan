@@ -1,7 +1,7 @@
 #include "Sprite.h"
 
 #include "PekanLogger.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 
 using namespace Pekan::Graphics;
 
@@ -41,7 +41,7 @@ namespace Renderer2D
     {
         PK_ASSERT(m_isValid, "Trying to render a Sprite that is not yet created.", "Pekan");
 
-        Renderer2DSystem::submitForRendering(*this);
+        Renderer2DSubsystem::submitForRendering(*this);
     }
 
     void Sprite::setWidth(float width)

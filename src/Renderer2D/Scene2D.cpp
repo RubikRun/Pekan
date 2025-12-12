@@ -1,6 +1,6 @@
 #include "Scene2D.h"
 
-#include "Renderer2DSystem_ECS.h"
+#include "RenderSystem2D.h"
 #include "RenderCommands.h"
 #include "RenderState.h"
 #include "PostProcessor.h"
@@ -30,7 +30,7 @@ namespace Renderer2D {
 		PostProcessor::beginFrame();
 
 		const entt::registry& registry = getRegistry();
-		Renderer2DSystem_ECS::render(registry);
+		RenderSystem2D::render(registry);
 
 		_render();
 

@@ -220,7 +220,7 @@
 
 0072 23.10.2025 (TODO): Implement "dirty flag" optimization in TransformComponent2D or/and TransformSystem2D
 
-0073 24.10.2025 (TODO): Rename Renderer2DSystem and other subsystem classes to avoid ambiguity with ECS systems.
+0073 24.10.2025 (DONE): Rename Renderer2DSystem and other subsystem classes to avoid ambiguity with ECS systems.
                         If you rename to Renderer2D then think about namespace vs class name ambiguity.
                         (Everything in the Renderer2D subsystem is inside of namespace Renderer2D)
 

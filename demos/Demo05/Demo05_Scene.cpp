@@ -2,7 +2,7 @@
 #include "PekanLogger.h"
 #include "Utils/RandomizationUtils.h"
 #include "RenderCommands.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 #include "PekanTools.h"
 
 #include <glm/gtc/constants.hpp>
@@ -47,7 +47,7 @@ namespace Demo
         // Create camera
         m_camera = std::make_shared<Camera2D>();
         m_camera->create(CAMERA_SCALE);
-        Renderer2DSystem::setCamera(m_camera);
+        Renderer2DSubsystem::setCamera(m_camera);
         PekanTools::enableCameraController2D(m_camera);
 
         t = 0.0f;
@@ -75,7 +75,7 @@ namespace Demo
 
     void Demo05_Scene::render() const
     {
-        Renderer2DSystem::beginFrame();
+        Renderer2DSubsystem::beginFrame();
 
         // Clear background color
         if (m_guiWindow != nullptr)
@@ -94,7 +94,7 @@ namespace Demo
             m_lineShapes[i].render();
         }
 
-        Renderer2DSystem::endFrame();
+        Renderer2DSubsystem::endFrame();
     }
 
     void Demo05_Scene::exit()

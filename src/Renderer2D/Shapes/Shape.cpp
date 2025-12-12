@@ -1,7 +1,7 @@
 #include "Shape.h"
 
 #include "PekanLogger.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 #include "Utils/RandomizationUtils.h"
 
 namespace Pekan
@@ -13,7 +13,7 @@ namespace Renderer2D
     {
         PK_ASSERT(m_isValid, "Trying to render a Shape that is not yet created.", "Pekan");
 
-        Renderer2DSystem::submitForRendering(*this);
+        Renderer2DSubsystem::submitForRendering(*this);
     }
 
     void Shape::setColor(glm::vec4 color)

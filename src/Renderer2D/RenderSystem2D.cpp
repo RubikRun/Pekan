@@ -1,4 +1,4 @@
-#include "Renderer2DSystem_ECS.h"
+#include "RenderSystem2D.h"
 
 #include "TransformComponent2D.h"
 #include "SpriteSystem.h"
@@ -344,7 +344,7 @@ namespace Renderer2D
         renderObject.render(DrawMode::Lines);
     }
 
-    void Renderer2DSystem_ECS::render(const entt::registry& registry)
+    void RenderSystem2D::render(const entt::registry& registry)
     {
         // Render all rectangles, triangles, circles, lines, and polygons that have a solid color material
         renderAllEntitiesWith<RectangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderRectangleWithSolidColorMaterial);

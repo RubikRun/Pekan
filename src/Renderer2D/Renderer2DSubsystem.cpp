@@ -1,8 +1,8 @@
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 
 #include "PekanLogger.h"
 #include "SubsystemManager.h"
-#include "GraphicsSystem.h"
+#include "GraphicsSubsystem.h"
 #include "ShaderPreprocessor.h"
 
 using namespace Pekan::Graphics;
@@ -22,34 +22,34 @@ namespace Renderer2D
 	// Preprocesses all .pkshad files needed by Renderer2D
 	static void preprocessPkshadFiles();
 
-	static Renderer2DSystem g_renderer2DSystem;
+	static Renderer2DSubsystem g_renderer2DSystem;
 	
-	void Renderer2DSystem::registerSubsystem()
+	void Renderer2DSubsystem::registerSubsystem()
 	{
 		SubsystemManager::registerSubsystem(&g_renderer2DSystem);
 	}
 
-	Camera2D_ConstWeakPtr Renderer2DSystem::s_camera;
-	RenderBatch2D Renderer2DSystem::s_batch;
+	Camera2D_ConstWeakPtr Renderer2DSubsystem::s_camera;
+	RenderBatch2D Renderer2DSubsystem::s_batch;
 
-	void Renderer2DSystem::beginFrame()
+	void Renderer2DSubsystem::beginFrame()
 	{
 		s_batch.clear();
 	}
 
-	void Renderer2DSystem::endFrame()
+	void Renderer2DSubsystem::endFrame()
 	{
 		Camera2D_ConstPtr camera = s_camera.lock();
 		s_batch.render(camera);
 	}
 
-	glm::vec2 Renderer2DSystem::getMousePosition()
+	glm::vec2 Renderer2DSubsystem::getMousePosition()
 	{
 		Camera2D_ConstPtr camera = s_camera.lock();
 
 		if (camera == nullptr)
 		{
-			PK_LOG_ERROR("Trying to get mouse position in camera space, but there is no camera set in Renderer2DSystem.", "Pekan");
+			PK_LOG_ERROR("Trying to get mouse position in camera space, but there is no camera set in Renderer2DSubsystem.", "Pekan");
 			return { -1.0f, -1.0f };
 		}
 
@@ -60,7 +60,7 @@ namespace Renderer2D
 		return mousePosWorld;
 	}
 
-	bool Renderer2DSystem::init()
+	bool Renderer2DSubsystem::init()
 	{
 		preprocessPkshadFiles();
 		s_batch.create();
@@ -68,17 +68,17 @@ namespace Renderer2D
 		return true;
 	}
 
-	void Renderer2DSystem::exit()
+	void Renderer2DSubsystem::exit()
 	{
 		s_batch.destroy();
 	}
 
-	ISubsystem* Renderer2DSystem::getParent()
+	ISubsystem* Renderer2DSubsystem::getParent()
 	{
-		return GraphicsSystem::getInstance();
+		return GraphicsSubsystem::getInstance();
 	}
 
-	void Renderer2DSystem::submitForRendering(const Shape& shape)
+	void Renderer2DSubsystem::submitForRendering(const Shape& shape)
 	{
 		// Add shape to batch.
 		// If it couldn't be added, this means that the batch is full,
@@ -97,7 +97,7 @@ namespace Renderer2D
 		}
 	}
 
-	void Renderer2DSystem::submitForRendering(const Sprite& sprite)
+	void Renderer2DSubsystem::submitForRendering(const Sprite& sprite)
 	{
 		// Add sprite to batch.
 		// If it couldn't be added, this means that the batch is full,

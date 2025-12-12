@@ -2,7 +2,7 @@
 
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 
 #define VERTEX_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_VertexShader.glsl"
 #define FRAGMENT_SHADER_FILEPATH PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Line_SolidColor_FragmentShader.glsl"
@@ -47,7 +47,7 @@ namespace Renderer2D
 	void Line::update()
 	{
 		// Get current camera
-		Camera2D_ConstPtr camera = Renderer2DSystem::getCamera();
+		Camera2D_ConstPtr camera = Renderer2DSubsystem::getCamera();
 		if (camera != nullptr)
 		{
 			// Set shader's view projection matrix uniform to camera's transform

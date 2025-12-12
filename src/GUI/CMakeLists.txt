@@ -3,8 +3,8 @@ project(GUI)
 
 # Add a static library GUI, compiling the following source files
 add_library(GUI STATIC
-    GUISystem.h
-    GUISystem.cpp
+    GUISubsystem.h
+    GUISubsystem.cpp
     GUIWindow.h
     GUIWindow.cpp
     Widgets/Widget.h

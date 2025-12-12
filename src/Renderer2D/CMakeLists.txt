@@ -5,10 +5,10 @@ option(PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING "Enable orientation checking 
 
 # Add a static library Renderer2D, compiling the following source files
 add_library(Renderer2D STATIC
-    Renderer2DSystem.h
-    Renderer2DSystem.cpp
-    Renderer2DSystem_ECS.h
-    Renderer2DSystem_ECS.cpp
+    Renderer2DSubsystem.h
+    Renderer2DSubsystem.cpp
+    RenderSystem2D.h
+    RenderSystem2D.cpp
     Utils2D.h
     Utils2D.cpp
     RenderBatch2D.h

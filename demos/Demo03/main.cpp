@@ -1,4 +1,4 @@
-#include "GraphicsSystem.h"
+#include "GraphicsSubsystem.h"
 
 #include "PekanLogger.h"
 

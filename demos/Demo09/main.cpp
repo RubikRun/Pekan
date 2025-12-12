@@ -1,5 +1,5 @@
-#include "GraphicsSystem.h"
-#include "GUISystem.h"
+#include "GraphicsSubsystem.h"
+#include "GUISubsystem.h"
 
 #include "PekanLogger.h"
 

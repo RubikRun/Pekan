@@ -1,7 +1,7 @@
 #include "Demo04_Scene.h"
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 
 #include <glm/gtc/constants.hpp>
 constexpr float PI = glm::pi<float>();
@@ -249,7 +249,7 @@ namespace Demo
 
     void Demo04_Scene::render() const
     {
-        Renderer2DSystem::beginFrame();
+        Renderer2DSubsystem::beginFrame();
 
         // Clear background color
         if (m_guiWindow != nullptr)
@@ -271,7 +271,7 @@ namespace Demo
             m_polygon2.render();
         }
 
-        Renderer2DSystem::endFrame();
+        Renderer2DSubsystem::endFrame();
     }
 
     void Demo04_Scene::exit()

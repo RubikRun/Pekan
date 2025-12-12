@@ -8,20 +8,20 @@ namespace Graphics
 {
 
 // Use this macro in your application's main function to include the Graphics subsystem of Pekan
-#define PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS Pekan::Graphics::GraphicsSystem::registerSubsystem()
+#define PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS Pekan::Graphics::GraphicsSubsystem::registerSubsystem()
 
-	class GraphicsSystem : public ISubsystem
+	class GraphicsSubsystem : public ISubsystem
 	{
 	public:
 
 		std::string getSubsystemName() const override { return "GUI"; }
 
-		// Registers GraphicsSystem as a subsystem in Pekan's SubsystemManager,
+		// Registers GraphicsSubsystem as a subsystem in Pekan's SubsystemManager,
 		// so that it's automatically initialized and exited.
 		static void registerSubsystem();
 
-		// Returns a pointer to the global GraphicsSystem instance
-		static GraphicsSystem* getInstance();
+		// Returns a pointer to the global GraphicsSubsystem instance
+		static GraphicsSubsystem* getInstance();
 
 		// Loads OpenGL function pointers
 		static bool loadOpenGL();

@@ -3,7 +3,7 @@
 #include "Utils/RandomizationUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 #include "Image.h"
 
 #include <algorithm>
@@ -118,7 +118,7 @@ namespace Demo
 
 	void Demo08_Scene::render() const
 	{
-		Renderer2DSystem::beginFrame();
+		Renderer2DSubsystem::beginFrame();
 		RenderCommands::clear();
 
 		for (size_t i = 0; i < m_spritesCount; i++)
@@ -128,7 +128,7 @@ namespace Demo
 		m_centerSquare.render();
 		m_animSprite.render();
 
-		Renderer2DSystem::endFrame();
+		Renderer2DSubsystem::endFrame();
 	}
 
 	void Demo08_Scene::exit()
@@ -149,7 +149,7 @@ namespace Demo
 		m_camera = std::make_shared<Camera2D>();
 		m_camera->create(windowSize.x, windowSize.y);
 
-		Renderer2DSystem::setCamera(m_camera);
+		Renderer2DSubsystem::setCamera(m_camera);
 		PekanTools::enableCameraController2D(m_camera);
 		PekanTools::setCameraController2DZoomSpeed(1.1f);
 	}
@@ -212,7 +212,7 @@ namespace Demo
 	void Demo08_Scene::updateSprites(float dt)
 	{
 		// Get mouse position in world space
-		const glm::vec2 mousePos = Renderer2DSystem::getMousePosition();
+		const glm::vec2 mousePos = Renderer2DSubsystem::getMousePosition();
 		// Get mouse strength parameter from GUI
 		const float mouseStrength = m_guiWindow->getMouseStrength();
 

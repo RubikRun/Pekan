@@ -4,7 +4,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Pekan { namespace GUI { class GUISystem; } }
+namespace Pekan { namespace GUI { class GUISubsystem; } }
 
 namespace Pekan
 {
@@ -29,7 +29,7 @@ namespace Pekan
 		// GUI is declared as a friend to PekanEngine
 		// because it needs private access to the window (to act on its underlying GLFW window)
 		// and we don't want other code to have this kind of access.
-		friend class Pekan::GUI::GUISystem;
+		friend class Pekan::GUI::GUISubsystem;
 
 	public:
 

@@ -9,9 +9,9 @@ namespace Renderer2D
 {
 
 // Use this macro in your application's main function to include the Renderer2D subsystem of Pekan
-#define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer2D::Renderer2DSystem::registerSubsystem()
+#define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer2D::Renderer2DSubsystem::registerSubsystem()
 
-    class Renderer2DSystem : public ISubsystem
+    class Renderer2DSubsystem : public ISubsystem
     {
 
         friend class Shape;
@@ -21,7 +21,7 @@ namespace Renderer2D
 
         std::string getSubsystemName() const override { return "Renderer2D"; }
 
-        // Registers Renderer2DSystem as a subsystem in Pekan's SubsystemManager,
+        // Registers Renderer2DSubsystem as a subsystem in Pekan's SubsystemManager,
         // so that it's automatically initialized and exited.
         static void registerSubsystem();
 

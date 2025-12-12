@@ -1193,3 +1193,27 @@ Okay, seems that's all.
 Looks good. Everything works as before but now we have cleaner ECS logic.
 Done.
 }
+
+----------
+12.12.2025
+----------
+
+{
+Let's look at TO-DO task 0073.
+
+Okay, looked at it, tried a few different things and ended up with this naming convention:
+From now on we'll suffix subsystem classes with "Subsystem" instead of "System"
+to differentiate them from ECS systems and to be extra clear that they are subsystems of Pekan.
+Renamed
+    Renderer2DSystem -> Renderer2DSubsystem
+    GraphicsSystem -> GraphicsSubsystem
+    GUISystem -> GUISubsystem
+Also, decided ro rename
+    Renderer2DSystem_ECS -> RenderSystem2D
+This better matches other 2D ECS systems like CameraSystem2D, TransformSystem2D, etc.
+and notice it's a "render" system, NOT a "renderer" system,
+I think that makes more sense AND maybe more importantly it's different from Renderer2DSubsystem.
+Looks good.
+
+Done.
+}

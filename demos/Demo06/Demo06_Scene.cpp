@@ -3,7 +3,7 @@
 #include "Utils/RandomizationUtils.h"
 #include "PekanTools.h"
 #include "RenderCommands.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 #include "PostProcessor.h"
 #include "PekanApplication.h"
 #include "ShaderPreprocessor.h"
@@ -179,7 +179,7 @@ namespace Demo
 	void Demo06_Scene::render() const
 	{
 		PostProcessor::beginFrame();
-		Renderer2DSystem::beginFrame();
+		Renderer2DSubsystem::beginFrame();
 		RenderCommands::clear();
 
 		if (m_guiWindow->isEnabledRectangles())
@@ -232,7 +232,7 @@ namespace Demo
 
 		m_centerSquare.render();
 
-		Renderer2DSystem::endFrame();
+		Renderer2DSubsystem::endFrame();
 		PostProcessor::endFrame();
 	}
 
@@ -289,7 +289,7 @@ namespace Demo
 		m_cameraSecond->create(m_bbox.size.x, m_bbox.size.y);
 		m_cameraSecond->setPosition(m_bbox.center);
 
-		Renderer2DSystem::setCamera(m_cameraFirst);
+		Renderer2DSubsystem::setCamera(m_cameraFirst);
 		PekanTools::enableCameraController2D(m_cameraFirst);
 		PekanTools::setCameraController2DZoomSpeed(1.1f);
 	}
@@ -603,12 +603,12 @@ namespace Demo
 			m_currentCameraIdx = (m_currentCameraIdx + 1) % 2;
 			if (m_currentCameraIdx == 0)
 			{
-				Renderer2DSystem::setCamera(m_cameraFirst);
+				Renderer2DSubsystem::setCamera(m_cameraFirst);
 				PekanTools::enableCameraController2D(m_cameraFirst);
 			}
 			else
 			{
-				Renderer2DSystem::setCamera(m_cameraSecond);
+				Renderer2DSubsystem::setCamera(m_cameraSecond);
 				PekanTools::enableCameraController2D(m_cameraSecond);
 			}
 			return true;

@@ -1,4 +1,4 @@
-#include "GraphicsSystem.h"
+#include "GraphicsSubsystem.h"
 
 #include "PekanApplication.h"
 #include "SubsystemManager.h"
@@ -18,19 +18,19 @@ namespace Graphics
 	static void enableOpenGLDebugOutput();
 #endif
 
-	static GraphicsSystem g_graphicsSystem;
+	static GraphicsSubsystem g_graphicsSystem;
 
-	void GraphicsSystem::registerSubsystem()
+	void GraphicsSubsystem::registerSubsystem()
 	{
 		SubsystemManager::registerSubsystem(&g_graphicsSystem);
 	}
 
-	GraphicsSystem* GraphicsSystem::getInstance()
+	GraphicsSubsystem* GraphicsSubsystem::getInstance()
 	{
 		return &g_graphicsSystem;
 	}
 
-	bool GraphicsSystem::loadOpenGL()
+	bool GraphicsSubsystem::loadOpenGL()
 	{
 		// Load OpenGL function pointers with GLAD
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -52,7 +52,7 @@ namespace Graphics
 		return true;
 	}
 
-	bool GraphicsSystem::init()
+	bool GraphicsSubsystem::init()
 	{
 		if (!loadOpenGL())
 		{
@@ -88,7 +88,7 @@ namespace Graphics
 		return true;
 	}
 
-	void GraphicsSystem::exit()
+	void GraphicsSubsystem::exit()
 	{}
 
 #if PK_OPENGL_VERSION_MAJOR >= 4 && PK_OPENGL_VERSION_MINOR >= 3

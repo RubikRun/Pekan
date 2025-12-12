@@ -18,7 +18,7 @@ namespace Renderer2D
 		void create(const Graphics::Texture2D_ConstPtr& texture, float width, float height);
 		void destroy();
 
-		// Submits sprite for rendering in Renderer2DSystem.
+		// Submits sprite for rendering in Renderer2DSubsystem.
 		// Actual rendering might happen at a later stage.
 		void render() const;
 

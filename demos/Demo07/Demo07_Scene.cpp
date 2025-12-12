@@ -6,7 +6,7 @@
 #include "RenderState.h"
 #include "PekanEngine.h"
 #include "PekanTools.h"
-#include "Renderer2DSystem.h"
+#include "Renderer2DSubsystem.h"
 
 using namespace Pekan;
 using namespace Pekan::Graphics;
@@ -92,7 +92,7 @@ namespace Demo
 
 	void Demo07_Scene::render() const
 	{
-		Renderer2DSystem::beginFrame();
+		Renderer2DSubsystem::beginFrame();
 
 		RenderCommands::clear();
 		m_rectangle.render();
@@ -106,7 +106,7 @@ namespace Demo
 			csLine.render();
 		}
 
-		Renderer2DSystem::endFrame();
+		Renderer2DSubsystem::endFrame();
 	}
 
 	void Demo07_Scene::exit()
@@ -127,7 +127,7 @@ namespace Demo
 	{
 		m_camera = std::make_shared<Camera2D>();
 		m_camera->create(CAMERA_SCALE);
-		Renderer2DSystem::setCamera(m_camera);
+		Renderer2DSubsystem::setCamera(m_camera);
 		PekanTools::enableCameraController2D(m_camera);
 	}
 
