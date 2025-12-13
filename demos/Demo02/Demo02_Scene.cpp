@@ -13,8 +13,8 @@ using Pekan::PekanEngine;
 
 #define PI 3.14159265359f
 
-constexpr char* const vertexShaderFilePath = "resources/02_vertex_shader.glsl";
-constexpr char* const fragmentShaderFilePath = "resources/02_fragment_shader.glsl";
+constexpr const char* const vertexShaderFilePath = "resources/02_vertex_shader.glsl";
+constexpr const char* const fragmentShaderFilePath = "resources/02_fragment_shader.glsl";
 
 constexpr float COLOR_DULLNESS = 0.9f;
 

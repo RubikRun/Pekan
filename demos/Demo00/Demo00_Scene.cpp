@@ -2,8 +2,8 @@
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
 
-constexpr char* const vertexShaderFilePath = "resources/00_vertex_shader.glsl";
-constexpr char* const fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
+constexpr const char* const vertexShaderFilePath = "resources/00_vertex_shader.glsl";
+constexpr const char* const fragmentShaderFilePath = "resources/00_fragment_shader.glsl";
 
 using namespace Pekan::Graphics;
 

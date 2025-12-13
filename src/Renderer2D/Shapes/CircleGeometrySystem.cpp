@@ -50,12 +50,13 @@ namespace Renderer2D
         const std::vector<glm::vec2> localVertexPositions = getLocalVertexPositions(geometry);
 
         // Get world vertex positions using local vertex positions and transform
+        VerticesAttributeView attributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset };
         Utils2D::getWorldVertexPositions
         (
             registry,
             localVertexPositions.data(), localVertexPositions.size(),
             transform,
-            VerticesAttributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset }
+            attributeView
         );
 
         // Generate triangle fan indices in the indices array

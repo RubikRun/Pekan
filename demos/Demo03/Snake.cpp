@@ -1,8 +1,8 @@
 #include "Snake.h"
 #include "Utils/FileUtils.h"
 
-constexpr char* const vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
-constexpr char* const fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
+constexpr const char* const vertexShaderFilePath = "resources/03_snake_vertexShader.glsl";
+constexpr const char* const fragmentShaderFilePath = "resources/03_snake_fragmentShader.glsl";
 constexpr float THICKNESS = 0.05f;
 constexpr float INITIAL_POSITION_X = 0.5f;
 constexpr float INITIAL_POSITION_Y = 0.5f;

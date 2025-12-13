@@ -1217,3 +1217,75 @@ Looks good.
 
 Done.
 }
+
+----------
+13.12.2025
+----------
+
+{
+Let's look at TO-DO task 0079.
+
+Changed this line in CMakeLists.txt
+    set(CMAKE_CXX_STANDARD 17)
+to
+    set(CMAKE_CXX_STANDARD 20)
+Now all projects in our solution will use C++ 20.
+
+And now that we have C++ 20 we can use designated initializers for this line:
+    static constexpr CameraComponent2D g_defaultCamera = getDefaultCamera();
+in
+    CameraSystem2D.cpp
+We can remove the getDefaultCamera() function and instead initialize g_defaultCamera like this:
+    static constexpr CameraComponent2D g_defaultCamera =
+    {
+        .size = { 2.0f, 2.0f },
+        .position = { 0.0f, 0.0f },
+        .zoomLevel = 1.0f
+    };
+Did that. Looks good.
+
+There are some build errors now due to the new C++ version.
+
+Most notably constant strings that we define in a lot of places like this
+    constexpr char* const vertexShaderFilePath = "resources/02_vertex_shader.glsl";
+are a bit problematic, because "const" is after "*" which means that the pointer itself is const,
+NOT the string that it points to, but a compile-time string like this HAS to be const,
+so basically we need to move this "const" before the "*".
+The pointer itself will still be const because the whole thing is constexpr.
+So at the end we get this:
+    constexpr const char* vertexShaderFilePath = "resources/02_vertex_shader.glsl";
+
+Another build error that I had to fix was in a few places that had code like this:
+    Utils2D::getWorldVertexPositions
+    (
+        registry,
+        localVertexPositions.data(), localVertexPositions.size(),
+        transform,
+        VerticesAttributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset }
+    );
+C++ 20 is complaining that this
+    VerticesAttributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset }
+needs to be an lvalue because it's a non-const reference parameter.
+Makes sense, although in our context this VerticesAttributeView is only a convenience struct,
+what we really need to pass are these:
+    vertices,
+    verticesCount,
+    vertexSize,
+    positionAttributeOffset
+and they ARE already lvalues, but still, we need their wrapper VerticesAttributeView to also be an lvalue.
+Apparently C++ 17 allowed you to have a non-const reference to an rvalue but C++ 20 doesn't.
+That's fine, we'll just create an lvalue, like this:
+    VerticesAttributeView attributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset };
+    Utils2D::getWorldVertexPositions
+    (
+        registry,
+        localVertexPositions.data(), localVertexPositions.size(),
+        transform,
+        attributeView
+    );
+The convenience of VerticesAttributeView is almost gone now, but I'll still keep it around.
+
+That's it.
+Build works now, and we use designated initializers to initialize g_defaultCamera in CameraSystem2D.cpp.
+Done.
+}

@@ -9,7 +9,7 @@ namespace Demo
 
 	constexpr float CAMERA_SIZE = 10.0f;
 
-	constexpr char* const SHAPE_TYPE_NAMES[6] =
+	constexpr const char* const SHAPE_TYPE_NAMES[6] =
 	{
 		"Rectangle",
 		"Circle",

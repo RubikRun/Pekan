@@ -7,8 +7,8 @@ using Pekan::PekanEngine;
 
 #define PI 3.14159265359f
 
-constexpr char* const vertexShaderFilePath = "resources/01_vertex_shader.glsl";
-constexpr char* const fragmentShaderFilePath = "resources/01_fragment_shader.glsl";
+constexpr const char* const vertexShaderFilePath = "resources/01_vertex_shader.glsl";
+constexpr const char* const fragmentShaderFilePath = "resources/01_fragment_shader.glsl";
 
 using namespace Pekan::Graphics;
 

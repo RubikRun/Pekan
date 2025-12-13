@@ -6,7 +6,7 @@
 #include <glm/gtc/constants.hpp>
 constexpr float PI = glm::pi<float>();
 
-constexpr char* const VERTEX_SHADER_FILEPATHS[] =
+constexpr const char* const VERTEX_SHADER_FILEPATHS[] =
 {
     "resources/04_00_vertex_shader.glsl",
     "resources/04_01_vertex_shader.glsl",
@@ -14,7 +14,7 @@ constexpr char* const VERTEX_SHADER_FILEPATHS[] =
     "resources/04_03_vertex_shader.glsl"
 };
 
-constexpr char* const FRAGMENT_SHADER_FILEPATHS[] =
+constexpr const char* const FRAGMENT_SHADER_FILEPATHS[] =
 {
     "resources/04_00_fragment_shader.glsl",
     "resources/04_01_fragment_shader.glsl",
@@ -22,8 +22,8 @@ constexpr char* const FRAGMENT_SHADER_FILEPATHS[] =
     "resources/04_03_fragment_shader.glsl"
 };
 
-constexpr char* const IMAGE0_FILEPATH = "resources/tmnt.png";
-constexpr char* const IMAGE1_FILEPATH = "resources/powerpuff.png";
+constexpr const char* const IMAGE0_FILEPATH = "resources/tmnt.png";
+constexpr const char* const IMAGE1_FILEPATH = "resources/powerpuff.png";
 
 constexpr int POLYGON1_VERTICES_COUNT = 7;
 constexpr float POLYGON1_RADIUS = 0.2f;

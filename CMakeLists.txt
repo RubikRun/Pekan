@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.6...3.31)
 
 option(WITH_DEMO_PROJECTS "When this option is enabled, demo projects are included together with Pekan." ON)
 
-# Require C++ 17
-set(CMAKE_CXX_STANDARD 17)
+# Require C++ 20
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set avaiable configurations to Debug and Release
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")

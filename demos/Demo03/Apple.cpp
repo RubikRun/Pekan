@@ -4,8 +4,8 @@
 #include "Utils/FileUtils.h"
 #include "Utils/RandomizationUtils.h"
 
-constexpr char* const vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
-constexpr char* const fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
+constexpr const char* const vertexShaderFilePath = "resources/03_apple_vertexShader.glsl";
+constexpr const char* const fragmentShaderFilePath = "resources/03_apple_fragmentShader.glsl";
 constexpr float APPLE_SIZE = 0.03f;
 
 using Pekan::PekanEngine;

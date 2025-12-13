@@ -29,12 +29,13 @@ namespace Renderer2D
 		const glm::vec2 verticesLocal[3] = { geometry.pointA, geometry.pointB, geometry.pointC };
 
         // Get world vertex positions using local vertex positions and transform
+        VerticesAttributeView attributeView{ vertices, 3, vertexSize, positionAttributeOffset };
         Utils2D::getWorldVertexPositions
         (
             registry,
             verticesLocal, 3,
             transform,
-            VerticesAttributeView{ vertices, 3, vertexSize, positionAttributeOffset }
+            attributeView
         );
 	}
 

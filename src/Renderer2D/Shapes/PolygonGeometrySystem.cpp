@@ -79,12 +79,13 @@ namespace Renderer2D
         generateIndices(localVertexPositions, indices);
 
         // Get world vertex positions using local vertex positions and entity's transform
+        VerticesAttributeView attributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset };
         Utils2D::getWorldVertexPositions
         (
             registry,
             localVertexPositions.data(), localVertexPositions.size(),
             transform,
-            VerticesAttributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset }
+            attributeView
         );
     }
 

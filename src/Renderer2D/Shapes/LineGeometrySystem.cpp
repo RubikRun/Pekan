@@ -59,12 +59,13 @@ namespace Renderer2D
         getVerticesLocal(geometry, verticesLocal);
 
         // Get world vertex positions using local vertex positions and transform
+        VerticesAttributeView attributeView{ vertices, 4, vertexSize, positionAttributeOffset };
         Utils2D::getWorldVertexPositions
         (
             registry,
             verticesLocal, 4,
             transform,
-            VerticesAttributeView{ vertices, 4, vertexSize, positionAttributeOffset }
+            attributeView
         );
 	}
 

@@ -42,11 +42,11 @@ namespace Demo
 		bool m_hideFourthFaceCache = false;
 
 		// Transform matrices
-		glm::mat4 m_modelMatrix;
-		glm::mat4 m_viewMatrix;
-		glm::mat4 m_projMatrix;
+		glm::mat4 m_modelMatrix = glm::mat4(1.0f);
+		glm::mat4 m_viewMatrix = glm::mat4(1.0f);
+		glm::mat4 m_projMatrix = glm::mat4(1.0f);
 
-		glm::ivec2 m_resolution;
+		glm::ivec2 m_resolution = glm::ivec2(1280, 720);
 
 		std::shared_ptr<const Demo02_GUIWindow> m_guiWindow;
 	};

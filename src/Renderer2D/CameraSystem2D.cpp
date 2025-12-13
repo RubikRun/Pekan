@@ -9,18 +9,13 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    // Returns a default CameraComponent2D instance
-    static constexpr CameraComponent2D getDefaultCamera()
-    {
-        CameraComponent2D camera;
-        camera.size = { 2.0f, 2.0f };
-        camera.position = { 0.0f, 0.0f };
-        camera.zoomLevel = 1.0f;
-        return camera;
-    }
-
     // A default CameraComponent2D instance to use if there is no primary camera
-    static constexpr CameraComponent2D g_defaultCamera = getDefaultCamera();
+    static constexpr CameraComponent2D g_defaultCamera =
+    {
+        .size = { 2.0f, 2.0f },
+        .position = { 0.0f, 0.0f },
+        .zoomLevel = 1.0f
+    };
 
     ////////////////////////////////////////////////////////////////////////////////////////
     // CameraSystem2D implementation

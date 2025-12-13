@@ -238,7 +238,7 @@
                         For example getters and setters of a field of a single instance of a component.
                         If really needed those should be in the component struct itself.
 
-0079 06.11.2025 (TODO): Switch to C++ 20 and remove getDefaultCamera() function from CameraSystem2D.cpp,
+0079 06.11.2025 (DONE): Switch to C++ 20 and remove getDefaultCamera() function from CameraSystem2D.cpp,
                         instead use designated initializers for initializing g_defaultCamera
 
 0080 06.11.2025 (TODO): Replace comments longer than 3-4 lines with a note, like (*1), (*2), etc. as done in CameraController2D.cpp
