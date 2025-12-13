@@ -12,7 +12,7 @@ namespace Graphics
 
     // A class used for preprocessing .pkshad* files into .glsl files
     //
-    // * .pkshad is a custom Pekan format for shaders
+    // * .pkshad is a custom Pekan file format for shaders
     class ShaderPreprocessor
     {
     public:

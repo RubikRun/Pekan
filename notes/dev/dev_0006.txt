@@ -1289,3 +1289,10 @@ That's it.
 Build works now, and we use designated initializers to initialize g_defaultCamera in CameraSystem2D.cpp.
 Done.
 }
+
+{
+Looked at TO-DO task 0080,
+but couldn't find any more appropriate places in code where a separate note would make things clearer.
+Fixed some minor things though, in comments all around the code base.
+Done.
+}

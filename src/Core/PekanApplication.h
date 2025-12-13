@@ -29,8 +29,7 @@ namespace Pekan
 
 		// Flag indicating if application should use VSync,
 		// meaning to target FPS equal to monitor's refresh rate.
-		//
-		// NOTE: Has effect only if there is no target FPS set
+		// (Has effect only if there is no target FPS set)
 		bool useVSync = true;
 
 		// Number of samples per pixel to be used for multisampling
@@ -41,8 +40,7 @@ namespace Pekan
 	class PekanApplication
 	{
 		// We need class Window as a friend class
-		// because Window needs to send events to PekanApplication
-		// using the handleKeyEvent(), handleMouseMovedEvent(), etc. functions,
+		// because Window needs to send events to PekanApplication using the handleKeyEvent(), handleMouseMovedEvent(), etc. functions,
 		// and these functions are private because we don't want anyone else to be able to call them.
 		friend class Window;
 
@@ -107,9 +105,9 @@ namespace Pekan
 
 		// Handles the event queue.
 		// The event queue is a queue of left-over events that were not handled by any layer or any event listener.
+		// NOTE: Make sure to pop all events from the queue, otherwise they will keep piling up.
 		//
 		// Can be implemented by derived classes with specific logic of handling the events from the event queue.
-		// NOTE: Make sure to pop all events from the queue, otherwise they will keep piling up.
 		virtual void handleEventQueue() { while (!m_eventQueue.empty()) { m_eventQueue.pop(); } }
 
 		// Updates all registered recurring callbacks

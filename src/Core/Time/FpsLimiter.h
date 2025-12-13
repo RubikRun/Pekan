@@ -19,13 +19,13 @@
 // the exact amount needed so that the current frame takes 1 / target FPS.
 //
 // Which one to use?
-// - Sleep Compensate has lower CPU usage (like 10x lower),
+// - Sleep Compensate has lower CPU usage,
 //   but it doesn't hit the target FPS perfectly - resulting FPS might be different from target FPS by 1-2 frames.
 //   There is also sometimes a little "stutter" where 2 frames are rendered immediately one after the other,
 //   but it's very rarely noticable.
-// - Wait Blocking can be used for a perfectly smooth motion and hitting the target FPS perfectly at the cost of higher CPU usage (like 10x higher)
+// - Wait Blocking can be used for a perfectly smooth motion and hitting the target FPS perfectly at the cost of higher CPU usage
 //
-// Toggle these macros on/off to choose between the 2 implementations of FpsLimiter - Sleep Compensate and Sleep Loop
+// Toggle these macros on/off to choose between the 2 implementations of FpsLimiter - Sleep Compensate and Wait Blocking.
 #define PEKAN_FPS_LIMITER_IMPL_SLEEP_COMPENSATE 0
 #define PEKAN_FPS_LIMITER_IMPL_WAIT_BLOCKING 1
 
