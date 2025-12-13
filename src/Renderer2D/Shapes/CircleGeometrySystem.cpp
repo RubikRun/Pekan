@@ -38,9 +38,9 @@ namespace Renderer2D
         std::vector<unsigned>& indices
     )
     {
-        PK_ASSERT(registry.valid(entity), "Trying to get vertex positions of an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Trying to get vertex positions of an entity that doesn't have a CircleGeometryComponent component.", "Pekan");
-        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to get vertex positions of an entity that doesn't have a TransformComponent2D component.", "Pekan");
+        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a CircleGeometryComponent.", "Pekan");
+        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot get vertex positions of an entity that doesn't have a TransformComponent2D.", "Pekan");
 
         // Get entity's geometry and transform components
         const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);

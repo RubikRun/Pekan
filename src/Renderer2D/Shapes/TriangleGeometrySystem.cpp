@@ -17,9 +17,9 @@ namespace Renderer2D
         void* vertices, int vertexSize, int positionAttributeOffset
     )
 	{
-		PK_ASSERT(registry.valid(entity), "Trying to get vertex positions of an entity that doesn't exist.", "Pekan");
-		PK_ASSERT(registry.all_of<TriangleGeometryComponent>(entity), "Trying to get vertex positions of an entity that doesn't have a TriangleGeometryComponent component.", "Pekan");
-		PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to get vertex positions of an entity that doesn't have a TransformComponent2D component.", "Pekan");
+		PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+		PK_ASSERT(registry.all_of<TriangleGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a TriangleGeometryComponent.", "Pekan");
+		PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot get vertex positions of an entity that doesn't have a TransformComponent2D.", "Pekan");
 
 		// Get entity's geometry and transform components
 		const TriangleGeometryComponent& geometry = registry.get<TriangleGeometryComponent>(entity);

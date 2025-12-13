@@ -143,7 +143,7 @@ namespace Renderer2D
     )
     {
         // Get material component from entity
-        PK_ASSERT(registry.all_of<SolidColorMaterialComponent>(entity), "Trying to get vertex colors of an entity that doesn't have a SolidColorMaterialComponent component.", "Pekan");
+        PK_ASSERT(registry.all_of<SolidColorMaterialComponent>(entity), "Cannot get vertex colors of an entity that doesn't have a SolidColorMaterialComponent.", "Pekan");
         const SolidColorMaterialComponent& material = registry.get<SolidColorMaterialComponent>(entity);
 
         // Get vertex colors using material

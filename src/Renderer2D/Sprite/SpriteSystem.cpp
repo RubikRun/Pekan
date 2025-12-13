@@ -9,7 +9,6 @@
 #include "RenderObject.h"
 #include "Utils/FileUtils.h"
 #include "Camera2D.h"
-#include "Renderer2DSubsystem.h"
 #include "PekanLogger.h"
 
 using namespace Pekan::Graphics;
@@ -55,7 +54,7 @@ namespace Renderer2D
         (
             sprite.textureCoordinatesMin.x < sprite.textureCoordinatesMax.x
             && sprite.textureCoordinatesMin.y < sprite.textureCoordinatesMax.y,
-            "Trying to render an entity with a SpriteComponent that has invalid texture coordinates.", "Pekan"
+            "Cannot render an entity with a SpriteComponent because it has invalid texture coordinates.", "Pekan"
         );
         verticesWorld[0].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMin.y };
         verticesWorld[1].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMin.y };
@@ -124,9 +123,9 @@ namespace Renderer2D
 
 	void SpriteSystem::render(const entt::registry& registry, entt::entity entity)
 	{
-        PK_ASSERT(registry.valid(entity), "Trying to render an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Trying to render an entity that doesn't have a SpriteComponent component.", "Pekan");
-        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to render an entity that doesn't have a TransformComponent2D component.", "Pekan");
+        PK_ASSERT(registry.valid(entity), "Cannot render an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Cannot render an entity that doesn't have a SpriteComponent.", "Pekan");
+        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot render an entity that doesn't have a TransformComponent2D.", "Pekan");
 
 		// Get entity's sprite and transform components
 		const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);

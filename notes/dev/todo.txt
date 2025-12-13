@@ -232,7 +232,7 @@
 0076 28.10.2025 (TODO): Think about using a 1D texture for ECS shapes, for example in
                             renderRectangleWithSolidColorMaterial()    (Renderer2DSystem_ECS.cpp)
 
-0077 03.11.2025 (TODO): Better assert messages in *System.cpp files in Renderer2D
+0077 03.11.2025 (DONE): Better assert messages in *System.cpp files in Renderer2D
 
 0078 03.11.2025 (DONE): Remove all single-instance APIs from all ECS systems.
                         For example getters and setters of a field of a single instance of a component.

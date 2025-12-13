@@ -17,9 +17,9 @@ namespace Renderer2D
         void* vertices, int vertexSize, int positionAttributeOffset
     )
     {
-        PK_ASSERT(registry.valid(entity), "Trying to get vertex positions of an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<LineComponent>(entity), "Trying to get vertex positions of an entity that doesn't have a LineComponent component.", "Pekan");
-        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to get vertex positions of an entity that doesn't have a TransformComponent2D component.", "Pekan");
+        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<LineComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a LineComponent.", "Pekan");
+        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot get vertex positions of an entity that doesn't have a TransformComponent2D.", "Pekan");
 
         // Get entity's line and transform components
         const LineComponent& line = registry.get<LineComponent>(entity);

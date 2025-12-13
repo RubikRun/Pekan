@@ -31,7 +31,7 @@ namespace Renderer2D
             // Triangulate polygon, generating indices
             if (!MathUtils::triangulatePolygon(localVertexPositions, indices))
             {
-                PK_LOG_ERROR("Failed to triangulate polygon. Possibly self-intersecting.", "Pekan");
+                PK_LOG_ERROR("Failed to triangulate polygon from PolygonGeometryComponent. Possibly self-intersecting.", "Pekan");
                 return;
             }
         }
@@ -51,9 +51,9 @@ namespace Renderer2D
         std::vector<unsigned>& indices
     )
     {
-        PK_ASSERT(registry.valid(entity), "Trying to get vertex positions of an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<PolygonGeometryComponent>(entity), "Trying to get vertex positions of an entity that doesn't have a PolygonGeometryComponent component.", "Pekan");
-        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to get vertex positions of an entity that doesn't have a TransformComponent2D component.", "Pekan");
+        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<PolygonGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a PolygonGeometryComponent.", "Pekan");
+        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot get vertex positions of an entity that doesn't have a TransformComponent2D.", "Pekan");
 
         // Get entity's geometry and transform components
         const PolygonGeometryComponent& geometry = registry.get<PolygonGeometryComponent>(entity);
@@ -62,13 +62,13 @@ namespace Renderer2D
         PK_ASSERT
         (
             geometry.vertexPositions.size() == verticesCount,
-            "Number of vertices in given vertices array does not match the number of vertices in the polygon geometry.", "Pekan"
+            "Number of vertices in given vertices array does not match the number of vertices in entity's PolygonGeometryComponent.", "Pekan"
         );
 
         // Ensure polygon has at least 3 vertices
         if (geometry.vertexPositions.size() < 3)
         {
-            PK_LOG_ERROR("Trying to get vertex positions for a polygon with less than 3 vertices.", "Pekan");
+            PK_LOG_ERROR("Cannot get vertex positions from a PolygonGeometryComponent with less than 3 vertices.", "Pekan");
             return;
         }
 

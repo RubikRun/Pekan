@@ -38,8 +38,8 @@ namespace Renderer2D
 
     glm::mat3 TransformSystem2D::getWorldMatrix(const entt::registry& registry, entt::entity entity)
     {
-        PK_ASSERT(registry.valid(entity), "Trying to get world matrix of an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Trying to get world matrix of an entity that doesn't have a TransformComponent2D component.", "Pekan");
+        PK_ASSERT(registry.valid(entity), "Cannot get world matrix of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot get world matrix of an entity that doesn't have a TransformComponent2D.", "Pekan");
 
         const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
 		return getWorldMatrix(registry, transform);
