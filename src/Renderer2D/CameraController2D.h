@@ -26,6 +26,10 @@ namespace Renderer2D
         // determining the amount of zoom to be applied per mouse scroll.
         void setZoomSpeed(float zoomSpeed) { m_zoomSpeed = zoomSpeed; }
 
+        // Sets camera controller's rotation speed,
+        // determining the amount of rotation, in radians, to be applied per mouse scroll when Alt key is held down.
+        void setRotationSpeed(float rotationSpeed) { m_rotationSpeed = rotationSpeed; }
+
     private: /* functions */
 
         // Initializes the camera controller for a given 2D scene.
@@ -43,6 +47,10 @@ namespace Renderer2D
         // Zoom speed of the camera controller.
         // Determines the amount of zoom to be applied per mouse scroll.
         float m_zoomSpeed = 1.1f;
+
+        // Rotation speed of the camera controller.
+        // Determines the amount of rotation, in radians, to be applied per mouse scroll when Alt key is held down.
+        float m_rotationSpeed = 0.03f;
 
         // Cached mouse position, in window space
         glm::vec2 m_mousePos = { -1.0f, -1.0f };

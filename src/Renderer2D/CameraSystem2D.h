@@ -16,9 +16,9 @@ namespace Renderer2D
     public:
 
         // Returns the primary camera from the given registry.
-		// If there are multiple primary cameras, returns the first one found.
+        // If there are multiple primary cameras, returns the first one found.
         // If there is no primary camera, returns the default one.
-		static const CameraComponent2D& getPrimaryCamera(const entt::registry& registry);
+        static const CameraComponent2D& getPrimaryCamera(const entt::registry& registry);
 
         // Returns the controllable camera from the given registry.
         // If there are multiple controllable cameras, returns the first one found.

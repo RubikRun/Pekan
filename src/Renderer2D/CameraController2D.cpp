@@ -53,7 +53,7 @@ namespace Renderer2D
         const glm::vec2 newMousePos = { event.getX(), event.getY() };
 
         // Check if left mouse button is held down for dragging
-        if (PekanEngine::getWindow().isMouseButtonPressed(MouseButton::Left))
+        if (PekanEngine::isMouseButtonPressed(MouseButton::Left))
         {
             // Calculate how much mouse has moved, in window space
             const glm::vec2 mouseDelta = newMousePos - m_mousePos;
@@ -61,6 +61,14 @@ namespace Renderer2D
             glm::vec2 worldDelta = camera->windowToWorldSize(mouseDelta);
             // Flip Y axis because window's Y axis points downwards, but world's Y axis points upwards
             worldDelta.y = -worldDelta.y;
+            // Rotate delta into world space
+            const float cosR = std::cos(camera->rotation);
+            const float sinR = std::sin(camera->rotation);
+            worldDelta =
+            {
+                worldDelta.x * cosR - worldDelta.y * sinR,
+                worldDelta.x * sinR + worldDelta.y * cosR
+            };
             // Move camera in opposite direction of mouse movement for intuitive panning
             camera->move(-worldDelta);
         }
@@ -85,19 +93,37 @@ namespace Renderer2D
             return false; // if there is no controllable camera, do nothing
         }
 
+        // Get scroll amount from the event (*1)
+        const float scrollAmount = event.getYOffset();
+
         // Get mouse position in world space before zooming
         const glm::vec2 mousePosWorldBefore = camera->windowToWorldPosition(m_mousePos);
 
-        // Get scroll amount from the event (*1)
-        const float scrollAmount = event.getYOffset();
-        // Apply zoom based on scroll amount
-        if (scrollAmount > 0.0f)
+        // If left alt key is pressed, scrolling rotates the camera
+        if (PekanEngine::isKeyPressed(KeyCode::KEY_LEFT_ALT))
         {
-            camera->zoomIn(m_zoomSpeed);
+            // Rotate clockwise/counter-clockwise based on whether scroll amount is positive/negative
+            if (scrollAmount > 0.0f)
+            {
+                camera->rotate(m_rotationSpeed);
+            }
+            else if (scrollAmount < 0.0f)
+            {
+                camera->rotate(-m_rotationSpeed);
+            }
         }
-        else if (scrollAmount < 0.0f)
+        // Otherwise, scrolling zooms the camera in/out
+        else
         {
-            camera->zoomOut(m_zoomSpeed);
+            // Zoom in/out based on whether scroll amount is positive/negative
+            if (scrollAmount > 0.0f)
+            {
+                camera->zoomIn(m_zoomSpeed);
+            }
+            else if (scrollAmount < 0.0f)
+            {
+                camera->zoomOut(m_zoomSpeed);
+            }
         }
 
         // Use the difference between mouse position in world space before zooming,

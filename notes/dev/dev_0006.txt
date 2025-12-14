@@ -1296,3 +1296,30 @@ but couldn't find any more appropriate places in code where a separate note woul
 Fixed some minor things though, in comments all around the code base.
 Done.
 }
+
+----------
+14.12.2025
+----------
+
+{
+Let's look at TO-DO task 0081.
+
+Yesterday I started work on this task, today I finished it.
+There is now a new field in CameraComponent2D
+    float rotation = 0.0f;
+that controls camera's rotation.
+Camera's rotation rotates the camera around its own center, as expected.
+The way the maths works is the following:
+- When going from world space to NDC we translate, rotate, scale
+- When going from NDC to world space we scale, rotate, translate
+Easier said than done, but that's basically it.
+Nothing more to say about the maths. It was not easy to implement, but the core idea is simple.
+
+Other than adding support for camera rotation I also added support for rotating the camera in CameraController2D.
+Users can now rotate a camera by holding down the Alt key and using the Mouse Scroll.
+Rotating is done around the mouse
+and, also, made sure that panning works as expected with a rotated camera.
+
+It works.
+Done.
+}

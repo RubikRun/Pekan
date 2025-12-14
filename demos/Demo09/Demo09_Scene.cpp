@@ -169,6 +169,9 @@ namespace Demo
 	{
 		entt::registry& registry = getRegistry();
 
+		static const float leftEdge = -registry.get<CameraComponent2D>(m_camera).size.x / 2.0f;
+		static const float rightEdge = registry.get<CameraComponent2D>(m_camera).size.x / 2.0f;
+
 		// Move turkey
 		{
 			static glm::vec2 velocity = glm::vec2(0.02f, 0.0f);
@@ -178,7 +181,7 @@ namespace Demo
 
 			const float posX = transform.position.x;
 			// Reverse velocity if entity reaches left or right edge of the camera view
-			if (posX < registry.get<CameraComponent2D>(m_camera).getLeftEdgeInWorldSpace() || posX > registry.get<CameraComponent2D>(m_camera).getRightEdgeInWorldSpace())
+			if (posX < leftEdge || posX > rightEdge)
 			{
 				velocity.x = -velocity.x;
 			}
@@ -192,7 +195,7 @@ namespace Demo
 
 			const float posX = transform.position.x;
 			// Reverse velocity if entity reaches left or right edge of the camera view
-			if (posX < registry.get<CameraComponent2D>(m_camera).getLeftEdgeInWorldSpace() || posX > registry.get<CameraComponent2D>(m_camera).getRightEdgeInWorldSpace())
+			if (posX < leftEdge || posX > rightEdge)
 			{
 				velocity.x = -velocity.x;
 			}
