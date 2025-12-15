@@ -22,7 +22,7 @@ namespace Renderer2D
 {
 
 	// Computes local vertex positions for a given sprite
-    static void getVerticesLocal(const SpriteComponent& sprite, glm::vec2* verticesLocal /* output array of 4 vec2's */)
+    static void getLocalVertexPositions(const SpriteComponent& sprite, glm::vec2* verticesLocal /* output array of 4 vec2's */)
     {
         verticesLocal[0] = glm::vec2(-sprite.width / 2.0f, -sprite.height / 2.0f);
         verticesLocal[1] = glm::vec2(sprite.width / 2.0f, -sprite.height / 2.0f);
@@ -36,18 +36,18 @@ namespace Renderer2D
         const entt::registry& registry,
         const SpriteComponent& sprite,
         const TransformComponent2D& transform,
-		SpriteVertex* verticesWorld    // output array of 4 SpriteVertex's
+		SpriteVertex* vertices    // output array of 4 SpriteVertex's
     )
     {
-        glm::vec2 verticesLocal[4];
-        getVerticesLocal(sprite, verticesLocal);
+        glm::vec2 localVertexPositions[4];
+        getLocalVertexPositions(sprite, localVertexPositions);
 
         const glm::mat3& worldMatrix = TransformSystem2D::getWorldMatrix(registry, transform);
         // Calculate world vertex positions by applying the world matrix to the local vertex positions
-        verticesWorld[0].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[0], 1.0f));
-        verticesWorld[1].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[1], 1.0f));
-        verticesWorld[2].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[2], 1.0f));
-        verticesWorld[3].position = glm::vec2(worldMatrix * glm::vec3(verticesLocal[3], 1.0f));
+        vertices[0].position = glm::vec2(worldMatrix * glm::vec3(localVertexPositions[0], 1.0f));
+        vertices[1].position = glm::vec2(worldMatrix * glm::vec3(localVertexPositions[1], 1.0f));
+        vertices[2].position = glm::vec2(worldMatrix * glm::vec3(localVertexPositions[2], 1.0f));
+        vertices[3].position = glm::vec2(worldMatrix * glm::vec3(localVertexPositions[3], 1.0f));
 
         // Set "textureCoordinates" attribute of each vertex
         PK_ASSERT
@@ -56,10 +56,41 @@ namespace Renderer2D
             && sprite.textureCoordinatesMin.y < sprite.textureCoordinatesMax.y,
             "Cannot render an entity with a SpriteComponent because it has invalid texture coordinates.", "Pekan"
         );
-        verticesWorld[0].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMin.y };
-        verticesWorld[1].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMin.y };
-        verticesWorld[2].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMax.y };
-        verticesWorld[3].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMax.y };
+        vertices[0].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMin.y };
+        vertices[1].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMin.y };
+        vertices[2].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMax.y };
+        vertices[3].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMax.y };
+    }
+
+    // Computes local vertices for a given sprite
+    static void getVerticesLocal
+    (
+        const entt::registry& registry,
+        const SpriteComponent& sprite,
+        SpriteVertex* vertices    // output array of 4 SpriteVertex's
+    )
+    {
+        // Get local vertex positions from sprite
+        glm::vec2 localVertexPositions[4];
+        getLocalVertexPositions(sprite, localVertexPositions);
+
+        // Set "position" attribute of each vertex to local vertex positions
+        vertices[0].position = localVertexPositions[0];
+        vertices[1].position = localVertexPositions[1];
+        vertices[2].position = localVertexPositions[2];
+        vertices[3].position = localVertexPositions[3];
+
+        // Set "textureCoordinates" attribute of each vertex
+        PK_ASSERT
+        (
+            sprite.textureCoordinatesMin.x < sprite.textureCoordinatesMax.x
+            && sprite.textureCoordinatesMin.y < sprite.textureCoordinatesMax.y,
+            "Cannot render an entity with a SpriteComponent because it has invalid texture coordinates.", "Pekan"
+        );
+        vertices[0].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMin.y };
+        vertices[1].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMin.y };
+        vertices[2].textureCoordinates = { sprite.textureCoordinatesMax.x, sprite.textureCoordinatesMax.y };
+        vertices[3].textureCoordinates = { sprite.textureCoordinatesMin.x, sprite.textureCoordinatesMax.y };
     }
 
     // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera component
@@ -79,13 +110,13 @@ namespace Renderer2D
         RenderObject& renderObject    // render object to create
     )
     {
-		// Get sprite's world vertices
-        SpriteVertex verticesWorld[4];
-        getVerticesWorld(registry, sprite, transform, verticesWorld);
-		// Create render object with sprite's world vertices
+		// Get sprite's vertices
+        SpriteVertex vertices[4];
+        getVerticesWorld(registry, sprite, transform, vertices);
+		// Create render object with sprite's vertices
         renderObject.create
         (
-            verticesWorld,
+            vertices,
             sizeof(SpriteVertex) * 4,
             {
                 { ShaderDataType::Float2, "position" },
@@ -110,34 +141,121 @@ namespace Renderer2D
         }
     }
 
-    void SpriteSystem::render(const entt::registry& registry)
+    // Creates a render object for a given sprite
+    static void createRenderObjectForSprite
+    (
+        const entt::registry& registry,
+        const SpriteComponent& sprite,
+        int textureSlot,              // texture slot to set in the shader uniform
+        RenderObject& renderObject    // render object to create
+    )
     {
-        // Get a view of all entities with sprite and 2D transform components
-        const auto view = registry.view<SpriteComponent, TransformComponent2D>();
-        // Render each such entity
-        for (entt::entity entity : view)
+        // Get sprite's world vertices
+        SpriteVertex vertices[4];
+        getVerticesLocal(registry, sprite, vertices);
+        // Create render object with sprite's vertices
+        renderObject.create
+        (
+            vertices,
+            sizeof(SpriteVertex) * 4,
+            {
+                { ShaderDataType::Float2, "position" },
+                { ShaderDataType::Float2, "textureCoordinates" }
+            },
+            BufferDataUsage::DynamicDraw,
+            FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
+            FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
+        );
+        // Set render object's index data for a sprite formed by two triangles
+        static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
+        renderObject.setIndexData(indices, sizeof(unsigned) * 6);
+
+        // Set render object's shader uniforms
         {
-            render(registry, entity);
+            Shader& shader = renderObject.getShader();
+            // Set view projection matrix uniform using the primary camera
+            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
+            setViewProjectionMatrixUniform(shader, camera);
+            // Set texture slot uniform
+            shader.setUniform1i("uTexture", textureSlot);
         }
     }
 
-	void SpriteSystem::render(const entt::registry& registry, entt::entity entity)
-	{
+    // Renders an entity with a sprite component
+    // @tparam HasTransform - A boolean parameter indicating if the entity has a transform component
+    template<bool HasTransform>
+    static void renderSprite(const entt::registry& registry, entt::entity entity);
+
+    template<>
+    static void renderSprite<true>(const entt::registry& registry, entt::entity entity)
+    {
         PK_ASSERT(registry.valid(entity), "Cannot render an entity that doesn't exist.", "Pekan");
         PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Cannot render an entity that doesn't have a SpriteComponent.", "Pekan");
         PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot render an entity that doesn't have a TransformComponent2D.", "Pekan");
 
-		// Get entity's sprite and transform components
-		const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
-		const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
-		// Create render object for the sprite
+        // Get entity's sprite and transform components
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
+        // Create render object for the sprite
         RenderObject renderObject;
-		createRenderObjectForSprite(registry, sprite, transform, 0, renderObject);
-		// Bind sprite's texture
+        createRenderObjectForSprite(registry, sprite, transform, 0, renderObject);
+        // Bind sprite's texture
         sprite.texture->bind(0);
-		// Render sprite's render object
+        // Render sprite's render object
         renderObject.render();
-	}
+    }
+
+    template<>
+    static void renderSprite<false>(const entt::registry& registry, entt::entity entity)
+    {
+        PK_ASSERT(registry.valid(entity), "Cannot render an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<SpriteComponent>(entity), "Cannot render an entity that doesn't have a SpriteComponent.", "Pekan");
+
+        // Get entity's sprite component
+        const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+        // Create render object for the sprite
+        RenderObject renderObject;
+        createRenderObjectForSprite(registry, sprite, 0, renderObject);
+        // Bind sprite's texture
+        sprite.texture->bind(0);
+        // Render sprite's render object
+        renderObject.render();
+    }
+
+    // Renders all sprites that have (or all sprites that don't have) a transform component
+    // @tparam HasTransform - A boolean parameter indicating if the entities have a transform component
+    template<bool HasTransform>
+    static void renderAllSprites(const entt::registry& registry);
+
+    template<>
+    static void renderAllSprites<true>(const entt::registry& registry)
+    {
+        // Get a view of all entities with a sprite component and a transform component
+        const auto view = registry.view<SpriteComponent, TransformComponent2D>();
+        // Render each such entity
+        for (entt::entity entity : view)
+        {
+            renderSprite<true>(registry, entity);
+        }
+    }
+
+    template<>
+    static void renderAllSprites<false>(const entt::registry& registry)
+    {
+        // Get a view of all entities with a sprite component but without a transform component
+        const auto view = registry.view<SpriteComponent>(entt::exclude<TransformComponent2D>);
+        // Render each such entity
+        for (entt::entity entity : view)
+        {
+            renderSprite<false>(registry, entity);
+        }
+    }
+
+    void SpriteSystem::render(const entt::registry& registry)
+    {
+        renderAllSprites<true>(registry);
+        renderAllSprites<false>(registry);
+    }
 
 } // namespace Renderer2D
 } // namespace Pekan

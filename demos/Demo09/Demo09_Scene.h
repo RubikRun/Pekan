@@ -25,13 +25,16 @@ namespace Demo
 
 		void createTurkey();
 		void createBull();
+		void createPig();
 		void createRectangle();
 		void createTriangle();
 		void createPolygon1();
 		void createPolygon2();
 		void createCircle();
+		void createCircle2();
 		void createLine1();
 		void createLine2();
+		void createLine3();
 		void createCamera();
 		// Initializes the post-processing shader
 		bool initPps();
@@ -43,13 +46,16 @@ namespace Demo
 
 		entt::entity m_turkey = entt::null;
 		entt::entity m_bull = entt::null;
+		entt::entity m_pig = entt::null; // sprite without a transform component
 		entt::entity m_rectangle = entt::null;
 		entt::entity m_triangle = entt::null;
 		entt::entity m_polygon1 = entt::null;
 		entt::entity m_polygon2 = entt::null;
 		entt::entity m_circle = entt::null;
+		entt::entity m_circle2 = entt::null; // circle without a transform component
 		entt::entity m_line1 = entt::null; // with line geometry
 		entt::entity m_line2 = entt::null; // just a line primitive
+		entt::entity m_line3 = entt::null; // just a line primitive, but without a transform component
 
 		entt::entity m_camera = entt::null;
 

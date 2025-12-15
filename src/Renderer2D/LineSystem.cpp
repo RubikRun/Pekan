@@ -11,7 +11,25 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    void LineSystem::getVertexPositions
+    void LineSystem::getVertexPositionsLocal
+    (
+        const entt::registry& registry, entt::entity entity,
+        void* vertices, int vertexSize, int positionAttributeOffset
+    )
+    {
+        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<LineComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a LineComponent.", "Pekan");
+
+        // Get entity's line component
+        const LineComponent& line = registry.get<LineComponent>(entity);
+
+        // Set point A and point B as the 2 local vertex position into the vertices array using an attribute view
+        VerticesAttributeView attributeView{ vertices, 2, vertexSize, positionAttributeOffset };
+        attributeView.setVertexAttribute<glm::vec2>(0, line.pointA);
+        attributeView.setVertexAttribute<glm::vec2>(1, line.pointB);
+    }
+
+    void LineSystem::getVertexPositionsWorld
     (
         const entt::registry& registry, entt::entity entity,
         void* vertices, int vertexSize, int positionAttributeOffset

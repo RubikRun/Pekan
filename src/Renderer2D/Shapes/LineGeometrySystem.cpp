@@ -12,8 +12,8 @@ namespace Renderer2D
 {
 
     // Computes local vertex positions for a given line geometry.
-    // @param[in] verticesLocal - output array of local vertices, must have space for 4 elements
-    static void getVerticesLocal(const LineGeometryComponent& geometry, glm::vec2* verticesLocal)
+    // @param[in] localVertexPositions - output array of local vertex positions, must have space for 4 elements
+    static void getLocalVertexPositions(const LineGeometryComponent& geometry, glm::vec2* localVertexPositions)
     {
 		const glm::vec2& a = geometry.pointA;
 		const glm::vec2& b = geometry.pointB;
@@ -34,13 +34,37 @@ namespace Renderer2D
             (t / 2.0f) * dir.x
         );
 		// Add and substract the normal offset vector to points A and B such that the vertices are in counter-clockwise order
-        verticesLocal[0] = a + normalOffset;
-        verticesLocal[1] = a - normalOffset;
-        verticesLocal[2] = b - normalOffset;
-        verticesLocal[3] = b + normalOffset;
+        localVertexPositions[0] = a + normalOffset;
+        localVertexPositions[1] = a - normalOffset;
+        localVertexPositions[2] = b - normalOffset;
+        localVertexPositions[3] = b + normalOffset;
     }
 
-	void LineGeometrySystem::getVertexPositions
+    void LineGeometrySystem::getVertexPositionsLocal
+    (
+        const entt::registry& registry, entt::entity entity,
+        void* vertices, int vertexSize, int positionAttributeOffset
+    )
+    {
+        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<LineGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a LineGeometryComponent.", "Pekan");
+
+        // Get entity's geometry component
+        const LineGeometryComponent& geometry = registry.get<LineGeometryComponent>(entity);
+
+        // Get local vertex positions from geometry
+        glm::vec2 localVertexPositions[4];
+        getLocalVertexPositions(geometry, localVertexPositions);
+
+        // Set local vertex positions into the vertices array using an attribute view
+        VerticesAttributeView attributeView{ vertices, 4, vertexSize, positionAttributeOffset };
+        for (int i = 0; i < 4; i++)
+        {
+            attributeView.setVertexAttribute<glm::vec2>(i, localVertexPositions[i]);
+        }
+    }
+
+	void LineGeometrySystem::getVertexPositionsWorld
     (
         const entt::registry& registry, entt::entity entity,
         void* vertices, int vertexSize, int positionAttributeOffset
@@ -55,15 +79,15 @@ namespace Renderer2D
 		const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
 
 		// Get local vertex positions from geometry
-        glm::vec2 verticesLocal[4];
-        getVerticesLocal(geometry, verticesLocal);
+        glm::vec2 localVertexPositions[4];
+        getLocalVertexPositions(geometry, localVertexPositions);
 
         // Get world vertex positions using local vertex positions and transform
         VerticesAttributeView attributeView{ vertices, 4, vertexSize, positionAttributeOffset };
         Utils2D::getWorldVertexPositions
         (
             registry,
-            verticesLocal, 4,
+            localVertexPositions, 4,
             transform,
             attributeView
         );

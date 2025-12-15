@@ -28,6 +28,7 @@ using namespace Pekan;
 
 #define TURKEY_IMAGE_FILEPATH "resources/Turkey_animation_without_shadow.png"
 #define BULL_IMAGE_FILEPATH "resources/Bull_animation_without_shadow.png"
+#define PIG_IMAGE_FILEPATH "resources/Piglet_animation_without_shadow.png"
 
 #define POST_PROCESSING_SHADER_FILEPATH_PKSHAD "Shaders/PostProcessingShader.pkshad"
 #define POST_PROCESSING_SHADER_FILEPATH_GLSL "Shaders/PostProcessingShader.glsl"
@@ -40,6 +41,7 @@ namespace Demo
 	constexpr glm::vec2 TURKEY_SIZE = glm::vec2(1.0f, 1.0f);
 	constexpr glm::vec2 BULL_INITIAL_POSITION = glm::vec2(CAMERA_SCALE / 2.0f, 0.0f);
 	constexpr glm::vec2 BULL_SIZE = glm::vec2(2.0f, 2.0f);
+	constexpr glm::vec2 PIG_SIZE = glm::vec2(1.0f, 1.0f);
 	constexpr glm::vec2 RECTANGLE_INITIAL_POSITION = glm::vec2(-3.0f, -2.0f);
 	constexpr glm::vec4 RECTANGLE_INITIAL_COLOR = glm::vec4(0.3f, 0.8f, 0.3f, 1.0f);
 	constexpr glm::vec2 TRIANGLE_INITIAL_POSITION = glm::vec2(-1.0f, 3.0f);
@@ -134,13 +136,16 @@ namespace Demo
 
 		createTurkey();
 		createBull();
+		createPig();
 		createRectangle();
 		createTriangle();
 		createPolygon1();
 		createPolygon2();
 		createCircle();
+		createCircle2();
 		createLine1();
 		createLine2();
+		createLine3();
 		createCamera();
 
 		if (!initPps())
@@ -155,13 +160,16 @@ namespace Demo
 	{
 		destroyEntity(m_turkey);
 		destroyEntity(m_bull);
+		destroyEntity(m_pig);
 		destroyEntity(m_rectangle);
 		destroyEntity(m_triangle);
 		destroyEntity(m_polygon1);
 		destroyEntity(m_polygon2);
 		destroyEntity(m_circle);
+		destroyEntity(m_circle2);
 		destroyEntity(m_line1);
 		destroyEntity(m_line2);
+		destroyEntity(m_line3);
 		destroyEntity(m_camera);
 	}
 
@@ -400,6 +408,32 @@ namespace Demo
 		}
 	}
 
+	void Demo09_Scene::createPig()
+	{
+		m_pig = createEntity();
+
+		// Add sprite component to pig entity
+		{
+			SpriteComponent sprite;
+			sprite.width = PIG_SIZE.x;
+			sprite.height = PIG_SIZE.y;
+			// Set sprite texture
+			{
+				Texture2D_Ptr texture = std::make_shared<Pekan::Graphics::Texture2D>();
+				const Image image(PIG_IMAGE_FILEPATH);
+				texture->create(image);
+				sprite.texture = texture;
+			}
+			// Set sprite texture coordinates
+			// to use only one of the frames of the pig animation spritesheet
+			{
+				sprite.textureCoordinatesMin = glm::vec2(0.0f, 1.0f / 8.0f);
+				sprite.textureCoordinatesMax = glm::vec2(1.0f / 6.0f, 2.0f / 8.0f);
+			}
+			getRegistry().emplace<SpriteComponent>(m_pig, sprite);
+		}
+	}
+
 	void Demo09_Scene::createRectangle()
 	{
 		m_rectangle = createEntity();
@@ -477,6 +511,16 @@ namespace Demo
 		getRegistry().emplace<SolidColorMaterialComponent>(m_circle, CIRCLE_INITIAL_COLOR);
 	}
 
+	void Demo09_Scene::createCircle2()
+	{
+		m_circle2 = createEntity();
+
+		// Add circle geometry component to circle entity
+		getRegistry().emplace<CircleGeometryComponent>(m_circle2, 0.3f, 64);
+		// Add solid color material component to circle entity
+		getRegistry().emplace<SolidColorMaterialComponent>(m_circle2, glm::vec4{0.3f, 0.8f, 0.2f, 1.0f});
+	}
+
 	void Demo09_Scene::createLine1()
 	{
 		m_line1 = createEntity();
@@ -499,6 +543,18 @@ namespace Demo
 		lineComponent.pointB = POLYGON2_INITIAL_POSITION;
 		lineComponent.color = LINE2_INITIAL_COLOR;
 		getRegistry().emplace<LineComponent>(m_line2, lineComponent);
+	}
+
+	void Demo09_Scene::createLine3()
+	{
+		m_line3 = createEntity();
+
+		// Add line component to line 3's entity
+		LineComponent lineComponent;
+		lineComponent.pointA = glm::vec2(-CAMERA_SCALE / 30.0f, -CAMERA_SCALE / 30.0f);
+		lineComponent.pointB = glm::vec2(CAMERA_SCALE / 30.0f, CAMERA_SCALE / 30.0f);
+		lineComponent.color = glm::vec4(0.9f, 0.4f, 0.2f, 1.0f);
+		getRegistry().emplace<LineComponent>(m_line3, lineComponent);
 	}
 
 	void Demo09_Scene::createCamera()

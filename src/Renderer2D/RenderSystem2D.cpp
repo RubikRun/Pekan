@@ -81,7 +81,33 @@ namespace Renderer2D
     void renderAllEntitiesWith(const entt::registry& registry, RenderFunction renderFunction)
     {
         // Create a view over all entities that have the given components
-        auto view = registry.view<ComponentTypes...>();
+        const auto view = registry.view<ComponentTypes...>();
+        // Iterate over entities and call the provided render function
+        for (auto entity : view)
+        {
+            renderFunction(registry, entity);
+        }
+    }
+
+    // Renders all entities that have all components from ComponentTypesToInclude
+    // and do NOT have any components from ComponentTypesToExclude,
+    // by calling a given render function for each entity
+    //
+    // @tparam ComponentTypesToInclude...  Component types that an entity must have to be rendered
+    // @tparam ComponentTypesToExclude...  Component types that an entity must NOT have to be rendered
+    // @param[in] registry        Registry containing entities to render
+    // @param[in] renderFunction  Function that renders a single entity
+    template<typename... ComponentTypesToInclude, typename... ComponentTypesToExclude>
+    void renderAllEntitiesWith
+    (
+        entt::exclude_t<ComponentTypesToExclude...>,
+        const entt::registry& registry,
+        RenderFunction renderFunction
+    )
+    {
+        // Create a view over all entities that
+        // have the given components to include and do NOT have the given components to exclude
+        const auto view = registry.view<ComponentTypesToInclude...>(entt::exclude<ComponentTypesToExclude...>);
         // Iterate over entities and call the provided render function
         for (auto entity : view)
         {
@@ -235,7 +261,12 @@ namespace Renderer2D
     }
 
     // Renders an entity with rectangle geometry and a solid color material
-    static void renderRectangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    // @tparam HasTransform - A boolean parameter indicating if the entity has a transform component
+    template<bool HasTransform>
+    static void renderRectangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity);
+
+    template<>
+    static void renderRectangleWithSolidColorMaterial<true>(const entt::registry& registry, entt::entity entity)
     {
         // Define indices for two triangles making up a rectangle
         static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
@@ -244,13 +275,33 @@ namespace Renderer2D
         renderShapeWithSolidColorMaterial
         (
             registry, entity,
-            RectangleGeometrySystem::getVertexPositions, 4,
+            RectangleGeometrySystem::getVertexPositionsWorld, 4,
+            indices, 6
+        );
+    }
+
+    template<>
+    static void renderRectangleWithSolidColorMaterial<false>(const entt::registry& registry, entt::entity entity)
+    {
+        // Define indices for two triangles making up a rectangle
+        static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
+
+        // Render rectangle as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            RectangleGeometrySystem::getVertexPositionsLocal, 4,
             indices, 6
         );
     }
 
     // Renders an entity with line geometry and a solid color material
-    static void renderLineWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    // @tparam HasTransform - A boolean parameter indicating if the entity has a transform component
+    template<bool HasTransform>
+    static void renderLineWithSolidColorMaterial(const entt::registry& registry, entt::entity entity);
+
+    template<>
+    static void renderLineWithSolidColorMaterial<true>(const entt::registry& registry, entt::entity entity)
     {
         // Define indices for two triangles making up a rectangle
         // (since lines are rendered as thin rectangles)
@@ -260,13 +311,34 @@ namespace Renderer2D
         renderShapeWithSolidColorMaterial
         (
             registry, entity,
-            LineGeometrySystem::getVertexPositions, 4,
+            LineGeometrySystem::getVertexPositionsWorld, 4,
+            indices, 6
+        );
+    }
+
+    template<>
+    static void renderLineWithSolidColorMaterial<false>(const entt::registry& registry, entt::entity entity)
+    {
+        // Define indices for two triangles making up a rectangle
+        // (since lines are rendered as thin rectangles)
+        static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
+
+        // Render line as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            LineGeometrySystem::getVertexPositionsLocal, 4,
             indices, 6
         );
     }
 
     // Renders an entity with circle geometry and a solid color material
-    static void renderCircleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    // @tparam HasTransform - A boolean parameter indicating if the entity has a transform component
+    template<bool HasTransform>
+    static void renderCircleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity);
+
+    template<>
+    static void renderCircleWithSolidColorMaterial<true>(const entt::registry& registry, entt::entity entity)
     {
         const CircleGeometryComponent& circleGeometry = registry.get<CircleGeometryComponent>(entity);
 
@@ -274,13 +346,32 @@ namespace Renderer2D
         renderShapeWithSolidColorMaterial
         (
             registry, entity,
-            CircleGeometrySystem::getVertexPositionsAndIndices,
+            CircleGeometrySystem::getVertexPositionsAndIndicesWorld,
+            circleGeometry.segmentsCount    // number of vertices is equal to number of segments
+        );
+    }
+
+    template<>
+    static void renderCircleWithSolidColorMaterial<false>(const entt::registry& registry, entt::entity entity)
+    {
+        const CircleGeometryComponent& circleGeometry = registry.get<CircleGeometryComponent>(entity);
+
+        // Render circle as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            CircleGeometrySystem::getVertexPositionsAndIndicesLocal,
             circleGeometry.segmentsCount    // number of vertices is equal to number of segments
         );
     }
 
     // Renders an entity with triangle geometry and a solid color material
-    static void renderTriangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    // @tparam HasTransform - A boolean parameter indicating if the entity has a transform component
+    template<bool HasTransform>
+    static void renderTriangleWithSolidColorMaterial(const entt::registry& registry, entt::entity entity);
+
+    template<>
+    static void renderTriangleWithSolidColorMaterial<true>(const entt::registry& registry, entt::entity entity)
     {
         // Define indices for a single triangle
         static constexpr unsigned indices[3] = { 0, 1, 2 };
@@ -289,13 +380,33 @@ namespace Renderer2D
         renderShapeWithSolidColorMaterial
         (
             registry, entity,
-            TriangleGeometrySystem::getVertexPositions, 3,
+            TriangleGeometrySystem::getVertexPositionsWorld, 3,
+            indices, 3
+        );
+    }
+
+    template<>
+    static void renderTriangleWithSolidColorMaterial<false>(const entt::registry& registry, entt::entity entity)
+    {
+        // Define indices for a single triangle
+        static constexpr unsigned indices[3] = { 0, 1, 2 };
+
+        // Render triangle as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            TriangleGeometrySystem::getVertexPositionsLocal, 3,
             indices, 3
         );
     }
 
     // Renders an entity with polygon geometry and a solid color material
-    static void renderPolygonWithSolidColorMaterial(const entt::registry& registry, entt::entity entity)
+    // @tparam HasTransform - A boolean parameter indicating if the entity has a transform component
+    template<bool HasTransform>
+    static void renderPolygonWithSolidColorMaterial(const entt::registry& registry, entt::entity entity);
+
+    template<>
+    static void renderPolygonWithSolidColorMaterial<true>(const entt::registry& registry, entt::entity entity)
     {
         const PolygonGeometryComponent& polygonGeometry = registry.get<PolygonGeometryComponent>(entity);
 
@@ -303,13 +414,32 @@ namespace Renderer2D
         renderShapeWithSolidColorMaterial
         (
             registry, entity,
-            PolygonGeometrySystem::getVertexPositions,
+            PolygonGeometrySystem::getVertexPositionsAndIndicesWorld,
+            polygonGeometry.vertexPositions.size()
+        );
+    }
+
+    template<>
+    static void renderPolygonWithSolidColorMaterial<false>(const entt::registry& registry, entt::entity entity)
+    {
+        const PolygonGeometryComponent& polygonGeometry = registry.get<PolygonGeometryComponent>(entity);
+
+        // Render polygon as a general shape with solid color material
+        renderShapeWithSolidColorMaterial
+        (
+            registry, entity,
+            PolygonGeometrySystem::getVertexPositionsAndIndicesLocal,
             polygonGeometry.vertexPositions.size()
         );
     }
 
     // Renders an entity with a line component
-    static void renderLine(const entt::registry& registry, entt::entity entity)
+    // @tparam HasTransform - A boolean parameter indicating if the entity has a transform component
+    template<bool HasTransform>
+    static void renderLine(const entt::registry& registry, entt::entity entity);
+
+    template<>
+    static void renderLine<true>(const entt::registry& registry, entt::entity entity)
     {
         // Get line component from entity
         const LineComponent& line = registry.get<LineComponent>(entity);
@@ -317,7 +447,43 @@ namespace Renderer2D
         // Create an array for line's 2 vertices
         VertexOfLine vertices[2];
         // Get vertex positions into the vertices array
-        LineSystem::getVertexPositions(registry, entity, vertices, sizeof(VertexOfLine), 0);
+        LineSystem::getVertexPositionsWorld(registry, entity, vertices, sizeof(VertexOfLine), 0);
+
+        // Create render object with line's vertices
+        RenderObject renderObject;
+        renderObject.create
+        (
+            vertices, 2 * sizeof(VertexOfLine),
+            { { ShaderDataType::Float2, "position" } },
+            BufferDataUsage::StaticDraw,
+            FileUtils::readTextFileToString(LINE_VERTEX_SHADER_FILEPATH).c_str(),
+            FileUtils::readTextFileToString(LINE_FRAGMENT_SHADER_FILEPATH).c_str()
+        );
+
+        // Set render object's shader uniforms
+        {
+            Shader& shader = renderObject.getShader();
+            // Set "uColor" uniform to line's color
+            shader.setUniform4f("uColor", line.color);
+            // Set view projection matrix uniform using the primary camera
+            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
+            setViewProjectionMatrixUniform(shader, camera);
+        }
+
+        // Render the render object
+        renderObject.render(DrawMode::Lines);
+    }
+
+    template<>
+    static void renderLine<false>(const entt::registry& registry, entt::entity entity)
+    {
+        // Get line component from entity
+        const LineComponent& line = registry.get<LineComponent>(entity);
+
+        // Create an array for line's 2 vertices
+        VertexOfLine vertices[2];
+        // Get vertex positions into the vertices array
+        LineSystem::getVertexPositionsLocal(registry, entity, vertices, sizeof(VertexOfLine), 0);
 
         // Create render object with line's vertices
         RenderObject renderObject;
@@ -346,15 +512,23 @@ namespace Renderer2D
 
     void RenderSystem2D::render(const entt::registry& registry)
     {
-        // Render all rectangles, triangles, circles, lines, and polygons that have a solid color material
-        renderAllEntitiesWith<RectangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderRectangleWithSolidColorMaterial);
-        renderAllEntitiesWith<TriangleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderTriangleWithSolidColorMaterial);
-        renderAllEntitiesWith<CircleGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderCircleWithSolidColorMaterial);
-        renderAllEntitiesWith<LineGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderLineWithSolidColorMaterial);
-        renderAllEntitiesWith<PolygonGeometryComponent, TransformComponent2D, SolidColorMaterialComponent>(registry, renderPolygonWithSolidColorMaterial);
+        // Render all rectangles, triangles, circles, lines, and polygons that have a solid color material and a transform
+        renderAllEntitiesWith<RectangleGeometryComponent, SolidColorMaterialComponent, TransformComponent2D>(registry, renderRectangleWithSolidColorMaterial<true>);
+        renderAllEntitiesWith<TriangleGeometryComponent, SolidColorMaterialComponent, TransformComponent2D>(registry, renderTriangleWithSolidColorMaterial<true>);
+        renderAllEntitiesWith<CircleGeometryComponent, SolidColorMaterialComponent, TransformComponent2D>(registry, renderCircleWithSolidColorMaterial<true>);
+        renderAllEntitiesWith<LineGeometryComponent, SolidColorMaterialComponent, TransformComponent2D>(registry, renderLineWithSolidColorMaterial<true>);
+        renderAllEntitiesWith<PolygonGeometryComponent, SolidColorMaterialComponent, TransformComponent2D>(registry, renderPolygonWithSolidColorMaterial<true>);
+        // Render all rectangles, triangles, circles, lines, and polygons that have a solid color material but no transform
+        renderAllEntitiesWith<RectangleGeometryComponent, SolidColorMaterialComponent>(entt::exclude<TransformComponent2D>, registry, renderRectangleWithSolidColorMaterial<false>);
+        renderAllEntitiesWith<TriangleGeometryComponent, SolidColorMaterialComponent>(entt::exclude<TransformComponent2D>, registry, renderTriangleWithSolidColorMaterial<false>);
+        renderAllEntitiesWith<CircleGeometryComponent, SolidColorMaterialComponent>(entt::exclude<TransformComponent2D>, registry, renderCircleWithSolidColorMaterial<false>);
+        renderAllEntitiesWith<LineGeometryComponent, SolidColorMaterialComponent>(entt::exclude<TransformComponent2D>, registry, renderLineWithSolidColorMaterial<false>);
+        renderAllEntitiesWith<PolygonGeometryComponent, SolidColorMaterialComponent>(entt::exclude<TransformComponent2D>, registry, renderPolygonWithSolidColorMaterial<false>);
 
-        // Render all lines
-        renderAllEntitiesWith<LineComponent, TransformComponent2D>(registry, renderLine);
+        // Render all lines that have a transform
+        renderAllEntitiesWith<LineComponent, TransformComponent2D>(registry, renderLine<true>);
+        // Render all lines that do not have a transform
+        renderAllEntitiesWith<LineComponent>(entt::exclude<TransformComponent2D>, registry, renderLine<false>);
 
         // Render all sprites
         SpriteSystem::render(registry);

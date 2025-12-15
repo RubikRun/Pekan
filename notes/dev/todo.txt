@@ -249,8 +249,8 @@
 
 0083 08.11.2025 (TODO): Think of an alternative to getMousePosition() from old Renderer2DSystem
 
-0084 12.11.2025 (TODO): Think about rendering shapes/sprites/lines that don't have a transform.
-                        They can just be rendered in the default [-1, 1] range, it kind of makes sense.
+0084 12.11.2025 (DONE): Shapes/sprites/lines that don't have a transform can be rendered by just not applying a transform to their local vertices.
+                        If there is no camera in the scene, shapes/sprites/lines can still be rendered in the default [-1, 1] range.
 
 0085 16.11.2025 (TODO): Rename GraphicsSystem's registerSubsystem() function to registerAsSubsystem().
                         Same for other subsystems.
@@ -260,3 +260,14 @@
                         statements in PekanApplication's init() function.
 
 0087 10.12.2025 (TODO): Why is application not terminated when user closes the window?
+
+0088 16.12.2025 (TODO): Think about if we can use view instead of registry in situations like this:
+                            auto view = registry.view<ComponentTypes...>();
+                            for (auto entity : view)
+                            {
+                                renderFunction(registry, entity);
+                            }
+                        Once we narrow down the registry to a view can we use that view from there on?
+                        Looks like sometimes yes, sometimes no.
+                        In the case above - probably not - because renderFunction() needs the whole registry
+                        in order to calculate world matrix correctly.

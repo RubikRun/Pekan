@@ -1323,3 +1323,85 @@ and, also, made sure that panning works as expected with a rotated camera.
 It works.
 Done.
 }
+
+----------
+15.12.2025
+----------
+
+{
+Let's look at TO-DO task 0084:
+    Think about rendering shapes/sprites/lines that don't have a transform.
+    They can just be rendered in the default [-1, 1] range, it kind of makes sense.
+
+This description doesn't really make sense.
+What I meant to say when I was writing it is this:
+1. Shapes/sprites/lines that don't have a transform can be rendered by just not applying a transform to their local vertices
+2. If there is no camera in the scene, shapes/sprites/lines can still be rendered in the default [-1, 1] range
+I will even change the TO-DO task to say this, instead of the old wrong description.
+
+To test this I will create a sprite, a shape and a line that don't have a transform in Demo09.
+Then we can actually modify engine code to render such entities.
+
+----------
+17.12.2025
+----------
+
+Okay, yesterday I finished the first part of this - rendering shapes/sprites/lines that don't have a transform.
+Basic idea is the following:
+1. We need to handle shapes/sprites/lines with a transform and shapes/sprites/lines without a transform separately.
+    We need to separate the ones with a transform from the ones without a transform before passing them through the render pipeline.
+    For example, this is how we get a view of all entities that have a SpriteComponent and a TransformComponent2D
+        const auto view = registry.view<SpriteComponent, TransformComponent2D>();
+    And this is how we can get a view of all entities that have a SpriteComponent and do NOT have a TransformComponent2D
+        const auto view = registry.view<SpriteComponent>(entt::exclude<TransformComponent2D>);
+    Until now we rendered sprites from the first view only, now we want to render sprites from the second one as well.
+2. In order to render a shape/sprite/line without a transform we just need to use local vertex positions directly
+    without applying a world matrix, because there is no world matrix when the entity doesn't have a transform.
+    For that we need 2 versions of some of the functions in RenderSystem2D.cpp and SpriteSystem.cpp - one for entities with a transform,
+    and one for entities without a transform.
+    To make this easier and cleaner I decided to use template functions with a boolean parameter, for example:
+        template<bool HasTransform>
+        static void renderLineWithSolidColorMaterial(const entt::registry& registry, entt::entity entity);
+    Then we have 2 different specializations of this function, one with HasTransform = true, and one with HasTransform = false:
+        template<>
+        static void renderLineWithSolidColorMaterial<true>(const entt::registry& registry, entt::entity entity)
+        {
+            ...
+        }
+        template<>
+        static void renderLineWithSolidColorMaterial<false>(const entt::registry& registry, entt::entity entity)
+        {
+            ...
+        }
+    To facilitate this I created 2 versions of getVertexPositions() functions from shape systems, for example:
+        static void getVertexPositionsLocal(...);
+        static void getVertexPositionsWorld(...);
+    in
+        class CircleGeometrySystem
+    The local one returns local vertex positions for an entity that may or may not have a transform.
+    (We are using it exclusively on entities that don't have a transform, but the CircleGeometryComponent's API doesn't require this)
+    And the world one returns world vertex positions for an entity that has a transform.
+That's about it.
+The way I implemented this is a bit random, because I'm not sure how final it is,
+we may need to rewrite big parts of this code in the future. It works though, and is fairly easy to extend, so it's fine.
+
+It works! Shapes/sprites/lines without a transform are rendered now.
+
+----------
+18.12.2025
+----------
+
+Now let's look at the second part of this task:
+    If there is no camera in the scene, shapes/sprites/lines can still be rendered in the default [-1, 1] range
+Turns out this already works.
+It's done in this function
+    CameraSystem2D::getPrimaryCamera()
+If it doesn't find a camera marked as primary in the scene, it returns a default camera:
+    return g_defaultCamera;
+and this default camera has a size of {2, 2}, a position of {0, 0} and zoom level of 1,
+which is exactly the [-1, 1] range in both X and Y.
+I just removed the warning message that was getting printed if a camera is not found.
+We don't need a warning message because we are considering it a valid use case.
+
+Done.
+}

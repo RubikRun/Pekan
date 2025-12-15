@@ -9,7 +9,7 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    // A default CameraComponent2D instance to use if there is no primary camera
+    // A default CameraComponent2D instance ([-1, 1] range in X and Y) to use if there is no primary camera.
     static constexpr CameraComponent2D g_defaultCamera =
     {
         .size = { 2.0f, 2.0f },
@@ -32,7 +32,6 @@ namespace Renderer2D
                 return camera;
             }
         }
-        PK_LOG_WARNING("No primary CameraComponent2D camera found. A default one will be used.", "Pekan");
         return g_defaultCamera;
     }
 

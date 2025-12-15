@@ -31,7 +31,35 @@ namespace Renderer2D
         return localVertexPositions;
     }
 
-    void CircleGeometrySystem::getVertexPositionsAndIndices
+    void CircleGeometrySystem::getVertexPositionsAndIndicesLocal
+    (
+        const entt::registry& registry, entt::entity entity,
+        void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
+        std::vector<unsigned>& indices
+    )
+    {
+        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+        PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a CircleGeometryComponent.", "Pekan");
+
+        // Get entity's geometry component
+        const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);
+
+        // Get local vertex positions from geometry
+        const std::vector<glm::vec2> localVertexPositions = getLocalVertexPositions(geometry);
+
+        // Set local vertex positions into the vertices array using an attribute view
+        VerticesAttributeView attributeView{ vertices, int(localVertexPositions.size()), vertexSize, positionAttributeOffset };
+        for (int i = 0; i < attributeView.verticesCount; i++)
+        {
+            attributeView.setVertexAttribute<glm::vec2>(i, localVertexPositions[i]);
+        }
+
+        // Generate triangle fan indices in the indices array
+        indices.resize((verticesCount - 2) * 3);
+        MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
+    }
+
+    void CircleGeometrySystem::getVertexPositionsAndIndicesWorld
     (
         const entt::registry& registry, entt::entity entity,
         void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
