@@ -20,7 +20,7 @@ namespace Graphics
 
 	static GraphicsSubsystem g_graphicsSystem;
 
-	void GraphicsSubsystem::registerSubsystem()
+	void GraphicsSubsystem::registerAsSubsystem()
 	{
 		SubsystemManager::registerSubsystem(&g_graphicsSystem);
 	}

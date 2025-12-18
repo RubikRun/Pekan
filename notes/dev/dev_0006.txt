@@ -1430,3 +1430,18 @@ It works!
 
 Done.
 }
+
+{
+Let's do TO-DO task 0085:
+    Rename GraphicsSystem's registerSubsystem() function to registerAsSubsystem().
+    Same for other subsystems.
+
+Sounds quite easy. Let's see.
+Yep, just renamed GraphicsSubsystem's registerSubsystem(), GUISubsystem's registerSubsystem() and Renderer2DSubsystem's registerAsSubsystem()
+functions to registerAsSubsystem().
+Importantly, SubsystemManager's registerSubsystem() function is still called that, we will NOT rename it to registerAsSubsystem()
+because it is the thing that registers a given subsystem,
+and the other 3 are functions that register their own class AS A subsystem in SubsystemManager.
+
+Done.
+}

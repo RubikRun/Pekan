@@ -8,7 +8,7 @@ namespace Graphics
 {
 
 // Use this macro in your application's main function to include the Graphics subsystem of Pekan
-#define PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS Pekan::Graphics::GraphicsSubsystem::registerSubsystem()
+#define PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS Pekan::Graphics::GraphicsSubsystem::registerAsSubsystem()
 
 	class GraphicsSubsystem : public ISubsystem
 	{
@@ -18,7 +18,7 @@ namespace Graphics
 
 		// Registers GraphicsSubsystem as a subsystem in Pekan's SubsystemManager,
 		// so that it's automatically initialized and exited.
-		static void registerSubsystem();
+		static void registerAsSubsystem();
 
 		// Returns a pointer to the global GraphicsSubsystem instance
 		static GraphicsSubsystem* getInstance();

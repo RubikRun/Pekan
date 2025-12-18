@@ -8,7 +8,7 @@ namespace GUI
 {
 
 // Use this macro in your application's main function to include the GUI subsystem of Pekan
-#define PEKAN_INCLUDE_SUBSYSTEM_GUI Pekan::GUI::GUISubsystem::registerSubsystem()
+#define PEKAN_INCLUDE_SUBSYSTEM_GUI Pekan::GUI::GUISubsystem::registerAsSubsystem()
 
 	class GUISubsystem : public ISubsystem
 	{
@@ -18,7 +18,7 @@ namespace GUI
 
 		// Registers GUI as a subsystem in Pekan's SubsystemManager,
 		// so that it's automatically initialized and exited.
-		static void registerSubsystem();
+		static void registerAsSubsystem();
 
 		// Returns a pointer to the global GUI instance
 		static GUISubsystem* getInstance();

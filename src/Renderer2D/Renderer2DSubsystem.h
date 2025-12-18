@@ -11,7 +11,7 @@ namespace Renderer2D
 {
 
 // Use this macro in your application's main function to include the Renderer2D subsystem of Pekan
-#define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer2D::Renderer2DSubsystem::registerSubsystem()
+#define PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D Pekan::Renderer2D::Renderer2DSubsystem::registerAsSubsystem()
 
     class Renderer2DSubsystem : public ISubsystem
     {
@@ -25,7 +25,7 @@ namespace Renderer2D
 
         // Registers Renderer2DSubsystem as a subsystem in Pekan's SubsystemManager,
         // so that it's automatically initialized and exited.
-        static void registerSubsystem();
+        static void registerAsSubsystem();
 
         // To be called at the beginning of every 2D scene's render() function.
         static void beginFrame();

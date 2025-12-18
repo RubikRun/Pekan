@@ -252,7 +252,7 @@
 0084 12.11.2025 (DONE): Shapes/sprites/lines that don't have a transform can be rendered by just not applying a transform to their local vertices.
                         If there is no camera in the scene, shapes/sprites/lines can still be rendered in the default [-1, 1] range.
 
-0085 16.11.2025 (TODO): Rename GraphicsSystem's registerSubsystem() function to registerAsSubsystem().
+0085 16.11.2025 (DONE): Rename GraphicsSystem's registerSubsystem() function to registerAsSubsystem().
                         Same for other subsystems.
 
 0086 16.11.2025 (TODO): Think about

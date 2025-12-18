@@ -16,7 +16,7 @@ namespace GUI
 
     static GUISubsystem g_guiSystem;
 
-    void GUISubsystem::registerSubsystem()
+    void GUISubsystem::registerAsSubsystem()
     {
         SubsystemManager::registerSubsystem(&g_guiSystem);
     }

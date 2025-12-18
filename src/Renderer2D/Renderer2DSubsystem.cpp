@@ -25,7 +25,7 @@ namespace Renderer2D
 
 	static Renderer2DSubsystem g_renderer2DSystem;
 	
-	void Renderer2DSubsystem::registerSubsystem()
+	void Renderer2DSubsystem::registerAsSubsystem()
 	{
 		SubsystemManager::registerSubsystem(&g_renderer2DSystem);
 	}
