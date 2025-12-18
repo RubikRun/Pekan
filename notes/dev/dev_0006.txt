@@ -1405,3 +1405,28 @@ We don't need a warning message because we are considering it a valid use case.
 
 Done.
 }
+
+{
+Let's look at TO-DO task 0083:
+    Think of an alternative to getMousePosition() from old Renderer2DSystem
+
+Pretty straightforward actually.
+First of all, Renderer2DSystem is now called Renderer2DSubsystem.
+We still want getMousePosition() to be there in Renderer2DSubsystem,
+it's just that we want it to use the primary camera from ECS instead of the one registered in Renderer2DSubsystem.
+Registering a camera in Renderer2DSubsystem is the old way of doing things, we'll soon get rid of all that old stuff
+and we'll leave only ECS.
+For now, we can just create a new function with the same name but suffixed with "_ECS":
+    getMousePosition_ECS()
+Later, when we fully integrate ECS we will remove the other function and we'll rename this one, removing the "_ECS" suffix.
+Now for the implementation of getMousePosition_ECS() it's really easy, it should do exactly the same as the old one
+but instead of getting the camera from s_camera we'll get it like this:
+    const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
+That's it. Then we get mouse position in window space, and convert to world space, same as before.
+
+Tested it in Demo09 by setting rectangle's position to mouse position in the update() function
+resulting in the rectangle following the mouse.
+It works!
+
+Done.
+}

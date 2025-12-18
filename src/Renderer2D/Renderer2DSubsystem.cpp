@@ -4,6 +4,7 @@
 #include "SubsystemManager.h"
 #include "GraphicsSubsystem.h"
 #include "ShaderPreprocessor.h"
+#include "CameraSystem2D.h"
 
 using namespace Pekan::Graphics;
 
@@ -58,6 +59,17 @@ namespace Renderer2D
 		// Convert mouse position from window space to world space
 		const glm::vec2 mousePosWorld = camera->windowToWorldPosition(mousePosWindow);
 		return mousePosWorld;
+	}
+
+	glm::vec2 Renderer2DSubsystem::getMousePosition_ECS(const entt::registry& registry)
+	{
+		const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
+
+		// Get mouse position in window space
+		const glm::vec2 mousePositionInWindow = PekanEngine::getMousePosition();
+		// Convert mouse position from window space to world space
+		const glm::vec2 mousePositionInWorld = camera.windowToWorldPosition(mousePositionInWindow);
+		return mousePositionInWorld;
 	}
 
 	bool Renderer2DSubsystem::init()

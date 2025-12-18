@@ -3,6 +3,8 @@
 #include "ISubsystem.h"
 #include "RenderBatch2D.h"
 
+#include <entt/entt.hpp>
+
 namespace Pekan
 {
 namespace Renderer2D
@@ -35,8 +37,13 @@ namespace Renderer2D
         // Sets a camera to be used for rendering
         static void setCamera(const Camera2D_ConstPtr& camera) { s_camera = camera; }
 
+        // TODO: this function has to be removed once ECS is fully integrated
         // Returns current mouse position in world space, using current camera
         static glm::vec2 getMousePosition();
+
+        // TODO: this function has to be renamed, removing the "_ECS" suffix, once ECS is fully integrated
+        // Returns current mouse position in world space, using scene's primary camera
+        static glm::vec2 getMousePosition_ECS(const entt::registry& registry);
 
     private: /* functions */
 

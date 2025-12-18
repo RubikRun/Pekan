@@ -247,7 +247,7 @@
 
 0082 08.11.2025 (DONE): Add support for parent-child hierarchies in TransformComponent2D and TransformSystem2D
 
-0083 08.11.2025 (TODO): Think of an alternative to getMousePosition() from old Renderer2DSystem
+0083 08.11.2025 (DONE): Think of an alternative to getMousePosition() from old Renderer2DSystem
 
 0084 12.11.2025 (DONE): Shapes/sprites/lines that don't have a transform can be rendered by just not applying a transform to their local vertices.
                         If there is no camera in the scene, shapes/sprites/lines can still be rendered in the default [-1, 1] range.

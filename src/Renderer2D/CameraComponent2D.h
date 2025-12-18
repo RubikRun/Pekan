@@ -53,19 +53,19 @@ namespace Renderer2D
         // Zooms out with the camera, dividing the current zoom level by some factor
         void zoomOut(float factor);
 
-        // Converts a given position/size from window space to world space, using the camera.
+        // Converts a given position/size/vector from window space to world space, using the camera.
         glm::vec2 windowToWorldPosition(glm::vec2 positionInWindow) const;
         glm::vec2 windowToWorldSize(glm::vec2 sizeInWindow) const;
         glm::vec2 windowToWorldVector(glm::vec2 vectorInWindow) const;
-        // Converts a given position/size from world space to window space, using the camera.
+        // Converts a given position/size/vector from world space to window space, using the camera.
         glm::vec2 worldToWindowPosition(glm::vec2 positionInWorld) const;
         glm::vec2 worldToWindowSize(glm::vec2 sizeInWorld) const;
         glm::vec2 worldToWindowVector(glm::vec2 vectorInWorld) const;
-        // Converts a given position/size from NDC (*1) space to world space, using the camera.
+        // Converts a given position/size/vector from NDC (*1) space to world space, using the camera.
         glm::vec2 ndcToWorldPosition(glm::vec2 positionInNdc) const;
         glm::vec2 ndcToWorldSize(glm::vec2 sizeInNdc) const;
         glm::vec2 ndcToWorldVector(glm::vec2 vectorInNdc) const;
-        // Converts a given position/size from world space to NDC (*1) space, using the camera.
+        // Converts a given position/size/vector from world space to NDC (*1) space, using the camera.
         glm::vec2 worldToNdcPosition(glm::vec2 positionInWorld) const;
         glm::vec2 worldToNdcSize(glm::vec2 sizeInWorld) const;
         glm::vec2 worldToNdcVector(glm::vec2 vectorInWorld) const;

@@ -216,10 +216,14 @@ namespace Demo
 			material.color.g = osc(t + 2.0f, 0.3f, 0.8f);
 			material.color.b = osc(t + 4.0f, 0.3f, 0.8f);
 		}
-		// Move rectangle up and down and rotate it over time
+		// Move rectangle with mouse and rotate it over time
 		{
 			TransformComponent2D& rectangleTransform = registry.get<TransformComponent2D>(m_rectangle);
-			rectangleTransform.position.y = osc(t * 3.0f, -1.75f, -2.25f);
+
+			// Move rectangle to follow mouse position
+			const glm::vec2 mousePos = Renderer2DSubsystem::getMousePosition_ECS(registry);
+			rectangleTransform.position = mousePos;
+
 			rectangleTransform.rotation = osc(t * 2.0f, -0.1f, 0.1f);
 		}
 		// Change color of triangle over time
