@@ -255,7 +255,7 @@
 0085 16.11.2025 (DONE): Rename GraphicsSystem's registerSubsystem() function to registerAsSubsystem().
                         Same for other subsystems.
 
-0086 16.11.2025 (TODO): Think about
+0086 16.11.2025 (DONE): Think about
                             return false;
                         statements in PekanApplication's init() function.
 

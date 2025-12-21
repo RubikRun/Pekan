@@ -15,8 +15,6 @@ namespace Pekan
     {
         PK_ASSERT(!isValid(), "Trying to initialize a PekanApplication instance that is already initialized.", "Pekan");
 
-        m_isInitialized = true;
-
         // Initialize Pekan
         if (!PekanEngine::init(this))
         {
@@ -27,16 +25,20 @@ namespace Pekan
         // Initialize derived application
         if (!_init())
         {
+            PK_LOG_ERROR("Failed to initialize derived application.", "Pekan");
             return false;
         }
         // Fill layer stack with derived application's layers
         if (!_fillLayerStack(m_layerStack))
         {
+            PK_LOG_ERROR("Failed to fill application's layer stack with derived application's layers", "Pekan");
             return false;
         }
 
         // Initalize all layers of the layer stack
         m_layerStack.initAll();
+
+        m_isInitialized = true;
 
         return true;
     }

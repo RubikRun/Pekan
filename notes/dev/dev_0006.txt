@@ -1445,3 +1445,27 @@ and the other 3 are functions that register their own class AS A subsystem in Su
 
 Done.
 }
+
+----------
+19.12.2025
+----------
+
+{
+Let's look at TO-DO task 0086:
+    Think about
+        return false;
+    statements in PekanApplication's init() function.
+
+Went through the code of PekanApplication::init() and PekanEngine::init().
+There were a few small things that I fixed + added some error logging.
+One of the things is this line
+    m_isInitialized = true;
+in PekanApplication::init()
+It really has to be at the end, just before
+    return true
+Until now it was in the beginning so no matter if init() succeeded the flag m_isInitialized was marked as true.
+
+That's about it. Other than that it looks good.
+
+Done.
+}

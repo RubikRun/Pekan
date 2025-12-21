@@ -13,8 +13,8 @@ namespace Pekan
     {
         if (s_isInitialized)
         {
-            PK_LOG_ERROR("Trying to initialize PekanEngine but it's already initialized.", "Pekan");
-            return false;
+            PK_LOG_WARNING("Trying to initialize PekanEngine but it's already initialized.", "Pekan");
+            return true;
         }
         if (s_application != nullptr)
         {
@@ -36,10 +36,10 @@ namespace Pekan
             return false;
         }
 
-        std::cout << "Welcome to Pekan v0.2!" << std::endl;
-
         // Initialize all subsystems
         SubsystemManager::initAll();
+
+        std::cout << "Welcome to Pekan v0.2!" << std::endl;
 
         s_isInitialized = true;
         return true;
