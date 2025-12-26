@@ -1469,3 +1469,74 @@ That's about it. Other than that it looks good.
 
 Done.
 }
+
+----------
+26.12.2025
+----------
+
+{
+No idea how I overlooked this but Pekan doesn't work at all with the current state of code.
+More specifically, moving the
+    m_isInitialized = true;
+statement to the end of PekanApplication::init() breaks a few assertions down the road.
+If you try to run Demo09 right now this assertion will fire:
+    PK_ASSERT(isValid(), "Trying to register an event listener in a PekanApplication that is not yet initialized.", "Pekan");
+in
+    PekanApplication::registerEventListener()    (PekanApplication.cpp)
+because CameraController2D is trying to register itself as an event listener in PekanApplication.
+Here's the call stack:
+    Demo09.exe!Pekan::PekanApplication::registerEventListener(const std::shared_ptr<Pekan::EventListener> & listener) Line 116	C++
+    Demo09.exe!Pekan::Renderer2D::CameraController2D::init(Pekan::Renderer2D::Scene2D * scene) Line 35	C++
+    Demo09.exe!Pekan::Renderer2D::Scene2D::init() Line 20	C++
+    Demo09.exe!Pekan::LayerStack::initLayer(const std::shared_ptr<Pekan::Layer> & layer) Line 69	C++
+    Demo09.exe!Pekan::LayerStack::initAll() Line 17	C++
+    Demo09.exe!Pekan::PekanApplication::init() Line 41	C++
+
+How can we solve this?
+We can replace the m_isInitialized flag with an enum instead.
+An enum that supports 3 values: not initialized, currently initializing, initialized
+so that we can mark a PekanApplication as "currently initializing" during the executing of the init() function.
+
+Done.
+Added this enum class in PekanApplication:
+    enum class InitState
+    {
+        NotInitialized,
+        Initializing,
+        Initialized
+    };
+and replaced the m_isInitialized flag with this variable of the enum type:
+    InitState m_initState = InitState::NotInitialized;
+Changed the assertions in some functions to check this
+    m_initState != InitState::NotInitialized
+instead of
+    isValid()
+Other functions still need to check
+    isValid()
+Basically for each function we need to ask ourselves if it makes sense to call this function during initialization.
+If yes, then check
+    m_initState != InitState::NotInitialized
+If not, check
+    isValid()
+
+One more thing.
+Obviously now that we have the enum we want to mark m_initState as Initializing
+in the beggining of init() and mark m_initState as Initialized
+at the end of init().
+However, what do we do if init() fails halfway through?
+We need to explicitly set m_initState to NotInitialized, because otherwise it will be left as Initializing
+which is not good.
+So, every time that we do an early out in init()
+(it's always a "return false;" statement)
+we need to also set m_initState to NotInitialized.
+For example:
+    if (!PekanEngine::init(this))
+    {
+        PK_LOG_ERROR("PekanEngine failed to initialize.", "Pekan");
+        m_initState = InitState::NotInitialized;
+        return false;
+    }
+That's about it. It works now.
+
+Done.
+}

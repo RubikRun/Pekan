@@ -79,7 +79,7 @@ namespace Pekan
 		void stopRunning();
 
 		// Checks if application is valid, meaning that it has been initialized and not yet exited
-		bool isValid() const { return m_isInitialized; }
+		bool isValid() const { return m_initState == InitState::Initialized; }
 
 	private: /* functions */
 
@@ -141,8 +141,16 @@ namespace Pekan
 		// List of registered callbacks to be called at the end of each frame
 		std::vector<OnFrameEndCallback> m_onFrameEndCallbacks;
 
-		// A flag indicating if application has been initialized and not yet exited
-		bool m_isInitialized = false;
+		// An enum containing possible states of initialization of a PekanApplication
+		enum class InitState
+		{
+			NotInitialized, // application is not yet initialized
+			Initializing,   // application is in the process of being initialized, but not yet done
+			Initialized	 // application is fully initialized and ready to run
+		};
+
+		// A variable indicating the state of initialization of this PekanApplication
+		InitState m_initState = InitState::NotInitialized;
 	};
 
 } // namespace Pekan

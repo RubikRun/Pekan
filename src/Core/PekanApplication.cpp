@@ -13,12 +13,16 @@ namespace Pekan
 {
     bool PekanApplication::init()
     {
-        PK_ASSERT(!isValid(), "Trying to initialize a PekanApplication instance that is already initialized.", "Pekan");
+        PK_ASSERT(m_initState == InitState::NotInitialized, "Trying to initialize a PekanApplication instance that is already initialized or currently initializing.", "Pekan");
+
+        // Mark application as currently initializing
+        m_initState = InitState::Initializing;
 
         // Initialize Pekan
         if (!PekanEngine::init(this))
         {
             PK_LOG_ERROR("PekanEngine failed to initialize.", "Pekan");
+            m_initState = InitState::NotInitialized;
             return false;
         }
 
@@ -26,19 +30,22 @@ namespace Pekan
         if (!_init())
         {
             PK_LOG_ERROR("Failed to initialize derived application.", "Pekan");
+            m_initState = InitState::NotInitialized;
             return false;
         }
         // Fill layer stack with derived application's layers
         if (!_fillLayerStack(m_layerStack))
         {
             PK_LOG_ERROR("Failed to fill application's layer stack with derived application's layers", "Pekan");
+            m_initState = InitState::NotInitialized;
             return false;
         }
 
         // Initalize all layers of the layer stack
         m_layerStack.initAll();
 
-        m_isInitialized = true;
+        // Mark application as fully initialized
+        m_initState = InitState::Initialized;
 
         return true;
     }
@@ -108,12 +115,12 @@ namespace Pekan
         // Exit engine
         PekanEngine::exit();
 
-        m_isInitialized = false;
+        m_initState = InitState::NotInitialized;
     }
 
     void PekanApplication::registerEventListener(const std::shared_ptr<EventListener>& listener)
     {
-        PK_ASSERT(isValid(), "Trying to register an event listener in a PekanApplication that is not yet initialized.", "Pekan");
+        PK_ASSERT(m_initState != InitState::NotInitialized, "Trying to register an event listener in a PekanApplication that is not yet initialized.", "Pekan");
 
         if (listener == nullptr)
         {
@@ -125,7 +132,7 @@ namespace Pekan
 
     void PekanApplication::unregisterEventListener(const std::shared_ptr<EventListener>& listener)
     {
-        PK_ASSERT(isValid(), "Trying to unregister an event listener from a PekanApplication that is not yet initialized.", "Pekan");
+        PK_ASSERT(m_initState != InitState::NotInitialized, "Trying to unregister an event listener from a PekanApplication that is not yet initialized.", "Pekan");
 
         m_eventListeners.erase
         (
@@ -148,16 +155,22 @@ namespace Pekan
         float interval
     )
     {
+        PK_ASSERT(m_initState != InitState::NotInitialized, "Trying to register a recurring callback in a PekanApplication that is not yet initialized.", "Pekan");
+
         m_recurringCallbacks.emplace_back(std::move(callback), interval);
     }
 
     void PekanApplication::registerOnFrameBeginCallback(OnFrameBeginCallback callback)
     {
+        PK_ASSERT(m_initState != InitState::NotInitialized, "Trying to register a frame begin callback in a PekanApplication that is not yet initialized.", "Pekan");
+
         m_onFrameBeginCallbacks.push_back(std::move(callback));
     }
 
     void PekanApplication::registerOnFrameEndCallback(OnFrameEndCallback callback)
     {
+        PK_ASSERT(m_initState != InitState::NotInitialized, "Trying to register a frame end callback in a PekanApplication that is not yet initialized.", "Pekan");
+
         m_onFrameEndCallbacks.push_back(std::move(callback));
     }
 
@@ -302,6 +315,8 @@ namespace Pekan
 
     void PekanApplication::updateRecurringCallbacks(float deltaTime)
     {
+        PK_ASSERT(isValid(), "Trying to update recurring callbacks of a PekanApplication that is not yet initialized.", "Pekan");
+
         for (RecurringCallback& recurringCallback : m_recurringCallbacks)
         {
             recurringCallback.elapsed += deltaTime;
@@ -318,6 +333,8 @@ namespace Pekan
 
     void PekanApplication::callOnFrameBeginCallbacks()
     {
+        PK_ASSERT(isValid(), "Trying to call on frame begin callbacks of a PekanApplication that is not yet initialized.", "Pekan");
+
         for (const OnFrameBeginCallback& callback : m_onFrameBeginCallbacks)
         {
             callback();
@@ -326,6 +343,8 @@ namespace Pekan
 
     void PekanApplication::callOnFrameEndCallbacks()
     {
+        PK_ASSERT(isValid(), "Trying to call on frame end callbacks of a PekanApplication that is not yet initialized.", "Pekan");
+
         for (const OnFrameBeginCallback& callback : m_onFrameEndCallbacks)
         {
             callback();
