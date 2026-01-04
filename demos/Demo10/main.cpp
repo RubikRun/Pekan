@@ -4,6 +4,7 @@
 #include "PekanLogger.h"
 
 #include "Demo10_Application.h"
+#include <windows.h>
 using Demo::Demo10_Application;
 
 int main(void)
