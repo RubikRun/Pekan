@@ -1540,3 +1540,53 @@ That's about it. It works now.
 
 Done.
 }
+
+{
+Next TO-DO task is 0087:
+    Why is application not terminated when user closes the window?
+
+Found the bug, after ~1h of debugging.
+Turns out the bug is deleting OpenGL resources after OpenGL context has been destroyed.
+For example this line
+    GLCall(glDeleteProgram(m_id));
+in
+    Shader::destroy()    (Shader.cpp)
+is (not directly) called by
+    SubsystemManager::exitAll();
+in
+    PekanEngine::exit()    (PekanEngine.cpp)
+but before that PekanEngine::exit() calls
+    s_window.destroy();
+which destroys the OpenGL context.
+So glDeleteProgram() is called when the OpenGL context is already destroyed.
+OpenGL doesn't crash when this happens, it just hangs (it's undefined behavior, but on my machine it hangs).
+
+Solution is quite simple, we just need to swap these 2 lines
+    s_window.destroy();
+    SubsystemManager::exitAll();
+in PekanEngine::exit(), so it has to be like this:
+    SubsystemManager::exitAll();
+    s_window.destroy();
+It makes sense. We first exit all subsystems, because they can be dependant on the window,
+and then we destroy the window, which is definitely NOT dependant on subsystems.
+
+That's it. This fixes Demo04 for example, but Demo10 still doesn't work.
+
+Found out why Demo10 doesn't work. This time it's a bug in client code.
+Client code doesn't destroy all entities in destroy(). It destroys m_body but it has to additionally destroy the other entities:
+    m_scene->destroyEntity(m_leftArmJoint);
+    m_scene->destroyEntity(m_leftArm);
+    m_scene->destroyEntity(m_rightArmJoint);
+    m_scene->destroyEntity(m_rightArm);
+    m_scene->destroyEntity(m_leftLegJoint);
+    m_scene->destroyEntity(m_leftLeg);
+    m_scene->destroyEntity(m_rightLegJoint);
+    m_scene->destroyEntity(m_rightLeg);
+    m_scene->destroyEntity(m_head);
+    m_scene->destroyEntity(m_sword);
+Now it works. It closes fine.
+
+TODO: continue with Demo09, it doesn't work
+
+Done.
+}

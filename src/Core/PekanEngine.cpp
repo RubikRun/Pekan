@@ -52,10 +52,11 @@ namespace Pekan
             PK_LOG_ERROR("Trying to exit PekanEngine but it's not yet initialized.", "Pekan");
             return;
         }
-        s_window.destroy();
 
         // Exit all subsystems
         SubsystemManager::exitAll();
+
+        s_window.destroy();
 
         s_isInitialized = false;
     }
