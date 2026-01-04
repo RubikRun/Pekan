@@ -37,6 +37,10 @@ namespace Graphics
 	// The final frame buffer that will be passed to the post-processing shader.
 	static FrameBuffer g_frameBufferFinal;
 
+	// Underlying render object
+	// used to render rectangle with post-processed frame.
+	static RenderObject g_renderObject;
+
 	// Vertices of a rectangle covering the whole window/viewport
 	constexpr float RECTANGLE_VERTICES[] =
 	{
@@ -48,10 +52,6 @@ namespace Graphics
 	};
 	// Indices of a rectangle covering the whole window/viewport
 	constexpr unsigned RECTANGLE_INDICES[] = { 0, 1, 2, 0, 2, 3 };
-
-	// Underlying render object
-	// used to render rectangle with post-processed frame.
-	static RenderObject g_renderObject;
 
 	// Number of samples per pixel
 	static int g_samplesPerPixel = -1;
@@ -203,6 +203,37 @@ namespace Graphics
 		PK_ASSERT(g_renderObject.isValid(), "Trying to get shader from PostProcessor but underlying render object is not valid.", "Pekan");
 
 		return &g_renderObject.getShader();
+	}
+
+	void PostProcessor::exit()
+	{
+		if (!g_isInitialized)
+		{
+			return;
+		}
+
+		PK_ASSERT(g_frameBufferFinal.isValid(), "PostProcessor is being exited but its final frame buffer is not valid.", "Pekan");
+		PK_ASSERT(g_renderObject.isValid(), "PostProcessor is being exited but its underlying render object is not valid.", "Pekan");
+
+		// Destroy underlying frame buffers
+		{
+			g_frameBufferFinal.destroy();
+			// Ensure multisample frame buffer is valid before destroying it.
+			// It may not be valid if we were not using multisample rendering.
+			if (g_frameBufferMultisample.isValid())
+			{
+				g_frameBufferMultisample.destroy();
+			}
+		}
+
+		// Destroy underlying render object
+		g_renderObject.destroy();
+
+		// Reset flags
+		g_isInitialized = false;
+		g_hasSetPostProcessingShader = false;
+		g_hasSetPostProcessingShader = false;
+		g_samplesPerPixel = -1;
 	}
 
 } // namespace Graphics

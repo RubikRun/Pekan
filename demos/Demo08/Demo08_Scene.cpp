@@ -133,11 +133,15 @@ namespace Demo
 
 	void Demo08_Scene::exit()
 	{
-		for (size_t i = 0; i < m_sprites.size(); i++)
+		for (int i = 0; i < m_sprites.size(); i++)
 		{
 			m_sprites[i].destroy();
 		}
 		m_centerSquare.destroy();
+		for (int i = 0; i < m_animTextures.size(); i++)
+		{
+			m_animTextures[i]->destroy();
+		}
 		m_animSprite.destroy();
 		m_camera->destroy();
 	}

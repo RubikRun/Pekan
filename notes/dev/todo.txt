@@ -259,7 +259,7 @@
                             return false;
                         statements in PekanApplication's init() function.
 
-0087 10.12.2025 (TODO): Why is application not terminated when user closes the window?
+0087 10.12.2025 (DONE): Why is application not terminated when user closes the window?
 
 0088 16.12.2025 (TODO): Think about if we can use view instead of registry in situations like this:
                             auto view = registry.view<ComponentTypes...>();

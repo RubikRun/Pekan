@@ -14,7 +14,7 @@ namespace Graphics
 	{
 	public:
 
-		std::string getSubsystemName() const override { return "GUI"; }
+		std::string getSubsystemName() const override { return "Graphics"; }
 
 		// Registers GraphicsSubsystem as a subsystem in Pekan's SubsystemManager,
 		// so that it's automatically initialized and exited.

@@ -181,6 +181,16 @@ namespace Demo
         PK_ASSERT_QUICK(m_scene != nullptr);
 
         m_scene->destroyEntity(m_body);
+        m_scene->destroyEntity(m_leftArmJoint);
+        m_scene->destroyEntity(m_leftArm);
+        m_scene->destroyEntity(m_rightArmJoint);
+        m_scene->destroyEntity(m_rightArm);
+        m_scene->destroyEntity(m_leftLegJoint);
+        m_scene->destroyEntity(m_leftLeg);
+        m_scene->destroyEntity(m_rightLegJoint);
+        m_scene->destroyEntity(m_rightLeg);
+        m_scene->destroyEntity(m_head);
+        m_scene->destroyEntity(m_sword);
     }
 
     void Player::update(Demo10_GUIWindow* guiWindow)

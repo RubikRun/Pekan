@@ -1540,3 +1540,125 @@ That's about it. It works now.
 
 Done.
 }
+
+{
+Next TO-DO task is 0087:
+    Why is application not terminated when user closes the window?
+
+Found the bug, after ~1h of debugging.
+Turns out the bug is deleting OpenGL resources after OpenGL context has been destroyed.
+For example this line
+    GLCall(glDeleteProgram(m_id));
+in
+    Shader::destroy()    (Shader.cpp)
+is (not directly) called by
+    SubsystemManager::exitAll();
+in
+    PekanEngine::exit()    (PekanEngine.cpp)
+but before that PekanEngine::exit() calls
+    s_window.destroy();
+which destroys the OpenGL context.
+So glDeleteProgram() is called when the OpenGL context is already destroyed.
+OpenGL doesn't crash when this happens, it just hangs (it's undefined behavior, but on my machine it hangs).
+
+Solution is quite simple, we just need to swap these 2 lines
+    s_window.destroy();
+    SubsystemManager::exitAll();
+in PekanEngine::exit(), so it has to be like this:
+    SubsystemManager::exitAll();
+    s_window.destroy();
+It makes sense. We first exit all subsystems, because they can be dependant on the window,
+and then we destroy the window, which is definitely NOT dependant on subsystems.
+
+That's it. This fixes Demo04 for example, but Demo10 still doesn't work.
+
+Found out why Demo10 doesn't work. This time it's a bug in client code.
+Client code doesn't destroy all entities in destroy(). It destroys m_body but it has to additionally destroy the other entities:
+    m_scene->destroyEntity(m_leftArmJoint);
+    m_scene->destroyEntity(m_leftArm);
+    m_scene->destroyEntity(m_rightArmJoint);
+    m_scene->destroyEntity(m_rightArm);
+    m_scene->destroyEntity(m_leftLegJoint);
+    m_scene->destroyEntity(m_leftLeg);
+    m_scene->destroyEntity(m_rightLegJoint);
+    m_scene->destroyEntity(m_rightLeg);
+    m_scene->destroyEntity(m_head);
+    m_scene->destroyEntity(m_sword);
+Now it works. It closes fine.
+
+----------
+15.01.2026
+----------
+
+Demo09 doesn't close fine tho.
+Why?
+
+----------
+17.01.2026
+----------
+
+Debugged it.
+Found out the reason is PostProcessor.
+More specifically, when an application uses PostProcessor this global RenderObject
+    static RenderObject g_renderObject;
+in
+    PostProcessor.cpp
+is created and then nothing destroys it explicitly.
+OpenGL context is destroyed, and only after that this global variable g_renderObject
+is destroyed (at the end of the main function), calling RenderObject's destructor
+and hence Shader's destructor (and/or the destructor of other OpenGL primitives).
+That's where code hangs, because OpenGL context is already destroyed but we try to delete an OpenGL primitive.
+
+What we need to do is to properly exit PostProcessor in time, before destroying OpenGL context,
+and make sure we destroy all created OpenGL-based global variables.
+In PostProcessor.cpp these are the OpenGL-based global variables:
+    static FrameBuffer g_frameBufferMultisample;
+    static FrameBuffer g_frameBufferFinal;
+    static RenderObject g_renderObject;
+We need to make sure that all of them are properly destroyed upon exit.
+
+Created a new function in PostProcessor
+    static void exit();
+Made it private, because only GraphicsSubsystem will be able to call it.
+For that, of course, I also made GraphicsSubsystem be a friend to PostProcessor.
+Then we just need to call
+    PostProcessor::exit();
+in
+    GraphicsSubsystem::exit()
+That's it.
+Demo09 closes fine now.
+
+----------
+18.01.2026
+----------
+
+Demo08 doesn't close correctly.
+Why?
+
+I actually found 2 distinct reasons.
+1. In Demo08_Scene's exit() function we were missing this:
+        for (int i = 0; i < m_animTextures.size(); i++)
+        {
+            m_animTextures[i]->destroy();
+        }
+    Explicitly destroying the animation textures.
+    If we don't do that, this vector of texture pointers will be freed only after the end of the main function,
+    which as we already know leads to dangling OpenGL resources and hanging.
+2. In class Sprite we have this member
+        Graphics::Texture2D_ConstPtr m_texture;
+    It holds a shared pointer to the underlying texture (an OpenGL resource)
+    When a Sprite instance's destroy() function is called, nothing happens to this m_texture pointer.
+    It remains intact, still holding onto the texture, so the texure itself is not destroyed.
+    After the main function is finished, that's when Sprite's actual destructor is called,
+    and that's when m_texture is freed, but it's too late because the OpenGL context is already destroyed.
+    Solution is really simple, just set m_texture to null in Sprite's destroy() function:
+        m_texture = nullptr;
+    That way, the m_texture pointer no longer hold onto the underlying texture resource and so it can destroy itself.
+    (If there are no other pointers referencing it, of course).
+That's it.
+Demo09 closes correctly now.
+
+That's all the demos closing correctly now.
+
+Done.
+}

@@ -4,6 +4,7 @@
 #include "SubsystemManager.h"
 #include "RenderCommands.h"
 #include "RenderState.h"
+#include "PostProcessor.h"
 #include "PekanLogger.h"
 
 #include <glad/glad.h>
@@ -89,7 +90,9 @@ namespace Graphics
 	}
 
 	void GraphicsSubsystem::exit()
-	{}
+	{
+		PostProcessor::exit();
+	}
 
 #if PK_OPENGL_VERSION_MAJOR >= 4 && PK_OPENGL_VERSION_MINOR >= 3
 

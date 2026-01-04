@@ -33,6 +33,7 @@ namespace Renderer2D
         PK_ASSERT(isValid(), "Trying to destroy a Sprite instance that is not yet created.", "Pekan");
 
         Transformable2D::_destroy();
+        m_texture = nullptr;
 
         m_isValid = false;
 	}
