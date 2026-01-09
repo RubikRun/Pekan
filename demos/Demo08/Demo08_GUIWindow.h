@@ -36,11 +36,13 @@ namespace Demo
 
 		struct Widgets
 		{
-			Pekan::GUI::TextWidget_Ptr numberOfSpritesLabel =            std::make_shared<Pekan::GUI::TextWidget>();
-			Pekan::GUI::SliderIntWidget_Ptr numberOfSpritesWidget =      std::make_shared<Pekan::GUI::SliderIntWidget>();
-			Pekan::GUI::SliderFloatWidget_Ptr mouseStrengthWidget =      std::make_shared<Pekan::GUI::SliderFloatWidget>();
-			Pekan::GUI::SliderFloatWidget_Ptr animSpeedWidget =          std::make_shared<Pekan::GUI::SliderFloatWidget>();
-			Pekan::GUI::FPSDisplayWidget_Ptr fpsDisplayWidget =          std::make_shared<Pekan::GUI::FPSDisplayWidget>();
+			Pekan::GUI::TextWidget_Ptr numberOfSpritesLabel =          std::make_shared<Pekan::GUI::TextWidget>();
+			Pekan::GUI::SliderIntWidget_Ptr numberOfSpritesWidget =    std::make_shared<Pekan::GUI::SliderIntWidget>();
+			Pekan::GUI::TextWidget_Ptr mouseStrengthLabel =            std::make_shared<Pekan::GUI::TextWidget>();
+			Pekan::GUI::SliderFloatWidget_Ptr mouseStrengthWidget =    std::make_shared<Pekan::GUI::SliderFloatWidget>();
+			Pekan::GUI::TextWidget_Ptr animSpeedLabel =                std::make_shared<Pekan::GUI::TextWidget>();
+			Pekan::GUI::SliderFloatWidget_Ptr animSpeedWidget =        std::make_shared<Pekan::GUI::SliderFloatWidget>();
+			Pekan::GUI::FPSDisplayWidget_Ptr fpsDisplayWidget =        std::make_shared<Pekan::GUI::FPSDisplayWidget>();
 		} gui;
 	};
 
