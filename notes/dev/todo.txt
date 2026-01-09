@@ -271,3 +271,7 @@
                         Looks like sometimes yes, sometimes no.
                         In the case above - probably not - because renderFunction() needs the whole registry
                         in order to calculate world matrix correctly.
+
+0089 26.12.2025 (TODO): Relative paths don't work if you launch an application from .exe file, not from Visual Studio
+
+0090 09.01.2026 (TODO): Figure out a way to pass CMake options to gen.bat
