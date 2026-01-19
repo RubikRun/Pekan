@@ -1662,3 +1662,11 @@ That's all the demos closing correctly now.
 
 Done.
 }
+
+{
+Looked at TO-DO task 0088.
+
+Looks like we can't actually use view in any of our cases. Keep it in mind for the future tho, but in current code it's already good.
+
+Done.
+}
