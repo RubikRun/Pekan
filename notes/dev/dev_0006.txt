@@ -1670,3 +1670,25 @@ Looks like we can't actually use view in any of our cases. Keep it in mind for t
 
 Done.
 }
+
+----------
+19.01.2026
+----------
+
+{
+Let's look at TO-DO task 0089.
+
+Added a post-build command in each demo's CMake file (except Demo05 and Demo07, they don't have any resources)
+that copies the resources/assets/Shaders folder to the build folder so that each demo's .exe can access resources
+by relative path.
+
+----------
+19.01.2026
+----------
+
+Regenerated and built all demos.
+Tried running each demo using its .exe file, in both Debug and Release mode.
+Seems to work fine.
+
+Done.
+}

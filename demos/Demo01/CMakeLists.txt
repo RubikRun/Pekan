@@ -22,3 +22,11 @@ target_link_libraries(Demo01 PRIVATE
 # Set Demo01's working directory to be Demo01's source directory
 # so that we can write filepaths of resources relative to Demo01's source directory.
 set_target_properties(Demo01 PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
+
+# Copy resources to build directory so the executable can find them when run directly
+add_custom_command(TARGET Demo01 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/resources
+        $<TARGET_FILE_DIR:Demo01>/resources
+    COMMENT "Copying Demo01 resources to build directory"
+)

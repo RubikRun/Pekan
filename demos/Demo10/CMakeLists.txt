@@ -24,3 +24,11 @@ target_link_libraries(Demo10 PRIVATE
 
 # Set Demo10's working directory to be Demo10's source directory
 set_target_properties(Demo10 PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
+
+# Copy assets to build directory so the executable can find them when run directly
+add_custom_command(TARGET Demo10 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/assets
+        $<TARGET_FILE_DIR:Demo10>/assets
+    COMMENT "Copying Demo10 assets to build directory"
+)
