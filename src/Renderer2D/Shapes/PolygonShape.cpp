@@ -193,7 +193,7 @@ namespace Renderer2D
         if (RenderState::isEnabledFaceCulling())
         {
             // If transform's orientation and indices orientation don't match
-            if (MathUtils::isOrientationReversedByTransform(transformMatrix) != m_isReversedIndices)
+            if (MathUtils::isOrientationReversedByTransform(worldMatrix) != m_isReversedIndices)
             {
                 // "Reverse" indices, flip every triangle
                 for (size_t i = 0; i + 2 < m_indices.size(); i += 3)

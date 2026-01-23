@@ -1692,3 +1692,38 @@ Seems to work fine.
 
 Done.
 }
+
+{
+Today I did TO-DO task 0090.
+
+Updated
+    gen.bat
+script to pass along options in this format "-DOPTION=VALUE" or "-DOPTION VALUE" to CMake.
+So now the script can be used, for example, to set this CMake option
+    WITH_DEMO_PROJECTS
+to OFF when invoking the CMake command and generating the Visual Studio solution.
+That's how it would be done:
+    gen.bat -DWITH_DEMO_PROJECTS=OFF
+or
+    gen.bat -DWITH_DEMO_PROJECTS OFF
+That's it.
+
+Tested a few different scenarios.
+It works.
+
+(
+    While testing I noticed a small bug.
+    Build is broken if PEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING option is ON.
+    It fails to build because of this line
+        if (MathUtils::isOrientationReversedByTransform(transformMatrix) != m_isReversedIndices)
+    in
+        PolygonShape.cpp    ( in updateVerticesWorld() )
+    This "transformMatrix" there should be "worldMatrix", like this:
+        if (MathUtils::isOrientationReversedByTransform(worldMatrix) != m_isReversedIndices)
+    Recently we renamed "transformMatrix" to "worldMatrix" in this function
+    and apparently we forgot to change it on this line.
+    Fixed.
+)
+
+Done.
+}

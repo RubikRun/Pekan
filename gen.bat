@@ -1,11 +1,61 @@
 :: A batch script to generate a Visual Studio solution using CMake
-:: You can pass "--clean" as an argument to remove the existing build directory (if any) before generation.
+::
+:: Usage:
+::   gen.bat [--clean] [-DOPTION=VALUE ...]
+::
+:: Flags:
+::   --clean    --->    Removes existing build directory before generation
+::
+:: CMake Options:
+::   You can pass any CMake option using -DOPTION=VALUE format.
+::   All -D options will be forwarded directly to CMake.
+::   See CMakeLists.txt files for available project-specific options.
+::
+:: Examples:
+::   gen.bat --clean
+::   gen.bat -DWITH_DEMO_PROJECTS=OFF
+::   gen.bat --clean -DPEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING=ON
+::   gen.bat -DWITH_DEMO_PROJECTS=OFF -DPEKAN_ENABLE_2D_SHAPES_ORIENTATION_CHECKING=ON
 
 @echo off
 setlocal enableextensions enabledelayedexpansion
 
-:: Handle "--clean" flag
+:: Initialize variables
+set CLEAN_BUILD=0
+set CMAKE_OPTIONS=
+
+:: Parse all arguments
+:parse_args
+if "%~1"=="" goto args_done
 if "%~1"=="--clean" (
+    set CLEAN_BUILD=1
+    shift
+    goto parse_args
+)
+:: Collect all -D options for CMake
+set ARG=%~1
+if "!ARG:~0,2!"=="-D" (
+    :: Check if the argument contains '='
+    echo !ARG! | findstr /C:"=" >nul
+    if errorlevel 1 (
+        :: No '=' found, consume next argument as the value
+        set CMAKE_OPTIONS=!CMAKE_OPTIONS! %~1=%~2
+        shift
+        shift
+    ) else (
+        :: '=' found, use as-is
+        set CMAKE_OPTIONS=!CMAKE_OPTIONS! %~1
+        shift
+    )
+    goto parse_args
+)
+echo WARNING: Unknown argument '%~1' ignored
+shift
+goto parse_args
+:args_done
+
+:: Handle clean build
+if %CLEAN_BUILD%==1 (
     if exist "build" (
         echo Removing existing build directory...
         rmdir /s /q "build"
@@ -57,9 +107,18 @@ if not defined VS_YEAR (
 set GENERATOR="Visual Studio %VS_YEAR%"
 
 echo Using CMake generator: %GENERATOR%
+if defined CMAKE_OPTIONS (
+    echo Using CMake options:%CMAKE_OPTIONS%
+)
 
 :: Run VS CMake to generate a Visual Studio solution
-%VS_CMAKE% -G %GENERATOR% -A x64 -S . -B build
+echo.
+echo --------------------------------------------------------------------------------
+echo Running CMake command:
+echo %VS_CMAKE% -G %GENERATOR% -A x64 -S . -B build%CMAKE_OPTIONS%
+echo --------------------------------------------------------------------------------
+echo.
+%VS_CMAKE% -G %GENERATOR% -A x64 -S . -B build%CMAKE_OPTIONS%
 if errorlevel 1 (
     echo ERROR: CMake generation failed.
     exit /b 1
