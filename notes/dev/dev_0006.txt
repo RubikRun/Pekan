@@ -1727,3 +1727,46 @@ It works.
 
 Done.
 }
+
+----------
+23.01.2026
+----------
+
+{
+All TO-DO tasks are done now, except for optimization ones.
+It's a good idea to leave those for a bit later,
+as to not write a bunch of code that will be overwritten later.
+
+It's time to remove old shape classes and old sprite class,
+and any other old code that is now obsolete because of ECS.
+
+TODO: at the end we can remove shaders that are not used anywhere in the remaining code
+
+----------
+28.01.2026
+----------
+
+Removed all obsoleted code.
+A bunch of files like
+    Sprite.h
+    Sprite.cpp
+    Shape.h
+    Shape.cpp
+    RectangleShape.h
+    RectangleShape.cpp
+    Transformable2D.h
+    Transformable2D.cpp
+    etc.
+together with all places where they are referenced.
+
+Demo09 and Demo10 build and run properly,
+because they are built on new ECS code only.
+
+Demo00, Demo01, Demo02 and Demo03 also build and run properly,
+because they are built on the Graphics module only, not using anythin from Renderer2D.
+
+Demo04, Demo05, Demo06, Demo07 and Demo08 fail to build currently,
+because they use old non-ECS code from Renderer2D (shape classes and sprite class mostly)
+We'll have to rewrite those demos to use the new ECS API.
+
+}

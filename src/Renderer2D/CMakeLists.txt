@@ -11,45 +11,22 @@ add_library(Renderer2D STATIC
     RenderSystem2D.cpp
     Utils2D.h
     Utils2D.cpp
-    RenderBatch2D.h
-    RenderBatch2D.cpp
-    Camera2D.h
-    Camera2D.cpp
     CameraComponent2D.h
     CameraComponent2D.cpp
     CameraSystem2D.h
     CameraSystem2D.cpp
     CameraController2D.h
     CameraController2D.cpp
-    Line.h
-    Line.cpp
     LineComponent.h
     LineSystem.h
     LineSystem.cpp
-    Transformable2D.h
-    Transformable2D.cpp
     TransformComponent2D.h
     TransformComponent2D.cpp
     TransformSystem2D.h
     TransformSystem2D.cpp
-    Vertex2D.h
     Scene2D.h
     Scene2D.cpp
     VerticesAttributeView.h
-    Shapes/Shape.h
-    Shapes/Shape.cpp
-    Shapes/TriangleShape.h
-    Shapes/TriangleShape.cpp
-    Shapes/RectangleShape.h
-    Shapes/RectangleShape.cpp
-    Shapes/CircleShape.h
-    Shapes/CircleShape.cpp
-    Shapes/CircleShapeStatic.h
-    Shapes/CircleShapeStatic_impl.h
-    Shapes/PolygonShape.h
-    Shapes/PolygonShape.cpp
-    Shapes/LineShape.h
-    Shapes/LineShape.cpp
     Shapes/RectangleGeometryComponent.h
     Shapes/RectangleGeometrySystem.h
     Shapes/RectangleGeometrySystem.cpp
@@ -65,8 +42,6 @@ add_library(Renderer2D STATIC
     Shapes/PolygonGeometryComponent.h
     Shapes/PolygonGeometrySystem.h
     Shapes/PolygonGeometrySystem.cpp
-    Sprite/Sprite.h
-    Sprite/Sprite.cpp
     Sprite/SpriteComponent.h
     Sprite/SpriteSystem.h
     Sprite/SpriteSystem.cpp
@@ -77,12 +52,6 @@ add_library(Renderer2D STATIC
 
 # Group Shapes files under a virtual folder called "Shapes"
 SOURCE_GROUP("Source Files\\Shapes" FILES
-    Shapes/Shape.cpp
-    Shapes/TriangleShape.cpp
-    Shapes/RectangleShape.cpp
-    Shapes/LineShape.cpp
-    Shapes/CircleShape.cpp
-    Shapes/PolygonShape.cpp
     Shapes/RectangleGeometrySystem.cpp
     Shapes/LineGeometrySystem.cpp
     Shapes/CircleGeometrySystem.cpp
@@ -90,14 +59,6 @@ SOURCE_GROUP("Source Files\\Shapes" FILES
     Shapes/PolygonGeometrySystem.cpp
 )
 SOURCE_GROUP("Header Files\\Shapes" FILES
-    Shapes/Shape.h
-    Shapes/TriangleShape.h
-    Shapes/RectangleShape.h
-    Shapes/LineShape.h
-    Shapes/CircleShape.h
-    Shapes/CircleShapeStatic.h
-    Shapes/CircleShapeStatic_impl.h
-    Shapes/PolygonShape.h
     Shapes/RectangleGeometryComponent.h
     Shapes/RectangleGeometrySystem.h
     Shapes/LineGeometryComponent.h
@@ -111,11 +72,9 @@ SOURCE_GROUP("Header Files\\Shapes" FILES
 )
 # Group Sprite files under a virtual folder called "Sprite"
 SOURCE_GROUP("Source Files\\Sprite" FILES
-    Sprite/Sprite.cpp
     Sprite/SpriteSystem.cpp
 )
 SOURCE_GROUP("Header Files\\Sprite" FILES
-    Sprite/Sprite.h
     Sprite/SpriteComponent.h
     Sprite/SpriteSystem.h
     Sprite/SpriteVertex.h

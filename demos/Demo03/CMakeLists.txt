@@ -17,7 +17,7 @@ add_executable(Demo03
 # Set link libraries for Demo03
 target_link_libraries(Demo03 PRIVATE
     Core
-    Renderer2D
+    Graphics
 )
 
 # Set Demo03's working directory to be Demo03's source directory

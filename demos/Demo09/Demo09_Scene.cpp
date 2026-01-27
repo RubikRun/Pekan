@@ -16,6 +16,7 @@
 #include "Image.h"
 #include "Renderer2DSubsystem.h"
 #include "PostProcessor.h"
+#include "Shader.h"
 #include "ShaderPreprocessor.h"
 #include "PekanEngine.h"
 #include "PekanLogger.h"

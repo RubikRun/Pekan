@@ -278,3 +278,8 @@
 
 0091 18.01.2026 (TODO): Optimize away multiple calls to CameraSystem2D::getPrimaryCamera(registry) in RenderSystem2D and SpriteSystem.
                         We can retrieve the camera component just once in the beginning of the render function, and cache it.
+
+0092 24.01.2026 (TODO): This line in the main CMakeLists.txt file
+                            if(EXISTS "${CMAKE_SOURCE_DIR}/dep/entt/single_include")
+                        is problematic, because if Pekan is used as a dependency to another project,
+                        then CMAKE_SOURCE_DIR will be pointing to that project's source directory, NOT Pekan's source directory

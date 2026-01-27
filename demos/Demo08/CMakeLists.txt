@@ -16,7 +16,6 @@ add_executable(Demo08
 target_link_libraries(Demo08 PRIVATE
     Core
     Renderer2D
-    Tools
     GUI
 )
 

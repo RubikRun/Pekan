@@ -13,52 +13,19 @@ namespace Pekan
 namespace Renderer2D
 {
 
-	// A list of .pkshad files that need to be preprocessed when Renderer2D is initialized
-	constexpr size_t PKSHAD_FILES_COUNT = 1;
-	constexpr const char* PKSHAD_FILES[PKSHAD_FILES_COUNT] =
-	{
-		PEKAN_RENDERER2D_ROOT_DIR "/Shaders/2D_Batch_FragmentShader.pkshad"
-	};
-
-	// Preprocesses all .pkshad files needed by Renderer2D
-	static void preprocessPkshadFiles();
-
-	static Renderer2DSubsystem g_renderer2DSystem;
+	static Renderer2DSubsystem g_renderer2DSubsystem;
 	
 	void Renderer2DSubsystem::registerAsSubsystem()
 	{
-		SubsystemManager::registerSubsystem(&g_renderer2DSystem);
+		SubsystemManager::registerSubsystem(&g_renderer2DSubsystem);
 	}
-
-	Camera2D_ConstWeakPtr Renderer2DSubsystem::s_camera;
-	RenderBatch2D Renderer2DSubsystem::s_batch;
 
 	void Renderer2DSubsystem::beginFrame()
 	{
-		s_batch.clear();
 	}
 
 	void Renderer2DSubsystem::endFrame()
 	{
-		Camera2D_ConstPtr camera = s_camera.lock();
-		s_batch.render(camera);
-	}
-
-	glm::vec2 Renderer2DSubsystem::getMousePosition()
-	{
-		Camera2D_ConstPtr camera = s_camera.lock();
-
-		if (camera == nullptr)
-		{
-			PK_LOG_ERROR("Trying to get mouse position in camera space, but there is no camera set in Renderer2DSubsystem.", "Pekan");
-			return { -1.0f, -1.0f };
-		}
-
-		// Get mouse position in window space
-		const glm::vec2 mousePosWindow = PekanEngine::getMousePosition();
-		// Convert mouse position from window space to world space
-		const glm::vec2 mousePosWorld = camera->windowToWorldPosition(mousePosWindow);
-		return mousePosWorld;
 	}
 
 	glm::vec2 Renderer2DSubsystem::getMousePosition_ECS(const entt::registry& registry)
@@ -74,82 +41,16 @@ namespace Renderer2D
 
 	bool Renderer2DSubsystem::init()
 	{
-		preprocessPkshadFiles();
-		s_batch.create();
-
 		return true;
 	}
 
 	void Renderer2DSubsystem::exit()
 	{
-		s_batch.destroy();
 	}
 
 	ISubsystem* Renderer2DSubsystem::getParent()
 	{
 		return GraphicsSubsystem::getInstance();
-	}
-
-	void Renderer2DSubsystem::submitForRendering(const Shape& shape)
-	{
-		// Add shape to batch.
-		// If it couldn't be added, this means that the batch is full,
-		if (!s_batch.addShape(shape))
-		{
-			Camera2D_ConstPtr camera = s_camera.lock();
-			// so we can render the batch and clear it, effectively starting a new one.
-			s_batch.render(camera);
-			s_batch.clear();
-			// Finally we need to add the shape to the new batch.
-			// If it couldn't be added again, to a fresh new batch, something is definitely wrong.
-			if (!s_batch.addShape(shape))
-			{
-				PK_LOG_ERROR("Failed to add a shape to the internal RenderBatch2D that was just cleared.", "Pekan");
-			}
-		}
-	}
-
-	void Renderer2DSubsystem::submitForRendering(const Sprite& sprite)
-	{
-		// Add sprite to batch.
-		// If it couldn't be added, this means that the batch is full,
-		if (!s_batch.addSprite(sprite))
-		{
-			Camera2D_ConstPtr camera = s_camera.lock();
-			// so we can render the batch and clear it, effectively starting a new one.
-			s_batch.render(camera);
-			s_batch.clear();
-			// Finally we need to add the sprite to the new batch.
-			// If it couldn't be added again, to a fresh new batch, something is definitely wrong.
-			if (!s_batch.addSprite(sprite))
-			{
-				PK_LOG_ERROR("Failed to add a sprite to the internal RenderBatch2D that was just cleared.", "Pekan");
-			}
-		}
-	}
-
-	static void preprocessPkshadFiles()
-	{
-		const int maxTextureSlots = RenderState::getMaxTextureSlots();
-		const std::string maxTextureSlotsString = std::to_string(maxTextureSlots);
-
-		// A list of substitution lists, one for each .pkshad file
-		const std::unordered_map<std::string, std::string> PKSHAD_FILES_SUBSTITUTIONS[PKSHAD_FILES_COUNT] =
-		{
-			{
-				{ "MAX_TEXTURE_SLOTS", maxTextureSlotsString }
-			}
-		};
-
-		// Preprocess each .pkshad file
-		for (size_t i = 0; i < PKSHAD_FILES_COUNT; i++)
-		{
-			ShaderPreprocessor::preprocess
-			(
-				PKSHAD_FILES[i],
-				PKSHAD_FILES_SUBSTITUTIONS[i]
-			);
-		}
 	}
 
 } // namespace Renderer2D

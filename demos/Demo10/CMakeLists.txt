@@ -19,7 +19,6 @@ target_link_libraries(Demo10 PRIVATE
     Core
     Renderer2D
     GUI
-    Tools
 )
 
 # Set Demo10's working directory to be Demo10's source directory

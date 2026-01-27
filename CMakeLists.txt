@@ -31,8 +31,6 @@ add_subdirectory(src/Graphics)
 add_subdirectory(src/Renderer2D)
 # Add GUI subdirectory
 add_subdirectory(src/GUI)
-# Add Tools subdirectory
-add_subdirectory(src/Tools)
 
 # Add GLFW subdirectory
 set(GLFW_BUILD_DOCS OFF)

@@ -2,7 +2,6 @@
 
 #include "Scene2D.h"
 #include "Player.h"
-#include "Camera2D.h"
 
 namespace Demo
 {

@@ -8,7 +8,6 @@
 #include "CameraSystem2D.h"
 #include "RenderObject.h"
 #include "Utils/FileUtils.h"
-#include "Camera2D.h"
 #include "PekanLogger.h"
 
 using namespace Pekan::Graphics;
