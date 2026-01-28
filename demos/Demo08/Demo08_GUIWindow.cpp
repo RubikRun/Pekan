@@ -10,7 +10,7 @@ namespace Demo
 	bool Demo08_GUIWindow::init()
 	{
 		gui.numberOfSpritesLabel->create(this, "Number Of Sprites");
-		gui.numberOfSpritesWidget->create(this, "", 4000, 1, 10000);
+		gui.numberOfSpritesWidget->create(this, "", 50, 1, 100);
 		gui.mouseStrengthLabel->create(this, "Mouse Strength");
 		gui.mouseStrengthWidget->create(this, 1.0f, 0.5f, 16.0f, "%.1f");
 		gui.animSpeedLabel->create(this, "Animation Speed");

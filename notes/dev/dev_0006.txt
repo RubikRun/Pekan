@@ -1769,4 +1769,12 @@ Demo04, Demo05, Demo06, Demo07 and Demo08 fail to build currently,
 because they use old non-ECS code from Renderer2D (shape classes and sprite class mostly)
 We'll have to rewrite those demos to use the new ECS API.
 
+    {
+    Integrated ECS in Demo08 today, but it doesn't fully work.
+    There is a missing feature in Pekan's ECS to make Demo08 work as it did before.
+    Namely, once we have all the sprites in a vector there is no way to render only a part of them.
+    We need to render only a part of them because GUI controls how many of them need to be rendered.
+    Currently there is no way to do that because if a sprite exists in the registry then the sprite will be rendered,
+    client code has no control over that.
+    }
 }
