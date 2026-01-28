@@ -1,38 +1,30 @@
 #pragma once
 
-#include "Layer.h"
-#include "RenderObject.h"
-#include "RectangleShape.h"
-#include "Camera2D.h"
-#include "Sprite.h"
-
-#include "Demo08_GUIWindow.h"
+#include "Scene2D.h"
+#include "Texture2D.h"
 
 #include <vector>
 
 namespace Demo
 {
 
-	class Demo08_Scene : public Pekan::Layer
+	class Demo08_GUIWindow;
+
+	class Demo08_Scene : public Pekan::Renderer2D::Scene2D
 	{
 
 	public:
 
-		Demo08_Scene(Pekan::PekanApplication* application) : Layer(application) {}
+		Demo08_Scene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
 
-		bool init() override;
-
-		void update(double deltaTime) override;
-
-		void render() const override;
-
-		void exit() override;
-		
 		void attachGUIWindow(const std::shared_ptr<Demo08_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
-		std::string getLayerName() const override { return "scene_layer"; }
-
 	private: /* functions */
+
+		bool _init() override;
+		void _exit() override;
+
+		void update(double deltaTime) override;
 
 		void createCamera();
 		void createSprites();
@@ -44,16 +36,16 @@ namespace Demo
 
 	private: /* variables */
 
-		std::vector<Pekan::Renderer2D::Sprite> m_sprites;
+		std::vector<entt::entity> m_sprites;
 		std::vector<glm::vec2> m_spritesVelocities;
 
-		Pekan::Renderer2D::RectangleShape m_centerSquare;
+		entt::entity m_centerSquare = entt::null;
 
-		Pekan::Renderer2D::Sprite m_animSprite;
+		entt::entity m_animSprite = entt::null;
 		std::vector<Pekan::Graphics::Texture2D_Ptr> m_animTextures;
 		int m_currAnimTextureIndex = 0;
 
-		Pekan::Renderer2D::Camera2D_Ptr m_camera;
+		entt::entity m_camera = entt::null;
 
 		int m_spritesCount = -1;
 		int m_spritesMaxCount = -1;
@@ -64,6 +56,12 @@ namespace Demo
 
 		// Time until the next update of the animation sprite
 		float m_timeTilAnimUpdate = 0.0f;
+
+		// Cached window size
+		glm::vec2 m_windowSize = { 0.0f, 0.0f };
+
+		// Cached ECS registry reference
+		entt::registry& m_registry = getRegistry();
 	};
 
 } // namespace Demo
