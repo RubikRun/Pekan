@@ -3,6 +3,7 @@
 #include "CameraComponent2D.h"
 #include "PekanEngine.h"
 #include "PekanLogger.h"
+#include "Entity/DisabledComponent.h"
 
 namespace Pekan
 {
@@ -23,7 +24,7 @@ namespace Renderer2D
 
     const CameraComponent2D& CameraSystem2D::getPrimaryCamera(const entt::registry& registry)
     {
-        const auto view = registry.view<CameraComponent2D>();
+        const auto view = registry.view<CameraComponent2D>(entt::exclude<DisabledComponent>);
         for (const entt::entity entity : view)
         {
             const CameraComponent2D& camera = view.get<CameraComponent2D>(entity);
@@ -37,7 +38,7 @@ namespace Renderer2D
 
     const CameraComponent2D* CameraSystem2D::getControllableCamera(const entt::registry& registry)
     {
-        const auto view = registry.view<CameraComponent2D>();
+        const auto view = registry.view<CameraComponent2D>(entt::exclude<DisabledComponent>);
         for (const entt::entity entity : view)
         {
             const CameraComponent2D& camera = view.get<CameraComponent2D>(entity);
@@ -51,7 +52,7 @@ namespace Renderer2D
 
     CameraComponent2D* CameraSystem2D::getControllableCamera(entt::registry& registry)
     {
-        const auto view = registry.view<CameraComponent2D>();
+        const auto view = registry.view<CameraComponent2D>(entt::exclude<DisabledComponent>);
         for (const entt::entity entity : view)
         {
             CameraComponent2D& camera = view.get<CameraComponent2D>(entity);

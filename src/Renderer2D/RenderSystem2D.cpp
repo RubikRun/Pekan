@@ -6,6 +6,7 @@
 #include "RenderObject.h"
 #include "CameraComponent2D.h"
 #include "CameraSystem2D.h"
+#include "Entity/DisabledComponent.h"
 
 ////////// Geometry components and systems //////////
 #include "RectangleGeometryComponent.h"
@@ -71,7 +72,7 @@ namespace Renderer2D
     // Type alias for a vertex of a line
     typedef glm::vec2 VertexOfLine;
 
-    // Renders all entities with given component types
+    // Renders all entities with given component types (except those with DisabledComponent)
     // by calling a given render function for each entity
     //
     // @tparam ComponentTypes...  Component types that an entity must have to be rendered
@@ -81,7 +82,7 @@ namespace Renderer2D
     void renderAllEntitiesWith(const entt::registry& registry, RenderFunction renderFunction)
     {
         // Create a view over all entities that have the given components
-        const auto view = registry.view<ComponentTypes...>();
+        const auto view = registry.view<ComponentTypes...>(entt::exclude<DisabledComponent>);
         // Iterate over entities and call the provided render function
         for (auto entity : view)
         {
@@ -90,7 +91,7 @@ namespace Renderer2D
     }
 
     // Renders all entities that have all components from ComponentTypesToInclude
-    // and do NOT have any components from ComponentTypesToExclude,
+    // and do NOT have any components from ComponentTypesToExclude (except those with DisabledComponent),
     // by calling a given render function for each entity
     //
     // @tparam ComponentTypesToInclude...  Component types that an entity must have to be rendered
@@ -107,7 +108,7 @@ namespace Renderer2D
     {
         // Create a view over all entities that
         // have the given components to include and do NOT have the given components to exclude
-        const auto view = registry.view<ComponentTypesToInclude...>(entt::exclude<ComponentTypesToExclude...>);
+        const auto view = registry.view<ComponentTypesToInclude...>(entt::exclude<DisabledComponent, ComponentTypesToExclude...>);
         // Iterate over entities and call the provided render function
         for (auto entity : view)
         {

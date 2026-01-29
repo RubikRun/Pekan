@@ -1776,5 +1776,39 @@ We'll have to rewrite those demos to use the new ECS API.
     We need to render only a part of them because GUI controls how many of them need to be rendered.
     Currently there is no way to do that because if a sprite exists in the registry then the sprite will be rendered,
     client code has no control over that.
+
+    To fix that we need a mechanism for disabling an entity.
+    The simplest and best for performance solution is to have a
+        DisabledComponent
+    component that can be added to any entity to disable it.
+    Then all systems would have to ignore entities that have a DisabledComponent on them.
+
+    Sounds good, let's do it.
+    Created a file
+        DisabledComponent.h
+    under a new directory Entity, here:
+        src/Core/Entity
+    We literally don't need anything in DisabledComponent, just an empty struct:
+        struct DisabledComponent
+        {};
+    The only information that a DisabledComponent carries is the fact that it exists and is assigned to an entity.
+    Then, we need to modify all existing systems that get a view from a registry,
+    to exclude entities that have a DisabledComponent, for example in CameraSystem2D.cpp we have this line:
+        const auto view = registry.view<CameraComponent2D>();
+    for getting a view of all entities that have a CameraComponent2D.
+    We need to change it to:
+        const auto view = registry.view<CameraComponent2D>(entt::exclude<DisabledComponent>);
+    Now it's getting a view of all entities that have a CameraComponent2D and do NOT have a DisabledComponent.
+    Do this in all other places where we get a view from a registry.
+    That's it.
+
+    Now, in Demo08, in updateSprites() we can add DisabledComponent to these sprites:
+        for (size_t i = m_spritesCount; i < m_spritesMaxCount; i++)
+    And, we also need to make sure that these sprites
+        for (int i = 0; i < m_spritesCount; i++)
+    don't have a DisabledComponent.
+    It works now.
+
+    Done.
     }
 }

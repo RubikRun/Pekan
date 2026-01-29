@@ -11,6 +11,7 @@
 #include "SpriteComponent.h"
 #include "RectangleGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
+#include "Entity/DisabledComponent.h"
 
 #include <algorithm>
 
@@ -235,7 +236,7 @@ namespace Demo
 		const float mouseStrength = m_guiWindow->getMouseStrength();
 
 		// Update each sprite's position, rotation and scale
-		for (size_t i = 0; i < m_spritesCount; i++)
+		for (int i = 0; i < m_spritesCount; i++)
 		{
 			// Get sprite's transform component
 			TransformComponent2D& transform = m_registry.get<TransformComponent2D>(m_sprites[i]);
@@ -270,6 +271,21 @@ namespace Demo
 				{ 0.98f, 0.98f },
 				{ 1.02f, 1.02f }
 			);
+
+			// Make sure sprite entity is not disabled
+			if (m_registry.any_of<DisabledComponent>(m_sprites[i]))
+			{
+				m_registry.remove<DisabledComponent>(m_sprites[i]);
+			}
+		}
+
+		// Disable any extra sprites that are beyond the current sprites count
+		for (int i = m_spritesCount; i < m_spritesMaxCount; i++)
+		{
+			if (!m_registry.any_of<DisabledComponent>(m_sprites[i]))
+			{
+				m_registry.emplace<DisabledComponent>(m_sprites[i]);
+			}
 		}
 	}
 

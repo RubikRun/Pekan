@@ -102,6 +102,7 @@ add_library(Core STATIC
     src/Core/Time/DeltaTimer.cpp
     src/Core/Time/RecurringCallback.h
     src/Core/Time/RecurringCallback.cpp
+    src/Core/Entity/DisabledComponent.h
 )
 
 # Group Logger files under a virtual folder called "Logger"
@@ -131,6 +132,8 @@ SOURCE_GROUP("Header Files\\Time" FILES
     src/Core/Time/DeltaTimer.h
     src/Core/Time/RecurringCallback.h
 )
+# Group Entity files under a virtual folder called "Entity"
+SOURCE_GROUP("Header Files\\Entity" FILES src/Core/Entity/DisabledComponent.h)
 
 # Set link libraries for Core
 target_link_libraries(Core PRIVATE glfw)

@@ -9,6 +9,7 @@
 #include "RenderObject.h"
 #include "Utils/FileUtils.h"
 #include "PekanLogger.h"
+#include "Entity/DisabledComponent.h"
 
 using namespace Pekan::Graphics;
 
@@ -230,7 +231,7 @@ namespace Renderer2D
     static void renderAllSprites<true>(const entt::registry& registry)
     {
         // Get a view of all entities with a sprite component and a transform component
-        const auto view = registry.view<SpriteComponent, TransformComponent2D>();
+        const auto view = registry.view<SpriteComponent, TransformComponent2D>(entt::exclude<DisabledComponent>);
         // Render each such entity
         for (entt::entity entity : view)
         {
@@ -242,7 +243,7 @@ namespace Renderer2D
     static void renderAllSprites<false>(const entt::registry& registry)
     {
         // Get a view of all entities with a sprite component but without a transform component
-        const auto view = registry.view<SpriteComponent>(entt::exclude<TransformComponent2D>);
+        const auto view = registry.view<SpriteComponent>(entt::exclude<DisabledComponent, TransformComponent2D>);
         // Render each such entity
         for (entt::entity entity : view)
         {
