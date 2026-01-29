@@ -144,8 +144,8 @@ namespace Demo
 		m_camera = createEntity();
 		// Add camera component to camera entity
 		CameraComponent2D cameraComponent;
-		cameraComponent.setWidth(m_windowSize.x);
-		cameraComponent.setHeight(m_windowSize.y);
+		cameraComponent.setWidth(m_windowSize.x, false);
+		cameraComponent.setHeight(m_windowSize.y, false);
 		m_registry.emplace<CameraComponent2D>(m_camera, cameraComponent);
 	}
 

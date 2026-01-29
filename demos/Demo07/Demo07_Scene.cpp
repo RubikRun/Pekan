@@ -1,134 +1,93 @@
 #include "Demo07_Scene.h"
 
+#include "Demo07_GUIWindow.h"
 #include "PekanLogger.h"
-#include "Utils/RandomizationUtils.h"
-#include "RenderCommands.h"
 #include "RenderState.h"
-#include "PekanEngine.h"
-#include "PekanTools.h"
-#include "Renderer2DSubsystem.h"
+
+#include "CameraComponent2D.h"
+#include "TransformComponent2D.h"
+#include "LineComponent.h"
+#include "LineGeometryComponent.h"
+#include "RectangleGeometryComponent.h"
+#include "CircleGeometryComponent.h"
+#include "TriangleGeometryComponent.h"
+#include "PolygonGeometryComponent.h"
+#include "SolidColorMaterialComponent.h"
 
 using namespace Pekan;
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
-using namespace Pekan::Tools;
 
 constexpr float CAMERA_SCALE = 10.0f;
 constexpr float DIVS_LENGTH = 0.1f;
 constexpr glm::vec4 COORD_SYS_COLOR = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
-constexpr float COORD_SYS_THICKNESS = 0.02f;
 
 namespace Demo
 {
 
-    bool Demo07_Scene::init()
+    bool Demo07_Scene::_init()
 	{
 		RenderState::enableMultisampleAntiAliasing();
 
 		createCamera();
 		createCoordSys();
-
-		m_rectangle.create(1.0f, 1.5f);
-		m_rectangle.setPosition({ 1.5f, 1.0f });
-		m_rectangle.setColor({ 1.0f, 0.0f, 0.0f, 1.0f });
-
-		m_circle.create(0.6f);
-		m_circle.setPosition({ -1.5f, 1.0f });
-		m_circle.setColor({ 0.0f, 1.0f, 0.0f, 1.0f });
-
-		m_circleStatic.create(0.6f);
-		m_circleStatic.setPosition({ 0.0f, 0.0f });
-		m_circleStatic.setColor({ 1.0f, 0.0f, 1.0f, 1.0f });
-
-		m_triangle.create(glm::vec2(-0.5, -0.5f),glm::vec2(0.5f, -0.5f), glm::vec2(0.0f, 0.5f));
-		m_triangle.setPosition({ 1.5f, -1.0f });
-		m_triangle.setColor({ 0.0f, 0.0f, 1.0f, 1.0f });
-
-		m_polygon.create
-		({
-			{  0.3f,  0.6f },
-			{  0.1f,  0.9f },
-			{ -0.3f,  0.8f },
-			{ -0.5f,  0.3f },
-			{ -0.1f, -0.2f },
-			{  0.5f,  0.0f }
-		});
-		m_polygon.setPosition({ -1.5f, -2.0f });
-		m_polygon.setColor({ 1.0f, 1.0f, 0.0f, 1.0f });
-
-		m_line.create({ -2.0f, -1.2f }, { 1.2f, 2.0f }, 0.02f);
-		m_line.setPosition({ 0.5f, 0.5f });
-		m_line.setColor({ 0.0f, 1.0f, 1.0f, 1.0f });
+		createShapes();
 
 		return true;
 	}
 
+	void Demo07_Scene::_exit()
+	{
+		destroyEntity(m_line);
+		destroyEntity(m_polygon);
+		destroyEntity(m_triangle);
+		destroyEntity(m_circle);
+		destroyEntity(m_rectangle);
+
+		for (entt::entity coordSysLine : m_coordSys)
+		{
+			destroyEntity(coordSysLine);
+		}
+
+		destroyEntity(m_camera);
+	}
+
 	void Demo07_Scene::update(double dt)
 	{
-		m_rectangle.setPosition(m_guiWindow->getRectanglePosition());
-		m_rectangle.setRotation(m_guiWindow->getRectangleRotation());
-		m_rectangle.setScale(m_guiWindow->getRectangleScale());
+		TransformComponent2D& rectangleTransform = m_registry.get<TransformComponent2D>(m_rectangle);
+		TransformComponent2D& circleTransform = m_registry.get<TransformComponent2D>(m_circle);
+		TransformComponent2D& triangleTransform = m_registry.get<TransformComponent2D>(m_triangle);
+		TransformComponent2D& polygonTransform = m_registry.get<TransformComponent2D>(m_polygon);
+		TransformComponent2D& lineTransform = m_registry.get<TransformComponent2D>(m_line);
 
-		m_circle.setPosition(m_guiWindow->getCirclePosition());
-		m_circle.setRotation(m_guiWindow->getCircleRotation());
-		m_circle.setScale(m_guiWindow->getCircleScale());
+		rectangleTransform.position = m_guiWindow->getRectanglePosition();
+		rectangleTransform.rotation = m_guiWindow->getRectangleRotation();
+		rectangleTransform.scaleFactor = m_guiWindow->getRectangleScale();
 
-		m_circleStatic.setPosition(m_guiWindow->getCircleStaticPosition());
-		m_circleStatic.setRotation(m_guiWindow->getCircleStaticRotation());
-		m_circleStatic.setScale(m_guiWindow->getCircleStaticScale());
+		circleTransform.position = m_guiWindow->getCirclePosition();
+		circleTransform.rotation = m_guiWindow->getCircleRotation();
+		circleTransform.scaleFactor = m_guiWindow->getCircleScale();
 
-		m_triangle.setPosition(m_guiWindow->getTrianglePosition());
-		m_triangle.setRotation(m_guiWindow->getTriangleRotation());
-		m_triangle.setScale(m_guiWindow->getTriangleScale());
+		triangleTransform.position = m_guiWindow->getTrianglePosition();
+		triangleTransform.rotation = m_guiWindow->getTriangleRotation();
+		triangleTransform.scaleFactor = m_guiWindow->getTriangleScale();
 
-		m_polygon.setPosition(m_guiWindow->getPolygonPosition());
-		m_polygon.setRotation(m_guiWindow->getPolygonRotation());
-		m_polygon.setScale(m_guiWindow->getPolygonScale());
+		polygonTransform.position = m_guiWindow->getPolygonPosition();
+		polygonTransform.rotation = m_guiWindow->getPolygonRotation();
+		polygonTransform.scaleFactor = m_guiWindow->getPolygonScale();
 
-		m_line.setPosition(m_guiWindow->getLinePosition());
-		m_line.setRotation(m_guiWindow->getLineRotation());
-		m_line.setScale(m_guiWindow->getLineScale());
-	}
-
-	void Demo07_Scene::render() const
-	{
-		Renderer2DSubsystem::beginFrame();
-
-		RenderCommands::clear();
-		m_rectangle.render();
-		m_circle.render();
-		m_circleStatic.render();
-		m_triangle.render();
-		m_polygon.render();
-		m_line.render();
-		for (const LineShape& csLine : m_coordSys)
-		{
-			csLine.render();
-		}
-
-		Renderer2DSubsystem::endFrame();
-	}
-
-	void Demo07_Scene::exit()
-	{
-		for (LineShape& csLine : m_coordSys)
-		{
-			csLine.destroy();
-		}
-		m_rectangle.destroy();
-		m_circle.destroy();
-		m_circleStatic.destroy();
-		m_triangle.destroy();
-		m_polygon.destroy();
-		m_line.destroy();
+		lineTransform.position = m_guiWindow->getLinePosition();
+		lineTransform.rotation = m_guiWindow->getLineRotation();
+		lineTransform.scaleFactor = m_guiWindow->getLineScale();
 	}
 
 	void Demo07_Scene::createCamera()
 	{
-		m_camera = std::make_shared<Camera2D>();
-		m_camera->create(CAMERA_SCALE);
-		Renderer2DSubsystem::setCamera(m_camera);
-		PekanTools::enableCameraController2D(m_camera);
+		m_camera = createEntity();
+		// Add camera component to camera entity
+		CameraComponent2D cameraComponent;
+		cameraComponent.setHeight(CAMERA_SCALE, true);
+		m_registry.emplace<CameraComponent2D>(m_camera, cameraComponent);
 	}
 
 	void Demo07_Scene::createCoordSys()
@@ -139,31 +98,66 @@ namespace Demo
 
 		m_coordSys.resize(divsCount * 4 + 2);
 		// Create horizontal and vertical line
-		m_coordSys[0].create({ -9999.0f, 0.0f }, { 9999.0f, 0.0f });
-		m_coordSys[1].create({ 0.0f, -9999.0f }, { 0.0f, 9999.0f });
+		m_coordSys[0] = createEntity();
+		m_registry.emplace<LineComponent>(m_coordSys[0], glm::vec2{ -9999.0f, 0.0f }, glm::vec2{ 9999.0f, 0.0f }, COORD_SYS_COLOR);
+		m_coordSys[1] = createEntity();
+		m_registry.emplace<LineComponent>(m_coordSys[1], glm::vec2{ 0.0f, -9999.0f }, glm::vec2{ 0.0f, 9999.0f }, COORD_SYS_COLOR);
 		// Create division lines in 4 directions
 		for (int i = 0; i < divsCount; i++)
 		{
-			m_coordSys[2 + i].create({ float(i + 1), -DIVS_LENGTH }, { float(i + 1), DIVS_LENGTH });
+			m_coordSys[2 + i] = createEntity();
+			m_registry.emplace<LineComponent>(m_coordSys[2 + i], glm::vec2{ float(i + 1), -DIVS_LENGTH }, glm::vec2{ float(i + 1), DIVS_LENGTH }, COORD_SYS_COLOR);
 		}
 		for (int i = 0; i < divsCount; i++)
 		{
-			m_coordSys[2 + divsCount + i].create({ float(-1 - i), -DIVS_LENGTH }, { float(-1 - i), DIVS_LENGTH });
+			m_coordSys[2 + divsCount + i] = createEntity();
+			m_registry.emplace<LineComponent>(m_coordSys[2 + divsCount + i], glm::vec2{ float(-1 - i), -DIVS_LENGTH }, glm::vec2{ float(-1 - i), DIVS_LENGTH }, COORD_SYS_COLOR);
 		}
 		for (int i = 0; i < divsCount; i++)
 		{
-			m_coordSys[2 + divsCount * 2 + i].create({ -DIVS_LENGTH, float(i + 1) }, { DIVS_LENGTH, float(i + 1) });
+			m_coordSys[2 + divsCount * 2 + i] = createEntity();
+			m_registry.emplace<LineComponent>(m_coordSys[2 + divsCount * 2 + i], glm::vec2{ -DIVS_LENGTH, float(i + 1) }, glm::vec2{ DIVS_LENGTH, float(i + 1) }, COORD_SYS_COLOR);
 		}
 		for (int i = 0; i < divsCount; i++)
 		{
-			m_coordSys[2 + divsCount * 3 + i].create({ -DIVS_LENGTH, float(-1 - i) }, { DIVS_LENGTH, float(-1 - i) });
+			m_coordSys[2 + divsCount * 3 + i] = createEntity();
+			m_registry.emplace<LineComponent>(m_coordSys[2 + divsCount * 3 + i], glm::vec2{ -DIVS_LENGTH, float(-1 - i) }, glm::vec2{ DIVS_LENGTH, float(-1 - i) }, COORD_SYS_COLOR);
 		}
-		// Set color and thickness of coordinate system
-		for (LineShape& csLine : m_coordSys)
-		{
-			csLine.setColor(COORD_SYS_COLOR);
-			csLine.setThickness(COORD_SYS_THICKNESS);
-		}
+	}
+
+	void Demo07_Scene::createShapes()
+	{
+		m_rectangle = createEntity();
+		m_registry.emplace<TransformComponent2D>(m_rectangle, glm::vec2{ 1.5f, 1.0f });
+		m_registry.emplace<RectangleGeometryComponent>(m_rectangle, 1.0f, 1.5f);
+		m_registry.emplace<SolidColorMaterialComponent>(m_rectangle, glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+
+		m_circle = createEntity();
+		m_registry.emplace<TransformComponent2D>(m_circle, glm::vec2{ -1.5f, 1.0f });
+		m_registry.emplace<CircleGeometryComponent>(m_circle, 0.6f);
+		m_registry.emplace<SolidColorMaterialComponent>(m_circle, glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+
+		m_triangle = createEntity();
+		m_registry.emplace<TransformComponent2D>(m_triangle, glm::vec2{ 1.5f, -1.0f });
+		m_registry.emplace<TriangleGeometryComponent>(m_triangle, glm::vec2(-0.5, -0.5f), glm::vec2(0.5f, -0.5f), glm::vec2(0.0f, 0.5f));
+		m_registry.emplace<SolidColorMaterialComponent>(m_triangle, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+		m_polygon = createEntity();
+		m_registry.emplace<TransformComponent2D>(m_polygon, glm::vec2{ -1.5f, -2.0f });
+		m_registry.emplace<PolygonGeometryComponent>(m_polygon, std::vector<glm::vec2>{
+			{  0.3f,  0.6f },
+			{  0.1f,  0.9f },
+			{ -0.3f,  0.8f },
+			{ -0.5f,  0.3f },
+			{ -0.1f, -0.2f },
+			{  0.5f,  0.0f }
+		});
+		m_registry.emplace<SolidColorMaterialComponent>(m_polygon, glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f });
+
+		m_line = createEntity();
+		m_registry.emplace<TransformComponent2D>(m_line, glm::vec2{ 0.5f, 0.5f });
+		m_registry.emplace<LineGeometryComponent>(m_line, glm::vec2{ -2.0f, -1.2f }, glm::vec2{ 1.2f, 2.0f }, 0.02f);
+		m_registry.emplace<SolidColorMaterialComponent>(m_line, glm::vec4{ 0.0f, 1.0f, 1.0f, 1.0f });
 	}
 
 } // namespace Demo

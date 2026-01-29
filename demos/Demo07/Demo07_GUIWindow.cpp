@@ -9,21 +9,19 @@ namespace Demo
 
 	constexpr float CAMERA_SIZE = 10.0f;
 
-	constexpr const char* const SHAPE_TYPE_NAMES[6] =
+	constexpr const char* const SHAPE_TYPE_NAMES[5] =
 	{
 		"Rectangle",
 		"Circle",
-		"Circle Static",
 		"Triangle",
 		"Polygon",
 		"Line"
 	};
 
-	static glm::vec2 SHAPE_TYPE_INITIAL_POSITIONS[6] =
+	static glm::vec2 SHAPE_TYPE_INITIAL_POSITIONS[5] =
 	{
 		{ 1.5f, 1.0f },
 		{ -1.5f, 1.0f },
-		{ 0.0f, 0.0f },
 		{ 1.5f, -1.0f },
 		{ -1.5f, -2.0f },
 		{ -1.5f, -2.0f }
@@ -31,7 +29,7 @@ namespace Demo
 
 	bool Demo07_GUIWindow::init()
 	{
-		for (size_t i = 0; i < 6; ++i)
+		for (size_t i = 0; i < 5; ++i)
 		{
 			gui.shapeTypeWidgets[i].label->create(this, SHAPE_TYPE_NAMES[i]);
 			gui.shapeTypeWidgets[i].separator->create(this);
@@ -39,7 +37,7 @@ namespace Demo
 			gui.shapeTypeWidgets[i].rotationWidget->create(this, "Rotation", 0.0f, -PI, PI * 2.0f);
 			gui.shapeTypeWidgets[i].scaleWidget->create(this, "Scale", { 1.0f, 1.0f }, -3.0f, 3.0f);
 
-			if (i < 5)
+			if (i < 4)
 			{
 				gui.newLineWidgets[i]->create(this);
 			}

@@ -1811,4 +1811,20 @@ We'll have to rewrite those demos to use the new ECS API.
 
     Done.
     }
+
+    ----------
+    29.01.2026
+    ----------
+
+    {
+    Integrated ECS in Demo07 today.
+        (
+        A thing worth mentioning is that I removed the "static circle" from the demo,
+        because we currently don't have static circles, we have only one type of circle.
+        Not sure if we'll have static circles in the future.
+        ("static" as in having a fixed number of vertices and allocating that memory on the stack if possible)
+        )
+    It works.
+    Done.
+    }
 }

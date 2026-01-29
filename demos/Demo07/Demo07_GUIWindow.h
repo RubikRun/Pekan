@@ -27,21 +27,17 @@ namespace Demo
 		float getCircleRotation() const { return gui.shapeTypeWidgets[1].rotationWidget->getValue(); }
 		glm::vec2 getCircleScale() const { return gui.shapeTypeWidgets[1].scaleWidget->getValue(); }
 
-		glm::vec2 getCircleStaticPosition() const { return gui.shapeTypeWidgets[2].positionWidget->getValue(); }
-		float getCircleStaticRotation() const { return gui.shapeTypeWidgets[2].rotationWidget->getValue(); }
-		glm::vec2 getCircleStaticScale() const { return gui.shapeTypeWidgets[2].scaleWidget->getValue(); }
+		glm::vec2 getTrianglePosition() const { return gui.shapeTypeWidgets[2].positionWidget->getValue(); }
+		float getTriangleRotation() const { return gui.shapeTypeWidgets[2].rotationWidget->getValue(); }
+		glm::vec2 getTriangleScale() const { return gui.shapeTypeWidgets[2].scaleWidget->getValue(); }
 
-		glm::vec2 getTrianglePosition() const { return gui.shapeTypeWidgets[3].positionWidget->getValue(); }
-		float getTriangleRotation() const { return gui.shapeTypeWidgets[3].rotationWidget->getValue(); }
-		glm::vec2 getTriangleScale() const { return gui.shapeTypeWidgets[3].scaleWidget->getValue(); }
+		glm::vec2 getPolygonPosition() const { return gui.shapeTypeWidgets[3].positionWidget->getValue(); }
+		float getPolygonRotation() const { return gui.shapeTypeWidgets[3].rotationWidget->getValue(); }
+		glm::vec2 getPolygonScale() const { return gui.shapeTypeWidgets[3].scaleWidget->getValue(); }
 
-		glm::vec2 getPolygonPosition() const { return gui.shapeTypeWidgets[4].positionWidget->getValue(); }
-		float getPolygonRotation() const { return gui.shapeTypeWidgets[4].rotationWidget->getValue(); }
-		glm::vec2 getPolygonScale() const { return gui.shapeTypeWidgets[4].scaleWidget->getValue(); }
-
-		glm::vec2 getLinePosition() const { return gui.shapeTypeWidgets[5].positionWidget->getValue(); }
-		float getLineRotation() const { return gui.shapeTypeWidgets[5].rotationWidget->getValue(); }
-		glm::vec2 getLineScale() const { return gui.shapeTypeWidgets[5].scaleWidget->getValue(); }
+		glm::vec2 getLinePosition() const { return gui.shapeTypeWidgets[4].positionWidget->getValue(); }
+		float getLineRotation() const { return gui.shapeTypeWidgets[4].rotationWidget->getValue(); }
+		glm::vec2 getLineScale() const { return gui.shapeTypeWidgets[4].scaleWidget->getValue(); }
 
 	private: /* functions */
 
@@ -59,15 +55,14 @@ namespace Demo
 				Pekan::GUI::SliderFloat2Widget_Ptr positionWidget =    std::make_shared<Pekan::GUI::SliderFloat2Widget>();
 				Pekan::GUI::SliderFloatWidget_Ptr rotationWidget =     std::make_shared<Pekan::GUI::SliderFloatWidget>();
 				Pekan::GUI::SliderFloat2Widget_Ptr scaleWidget =       std::make_shared<Pekan::GUI::SliderFloat2Widget>();
-			} shapeTypeWidgets[6];
+			} shapeTypeWidgets[5];
 
-			Pekan::GUI::NewLineWidget_Ptr newLineWidgets[5] =
+			Pekan::GUI::NewLineWidget_Ptr newLineWidgets[4] =
 			{
 				std::make_shared<Pekan::GUI::NewLineWidget>(),
 				std::make_shared<Pekan::GUI::NewLineWidget>(),
 				std::make_shared<Pekan::GUI::NewLineWidget>(),
 				std::make_shared<Pekan::GUI::NewLineWidget>(),
-				std::make_shared<Pekan::GUI::NewLineWidget>()
 			};
 		} gui;
 	};

@@ -4,9 +4,7 @@
 #include "Demo07_GUIWindow.h"
 
 #include "PekanEngine.h"
-using Pekan::PekanEngine;
 using Pekan::ApplicationProperties;
-using Pekan::WindowProperties;
 using Pekan::LayerStack;
 
 namespace Demo
