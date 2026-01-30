@@ -1,9 +1,15 @@
 #include "Demo05_Scene.h"
+
+#include "Demo05_GUIWindow.h"
 #include "PekanLogger.h"
 #include "Utils/RandomizationUtils.h"
-#include "RenderCommands.h"
+#include "RenderState.h"
 #include "Renderer2DSubsystem.h"
-#include "PekanTools.h"
+
+#include "CameraComponent2D.h"
+#include "LineComponent.h"
+#include "LineGeometryComponent.h"
+#include "SolidColorMaterialComponent.h"
 
 #include <glm/gtc/constants.hpp>
 constexpr float PI = glm::pi<float>();
@@ -20,39 +26,66 @@ constexpr float CAMERA_SCALE = MTT0_RADIUS * 5.0f;
 
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
-using namespace Pekan::Tools;
 
 namespace Demo
 {
 
-    bool Demo05_Scene::init()
+    bool Demo05_Scene::_init()
     {
         RenderState::enableMultisampleAntiAliasing();
         // Enable and configure blending
         RenderState::enableBlending();
         RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
+        // Create lines for MTT0 (entities with LineComponent)
         for (int i = 0; i < MTT0_SUBDIVS; i++)
         {
-            m_lines[i].create({ 0.0f, 0.0f }, { 0.0f, 0.0f });
-            m_lines[i].setColor({ 0.9f, 0.9f, 0.9f, 1.0f });
+            m_lines[i] = createEntity();
+            m_registry.emplace<LineComponent>(m_lines[i], glm::vec2{ 0.0f, 0.0f }, glm::vec2{ 0.0f, 0.0f }, glm::vec4{ 0.9f, 0.9f, 0.9f, 1.0f });
         }
+        // Create lines for MTT1 (entities with LineGeometryComponent and SolidColorMaterialComponent)
         for (int i = 0; i < MTT1_SUBDIVS; i++)
         {
-            m_lineShapes[i].create({ 0.0f, 0.0f }, { 0.0f, 0.0f });
-            m_lineShapes[i].setColor({ 0.9f, 0.9f, 0.9f, 1.0f });
-            m_lineShapes[i].setThickness(0.001f);
+            m_lineShapes[i] = createEntity();
+            m_registry.emplace<LineGeometryComponent>(m_lineShapes[i], glm::vec2{ 0.0f, 0.0f }, glm::vec2{ 0.0f, 0.0f }, 0.001f);
+            m_registry.emplace<SolidColorMaterialComponent>(m_lineShapes[i], glm::vec4{ 0.9f, 0.9f, 0.9f, 1.0f });
         }
 
         // Create camera
-        m_camera = std::make_shared<Camera2D>();
-        m_camera->create(CAMERA_SCALE);
-        Renderer2DSubsystem::setCamera(m_camera);
-        PekanTools::enableCameraController2D(m_camera);
+        m_camera = createEntity();
+        CameraComponent2D cameraComponent;
+        cameraComponent.setHeight(CAMERA_SCALE, true);
+        m_registry.emplace<CameraComponent2D>(m_camera, cameraComponent);
 
         t = 0.0f;
 
         return true;
+    }
+
+    void Demo05_Scene::_exit()
+    {
+        for (int i = 0; i < MTT0_SUBDIVS; i++)
+        {
+            destroyEntity(m_lines[i]);
+        }
+        for (int i = 0; i < MTT1_SUBDIVS; i++)
+        {
+            destroyEntity(m_lineShapes[i]);
+        }
+    }
+
+    void Demo05_Scene::update(double dt)
+    {
+        PK_ASSERT(m_guiWindow != nullptr, "Cannot update Demo05_Scene because there is no Demo05_GUIWindow attached.", "Demo05");
+        // Set background color from GUI window
+        const glm::vec3 backgroundColor = m_guiWindow->getBackgroundColor();
+        RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
+
+        updateMtt();
+
+        t += float(dt);
+        m_mtt0factor += float(dt) * MTT0_SPEED;
+        m_mtt1factor += float(dt) * MTT1_SPEED;
     }
 
     static float osc(float x)
@@ -62,51 +95,6 @@ namespace Demo
     static float osc(float x, float a, float b)
     {
         return a + (b - a) * osc(x);
-    }
-
-    void Demo05_Scene::update(double dt)
-    {
-        updateMtt();
-
-        t += float(dt);
-        m_mtt0factor += float(dt) * MTT0_SPEED;
-        m_mtt1factor += float(dt) * MTT1_SPEED;
-    }
-
-    void Demo05_Scene::render() const
-    {
-        Renderer2DSubsystem::beginFrame();
-
-        // Clear background color
-        if (m_guiWindow != nullptr)
-        {
-            const glm::vec3 backgroundColor = m_guiWindow->getBackgroundColor();
-            RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
-        }
-        RenderCommands::clear();
-
-        for (int i = 0; i < MTT0_SUBDIVS; i++)
-        {
-            m_lines[i].render();
-        }
-        for (int i = 0; i < MTT1_SUBDIVS; i++)
-        {
-            m_lineShapes[i].render();
-        }
-
-        Renderer2DSubsystem::endFrame();
-    }
-
-    void Demo05_Scene::exit()
-    {
-        for (int i = 0; i < MTT0_SUBDIVS; i++)
-        {
-            m_lines[i].destroy();
-        }
-        for (int i = 0; i < MTT1_SUBDIVS; i++)
-        {
-            m_lineShapes[i].destroy();
-        }
     }
 
     static glm::vec2 getMtt0Point(float ang)
@@ -132,24 +120,27 @@ namespace Demo
         static constexpr float arc0 = 2.0f * PI / float(MTT0_SUBDIVS);
         for (int i = 0; i < MTT0_SUBDIVS; i++)
         {
+            LineComponent& lineComponent = m_registry.get<LineComponent>(m_lines[i]);
+
             const float angA = float(i) * arc0;
             const float angB = float(i) * m_mtt0factor * arc0;
-            m_lines[i].setPointA(getMtt0Point(angA));
-            m_lines[i].setPointB(getMtt0Point(angB));
-            m_lines[i].update();
+            lineComponent.pointA = getMtt0Point(angA);
+            lineComponent.pointB = getMtt0Point(angB);
         }
 
         static constexpr float arc1 = 2.0f * PI / float(MTT1_SUBDIVS);
         for (int i = 0; i < MTT1_SUBDIVS; i++)
         {
+            LineGeometryComponent& lineGeometryComponent = m_registry.get<LineGeometryComponent>(m_lineShapes[i]);
+
             const float angA = float(i) * arc1;
             const float angB = float(i) * m_mtt1factor * arc1;
-            m_lineShapes[i].setPointA(getMtt1Point(angA));
-            m_lineShapes[i].setPointB(getMtt1Point(angB));
+            lineGeometryComponent.pointA = getMtt1Point(angA);
+            lineGeometryComponent.pointB = getMtt1Point(angB);
 
             if (m_guiWindow != nullptr)
             {
-                m_lineShapes[i].setThickness(m_guiWindow->getLineThickness());
+                lineGeometryComponent.thickness = m_guiWindow->getLineThickness();
             }
         }
     }
