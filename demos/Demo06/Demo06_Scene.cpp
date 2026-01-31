@@ -1,14 +1,23 @@
 #include "Demo06_Scene.h"
+
+#include "Demo06_GUIWindow.h"
 #include "PekanLogger.h"
 #include "Utils/RandomizationUtils.h"
-#include "PekanTools.h"
-#include "RenderCommands.h"
-#include "Renderer2DSubsystem.h"
+#include "RenderState.h"
 #include "PostProcessor.h"
-#include "PekanApplication.h"
+#include "Shader.h"
 #include "ShaderPreprocessor.h"
 
-#include "Events/MouseEvents.h"
+#include "CameraComponent2D.h"
+#include "TransformComponent2D.h"
+#include "RectangleGeometryComponent.h"
+#include "CircleGeometryComponent.h"
+#include "TriangleGeometryComponent.h"
+#include "PolygonGeometryComponent.h"
+#include "LineGeometryComponent.h"
+#include "SolidColorMaterialComponent.h"
+#include "Entity/DisabledComponent.h"
+
 #include "Events/KeyEvents.h"
 
 #include <algorithm>
@@ -20,7 +29,6 @@ using namespace Pekan;
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
 using namespace Pekan::RandomizationUtils;
-using namespace Pekan::Tools;
 
 static glm::vec2 BBOX_MIN = glm::vec2(-500.0f, -25.0f);
 constexpr float ZOOM_SPEED = 1.1f;
@@ -128,7 +136,7 @@ namespace Demo
 		return points;
 	}
 
-    bool Demo06_Scene::init()
+	bool Demo06_Scene::_init()
 	{
 		RenderState::enableMultisampleAntiAliasing();
 
@@ -141,6 +149,7 @@ namespace Demo
 		const int shapesCount = m_guiWindow->getNumberOfShapes();
 		const int shapesMaxCount = m_guiWindow->getMaxNumberOfShapes();
 		m_perShapeTypeCount = shapesCount / 5;
+		m_prevPerShapeTypeCount = m_perShapeTypeCount;
 		m_perShapeTypeMaxCount = shapesMaxCount / 5;
 
 		createBbox();
@@ -158,111 +167,56 @@ namespace Demo
 
 		PostProcessor::setPostProcessingShader(POST_PROCESSING_SHADER_FILEPATH_GLSL);
 
-        return true;
+		// Initialize previous enabled states of shape types,
+		// set them to opposite of current states so that in the first update() call,
+		// we'll register a change and react accordingly.
+		m_prevRectanglesEnabled = !m_guiWindow->isEnabledRectangles();
+		m_prevCirclesEnabled = !m_guiWindow->isEnabledCircles();
+		m_prevTrianglesEnabled = !m_guiWindow->isEnabledTriangles();
+		m_prevPolygonsEnabled = !m_guiWindow->isEnabledPolygons();
+		m_prevLinesEnabled = !m_guiWindow->isEnabledLines();
+
+		return true;
+	}
+
+	void Demo06_Scene::_exit()
+	{
+		destroyEntity(m_centerSquare);
+		for (int i = 0; i < m_lines.size(); i++)
+		{
+			destroyEntity(m_lines[i]);
+		}
+		for (int i = 0; i < m_polygons.size(); i++)
+		{
+			destroyEntity(m_polygons[i]);
+		}
+		for (int i = 0; i < m_triangles.size(); i++)
+		{
+			destroyEntity(m_triangles[i]);
+		}
+		for (int i = 0; i < m_circles.size(); i++)
+		{
+			destroyEntity(m_circles[i]);
+		}
+		for (int i = 0; i < m_rectangles.size(); i++)
+		{
+			destroyEntity(m_rectangles[i]);
+		}
 	}
 
 	void Demo06_Scene::update(double dt)
 	{
-		if (m_guiWindow != nullptr)
-		{
-			const int shapesCount = m_guiWindow->getNumberOfShapes();
-			m_perShapeTypeCount = shapesCount / 5;
-		}
+		PK_ASSERT_QUICK(m_guiWindow != nullptr);
 
-		updateShapes(float(dt));
+		const int shapesCount = m_guiWindow->getNumberOfShapes();
+		m_perShapeTypeCount = shapesCount / 5;
+		const bool perShapeTypeCountChanged = (m_perShapeTypeCount != m_prevPerShapeTypeCount);
+		m_prevPerShapeTypeCount = m_perShapeTypeCount;
 
+		updateShapes(float(dt), perShapeTypeCountChanged);
 		updatePps();
 
 		t += float(dt);
-	}
-
-	void Demo06_Scene::render() const
-	{
-		PostProcessor::beginFrame();
-		Renderer2DSubsystem::beginFrame();
-		RenderCommands::clear();
-
-		if (m_guiWindow->isEnabledRectangles())
-		{
-			for (int i = 0; i < m_perShapeTypeCount; i++)
-			{
-				m_rectangles[i].render();
-			}
-		}
-
-		if (m_guiWindow->isEnabledCircles())
-		{
-			for (int i = 0; i < m_perShapeTypeCount / 2; i++)
-			{
-				m_circles[i].render();
-			}
-		}
-
-		if (m_guiWindow->isEnabledCirclesStatic())
-		{
-			for (int i = 0; i < m_perShapeTypeCount / 2; i++)
-			{
-				m_circlesStatic[i].render();
-			}
-		}
-
-		if (m_guiWindow->isEnabledTriangles())
-		{
-			for (int i = 0; i < m_perShapeTypeCount; i++)
-			{
-				m_triangles[i].render();
-			}
-		}
-
-		if (m_guiWindow->isEnabledPolygons())
-		{
-			for (int i = 0; i < m_perShapeTypeCount; i++)
-			{
-				m_polygons[i].render();
-			}
-		}
-
-		if (m_guiWindow->isEnabledLines())
-		{
-			for (int i = 0; i < m_perShapeTypeCount; i++)
-			{
-				m_lines[i].render();
-			}
-		}
-
-		m_centerSquare.render();
-
-		Renderer2DSubsystem::endFrame();
-		PostProcessor::endFrame();
-	}
-
-	void Demo06_Scene::exit()
-	{
-		for (int i = 0; i < m_rectangles.size(); i++)
-		{
-			m_rectangles[i].destroy();
-		}
-		for (int i = 0; i < m_circles.size(); i++)
-		{
-			m_circles[i].destroy();
-		}
-		for (int i = 0; i < m_circlesStatic.size(); i++)
-		{
-			m_circlesStatic[i].destroy();
-		}
-		for (int i = 0; i < m_triangles.size(); i++)
-		{
-			m_triangles[i].destroy();
-		}
-		for (int i = 0; i < m_polygons.size(); i++)
-		{
-			m_polygons[i].destroy();
-		}
-		for (int i = 0; i < m_lines.size(); i++)
-		{
-			m_lines[i].destroy();
-		}
-		m_centerSquare.destroy();
 	}
 
 	void Demo06_Scene::createBbox()
@@ -281,24 +235,25 @@ namespace Demo
 
 	void Demo06_Scene::createCameras()
 	{
-		m_cameraFirst = std::make_shared<Camera2D>();
-		m_cameraFirst->create(m_bbox.size.x, m_bbox.size.y);
-		m_cameraFirst->setPosition(m_bbox.center);
+		m_cameraFirst = createEntity();
+		CameraComponent2D cameraComponentFirst;
+		cameraComponentFirst.size = m_bbox.size;
+		cameraComponentFirst.position = m_bbox.center;
+		m_registry.emplace<CameraComponent2D>(m_cameraFirst, cameraComponentFirst);
 
-		m_cameraSecond = std::make_shared<Camera2D>();
-		m_cameraSecond->create(m_bbox.size.x, m_bbox.size.y);
-		m_cameraSecond->setPosition(m_bbox.center);
-
-		Renderer2DSubsystem::setCamera(m_cameraFirst);
-		PekanTools::enableCameraController2D(m_cameraFirst);
-		PekanTools::setCameraController2DZoomSpeed(1.1f);
+		m_cameraSecond = createEntity();
+		CameraComponent2D cameraComponentSecond;
+		cameraComponentSecond.size = m_bbox.size;
+		cameraComponentSecond.position = m_bbox.center;
+		cameraComponentSecond.isPrimary = false;
+		cameraComponentSecond.isControllable = false;
+		m_registry.emplace<CameraComponent2D>(m_cameraSecond, cameraComponentSecond);
 	}
 
 	void Demo06_Scene::createShapes()
 	{
 		createRectangles();
 		createCircles();
-		createCirclesStatic();
 		createTriangles();
 		createPolygons();
 		createLines();
@@ -317,16 +272,22 @@ namespace Demo
 		const glm::vec2 positionMax = { m_bbox.max.x - widthHeightRange.y / 2.0f, m_bbox.max.y - widthHeightRange.y / 2.0f };
 
 		m_rectangles.resize(m_perShapeTypeMaxCount);
-
 		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
-			m_rectangles[i].create
-			(
+			m_rectangles[i] = createEntity();
+			m_registry.emplace<TransformComponent2D>(
+				m_rectangles[i],
+				getRandomVec2(positionMin, positionMax)
+			);
+			m_registry.emplace<RectangleGeometryComponent>(
+				m_rectangles[i],
 				getRandomFloat(widthHeightRange.x, widthHeightRange.y),
 				getRandomFloat(widthHeightRange.x, widthHeightRange.y)
 			);
-			m_rectangles[i].setPosition(getRandomVec2(positionMin, positionMax));
-			m_rectangles[i].setColor(generateShapeColor());
+			m_registry.emplace<SolidColorMaterialComponent>(
+				m_rectangles[i],
+				generateShapeColor()
+			);
 		}
 	}
 
@@ -337,31 +298,24 @@ namespace Demo
 		const glm::vec2 positionMin = { m_bbox.min.x + radiusRange.y, m_bbox.min.y + radiusRange.y };
 		const glm::vec2 positionMax = { m_bbox.max.x - radiusRange.y, m_bbox.max.y - radiusRange.y };
 
-		m_circles.resize(m_perShapeTypeMaxCount / 2);
+		m_circles.resize(m_perShapeTypeMaxCount);
 
-		for (int i = 0; i < m_perShapeTypeMaxCount / 2; i++)
+		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
-			m_circles[i].create(getRandomFloat(radiusRange.x, radiusRange.y));
-			m_circles[i].setPosition(getRandomVec2(positionMin, positionMax));
-			m_circles[i].setColor(generateShapeColor());
-			m_circles[i].setSegmentsCount(getRandomInt(8, 60));
-		}
-	}
-
-	void Demo06_Scene::createCirclesStatic()
-	{
-		const float minDim = std::min(m_bbox.size.x, m_bbox.size.y);
-		const glm::vec2 radiusRange = { minDim * 0.001f, minDim * 0.006f };
-		const glm::vec2 positionMin = { m_bbox.min.x + radiusRange.y, m_bbox.min.y + radiusRange.y };
-		const glm::vec2 positionMax = { m_bbox.max.x - radiusRange.y, m_bbox.max.y - radiusRange.y };
-
-		m_circlesStatic.resize(m_perShapeTypeMaxCount / 2);
-
-		for (int i = 0; i < m_perShapeTypeMaxCount / 2; i++)
-		{
-			m_circlesStatic[i].create(getRandomFloat(radiusRange.x, radiusRange.y));
-			m_circlesStatic[i].setPosition(getRandomVec2(positionMin, positionMax));
-			m_circlesStatic[i].setColor(generateShapeColor());
+			m_circles[i] = createEntity();
+			m_registry.emplace<TransformComponent2D>(
+				m_circles[i],
+				getRandomVec2(positionMin, positionMax)
+			);
+			m_registry.emplace<CircleGeometryComponent>(
+				m_circles[i],
+				getRandomFloat(radiusRange.x, radiusRange.y),
+				getRandomInt(8, 60)
+			);
+			m_registry.emplace<SolidColorMaterialComponent>(
+				m_circles[i],
+				generateShapeColor()
+			);
 		}
 	}
 
@@ -377,14 +331,21 @@ namespace Demo
 
 		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
-			m_triangles[i].create
-			(
+			m_triangles[i] = createEntity();
+			m_registry.emplace<TransformComponent2D>(
+				m_triangles[i],
+				getRandomVec2(positionMin, positionMax)
+			);
+			m_registry.emplace<TriangleGeometryComponent>(
+				m_triangles[i],
 				getRandomVec2(pointMin, pointMax),
 				getRandomVec2(pointMin, pointMax),
 				getRandomVec2(pointMin, pointMax)
 			);
-			m_triangles[i].setPosition(getRandomVec2(positionMin, positionMax));
-			m_triangles[i].setColor(generateShapeColor());
+			m_registry.emplace<SolidColorMaterialComponent>(
+				m_triangles[i],
+				generateShapeColor()
+			);
 		}
 	}
 
@@ -400,9 +361,19 @@ namespace Demo
 		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
 			const std::vector<glm::vec2> vertices = getRandomPolygonVertices(getRandomInt(6, 18), pointMin, pointMax);
-			m_polygons[i].create(vertices);
-			m_polygons[i].setPosition(getRandomVec2(positionMin, positionMax));
-			m_polygons[i].setColor(generateShapeColor());
+			m_polygons[i] = createEntity();
+			m_registry.emplace<TransformComponent2D>(
+				m_polygons[i],
+				getRandomVec2(positionMin, positionMax)
+			);
+			m_registry.emplace<PolygonGeometryComponent>(
+				m_polygons[i],
+				vertices
+			);
+			m_registry.emplace<SolidColorMaterialComponent>(
+				m_polygons[i],
+				generateShapeColor()
+			);
 		}
 	}
 
@@ -418,55 +389,141 @@ namespace Demo
 
 		for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 		{
-			m_lines[i].create
-			(
+			m_lines[i] = createEntity();
+			m_registry.emplace<TransformComponent2D>(
+				m_lines[i],
+				getRandomVec2(positionMin, positionMax)
+			);
+			m_registry.emplace<LineGeometryComponent>(
+				m_lines[i],
 				getRandomVec2(pointMin, pointMax),
 				getRandomVec2(pointMin, pointMax),
 				getRandomFloat(0.1f, 0.6f)
 			);
-			m_lines[i].setPosition(getRandomVec2(positionMin, positionMax));
-			m_lines[i].setColor(generateShapeColor());
+			m_registry.emplace<SolidColorMaterialComponent>(
+				m_lines[i],
+				generateShapeColor()
+			);
 		}
 	}
 
 	void Demo06_Scene::createCenterSquare()
 	{
-		m_centerSquare.create(100.0f, 100.0f);
-		m_centerSquare.setPosition(m_bbox.center);
-		m_centerSquare.setColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+		m_centerSquare = createEntity();
+		m_registry.emplace<TransformComponent2D>(
+			m_centerSquare,
+			m_bbox.center
+		);
+		m_registry.emplace<RectangleGeometryComponent>(
+			m_centerSquare,
+			100.0f, 100.0f
+		);
+		m_registry.emplace<SolidColorMaterialComponent>(
+			m_centerSquare,
+			glm::vec4{ 0.1f, 0.1f, 0.1f, 1.0f }
+		);
 	}
 
-	void Demo06_Scene::updateShapes(float dt)
+	void Demo06_Scene::updateShapes(float dt, bool perShapeTypeCountChanged)
 	{
-
-		if (m_guiWindow->isEnabledRectangles())
+		const bool rectanglesEnabled = m_guiWindow->isEnabledRectangles();
+		// If number of shapes per shape type changed or rectangles enabled state changed,
+		// then we need to update DisabledComponent of rectangle entities.
+		if ((perShapeTypeCountChanged && rectanglesEnabled) || rectanglesEnabled != m_prevRectanglesEnabled)
+		{
+			updateDisabledComponentOfShapeType(m_rectangles, rectanglesEnabled);
+		}
+		m_prevRectanglesEnabled = rectanglesEnabled;
+		if (rectanglesEnabled)
 		{
 			updateRectangles(dt);
 		}
 
-		if (m_guiWindow->isEnabledCircles())
+		const bool circlesEnabled = m_guiWindow->isEnabledCircles();
+		// If number of shapes per shape type changed or circles enabled state changed,
+		// then we need to update DisabledComponent of circle entities.
+		if ((perShapeTypeCountChanged && circlesEnabled) || circlesEnabled != m_prevCirclesEnabled)
+		{
+			updateDisabledComponentOfShapeType(m_circles, circlesEnabled);
+		}
+		m_prevCirclesEnabled = circlesEnabled;
+		if (circlesEnabled)
 		{
 			updateCircles(dt);
 		}
 
-		if (m_guiWindow->isEnabledCirclesStatic())
+		const bool trianglesEnabled = m_guiWindow->isEnabledTriangles();
+		// If number of shapes per shape type changed or triangles enabled state changed,
+		// then we need to update DisabledComponent of triangle entities.
+		if ((perShapeTypeCountChanged && trianglesEnabled) || trianglesEnabled != m_prevTrianglesEnabled)
 		{
-			updateCirclesStatic(dt);
+			updateDisabledComponentOfShapeType(m_triangles, trianglesEnabled);
 		}
-
-		if (m_guiWindow->isEnabledTriangles())
+		m_prevTrianglesEnabled = trianglesEnabled;
+		if (trianglesEnabled)
 		{
 			updateTriangles(dt);
 		}
 
-		if (m_guiWindow->isEnabledPolygons())
+		const bool polygonsEnabled = m_guiWindow->isEnabledPolygons();
+		// If number of shapes per shape type changed or polygons enabled state changed,
+		// then we need to update DisabledComponent of polygon entities.
+		if ((perShapeTypeCountChanged && polygonsEnabled) || polygonsEnabled != m_prevPolygonsEnabled)
+		{
+			updateDisabledComponentOfShapeType(m_polygons, polygonsEnabled);
+		}
+		m_prevPolygonsEnabled = polygonsEnabled;
+		if (polygonsEnabled)
 		{
 			updatePolygons(dt);
 		}
 
-		if (m_guiWindow->isEnabledLines())
+		const bool linesEnabled = m_guiWindow->isEnabledLines();
+		// If number of shapes per shape type changed or lines enabled state changed,
+		// then we need to update DisabledComponent of line entities.
+		if ((perShapeTypeCountChanged && linesEnabled) || linesEnabled != m_prevLinesEnabled)
+		{
+			updateDisabledComponentOfShapeType(m_lines, linesEnabled);
+		}
+		m_prevLinesEnabled = linesEnabled;
+		if (linesEnabled)
 		{
 			updateLines(dt);
+		}
+	}
+
+	void Demo06_Scene::updateDisabledComponentOfShapeType(std::vector<entt::entity>& shapes, bool enabled)
+	{
+		// If shape type is enabled in GUI,
+		// enable entities up to m_perShapeTypeCount and disable the rest.
+		if (enabled)
+		{
+			for (int i = 0; i < m_perShapeTypeCount; i++)
+			{
+				if (m_registry.any_of<DisabledComponent>(shapes[i]))
+				{
+					m_registry.remove<DisabledComponent>(shapes[i]);
+				}
+			}
+			for (int i = m_perShapeTypeCount; i < m_perShapeTypeMaxCount; i++)
+			{
+				if (!m_registry.any_of<DisabledComponent>(shapes[i]))
+				{
+					m_registry.emplace<DisabledComponent>(shapes[i]);
+				}
+			}
+		}
+		// If shape type is disabled in GUI,
+		// disable all entities of that shape type.
+		else
+		{
+			for (int i = 0; i < m_perShapeTypeMaxCount; i++)
+			{
+				if (!m_registry.any_of<DisabledComponent>(shapes[i]))
+				{
+					m_registry.emplace<DisabledComponent>(shapes[i]);
+				}
+			}
 		}
 	}
 
@@ -474,53 +531,39 @@ namespace Demo
 	{
 		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_rectangles[i].move(getRandomVec2
+			TransformComponent2D& transform = m_registry.get<TransformComponent2D>(m_rectangles[i]);
+
+			transform.move(getRandomVec2
 			(
 				{ -float((i * 4 + 2) % 30) * 1.0f, -float((i * 7 + 6) % 30) * 1.0f },
 				{ float((i * 3 + 11) % 30) * 1.0f, float((i * 11 + 3) % 30) * 1.0f }
 			) * dt);
-			m_rectangles[i].setRotation(dt * sin(t * float(i % 7)) * float(i % 17) / 3.5f);
-			m_rectangles[i].setScale(m_rectangles[i].getScale() * getRandomVec2
+			transform.rotation = dt * sin(t * float(i % 7)) * float(i % 17) / 3.5f;
+			transform.scaleFactor *= getRandomVec2
 			(
 				{ 0.96f, 0.96f },
 				{ 1.04f, 1.04f }
-			));
+			);
 		}
 	}
 
 	void Demo06_Scene::updateCircles(float dt)
 	{
-		for (int i = 0; i < m_perShapeTypeCount / 2; i++)
+		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_circles[i].move(getRandomVec2
-			(
-				{ -float((i * 7 + 1) % 30), -float((i * 7 + 2) % 30) },
-				{ float((i * 7 + 6) % 30), float((i * 13 + 4) % 30) }
-			) * dt);
-			m_circles[i].setRotation(dt * sin(t * float(i % 5)) * float(i % 17 + 7) / 3.0f);
-			m_circles[i].setScale(m_circles[i].getScale() * getRandomVec2
-			(
-				{ 0.96f, 0.96f },
-				{ 1.04f, 1.04f }
-			));
-		}
-	}
+			TransformComponent2D& transform = m_registry.get<TransformComponent2D>(m_circles[i]);
 
-	void Demo06_Scene::updateCirclesStatic(float dt)
-	{
-		for (int i = 0; i < m_perShapeTypeCount / 2; i++)
-		{
-			m_circlesStatic[i].move(getRandomVec2
+			transform.move(getRandomVec2
 			(
 				{ -float((i * 7 + 1) % 30), -float((i * 7 + 2) % 30) },
 				{ float((i * 7 + 6) % 30), float((i * 13 + 4) % 30) }
 			) * dt);
-			m_circlesStatic[i].setRotation(dt * sin(t * float(i % 3)) * float(i % 17 + 7) / 3.0f);
-			m_circlesStatic[i].setScale(m_circles[i].getScale() * getRandomVec2
+			transform.rotation = dt * sin(t * float(i % 5)) * float(i % 17 + 7) / 3.0f;
+			transform.scaleFactor *= getRandomVec2
 			(
 				{ 0.96f, 0.96f },
 				{ 1.04f, 1.04f }
-			));
+			);
 		}
 	}
 
@@ -528,17 +571,19 @@ namespace Demo
 	{
 		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_triangles[i].move(getRandomVec2
+			TransformComponent2D& transform = m_registry.get<TransformComponent2D>(m_triangles[i]);
+
+			transform.move(getRandomVec2
 			(
 				{ -float((i * 7 + 2) % 30), -float((i * 11 + 3) % 30) },
 				{ float((i * 3 + 7) % 30), float((i * 33 + 17) % 30) }
 			) * dt);
-			m_triangles[i].setRotation(dt * sin(t * float(i % 9)) * float(i % 19 + 5) / 4.5f);
-			m_triangles[i].setScale(m_triangles[i].getScale() * getRandomVec2
+			transform.rotation = dt * sin(t * float(i % 9)) * float(i % 19 + 5) / 4.5f;
+			transform.scaleFactor *= getRandomVec2
 			(
 				{ 0.96f, 0.96f },
 				{ 1.04f, 1.04f }
-			));
+			);
 		}
 	}
 
@@ -546,17 +591,19 @@ namespace Demo
 	{
 		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_polygons[i].move(getRandomVec2
+			TransformComponent2D& transform = m_registry.get<TransformComponent2D>(m_polygons[i]);
+
+			transform.move(getRandomVec2
 			(
 				{ -float((i * 12 + 5) % 30), -float((i * 9 + 2) % 30) },
 				{ float((i * 11 + 6) % 30), float((i * 19 + 4) % 30) }
 			) * dt);
-			m_polygons[i].setRotation(dt * sin(t * float(i % 8)) * float(i % 23 + 3) / 3.0f);
-			m_polygons[i].setScale(m_polygons[i].getScale() * getRandomVec2
+			transform.rotation = dt * sin(t * float(i % 8)) * float(i % 23 + 3) / 3.0f;
+			transform.scaleFactor *= getRandomVec2
 			(
 				{ 0.96f, 0.96f },
 				{ 1.04f, 1.04f }
-			));
+			);
 		}
 	}
 
@@ -564,17 +611,19 @@ namespace Demo
 	{
 		for (int i = 0; i < m_perShapeTypeCount; i++)
 		{
-			m_lines[i].move(getRandomVec2
+			TransformComponent2D& transform = m_registry.get<TransformComponent2D>(m_lines[i]);
+
+			transform.move(getRandomVec2
 			(
 				{ -float((i * 5 + 2) % 30), -float((i * 7 + 3) % 30) },
 				{ float((i * 17 + 11) % 30), float((i * 15 + 9) % 30) }
 			) * dt);
-			m_lines[i].setRotation(dt * sin(t * float(i % 9)) * float(i % 19 + 5) / 5.5f);
-			m_lines[i].setScale(m_lines[i].getScale() * getRandomVec2
+			transform.rotation = dt * sin(t * float(i % 9)) * float(i % 19 + 5) / 5.5f;
+			transform.scaleFactor *= getRandomVec2
 			(
 				{ 0.98f, 0.98f },
 				{ 1.02f, 1.02f }
-			));
+			);
 		}
 	}
 
@@ -601,16 +650,16 @@ namespace Demo
 		if (event.getKeyCode() == KeyCode::KEY_C)
 		{
 			m_currentCameraIdx = (m_currentCameraIdx + 1) % 2;
-			if (m_currentCameraIdx == 0)
-			{
-				Renderer2DSubsystem::setCamera(m_cameraFirst);
-				PekanTools::enableCameraController2D(m_cameraFirst);
-			}
-			else
-			{
-				Renderer2DSubsystem::setCamera(m_cameraSecond);
-				PekanTools::enableCameraController2D(m_cameraSecond);
-			}
+			const bool isFirstCamera = (m_currentCameraIdx == 0);
+
+			CameraComponent2D& cameraComponentFirst = m_registry.get<CameraComponent2D>(m_cameraFirst);
+			cameraComponentFirst.isPrimary = isFirstCamera;
+			cameraComponentFirst.isControllable = isFirstCamera;
+
+			CameraComponent2D& cameraComponentSecond = m_registry.get<CameraComponent2D>(m_cameraSecond);
+			cameraComponentSecond.isPrimary = !isFirstCamera;
+			cameraComponentSecond.isControllable = !isFirstCamera;
+
 			return true;
 		}
 		return false;

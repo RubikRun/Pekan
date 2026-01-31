@@ -283,3 +283,12 @@
                             if(EXISTS "${CMAKE_SOURCE_DIR}/dep/entt/single_include")
                         is problematic, because if Pekan is used as a dependency to another project,
                         then CMAKE_SOURCE_DIR will be pointing to that project's source directory, NOT Pekan's source directory
+
+0093 30.01.2026 (TODO): Fix scale() function of TransformComponent2D, it should multiply instead of add:
+                            scaleFactor += deltaScale;
+
+0094 30.01.2026 (TODO): Noticed a few places in code where we call
+                            RenderObject's setIndexData()
+                        and we don't pass any BufferDataUsage, which defaults to BufferDataUsage::DynamicDraw,
+                        but in some/most cases we actually want BufferDataUsage::DynamicDraw.
+                        Just pass BufferDataUsage::DynamicDraw as an extra argument to setIndexData()

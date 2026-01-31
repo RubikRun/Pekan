@@ -1838,4 +1838,17 @@ We'll have to rewrite those demos to use the new ECS API.
     It works.
     Done.
     }
+
+----------
+31.01.2026
+----------
+
+    {
+    Integrated ECS in Demo06 today and yesterday.
+    It was a bit tricky to set DisabledComponent correctly on all shape types,
+    and do it only when there is an update in GUI.
+    It's nothing to do with engine functionality though, just app-specific logic.
+    It works.
+    Done.
+    }
 }

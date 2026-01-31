@@ -1,23 +1,13 @@
 #pragma once
 
-#include "Layer.h"
-#include "RenderObject.h"
-
-#include "RectangleShape.h"
-#include "CircleShape.h"
-#include "CircleShapeStatic.h"
-#include "TriangleShape.h"
-#include "PolygonShape.h"
-#include "LineShape.h"
-
-#include "Camera2D.h"
-
-#include "Demo06_GUIWindow.h"
+#include "Scene2D.h"
 
 #include <vector>
 
 namespace Demo
 {
+
+	class Demo06_GUIWindow;
 
 	struct BoundingBox2D
 	{
@@ -27,26 +17,21 @@ namespace Demo
 		glm::vec2 center = glm::vec2(0.0f, 0.0f);
 	};
 
-	class Demo06_Scene : public Pekan::Layer
+	class Demo06_Scene : public Pekan::Renderer2D::Scene2D
 	{
 
 	public:
 
-		Demo06_Scene(Pekan::PekanApplication* application) : Layer(application) {}
-
-		bool init() override;
-
-		void update(double deltaTime) override;
-
-		void render() const override;
-
-		void exit() override;
+		Demo06_Scene(Pekan::PekanApplication* application) : Scene2D(application) {}
 		
 		void attachGUIWindow(const std::shared_ptr<Demo06_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
-		std::string getLayerName() const override { return "scene_layer"; }
-
 	private: /* functions */
+
+		bool _init() override;
+		void _exit() override;
+
+		void update(double deltaTime) override;
 
 		void createBbox();
 		void createCameras();
@@ -54,16 +39,22 @@ namespace Demo
 		void createShapes();
 		void createRectangles();
 		void createCircles();
-		void createCirclesStatic();
 		void createTriangles();
 		void createPolygons();
 		void createLines();
 		void createCenterSquare();
 
-		void updateShapes(float dt);
+		void updateShapes(float dt, bool perShapeTypeCountChanged);
+
+		// Updates enabled/disabled state of each entity in a given vector of shapes of a single shape type,
+		// based on current perShapeTypeCount and whether this shape type is enabled in GUI.
+		//
+		// @param[in] shapes - Vector of entities representing shapes of a single shape type
+		// @param[in] enabled - Is this shape type enabled in GUI
+		void updateDisabledComponentOfShapeType(std::vector<entt::entity>& shapes, bool enabled);
+
 		void updateRectangles(float dt);
 		void updateCircles(float dt);
-		void updateCirclesStatic(float dt);
 		void updateTriangles(float dt);
 		void updatePolygons(float dt);
 		void updateLines(float dt);
@@ -75,29 +66,37 @@ namespace Demo
 
 	private: /* variables */
 
-		std::vector<Pekan::Renderer2D::RectangleShape> m_rectangles;
-		std::vector<Pekan::Renderer2D::CircleShape> m_circles;
-		std::vector<Pekan::Renderer2D::CircleShapeStatic<>> m_circlesStatic;
-		std::vector<Pekan::Renderer2D::TriangleShape> m_triangles;
-		std::vector<Pekan::Renderer2D::PolygonShape> m_polygons;
-		std::vector<Pekan::Renderer2D::LineShape> m_lines;
+		std::shared_ptr<Demo06_GUIWindow> m_guiWindow;
 
-		// A square in the center of the bounding box, just to make sure that coordinates are resolution-independent
-		Pekan::Renderer2D::RectangleShape m_centerSquare;
+		std::vector<entt::entity> m_rectangles;
+		std::vector<entt::entity> m_circles;
+		std::vector<entt::entity> m_triangles;
+		std::vector<entt::entity> m_polygons;
+		std::vector<entt::entity> m_lines;
 
-		Pekan::Renderer2D::Camera2D_Ptr m_cameraFirst;
-		Pekan::Renderer2D::Camera2D_Ptr m_cameraSecond;
+		bool m_prevRectanglesEnabled = false;
+		bool m_prevCirclesEnabled = false;
+		bool m_prevTrianglesEnabled = false;
+		bool m_prevPolygonsEnabled = false;
+		bool m_prevLinesEnabled = false;
+
+		entt::entity m_centerSquare = entt::null;
+
+		entt::entity m_cameraFirst = entt::null;
+		entt::entity m_cameraSecond = entt::null;
 
 		int m_currentCameraIdx = 0;
 
 		BoundingBox2D m_bbox;
 
 		int m_perShapeTypeCount = -1;
+		int m_prevPerShapeTypeCount = -1;
 		int m_perShapeTypeMaxCount = -1;
 
-		std::shared_ptr<Demo06_GUIWindow> m_guiWindow;
-
 		float t = 0.0f;
+
+		// Cached ECS registry reference
+		entt::registry& m_registry = getRegistry();
 	};
 
 } // namespace Demo
