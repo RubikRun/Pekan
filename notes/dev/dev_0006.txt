@@ -1740,8 +1740,6 @@ as to not write a bunch of code that will be overwritten later.
 It's time to remove old shape classes and old sprite class,
 and any other old code that is now obsolete because of ECS.
 
-TODO: at the end we can remove shaders that are not used anywhere in the remaining code
-
 ----------
 28.01.2026
 ----------
@@ -1872,4 +1870,15 @@ We'll have to rewrite those demos to use the new ECS API.
     Considering ECS integrated in Demo04 for now, with some things to fix after completing the TO-DO tasks.
     Done.
     }
+
+----------
+03.02.2026
+----------
+
+Removed unused shaders (shaders that were used in old obsoleted code).
+
+That's all, I think.
+All demos work.
+The whole solution builds okay.
+Done.
 }
