@@ -285,10 +285,23 @@
                         then CMAKE_SOURCE_DIR will be pointing to that project's source directory, NOT Pekan's source directory
 
 0093 30.01.2026 (TODO): Fix scale() function of TransformComponent2D, it should multiply instead of add:
-                            scaleFactor += deltaScale;
+                            scaleFactor += deltaScale;    --->    scaleFactor *= deltaScale;
 
 0094 30.01.2026 (TODO): Noticed a few places in code where we call
                             RenderObject's setIndexData()
                         and we don't pass any BufferDataUsage, which defaults to BufferDataUsage::DynamicDraw,
                         but in some/most cases we actually want BufferDataUsage::DynamicDraw.
                         Just pass BufferDataUsage::DynamicDraw as an extra argument to setIndexData()
+
+0095 01.02.2026 (TODO): Add enableEntity() and disableEntity() functions in class Scene that add/remove DisabledComponent
+                        and first check if DisabledComponent is present on the entity.
+
+0096 01.02.2026 (TODO): Think about creating a RenderObjectComponent in the Graphics module, or something similar.
+
+0097 01.02.2026 (TODO): Create render order mechanism to allow users to configure which entities are on top and which ones are behind.
+                        Use it in Demo04 to fix m_renderObject being rendered on top of shapes, we want shapes on top of m_renderObject.
+
+0098 01.02.2026 (TODO): Rethink Scene2D's OO design, not very convenient for scenes that contain both 2D entities and Graphics entities (Demo04).
+                        Do we want to support such scenes at all? Maybe better to force users to have 2 scenes on top of each other in such cases.
+                        Think about "global state" things like the camera in a Scene2D that don't really make sense for Graphics entities.
+                        Think about order of rendering of mixed 2D entities and Graphics entities, how would we give control over that to the user?

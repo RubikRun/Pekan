@@ -1,7 +1,15 @@
 #include "Demo04_Scene.h"
 #include "PekanLogger.h"
 #include "Utils/FileUtils.h"
-#include "Renderer2DSubsystem.h"
+
+#include "TransformComponent2D.h"
+#include "TriangleGeometryComponent.h"
+#include "RectangleGeometryComponent.h"
+#include "CircleGeometryComponent.h"
+#include "PolygonGeometryComponent.h"
+#include "SolidColorMaterialComponent.h"
+
+#include "Entity/DisabledComponent.h"
 
 #include <glm/gtc/constants.hpp>
 constexpr float PI = glm::pi<float>();
@@ -63,13 +71,14 @@ const std::vector<glm::vec2> POLYGON2_VERTICES =
     glm::vec2( 0.1875, 0.06823770491803277 )
 };
 
+using namespace Pekan;
 using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
 
 namespace Demo
 {
 
-    bool Demo04_Scene::init()
+    bool Demo04_Scene::_init()
     {
         if (m_guiWindow == nullptr)
         {
@@ -115,34 +124,37 @@ namespace Demo
         m_renderObject.setTextureImage(m_image0, "uTex0", 0);
         m_renderObject.setTextureImage(m_image1, "uTex1", 1);
 
-        m_triangle.create({ 0.0f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f });
+        m_triangle = createEntity();
+        m_registry.emplace<TransformComponent2D>(m_triangle);
+        m_registry.emplace<TriangleGeometryComponent>(m_triangle);
+        m_registry.emplace<SolidColorMaterialComponent>(m_triangle);
 
         m_rectangleInitialWidth = 0.2f;
         m_rectangleInitialHeight = 0.4f;
-        m_rectangle.create(m_rectangleInitialWidth, m_rectangleInitialHeight);
-
         m_rectangleInitialPosition = { -0.7f, -0.7f };
-        m_rectangle.setPosition(m_rectangleInitialPosition);
+        m_rectangle = createEntity();
+        m_registry.emplace<RectangleGeometryComponent>(m_rectangle, m_rectangleInitialWidth, m_rectangleInitialHeight);
+        m_registry.emplace<TransformComponent2D>(m_rectangle, m_rectangleInitialPosition);
+        m_registry.emplace<SolidColorMaterialComponent>(m_rectangle);
 
         m_circleInitialRadius = 0.3f;
-        m_circle.create(m_circleInitialRadius);
-
         m_circleInitialPosition = { 0.0f, 0.0f };
-        m_circle.setPosition(m_circleInitialPosition);
-
-        m_circleStaticInitialRadius = 0.2f;
-        m_circleStatic.create(m_circleStaticInitialRadius);
-
-        m_circleStaticInitialPosition = { 0.0f, 0.0f };
-        m_circleStatic.setPosition(m_circleStaticInitialPosition);
+        m_circle = createEntity();
+        m_registry.emplace<TransformComponent2D>(m_circle, m_circleInitialPosition);
+        m_registry.emplace<CircleGeometryComponent>(m_circle, m_circleInitialRadius);
+        m_registry.emplace<SolidColorMaterialComponent>(m_circle);
 
         m_polygon1InitialPosition = { 0.7f, -0.7f };
-        m_polygon1.create({ {0.0f, 0.0f} });
-        m_polygon1.setPosition(m_polygon1InitialPosition);
+        m_polygon1 = createEntity();
+        m_registry.emplace<TransformComponent2D>(m_polygon1, m_polygon1InitialPosition);
+        m_registry.emplace<PolygonGeometryComponent>(m_polygon1);
+        m_registry.emplace<SolidColorMaterialComponent>(m_polygon1);
 
         m_polygon2InitialPosition = { -0.7f, 0.7f };
-        m_polygon2.create(POLYGON2_VERTICES);
-        m_polygon2.setPosition(m_polygon2InitialPosition);
+        m_polygon2 = createEntity();
+        m_registry.emplace<TransformComponent2D>(m_polygon2, m_polygon2InitialPosition);
+        m_registry.emplace<PolygonGeometryComponent>(m_polygon2, POLYGON2_VERTICES);
+        m_registry.emplace<SolidColorMaterialComponent>(m_polygon2);
 
         m_enabledFaceCulling = m_guiWindow->getEnabledFaceCulling();
         if (m_enabledFaceCulling)
@@ -154,9 +166,22 @@ namespace Demo
             RenderState::disableFaceCulling();
         }
 
+        // Set previous enabled shapes state to opposite of current, to force update on first frame
+        m_prevIsEnabledShapes = !m_guiWindow->isEnabledShapes();
+
         t = 0.0f;
 
         return true;
+    }
+
+    void Demo04_Scene::_exit()
+    {
+        m_renderObject.destroy();
+        destroyEntity(m_polygon2);
+        destroyEntity(m_polygon1);
+        destroyEntity(m_circle);
+        destroyEntity(m_rectangle);
+        destroyEntity(m_triangle);
     }
 
     // Oscillates between 0 and 1 in a sine wave, as x grows
@@ -169,8 +194,29 @@ namespace Demo
         return a + (b - a) * osc(x);
     }
 
+    static void enableEntity(entt::entity entity, entt::registry& registry)
+    {
+        if (registry.all_of<DisabledComponent>(entity))
+        {
+            registry.remove<DisabledComponent>(entity);
+        }
+    }
+
+    static void disableEntity(entt::entity entity, entt::registry& registry)
+    {
+        if (!registry.all_of<DisabledComponent>(entity))
+        {
+            registry.emplace<DisabledComponent>(entity);
+        }
+    }
+
     void Demo04_Scene::update(double dt)
     {
+        PK_ASSERT_QUICK(m_guiWindow != nullptr);
+        // Set background color from GUI window
+        const glm::vec3 backgroundColor = m_guiWindow->getBackgroundColor();
+        RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
+
         Shader& texRectShader = m_renderObject.getShader();
         texRectShader.bind();
 
@@ -214,103 +260,105 @@ namespace Demo
 
         texRectShader.setUniform1f("uTime", t);
 
-        m_triangle.setPosition(glm::vec2(0.8f, 0.8f) + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f));
-        m_triangle.setColor({ osc(t), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
+        TransformComponent2D& triangleTransform = m_registry.get<TransformComponent2D>(m_triangle);
+        TriangleGeometryComponent& triangleGeometry = m_registry.get<TriangleGeometryComponent>(m_triangle);
+        SolidColorMaterialComponent& triangleMaterial = m_registry.get<SolidColorMaterialComponent>(m_triangle);
+        triangleTransform.position = glm::vec2(0.8f, 0.8f) + glm::vec2(sin(t) * 0.1f, sin(t / 4.0f) * 0.05f);
+        triangleMaterial.color = { osc(t), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) };
 
         if (m_guiWindow != nullptr && m_guiWindow->getReverseTriangleOrientation())
         {
-            m_triangle.setVertexA(glm::vec2(0.1f, 0.1f) + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
-            m_triangle.setVertexB(glm::vec2(0.1f, -0.1f) + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f));
-            m_triangle.setVertexC(glm::vec2(-0.1f, -0.1f) + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
+            triangleGeometry.pointA = glm::vec2(0.1f, 0.1f) + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f);
+            triangleGeometry.pointB = glm::vec2(0.1f, -0.1f) + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f);
+            triangleGeometry.pointC = glm::vec2(-0.1f, -0.1f) + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f);
         }
         else
         {
-            m_triangle.setVertexA(glm::vec2(-0.1f, -0.1f) + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f));
-            m_triangle.setVertexB(glm::vec2(0.1f, -0.1f) + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f));
-            m_triangle.setVertexC(glm::vec2(0.1f, 0.1f) + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f));
+            triangleGeometry.pointA = glm::vec2(-0.1f, -0.1f) + glm::vec2(cos(t) * 0.1f, sin(t) * 0.1f);
+            triangleGeometry.pointB = glm::vec2(0.1f, -0.1f) + glm::vec2(cos(t * 2.0f) * sin(t) * 0.05f, sin(t * 0.83f) * 0.1f);
+            triangleGeometry.pointC = glm::vec2(0.1f, 0.1f) + glm::vec2(0.0f, sin(t / 5.0f) * 0.03f);
         }
 
-        m_rectangle.setPosition(m_rectangleInitialPosition + glm::vec2(sin(t / 2.0f) * 0.12f, sin(t / 5.0f) * 0.04f));
-        m_rectangle.setColor({ osc(t / 2.0f + 1.0f), osc(t), osc(t / 3.0f), osc(t / 7.0f, 0.3f, 1.0f) });
-        m_rectangle.setWidth(osc(t / 2.0f, m_rectangleInitialWidth * 0.5f, m_rectangleInitialWidth * 1.5f));
-        m_rectangle.setHeight(osc(t / 5.0f, m_rectangleInitialHeight * 0.5f, m_rectangleInitialHeight * 1.5f));
+        TransformComponent2D& rectangleTransform = m_registry.get<TransformComponent2D>(m_rectangle);
+        RectangleGeometryComponent& rectangleGeometry = m_registry.get<RectangleGeometryComponent>(m_rectangle);
+        SolidColorMaterialComponent& rectangleMaterial = m_registry.get<SolidColorMaterialComponent>(m_rectangle);
 
-        m_circle.setSegmentsCount(int(osc(t / 5.0f, 3.0f, 30.0f)));
+        rectangleTransform.position = m_rectangleInitialPosition + glm::vec2(sin(t / 2.0f) * 0.12f, sin(t / 5.0f) * 0.04f);
+        rectangleMaterial.color = { osc(t / 2.0f + 1.0f), osc(t), osc(t / 3.0f), osc(t / 7.0f, 0.3f, 1.0f) };
+        rectangleGeometry.width = osc(t / 2.0f, m_rectangleInitialWidth * 0.5f, m_rectangleInitialWidth * 1.5f);
+        rectangleGeometry.height = osc(t / 5.0f, m_rectangleInitialHeight * 0.5f, m_rectangleInitialHeight * 1.5f);
 
-        m_circleStatic.setPosition(m_circleInitialPosition[1] + glm::vec2(sin(t / 3.0f) * 0.09f, sin(t / 5.0f) * 0.03f));
-        m_circleStatic.setColor({ osc(t / 7.0f + 1.0f), osc(t / 2.0f + 2.0f), osc(t / 3.0f), osc(t / 3.0f, 0.3f, 1.0f) });
-        m_circleStatic.setRadius(osc(t / 2.0f, m_circleStaticInitialRadius * 0.4f, m_circleStaticInitialRadius * 1.0f));
+        CircleGeometryComponent& circleGeometry = m_registry.get<CircleGeometryComponent>(m_circle);
+        circleGeometry.segmentsCount = int(osc(t / 5.0f, 3.0f, 30.0f));
 
         updatePolygon1();
         updatePolygon2();
 
+        // Update disabled state of shapes depending on whether they are enabled in GUI
+        {
+            const bool isEnabledShapes = m_guiWindow->isEnabledShapes();
+
+            if (isEnabledShapes && !m_prevIsEnabledShapes)
+            {
+                enableEntity(m_triangle, m_registry);
+                enableEntity(m_rectangle, m_registry);
+                enableEntity(m_circle, m_registry);
+                enableEntity(m_polygon1, m_registry);
+                enableEntity(m_polygon2, m_registry);
+            }
+            else if (!isEnabledShapes && m_prevIsEnabledShapes)
+            {
+                disableEntity(m_triangle, m_registry);
+                disableEntity(m_rectangle, m_registry);
+                disableEntity(m_circle, m_registry);
+                disableEntity(m_polygon1, m_registry);
+                disableEntity(m_polygon2, m_registry);
+            }
+
+            m_prevIsEnabledShapes = isEnabledShapes;
+        }
+
         t += float(dt) * 5.0f;
     }
 
-    void Demo04_Scene::render() const
+    void Demo04_Scene::_render() const
     {
-        Renderer2DSubsystem::beginFrame();
-
-        // Clear background color
-        if (m_guiWindow != nullptr)
-        {
-            const glm::vec4 backgroundColor = m_guiWindow->getBackgroundColor();
-            RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, backgroundColor.w);
-        }
-        RenderCommands::clear();
-
+        // Manually render m_renderObject since it's not part of ECS and will not be rendered automatically.
         m_renderObject.render();
-
-        if (m_guiWindow != nullptr && m_guiWindow->isEnabledShapes())
-        {
-            m_triangle.render();
-            m_rectangle.render();
-            m_circle.render();
-            m_circleStatic.render();
-            m_polygon1.render();
-            m_polygon2.render();
-        }
-
-        Renderer2DSubsystem::endFrame();
-    }
-
-    void Demo04_Scene::exit()
-    {
-        m_renderObject.destroy();
-        m_triangle.destroy();
-        m_rectangle.destroy();
-        m_circle.destroy();
-        m_circleStatic.destroy();
-        m_polygon1.destroy();
-        m_polygon2.destroy();
     }
 
     void Demo04_Scene::updatePolygon1()
     {
+        TransformComponent2D& polygon1Transform = m_registry.get<TransformComponent2D>(m_polygon1);
+        PolygonGeometryComponent& polygon1Geometry = m_registry.get<PolygonGeometryComponent>(m_polygon1);
+        SolidColorMaterialComponent& polygon1Material = m_registry.get<SolidColorMaterialComponent>(m_polygon1);
+
         const bool reverseOrientation = (m_guiWindow != nullptr && m_guiWindow->getReversePolygonOrientation());
         const float reverseFactor = reverseOrientation ? -1.0f : 1.0f;
-        std::vector<glm::vec2> vertices(POLYGON1_VERTICES_COUNT, glm::vec2(0.0f, 0.0f));
+        polygon1Geometry.vertexPositions = std::vector<glm::vec2>(POLYGON1_VERTICES_COUNT, glm::vec2(0.0f, 0.0f));
         const float baseArc = reverseFactor * 2.0f * PI / float(POLYGON1_VERTICES_COUNT);
         for (int i = 0; i < POLYGON1_VERTICES_COUNT; i++)
         {
             const int iRev = reverseOrientation ? (POLYGON1_VERTICES_COUNT - i) % POLYGON1_VERTICES_COUNT : i;
             const float arc = baseArc * float(i);
-            vertices[i] = glm::vec2
+            polygon1Geometry.vertexPositions[i] = glm::vec2
             (
                 cos(arc) * POLYGON1_RADIUS + osc(t / float(iRev + 1), 0.0f, float(iRev + 1) / 190.0f),
                 sin(arc) * POLYGON1_RADIUS + osc(t / float(POLYGON1_VERTICES_COUNT - iRev), 0.0f, float(POLYGON1_VERTICES_COUNT - iRev) / 190.0f)
             );
         }
-        m_polygon1.setVertices(vertices);
 
-        m_polygon1.setPosition(m_polygon1InitialPosition + glm::vec2(sin(t / 8.0f) * 0.07f, sin(t / 6.0f) * 0.04f));
-        m_polygon1.setColor({ osc(t / 2.0f), osc(t / 5.0f + 2.0f), osc(t / 11.0f), osc(t / 15.0f, 0.6f, 1.0f) });
+        polygon1Transform.position = m_polygon1InitialPosition + glm::vec2(sin(t / 8.0f) * 0.07f, sin(t / 6.0f) * 0.04f);
+        polygon1Material.color = { osc(t / 2.0f), osc(t / 5.0f + 2.0f), osc(t / 11.0f), osc(t / 15.0f, 0.6f, 1.0f) };
     }
 
     void Demo04_Scene::updatePolygon2()
     {
-        m_polygon2.setPosition(m_polygon2InitialPosition + glm::vec2(sin(t / 8.0f) * 0.02f, sin(t / 6.0f) * 0.03f));
-        m_polygon2.setColor({ osc(t / 3.0f), osc(t / 2.0f + 5.0f), osc(t / 8.0f), osc(t / 11.0f, 0.6f, 1.0f) });
+        TransformComponent2D& polygon2Transform = m_registry.get<TransformComponent2D>(m_polygon2);
+        SolidColorMaterialComponent& polygon2Material = m_registry.get<SolidColorMaterialComponent>(m_polygon2);
+
+        polygon2Transform.position = m_polygon2InitialPosition + glm::vec2(sin(t / 8.0f) * 0.02f, sin(t / 6.0f) * 0.03f);
+        polygon2Material.color = { osc(t / 3.0f), osc(t / 2.0f + 5.0f), osc(t / 8.0f), osc(t / 11.0f, 0.6f, 1.0f) };
     }
 
 } // namespace Demo

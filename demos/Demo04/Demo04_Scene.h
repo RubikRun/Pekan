@@ -1,12 +1,7 @@
 #pragma once
 
-#include "Layer.h"
+#include "Scene2D.h"
 #include "RenderObject.h"
-#include "TriangleShape.h"
-#include "RectangleShape.h"
-#include "CircleShape.h"
-#include "CircleShapeStatic.h"
-#include "PolygonShape.h"
 #include "Image.h"
 
 #include "Demo04_GUIWindow.h"
@@ -14,49 +9,50 @@
 namespace Demo
 {
 
-	class Demo04_Scene : public Pekan::Layer
+	class Demo04_Scene : public Pekan::Renderer2D::Scene2D
 	{
 	public:
 
-		Demo04_Scene(Pekan::PekanApplication* application) : Layer(application) {}
-
-		bool init() override;
-
-		void update(double deltaTime) override;
-
-		void render() const override;
-
-		void exit() override;
+		Demo04_Scene(Pekan::PekanApplication* application) : Scene2D(application) {}
 		
 		// Attaches a GUI window for controlling background's color
 		void attachGUIWindow(const std::shared_ptr<const Demo04_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
-		std::string getLayerName() const override { return "scene_layer"; }
-
 	private: /* functions */
+
+		bool _init() override;
+
+		void _exit() override;
+
+		void update(double deltaTime) override;
+
+		// Override Scene2D's _render() function to manually render m_renderObject
+		// since it's not part of ECS and will not be rendered automatically.
+		//
+		// TODO: think about if this is a good idea long-term, or if we should think of something else for such cases.
+		void _render() const override;
 
 		void updatePolygon1();
 		void updatePolygon2();
 
 	private: /* variables */
 
+		std::shared_ptr<const Demo04_GUIWindow> m_guiWindow;
+
 		Pekan::Graphics::RenderObject m_renderObject;
 
-		Pekan::Renderer2D::TriangleShape m_triangle;
-		Pekan::Renderer2D::RectangleShape m_rectangle;
-		Pekan::Renderer2D::CircleShape m_circle;
-		Pekan::Renderer2D::CircleShapeStatic<> m_circleStatic;
-		Pekan::Renderer2D::PolygonShape m_polygon1;
-		Pekan::Renderer2D::PolygonShape m_polygon2;
+		entt::entity m_triangle = entt::null;
+		entt::entity m_rectangle = entt::null;
+		entt::entity m_circle = entt::null;
+		entt::entity m_polygon1 = entt::null;
+		entt::entity m_polygon2 = entt::null;
 
 		glm::vec2 m_rectangleInitialPosition;
 		float m_rectangleInitialWidth;
 		float m_rectangleInitialHeight;
 
 		glm::vec2 m_circleInitialPosition;
-		glm::vec2 m_circleStaticInitialPosition;
 		float m_circleInitialRadius;
-		float m_circleStaticInitialRadius;
 
 		glm::vec2 m_polygon1InitialPosition;
 		glm::vec2 m_polygon2InitialPosition;
@@ -66,11 +62,15 @@ namespace Demo
 		Pekan::Graphics::Image m_image0;
 		Pekan::Graphics::Image m_image1;
 
-		std::shared_ptr<const Demo04_GUIWindow> m_guiWindow;
-
 		bool m_enabledFaceCulling = false;
 
+		// The state of "enable shapes" from GUI in the previous frame
+		bool m_prevIsEnabledShapes = false;
+
 		float t = 0.0f;
+
+		// Cached ECS registry reference
+		entt::registry& m_registry = getRegistry();
 	};
 
 } // namespace Demo

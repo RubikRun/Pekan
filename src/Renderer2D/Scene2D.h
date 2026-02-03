@@ -22,11 +22,11 @@ namespace Renderer2D {
 
 	protected: /* functions */
 
-		// Can be implemented by derived classes with specific render logic
+		// Can be implemented by derived classes with additional render logic
 		virtual void _render() const {}
-		// Can be implemented by derived classes with specific initialization logic
+		// Can be implemented by derived classes with additional initialization logic
 		virtual bool _init() { return true; }
-		// Can be implemented by derived classes with specific exit logic
+		// Can be implemented by derived classes with additional exit logic
 		virtual void _exit() {}
 
 	private: /* variables */

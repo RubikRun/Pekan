@@ -1851,4 +1851,25 @@ We'll have to rewrite those demos to use the new ECS API.
     It works.
     Done.
     }
+
+----------
+02.02.2026
+----------
+
+    {
+    Integrated ECS in Demo04 today and yesterday.
+    There was a slight issue - the demo contains both 2D entities and a RenderObject
+    which is part of Graphics, NOT of Renderer2D, it's also not part of ECS yet.
+    Luckily our Scene2D supports additional render steps by overriding the _render() function,
+    so that's what I did - manually rendered the RenderObject in _render().
+    Not sure if that's a good solution in general, created TO-DO tasks for this. For now Demo04 is fine like that.
+
+    Another problem is that there is no way to specify the order of rendering of the RenderObject and the 2D shapes.
+    Right now, the additional render steps from _render() are done AFTER the ECS rendering of shapes,
+    so the RenderObject is drawn on top of the shapes, which is NOT what we want,
+    but currently there is no way to fix that. Created a TO-DO task for that as well.
+
+    Considering ECS integrated in Demo04 for now, with some things to fix after completing the TO-DO tasks.
+    Done.
+    }
 }
