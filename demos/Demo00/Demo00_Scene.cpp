@@ -26,7 +26,7 @@ namespace Demo
             1, 2, 3   // second triangle
         };
 
-        m_renderObject.create
+        m_drawObject.create
         (
             vertices, sizeof(vertices),
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
@@ -34,7 +34,7 @@ namespace Demo
             Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
             Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
-        m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
+        m_drawObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
         return true;
 	}
@@ -44,7 +44,7 @@ namespace Demo
         // Get position from GUI
         glm::vec2 position = m_guiWindow->getPosition();
         // Set "uPosition" uniform inside of the shader
-        Shader& shader = m_renderObject.getShader();
+        Shader& shader = m_drawObject.getShader();
         shader.bind();
         shader.setUniform2f("uPosition", position);
         shader.unbind();
@@ -60,12 +60,12 @@ namespace Demo
         }
         RenderCommands::clear();
 
-        m_renderObject.render();
+        m_drawObject.render();
 	}
 
 	void Demo00_Scene::exit()
 	{
-        m_renderObject.destroy();
+        m_drawObject.destroy();
 	}
 
 } // namespace Demo

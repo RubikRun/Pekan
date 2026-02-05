@@ -6,7 +6,7 @@
 #include "SpriteVertex.h"
 #include "CameraComponent2D.h"
 #include "CameraSystem2D.h"
-#include "RenderObject.h"
+#include "DrawObject.h"
 #include "Utils/FileUtils.h"
 #include "PekanLogger.h"
 #include "Entity/DisabledComponent.h"
@@ -100,21 +100,21 @@ namespace Renderer2D
         shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
     }
 
-	// Creates a render object for a given sprite
-    static void createRenderObjectForSprite
+	// Creates a draw object for a given sprite
+    static void createDrawObjectForSprite
     (
         const entt::registry& registry,
         const SpriteComponent& sprite,
         const TransformComponent2D& transform,
         int textureSlot,              // texture slot to set in the shader uniform
-        RenderObject& renderObject    // render object to create
+        DrawObject& drawObject    // draw object to create
     )
     {
 		// Get sprite's vertices
         SpriteVertex vertices[4];
         getVerticesWorld(registry, sprite, transform, vertices);
-		// Create render object with sprite's vertices
-        renderObject.create
+		// Create draw object with sprite's vertices
+        drawObject.create
         (
             vertices,
             sizeof(SpriteVertex) * 4,
@@ -126,13 +126,13 @@ namespace Renderer2D
             FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
             FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
         );
-        // Set render object's index data for a sprite formed by two triangles
+        // Set draw object's index data for a sprite formed by two triangles
         static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
-        renderObject.setIndexData(indices, sizeof(unsigned) * 6);
+        drawObject.setIndexData(indices, sizeof(unsigned) * 6);
 
-		// Set render object's shader uniforms
+		// Set draw object's shader uniforms
         {
-            Shader& shader = renderObject.getShader();
+            Shader& shader = drawObject.getShader();
             // Set view projection matrix uniform using the primary camera
             const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
             setViewProjectionMatrixUniform(shader, camera);
@@ -141,20 +141,20 @@ namespace Renderer2D
         }
     }
 
-    // Creates a render object for a given sprite
-    static void createRenderObjectForSprite
+    // Creates a draw object for a given sprite
+    static void createDrawObjectForSprite
     (
         const entt::registry& registry,
         const SpriteComponent& sprite,
         int textureSlot,              // texture slot to set in the shader uniform
-        RenderObject& renderObject    // render object to create
+        DrawObject& drawObject    // draw object to create
     )
     {
         // Get sprite's world vertices
         SpriteVertex vertices[4];
         getVerticesLocal(registry, sprite, vertices);
-        // Create render object with sprite's vertices
-        renderObject.create
+        // Create draw object with sprite's vertices
+        drawObject.create
         (
             vertices,
             sizeof(SpriteVertex) * 4,
@@ -166,13 +166,13 @@ namespace Renderer2D
             FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
             FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATH).c_str()
         );
-        // Set render object's index data for a sprite formed by two triangles
+        // Set draw object's index data for a sprite formed by two triangles
         static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
-        renderObject.setIndexData(indices, sizeof(unsigned) * 6);
+        drawObject.setIndexData(indices, sizeof(unsigned) * 6);
 
-        // Set render object's shader uniforms
+        // Set draw object's shader uniforms
         {
-            Shader& shader = renderObject.getShader();
+            Shader& shader = drawObject.getShader();
             // Set view projection matrix uniform using the primary camera
             const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
             setViewProjectionMatrixUniform(shader, camera);
@@ -196,13 +196,13 @@ namespace Renderer2D
         // Get entity's sprite and transform components
         const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
         const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
-        // Create render object for the sprite
-        RenderObject renderObject;
-        createRenderObjectForSprite(registry, sprite, transform, 0, renderObject);
+        // Create draw object for the sprite
+        DrawObject drawObject;
+        createDrawObjectForSprite(registry, sprite, transform, 0, drawObject);
         // Bind sprite's texture
         sprite.texture->bind(0);
-        // Render sprite's render object
-        renderObject.render();
+        // Render sprite's draw object
+        drawObject.render();
     }
 
     template<>
@@ -213,13 +213,13 @@ namespace Renderer2D
 
         // Get entity's sprite component
         const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
-        // Create render object for the sprite
-        RenderObject renderObject;
-        createRenderObjectForSprite(registry, sprite, 0, renderObject);
+        // Create draw object for the sprite
+        DrawObject drawObject;
+        createDrawObjectForSprite(registry, sprite, 0, drawObject);
         // Bind sprite's texture
         sprite.texture->bind(0);
-        // Render sprite's render object
-        renderObject.render();
+        // Render sprite's draw object
+        drawObject.render();
     }
 
     // Renders all sprites that have (or all sprites that don't have) a transform component

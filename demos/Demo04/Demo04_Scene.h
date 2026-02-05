@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Scene2D.h"
-#include "RenderObject.h"
+#include "DrawObject.h"
 #include "Image.h"
 
 #include "Demo04_GUIWindow.h"
@@ -26,7 +26,7 @@ namespace Demo
 
 		void update(double deltaTime) override;
 
-		// Override Scene2D's _render() function to manually render m_renderObject
+		// Override Scene2D's _render() function to manually render m_drawObject
 		// since it's not part of ECS and will not be rendered automatically.
 		//
 		// TODO: think about if this is a good idea long-term, or if we should think of something else for such cases.
@@ -39,7 +39,7 @@ namespace Demo
 
 		std::shared_ptr<const Demo04_GUIWindow> m_guiWindow;
 
-		Pekan::Graphics::RenderObject m_renderObject;
+		Pekan::Graphics::DrawObject m_drawObject;
 
 		entt::entity m_triangle = entt::null;
 		entt::entity m_rectangle = entt::null;

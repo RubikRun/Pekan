@@ -93,7 +93,7 @@ namespace Demo
             {{-0.5f, -0.5f,  0.5f}, colors[5]}
         };
 
-        m_renderObject.create
+        m_drawObject.create
         (
             m_vertices.data(),
             m_vertices.size() * sizeof(Vertex),
@@ -102,7 +102,7 @@ namespace Demo
             Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
             Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
-        m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
+        m_drawObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
         // Get parameters from GUI window
         const float rotation = m_guiWindow->getRotation();
@@ -139,7 +139,7 @@ namespace Demo
         m_projMatrix = glm::perspective(glm::radians(fov), float(windowSize.x) / float(windowSize.y), 0.01f, 100.0f);
         // Set model-view-projection matrix uniform inside the shader
         glm::mat4 mvpMatrix = m_projMatrix * m_viewMatrix * m_modelMatrix;
-        m_renderObject.getShader().setUniformMatrix4fv("u_MVP", mvpMatrix);
+        m_drawObject.getShader().setUniformMatrix4fv("u_MVP", mvpMatrix);
 
         for (size_t i = 0; i < 6; i++)
         {
@@ -150,7 +150,7 @@ namespace Demo
             m_vertices[i * 4 + 3].color = color;
         }
 
-        m_renderObject.setVertexData
+        m_drawObject.setVertexData
         (
             m_vertices.data(),
             m_vertices.size() * sizeof(Vertex)
@@ -163,11 +163,11 @@ namespace Demo
             if (m_hideFourthFaceCache)
             {
                 static constexpr unsigned indicesReversed[] = { 14, 13, 12, 12, 15, 14 };
-                m_renderObject.setIndexSubData(indicesReversed, 3 * 6 * sizeof(unsigned), 6 * sizeof(unsigned));
+                m_drawObject.setIndexSubData(indicesReversed, 3 * 6 * sizeof(unsigned), 6 * sizeof(unsigned));
             }
             else
             {
-                m_renderObject.setIndexSubData(&indices[18], 3 * 6 * sizeof(unsigned), 6 * sizeof(unsigned));
+                m_drawObject.setIndexSubData(&indices[18], 3 * 6 * sizeof(unsigned), 6 * sizeof(unsigned));
             }
         }
 	}
@@ -176,12 +176,12 @@ namespace Demo
 	{
         RenderCommands::clear(true, true);
         // Render cube
-        m_renderObject.render();
+        m_drawObject.render();
 	}
 
 	void Demo02_Scene::exit()
 	{
-        m_renderObject.destroy();
+        m_drawObject.destroy();
 	}
 
 } // namespace Demo

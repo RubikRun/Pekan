@@ -107,7 +107,7 @@ namespace Demo
 
         m_shaderIdx = m_guiWindow->getShaderIdx();
 
-        m_renderObject.create
+        m_drawObject.create
         (
             vertices, sizeof(vertices),
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "texCoord" } },
@@ -115,14 +115,14 @@ namespace Demo
             Pekan::FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
             Pekan::FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
         );
-        m_renderObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
+        m_drawObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
         // Load the two images
         m_image0.load(IMAGE0_FILEPATH);
         m_image1.load(IMAGE1_FILEPATH);
-        // Set two images as textures to the render object
-        m_renderObject.setTextureImage(m_image0, "uTex0", 0);
-        m_renderObject.setTextureImage(m_image1, "uTex1", 1);
+        // Set two images as textures to the draw object
+        m_drawObject.setTextureImage(m_image0, "uTex0", 0);
+        m_drawObject.setTextureImage(m_image1, "uTex1", 1);
 
         m_triangle = createEntity();
         m_registry.emplace<TransformComponent2D>(m_triangle);
@@ -176,7 +176,7 @@ namespace Demo
 
     void Demo04_Scene::_exit()
     {
-        m_renderObject.destroy();
+        m_drawObject.destroy();
         destroyEntity(m_polygon2);
         destroyEntity(m_polygon1);
         destroyEntity(m_circle);
@@ -217,7 +217,7 @@ namespace Demo
         const glm::vec3 backgroundColor = m_guiWindow->getBackgroundColor();
         RenderState::setBackgroundColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
 
-        Shader& texRectShader = m_renderObject.getShader();
+        Shader& texRectShader = m_drawObject.getShader();
         texRectShader.bind();
 
         if (m_guiWindow != nullptr)
@@ -228,14 +228,14 @@ namespace Demo
             {
                 m_shaderIdx = guiShaderIdx;
                 // then set new shader's source code
-                m_renderObject.setShaderSource
+                m_drawObject.setShaderSource
                 (
                     Pekan::FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATHS[m_shaderIdx]).c_str(),
                     Pekan::FileUtils::readTextFileToString(FRAGMENT_SHADER_FILEPATHS[m_shaderIdx]).c_str()
                 );
                 // We need to set textures again after changing the shader
-                m_renderObject.setTextureImage(m_image0, "uTex0", 0);
-                m_renderObject.setTextureImage(m_image1, "uTex1", 1);
+                m_drawObject.setTextureImage(m_image0, "uTex0", 0);
+                m_drawObject.setTextureImage(m_image1, "uTex1", 1);
             }
 
             // If enabled/disabled state of face culling has changed in GUI
@@ -323,8 +323,8 @@ namespace Demo
 
     void Demo04_Scene::_render() const
     {
-        // Manually render m_renderObject since it's not part of ECS and will not be rendered automatically.
-        m_renderObject.render();
+        // Manually render m_drawObject since it's not part of ECS and will not be rendered automatically.
+        m_drawObject.render();
     }
 
     void Demo04_Scene::updatePolygon1()

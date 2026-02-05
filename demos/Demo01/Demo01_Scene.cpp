@@ -22,7 +22,7 @@ namespace Demo
         RenderState::enableBlending();
         RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 
-        m_renderObject.create
+        m_drawObject.create
         (
             { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
             Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
@@ -48,11 +48,11 @@ namespace Demo
         {
             generateSquareVertices(i);
         }
-        // Set render object's vertex data to the vertices list
-        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
+        // Set draw object's vertex data to the vertices list
+        m_drawObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(float), BufferDataUsage::DynamicDraw);
 
         // If we should move third square and there is a third square,
-        // we will move it slightly just to test m_renderObject.setVertexSubData(...)
+        // we will move it slightly just to test m_drawObject.setVertexSubData(...)
         if (m_guiWindow->getMoveThirdSquare() && m_guiWindow->getNumberOfSquares() >= 3)
         {
             moveThirdSquare();
@@ -65,12 +65,12 @@ namespace Demo
 	{
         RenderCommands::clear();
 
-        m_renderObject.render();
+        m_drawObject.render();
 	}
 
 	void Demo01_Scene::exit()
 	{
-        m_renderObject.destroy();
+        m_drawObject.destroy();
 	}
 
     void Demo01_Scene::generateSquareVertices(size_t idx)
@@ -131,7 +131,7 @@ namespace Demo
         }
 
         // Update the region of vertex buffer the contains the third square
-        m_renderObject.setVertexSubData(&m_vertices[2 * 6 * 6], 2 * 6 * 6 * sizeof(float), 6 * 6 * sizeof(float));
+        m_drawObject.setVertexSubData(&m_vertices[2 * 6 * 6], 2 * 6 * 6 * sizeof(float), 6 * 6 * sizeof(float));
     }
 
 } // namespace Demo

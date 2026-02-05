@@ -43,7 +43,7 @@ namespace Demo
             2, 3, 0
         };
 
-        m_renderObject.create
+        m_drawObject.create
         (
             m_vertices.data(),
             8 * sizeof(int),
@@ -52,9 +52,9 @@ namespace Demo
             Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
             Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
-        m_renderObject.setIndexData(indices, 6 * sizeof(int), BufferDataUsage::StaticDraw);
+        m_drawObject.setIndexData(indices, 6 * sizeof(int), BufferDataUsage::StaticDraw);
 
-        m_renderObject.getShader().setUniform2f("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
+        m_drawObject.getShader().setUniform2f("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
 
         return true;
     }
@@ -65,12 +65,12 @@ namespace Demo
 
     void Apple::render() const
     {
-        m_renderObject.render();
+        m_drawObject.render();
     }
 
     void Apple::destroy()
     {
-        m_renderObject.destroy();
+        m_drawObject.destroy();
     }
 
     glm::ivec4 Apple::getRectangle() const
@@ -96,7 +96,7 @@ namespace Demo
             m_position.x + m_size, m_position.y + m_size,
             m_position.x + m_size, m_position.y
         };
-        m_renderObject.setVertexData(m_vertices.data(), 8 * sizeof(int));
+        m_drawObject.setVertexData(m_vertices.data(), 8 * sizeof(int));
     }
 
 } // namespace Demo

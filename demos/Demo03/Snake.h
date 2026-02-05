@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RenderObject.h"
+#include "DrawObject.h"
 
 #include "Apple.h"
 
@@ -47,7 +47,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Graphics::RenderObject m_renderObject;
+		Pekan::Graphics::DrawObject m_drawObject;
 
 		int m_squaresCount = -1;
 

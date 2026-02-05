@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Layer.h"
-#include "RenderObject.h"
+#include "DrawObject.h"
 
 #include "Demo01_GUIWindow.h"
 
@@ -39,7 +39,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Graphics::RenderObject m_renderObject;
+		Pekan::Graphics::DrawObject m_drawObject;
 
 		std::shared_ptr<const Demo01_GUIWindow> m_guiWindow;
 

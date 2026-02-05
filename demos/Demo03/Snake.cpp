@@ -78,7 +78,7 @@ namespace Demo
             12, 13, 14, 14, 15, 12
         };
 
-        m_renderObject.create
+        m_drawObject.create
         (
             m_vertices.data(),
             m_vertices.size() * sizeof(int),
@@ -87,9 +87,9 @@ namespace Demo
             Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
             Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
         );
-        m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
+        m_drawObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int), BufferDataUsage::DynamicDraw);
 
-        m_renderObject.getShader().setUniform2f("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
+        m_drawObject.getShader().setUniform2f("uResolution", glm::vec2(float(m_resolution.x), float(m_resolution.y)));
 
         return true;
 	}
@@ -126,12 +126,12 @@ namespace Demo
 
     void Snake::render() const
     {
-        m_renderObject.render();
+        m_drawObject.render();
     }
 
     void Snake::destroy()
     {
-        m_renderObject.destroy();
+        m_drawObject.destroy();
     }
 
     bool Snake::checkHeadOverlapsApple(const Apple& apple) const
@@ -222,8 +222,8 @@ namespace Demo
         m_indices.push_back((m_squaresCount - 1) * 4 + 3);
         m_indices.push_back((m_squaresCount - 1) * 4 + 0);
 
-        m_renderObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int));
-        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int));
+        m_drawObject.setIndexData(m_indices.data(), m_indices.size() * sizeof(int));
+        m_drawObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int));
 
         m_speedIdx++;
     }
@@ -237,7 +237,7 @@ namespace Demo
         {
             m_tailIdx = m_squaresCount - 1;
         }
-        m_renderObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int));
+        m_drawObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int));
 
         if (!isRectangleInsideOfWindow(getRectangle(m_headIdx), m_resolution) || isBitingItself())
         {

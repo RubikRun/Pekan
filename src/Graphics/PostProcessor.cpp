@@ -1,7 +1,7 @@
 #include "PostProcessor.h"
 
 #include "GLCall.h"
-#include "RenderObject.h"
+#include "DrawObject.h"
 #include "FrameBuffer.h"
 #include "Utils/FileUtils.h"
 #include "PekanLogger.h"
@@ -26,7 +26,7 @@ namespace Graphics
 	//     -> draw call
 	//     -> g_frameBufferMultisample    (only if using multisample rendering)
 	//     -> g_frameBufferFinal
-	//     -> g_renderObject with a post-processing shader applied
+	//     -> g_drawObject with a post-processing shader applied
 	//     -> screen
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,9 +37,9 @@ namespace Graphics
 	// The final frame buffer that will be passed to the post-processing shader.
 	static FrameBuffer g_frameBufferFinal;
 
-	// Underlying render object
+	// Underlying draw object
 	// used to render rectangle with post-processed frame.
-	static RenderObject g_renderObject;
+	static DrawObject g_drawObject;
 
 	// Vertices of a rectangle covering the whole window/viewport
 	constexpr float RECTANGLE_VERTICES[] =
@@ -99,10 +99,10 @@ namespace Graphics
 			}
 		}
 
-		// If render object is already created, just set new shader source
-		if (g_renderObject.isValid())
+		// If draw object is already created, just set new shader source
+		if (g_drawObject.isValid())
 		{
-			g_renderObject.setShaderSource
+			g_drawObject.setShaderSource
 			(
 				FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 				FileUtils::readTextFileToString(postProcessingShaderFilepath).c_str()
@@ -110,9 +110,9 @@ namespace Graphics
 			return;
 		}
 
-		// Create underlying render object with rectangle's vertices,
+		// Create underlying draw object with rectangle's vertices,
 		// a default vertex shader, and use given post-processing shader as a fragment shader.
-		g_renderObject.create
+		g_drawObject.create
 		(
 			RECTANGLE_VERTICES, 4 * 2 * 2 * sizeof(float),
 			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float2, "textureCoordinates"} },
@@ -120,10 +120,10 @@ namespace Graphics
 			FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readTextFileToString(postProcessingShaderFilepath).c_str()
 		);
-		g_renderObject.setIndexData(RECTANGLE_INDICES, 6 * sizeof(unsigned));
+		g_drawObject.setIndexData(RECTANGLE_INDICES, 6 * sizeof(unsigned));
 		// Set "screenTexture" uniform inside the shader to 0,
 		// because we will always bind the frame buffer's texture on slot 0
-		g_renderObject.getShader().setUniform1i("screenTexture", 0);
+		g_drawObject.getShader().setUniform1i("screenTexture", 0);
 
 		g_hasSetPostProcessingShader = true;
 	}
@@ -183,7 +183,7 @@ namespace Graphics
 		// (Importantly, bind it to slot 0 because shader expects it there)
 		g_frameBufferFinal.bindTexture(0);
 		// Render the rectangle using the post-processing shader and the texture containing the rendered frame
-		g_renderObject.render();
+		g_drawObject.render();
 
 		// If depth testing was originally enabled, enable it again
 		if (originalIsEnabledDepthTest)
@@ -200,9 +200,9 @@ namespace Graphics
 		{
 			return nullptr;
 		}
-		PK_ASSERT(g_renderObject.isValid(), "Trying to get shader from PostProcessor but underlying render object is not valid.", "Pekan");
+		PK_ASSERT(g_drawObject.isValid(), "Trying to get shader from PostProcessor but underlying draw object is not valid.", "Pekan");
 
-		return &g_renderObject.getShader();
+		return &g_drawObject.getShader();
 	}
 
 	void PostProcessor::exit()
@@ -213,7 +213,7 @@ namespace Graphics
 		}
 
 		PK_ASSERT(g_frameBufferFinal.isValid(), "PostProcessor is being exited but its final frame buffer is not valid.", "Pekan");
-		PK_ASSERT(g_renderObject.isValid(), "PostProcessor is being exited but its underlying render object is not valid.", "Pekan");
+		PK_ASSERT(g_drawObject.isValid(), "PostProcessor is being exited but its underlying draw object is not valid.", "Pekan");
 
 		// Destroy underlying frame buffers
 		{
@@ -226,8 +226,8 @@ namespace Graphics
 			}
 		}
 
-		// Destroy underlying render object
-		g_renderObject.destroy();
+		// Destroy underlying draw object
+		g_drawObject.destroy();
 
 		// Reset flags
 		g_isInitialized = false;

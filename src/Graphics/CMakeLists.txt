@@ -11,26 +11,26 @@ add_library(Graphics STATIC
     RenderState.cpp
     RenderCommands.h
     RenderCommands.cpp
-    RenderObject.h
-    RenderObject.cpp
-    RenderComponents/VertexBuffer.h
-    RenderComponents/VertexBuffer.cpp
-    RenderComponents/IndexBuffer.h
-    RenderComponents/IndexBuffer.cpp
-    RenderComponents/VertexArray.h
-    RenderComponents/VertexArray.cpp
-    RenderComponents/Shader.h
-    RenderComponents/Shader.cpp
-    RenderComponents/Texture1D.h
-    RenderComponents/Texture1D.cpp
-    RenderComponents/Texture2D.h
-    RenderComponents/Texture2D.cpp
-    RenderComponents/Texture2DMultisample.h
-    RenderComponents/Texture2DMultisample.cpp
-    RenderComponents/FrameBuffer.h
-    RenderComponents/FrameBuffer.cpp
-    RenderComponents/RenderBuffer.h
-    RenderComponents/RenderBuffer.cpp
+    DrawObject.h
+    DrawObject.cpp
+    GpuResources/VertexBuffer.h
+    GpuResources/VertexBuffer.cpp
+    GpuResources/IndexBuffer.h
+    GpuResources/IndexBuffer.cpp
+    GpuResources/VertexArray.h
+    GpuResources/VertexArray.cpp
+    GpuResources/Shader.h
+    GpuResources/Shader.cpp
+    GpuResources/Texture1D.h
+    GpuResources/Texture1D.cpp
+    GpuResources/Texture2D.h
+    GpuResources/Texture2D.cpp
+    GpuResources/Texture2DMultisample.h
+    GpuResources/Texture2DMultisample.cpp
+    GpuResources/FrameBuffer.h
+    GpuResources/FrameBuffer.cpp
+    GpuResources/RenderBuffer.h
+    GpuResources/RenderBuffer.cpp
     Image.h
     Image.cpp
     ShaderPreprocessor.h
@@ -39,32 +39,32 @@ add_library(Graphics STATIC
     PostProcessor.cpp
 )
 
-# Group RenderComponents files under a virtual folder called "RenderComponents"
-SOURCE_GROUP("Source Files\\RenderComponents" FILES
-    RenderComponents/VertexBuffer.cpp
-    RenderComponents/IndexBuffer.cpp
-    RenderComponents/VertexArray.cpp
-    RenderComponents/Shader.cpp
-    RenderComponents/Texture1D.cpp
-    RenderComponents/Texture2D.cpp
-    RenderComponents/Texture2DMultisample.cpp
-    RenderComponents/FrameBuffer.cpp
-    RenderComponents/RenderBuffer.cpp
+# Group GpuResources files under a virtual folder called "GpuResources"
+SOURCE_GROUP("Source Files\\GpuResources" FILES
+    GpuResources/VertexBuffer.cpp
+    GpuResources/IndexBuffer.cpp
+    GpuResources/VertexArray.cpp
+    GpuResources/Shader.cpp
+    GpuResources/Texture1D.cpp
+    GpuResources/Texture2D.cpp
+    GpuResources/Texture2DMultisample.cpp
+    GpuResources/FrameBuffer.cpp
+    GpuResources/RenderBuffer.cpp
 )
-SOURCE_GROUP("Header Files\\RenderComponents" FILES
-    RenderComponents/VertexBuffer.h
-    RenderComponents/IndexBuffer.h
-    RenderComponents/VertexArray.h
-    RenderComponents/Shader.h
-    RenderComponents/Texture1D.h
-    RenderComponents/Texture2D.h
-    RenderComponents/Texture2DMultisample.h
-    RenderComponents/FrameBuffer.h
-    RenderComponents/RenderBuffer.h
+SOURCE_GROUP("Header Files\\GpuResources" FILES
+    GpuResources/VertexBuffer.h
+    GpuResources/IndexBuffer.h
+    GpuResources/VertexArray.h
+    GpuResources/Shader.h
+    GpuResources/Texture1D.h
+    GpuResources/Texture2D.h
+    GpuResources/Texture2DMultisample.h
+    GpuResources/FrameBuffer.h
+    GpuResources/RenderBuffer.h
 )
 
 # Set include directories for Graphics
-target_include_directories(Graphics PUBLIC . RenderComponents)
+target_include_directories(Graphics PUBLIC . GpuResources)
 
 # Set link libraries for Graphics
 target_link_libraries(Graphics PUBLIC Core)

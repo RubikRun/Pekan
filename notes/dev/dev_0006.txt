@@ -1882,3 +1882,28 @@ All demos work.
 The whole solution builds okay.
 Done.
 }
+
+----------
+04.02.2026
+----------
+
+{
+A small thing that I want to do before continuing:
+Let's rename some things in the Graphics module to make them clearer in the context of current architecture,
+and to not clash with ECS terminology.
+
+First, let's rename this directory
+    RenderComponents
+to
+    GpuResources
+That's more accurate and clearer, and can't be confused with ECS components.
+Done.
+
+Second, let's rename this class
+    class RenderObject
+to
+    class DrawObject
+It's more accurate because it's an object containing a bunch of GPU resources needed for a draw call,
+and we don't want to confuse it with Renderer2D, it is NOT part of Renderer2D, it's part of Graphics.
+Done.
+}

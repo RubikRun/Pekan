@@ -14,17 +14,17 @@ namespace Pekan
 namespace Graphics
 {
 
-	// A class representing a render object in Pekan.
-	// A render object in Pekan is a standard set of render components needed to render something: 
+	// A class representing a draw object in Pekan.
+	// A draw object in Pekan is a standard set of GPU resources needed to draw something: 
 	// - vertices
 	// - indices (optional)
 	// - a shader
 	// - textures (optional)
-	class RenderObject
+	class DrawObject
 	{
 	public:
 
-		// Creates a render object with vertices and a shader.
+		// Creates a draw object with vertices and a shader.
 		// Index data and textures can be provided later.
 		void create
 		(
@@ -35,7 +35,7 @@ namespace Graphics
 			const char* vertexShaderSource,
 			const char* fragmentShaderSource
 		);
-		// Creates a render object with a shader only.
+		// Creates a draw object with a shader only.
 		// Vertex data, index data and textures can be provided later.
 		void create
 		(
@@ -48,24 +48,24 @@ namespace Graphics
 		// Renders the object
 		void render(DrawMode mode = DrawMode::Triangles) const;
 
-		// Sets new vertex data to the render object (old data usage will be used)
+		// Sets new vertex data to the draw object (old data usage will be used)
 		void setVertexData(const void* data, long long size);
-		// Sets new vertex data, with a new data usage, to the render object
+		// Sets new vertex data, with a new data usage, to the draw object
 		void setVertexData(const void* data, long long size, BufferDataUsage dataUsage);
-		// Fills a region of render object's vertex data with given data. Previous data in this region is overwritten.
+		// Fills a region of draw object's vertex data with given data. Previous data in this region is overwritten.
 		void setVertexSubData(const void* data, long long offset, long long size);
 
-		// Sets new index data to the render object (old data usage will be used)
+		// Sets new index data to the draw object (old data usage will be used)
 		void setIndexData(const void* data, long long size);
-		// Sets new index data, with a new data usage, to the render object
+		// Sets new index data, with a new data usage, to the draw object
 		void setIndexData(const void* data, long long size, BufferDataUsage dataUsage);
-		// Fills a region of render object's index data with given data. Previous data in this region is overwritten.
+		// Fills a region of draw object's index data with given data. Previous data in this region is overwritten.
 		void setIndexSubData(const void* data, long long offset, long long size);
 
-		// Sets new source code to be used for render object's shader
+		// Sets new source code to be used for draw object's shader
 		void setShaderSource(const char* vertexShaderSource, const char* fragmentShaderSource);
 
-		// Sets an image to be used as a texture inside render object's shader.
+		// Sets an image to be used as a texture inside draw object's shader.
 		// @param[in] uniformName - Name of uniform containing the texture inside the shader
 		// @param[in] slot - Slot where texture will be bound
 		void setTextureImage(const Image& image, const char* uniformName, unsigned slot);
@@ -73,7 +73,7 @@ namespace Graphics
 		Shader& getShader() { return m_shader; }
 		const Shader& getShader() const { return m_shader; }
 
-		// Checks if render object is valid, meaning that it has been successfully created and not yet destroyed.
+		// Checks if draw object is valid, meaning that it has been successfully created and not yet destroyed.
 		bool isValid() const;
 
 	private: /* functions */
@@ -81,7 +81,7 @@ namespace Graphics
 		void bind() const;
 		void unbind() const;
 
-		// Clears all textures of render object, leaving it without textures
+		// Clears all textures of draw object, leaving it without textures
 		void clearTextures();
 
 	private: /* variables */
@@ -105,7 +105,7 @@ namespace Graphics
 		// Data usage of the index buffer
 		BufferDataUsage m_indexDataUsage = BufferDataUsage::None;
 
-		// A flag indicating if render object is valid, meaning that it has been successfully created and not yet destroyed.
+		// A flag indicating if draw object is valid, meaning that it has been successfully created and not yet destroyed.
 		bool m_isValid = false;
 	};
 

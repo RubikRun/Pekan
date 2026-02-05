@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RenderObject.h"
+#include "DrawObject.h"
 
 namespace Demo
 {
@@ -26,7 +26,7 @@ namespace Demo
 
 	private: /* variables */
 
-		Pekan::Graphics::RenderObject m_renderObject;
+		Pekan::Graphics::DrawObject m_drawObject;
 
 		// Vertices of apple's square
 		std::vector<int> m_vertices;

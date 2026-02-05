@@ -3,7 +3,7 @@
 #include "TransformComponent2D.h"
 #include "SpriteSystem.h"
 
-#include "RenderObject.h"
+#include "DrawObject.h"
 #include "CameraComponent2D.h"
 #include "CameraSystem2D.h"
 #include "Entity/DisabledComponent.h"
@@ -123,17 +123,17 @@ namespace Renderer2D
         shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
     }
 
-    // Creates a render object from given vertices and indices of a shape with solid color material
-    static void createRenderObjectForShapeWithSolidColorMaterial
+    // Creates a draw object from given vertices and indices of a shape with solid color material
+    static void createDrawObjectForShapeWithSolidColorMaterial
     (
         const entt::registry& registry,
         const VertexOfShapeWithSolidColorMaterial* vertices, int verticesCount,
         const unsigned *indices, int indicesCount,
-        RenderObject& renderObject    // render object to create
+        DrawObject& drawObject    // draw object to create
     )
     {
-        // Create render object with given vertices
-        renderObject.create
+        // Create draw object with given vertices
+        drawObject.create
         (
             vertices,
             sizeof(VertexOfShapeWithSolidColorMaterial) * verticesCount,
@@ -145,12 +145,12 @@ namespace Renderer2D
             FileUtils::readTextFileToString(SHAPE_WITH_SOLID_COLOR_MATERIAL_VERTEX_SHADER_FILEPATH).c_str(),
             FileUtils::readTextFileToString(SHAPE_WITH_SOLID_COLOR_MATERIAL_FRAGMENT_SHADER_FILEPATH).c_str()
         );
-        // Set given indices to the render object
-        renderObject.setIndexData(indices, sizeof(unsigned) * indicesCount);
+        // Set given indices to the draw object
+        drawObject.setIndexData(indices, sizeof(unsigned) * indicesCount);
 
-        // Set render object's shader uniforms
+        // Set draw object's shader uniforms
         {
-            Shader& shader = renderObject.getShader();
+            Shader& shader = drawObject.getShader();
             // Set view projection matrix uniform using the primary camera
             const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
             setViewProjectionMatrixUniform(shader, camera);
@@ -180,18 +180,18 @@ namespace Renderer2D
             offsetof(VertexOfShapeWithSolidColorMaterial, color)
         );
 
-        // Create render object from shape's vertices and indices
-        RenderObject renderObject;
-        createRenderObjectForShapeWithSolidColorMaterial
+        // Create draw object from shape's vertices and indices
+        DrawObject drawObject;
+        createDrawObjectForShapeWithSolidColorMaterial
         (
             registry,
             vertices, verticesCount,
             indices, indicesCount,
-            renderObject
+            drawObject
         );
 
-        // Render shape's render object
-        renderObject.render();
+        // Render shape's draw object
+        drawObject.render();
     }
 
     // Renders an entity with a shape geometry and a solid color material
@@ -450,9 +450,9 @@ namespace Renderer2D
         // Get vertex positions into the vertices array
         LineSystem::getVertexPositionsWorld(registry, entity, vertices, sizeof(VertexOfLine), 0);
 
-        // Create render object with line's vertices
-        RenderObject renderObject;
-        renderObject.create
+        // Create draw object with line's vertices
+        DrawObject drawObject;
+        drawObject.create
         (
             vertices, 2 * sizeof(VertexOfLine),
             { { ShaderDataType::Float2, "position" } },
@@ -461,9 +461,9 @@ namespace Renderer2D
             FileUtils::readTextFileToString(LINE_FRAGMENT_SHADER_FILEPATH).c_str()
         );
 
-        // Set render object's shader uniforms
+        // Set draw object's shader uniforms
         {
-            Shader& shader = renderObject.getShader();
+            Shader& shader = drawObject.getShader();
             // Set "uColor" uniform to line's color
             shader.setUniform4f("uColor", line.color);
             // Set view projection matrix uniform using the primary camera
@@ -471,8 +471,8 @@ namespace Renderer2D
             setViewProjectionMatrixUniform(shader, camera);
         }
 
-        // Render the render object
-        renderObject.render(DrawMode::Lines);
+        // Render the draw object
+        drawObject.render(DrawMode::Lines);
     }
 
     template<>
@@ -486,9 +486,9 @@ namespace Renderer2D
         // Get vertex positions into the vertices array
         LineSystem::getVertexPositionsLocal(registry, entity, vertices, sizeof(VertexOfLine), 0);
 
-        // Create render object with line's vertices
-        RenderObject renderObject;
-        renderObject.create
+        // Create draw object with line's vertices
+        DrawObject drawObject;
+        drawObject.create
         (
             vertices, 2 * sizeof(VertexOfLine),
             { { ShaderDataType::Float2, "position" } },
@@ -497,9 +497,9 @@ namespace Renderer2D
             FileUtils::readTextFileToString(LINE_FRAGMENT_SHADER_FILEPATH).c_str()
         );
 
-        // Set render object's shader uniforms
+        // Set draw object's shader uniforms
         {
-            Shader& shader = renderObject.getShader();
+            Shader& shader = drawObject.getShader();
             // Set "uColor" uniform to line's color
             shader.setUniform4f("uColor", line.color);
             // Set view projection matrix uniform using the primary camera
@@ -507,8 +507,8 @@ namespace Renderer2D
             setViewProjectionMatrixUniform(shader, camera);
         }
 
-        // Render the render object
-        renderObject.render(DrawMode::Lines);
+        // Render the draw object
+        drawObject.render(DrawMode::Lines);
     }
 
     void RenderSystem2D::render(const entt::registry& registry)
