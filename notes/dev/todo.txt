@@ -296,7 +296,7 @@
 0095 01.02.2026 (TODO): Add enableEntity() and disableEntity() functions in class Scene that add/remove DisabledComponent
                         and first check if DisabledComponent is present on the entity.
 
-0096 01.02.2026 (TODO): Think about creating a RenderObjectComponent in the Graphics module, or something similar.
+0096 01.02.2026 (DONE): Think about creating a RenderObjectComponent in the Graphics module, or something similar.
 
 0097 01.02.2026 (TODO): Create render order mechanism to allow users to configure which entities are on top and which ones are behind.
                         Use it in Demo04 to fix m_renderObject being rendered on top of shapes, we want shapes on top of m_renderObject.
@@ -305,3 +305,9 @@
                         Do we want to support such scenes at all? Maybe better to force users to have 2 scenes on top of each other in such cases.
                         Think about "global state" things like the camera in a Scene2D that don't really make sense for Graphics entities.
                         Think about order of rendering of mixed 2D entities and Graphics entities, how would we give control over that to the user?
+
+0099 05.02.2026 (TODO): Think of some way to allow custom low-level rendering in ECS.
+                        Maybe create a component called RenderSourceComponent containing pure data needed for a single draw call,
+                        matching DrawObject's data needs as closely as possible.
+                        Then a system called RenderSourceSystem that renders all entities with RenderSourceComponent
+                        using an unerlying DrawObject for each. Eventually this will be optimized with batching, of course.

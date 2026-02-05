@@ -1907,3 +1907,46 @@ It's more accurate because it's an object containing a bunch of GPU resources ne
 and we don't want to confuse it with Renderer2D, it is NOT part of Renderer2D, it's part of Graphics.
 Done.
 }
+
+----------
+05.02.2026
+----------
+
+{
+Let's look at TO-DO task 0096:
+    Think about creating a RenderObjectComponent in the Graphics module, or something similar.
+
+It might not be a good idea to directly translate DrawObject to DrawObjectComponent in ECS.
+Instead let's create
+    struct RenderSourceComponent
+that is a pure-ECS component, containing vertex data, index data, shaders, textures, etc.
+Then also create
+    class RenderSourceSystem
+that will just render all entities with RenderSourceComponent
+by creating underlying DrawObject's.
+(Later we'll optimize this with batching, same way we did for shapes before, in v0.2)
+
+Srtarted doing that, but it doesn't seem very promising.
+I have this so far:
+    struct RenderSourceComponent
+    {
+        std::vector<uint8_t> vertexData;
+        VertexBufferLayout vertexBufferLayout;
+    };
+but I really don't like this VertexBufferLayout member.
+How can we do it without it though?
+Should we have a pure-data equivalent of VertexBufferLayout?
+Really not sure about this.
+
+Let's leave this for later when we have and an editor with GUI ECS, and scene file export,
+then it will be much clearer what we need from this RenderSourceComponent.
+For now we can leave things as they are - users will have no direct way of creating custom render sources.
+They can, of course, still create DrawObject's manually and render them in a render() function, that's fine.
+But it will not be supported in ECS for now.
+Better keep ECS simple for now, until we build the base of the editor and the scene file export.
+
+Considering this task done, although we did nothing.
+I'll create a new TO-DO task with better description taking into account the conclusions that I got today.
+
+Done.
+}
