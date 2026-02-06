@@ -21,6 +21,9 @@ namespace Pekan
 namespace Renderer2D
 {
 
+    // Current primary camera cached here for easy access
+    static const CameraComponent2D* g_camera = nullptr;
+
 	// Computes local vertex positions for a given sprite
     static void getLocalVertexPositions(const SpriteComponent& sprite, glm::vec2* verticesLocal /* output array of 4 vec2's */)
     {
@@ -94,9 +97,10 @@ namespace Renderer2D
     }
 
     // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera component
-    static void setViewProjectionMatrixUniform(Shader& shader, const CameraComponent2D& camera)
+    static void setViewProjectionMatrixUniform(Shader& shader, const CameraComponent2D* camera)
     {
-        const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
+        PK_ASSERT(camera != nullptr, "Cannot set view projection matrix uniform without a camera.", "Pekan");
+        const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
         shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
     }
 
@@ -134,8 +138,7 @@ namespace Renderer2D
         {
             Shader& shader = drawObject.getShader();
             // Set view projection matrix uniform using the primary camera
-            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
-            setViewProjectionMatrixUniform(shader, camera);
+            setViewProjectionMatrixUniform(shader, g_camera);
 			// Set texture slot uniform
             shader.setUniform1i("uTexture", textureSlot);
         }
@@ -174,8 +177,7 @@ namespace Renderer2D
         {
             Shader& shader = drawObject.getShader();
             // Set view projection matrix uniform using the primary camera
-            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
-            setViewProjectionMatrixUniform(shader, camera);
+            setViewProjectionMatrixUniform(shader, g_camera);
             // Set texture slot uniform
             shader.setUniform1i("uTexture", textureSlot);
         }
@@ -251,8 +253,11 @@ namespace Renderer2D
         }
     }
 
-    void SpriteSystem::render(const entt::registry& registry)
+    void SpriteSystem::render(const entt::registry& registry, const CameraComponent2D* camera)
     {
+        PK_ASSERT_QUICK(camera != nullptr);
+        g_camera = camera;
+
         renderAllSprites<true>(registry);
         renderAllSprites<false>(registry);
     }

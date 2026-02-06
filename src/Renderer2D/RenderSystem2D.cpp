@@ -46,6 +46,9 @@ namespace Pekan
 namespace Renderer2D
 {
 
+    // Current primary camera cached here for easy access
+    static const CameraComponent2D* g_camera = nullptr;
+
     // Type alias for a vertex positions getter function
     using VertexPositionsGetter = void(*)
     (
@@ -117,9 +120,10 @@ namespace Renderer2D
     }
 
     // Sets "uViewProjectionMatrix" uniform inside a given shader using a given camera component
-    static void setViewProjectionMatrixUniform(Shader& shader, const CameraComponent2D& camera)
+    static void setViewProjectionMatrixUniform(Shader& shader, const CameraComponent2D* camera)
     {
-        const glm::mat4& viewProjectionMatrix = camera.getViewProjectionMatrix();
+        PK_ASSERT(camera != nullptr, "Cannot set view projection matrix uniform without a camera.", "Pekan");
+        const glm::mat4& viewProjectionMatrix = camera->getViewProjectionMatrix();
         shader.setUniformMatrix4fv("uViewProjectionMatrix", viewProjectionMatrix);
     }
 
@@ -152,8 +156,7 @@ namespace Renderer2D
         {
             Shader& shader = drawObject.getShader();
             // Set view projection matrix uniform using the primary camera
-            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
-            setViewProjectionMatrixUniform(shader, camera);
+            setViewProjectionMatrixUniform(shader, g_camera);
         }
     }
 
@@ -467,8 +470,7 @@ namespace Renderer2D
             // Set "uColor" uniform to line's color
             shader.setUniform4f("uColor", line.color);
             // Set view projection matrix uniform using the primary camera
-            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
-            setViewProjectionMatrixUniform(shader, camera);
+            setViewProjectionMatrixUniform(shader, g_camera);
         }
 
         // Render the draw object
@@ -503,8 +505,7 @@ namespace Renderer2D
             // Set "uColor" uniform to line's color
             shader.setUniform4f("uColor", line.color);
             // Set view projection matrix uniform using the primary camera
-            const CameraComponent2D& camera = CameraSystem2D::getPrimaryCamera(registry);
-            setViewProjectionMatrixUniform(shader, camera);
+            setViewProjectionMatrixUniform(shader, g_camera);
         }
 
         // Render the draw object
@@ -513,6 +514,14 @@ namespace Renderer2D
 
     void RenderSystem2D::render(const entt::registry& registry)
     {
+        // Update cached camera with current primary camera
+        g_camera = &CameraSystem2D::getPrimaryCamera(registry);
+        if (g_camera == nullptr)
+        {
+            PK_LOG_ERROR("No primary camera found in the registry. Cannot render the scene without a camera.", "Pekan");
+            return;
+        }
+
         // Render all rectangles, triangles, circles, lines, and polygons that have a solid color material and a transform
         renderAllEntitiesWith<RectangleGeometryComponent, SolidColorMaterialComponent, TransformComponent2D>(registry, renderRectangleWithSolidColorMaterial<true>);
         renderAllEntitiesWith<TriangleGeometryComponent, SolidColorMaterialComponent, TransformComponent2D>(registry, renderTriangleWithSolidColorMaterial<true>);
@@ -532,7 +541,7 @@ namespace Renderer2D
         renderAllEntitiesWith<LineComponent>(entt::exclude<TransformComponent2D>, registry, renderLine<false>);
 
         // Render all sprites
-        SpriteSystem::render(registry);
+        SpriteSystem::render(registry, g_camera);
     }
 
 } // namespace Renderer2D

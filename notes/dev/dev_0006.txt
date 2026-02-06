@@ -1950,3 +1950,44 @@ I'll create a new TO-DO task with better description taking into account the con
 
 Done.
 }
+
+----------
+06.02.2026
+----------
+
+{
+Let's do TO-DO task 0091.
+Sounds simple.
+
+Okay, did it.
+Added this global static variable
+    static const CameraComponent2D* g_camera = nullptr;
+in
+    RenderSystem2D.cpp
+that we'll use to cache the camera in the beginning of
+    RenderSystem2D::render()
+so that every function in this file can easily use the camera, without retrieving it from CameraSystem2D anew each time.
+
+NOTE: This makes RenderSystem2D::render() non-thread-safe.
+It's kind of a temporary solution anyway, because we will heavily rewrite RenderSystem2D and SpriteSystem soon
+when we introduce batching.
+
+We need the same thing in SpriteSystem - global static variable
+    static const CameraComponent2D* g_camera = nullptr;
+in
+    SpriteSystem.cpp
+The difference is that we don't want to call
+    CameraSystem2D::getPrimaryCamera()
+in SpriteSystem, because we already call it in RenderSystem2D::render().
+We can just pass along the camera from RenderSystem2D::render() to SpriteSystem::render(),
+so let's change SpriteSystem::render()'s signature:
+    static void render(const entt::registry& registry, const CameraComponent2D* camera);
+to take in a camera pointer.
+That's it.
+
+It works same as before, but now we call
+    CameraSystem2D::getPrimaryCamera()
+only once per frame.
+
+Done.
+}
