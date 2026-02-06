@@ -140,8 +140,8 @@ target_link_libraries(Core PRIVATE glfw)
 target_link_libraries(Core PUBLIC glm)
 
 # Require directory "dep/entt/single_include" to exist
-if(EXISTS "${CMAKE_SOURCE_DIR}/dep/entt/single_include")
-    set(ENTT_SINGLE_INCLUDE ${CMAKE_SOURCE_DIR}/dep/entt/single_include)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dep/entt/single_include")
+    set(ENTT_SINGLE_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/dep/entt/single_include)
 else()
     message(FATAL_ERROR "EnTT not found in dep/entt/single_include. You need to initialize EnTT as a git submodule.")
 endif()

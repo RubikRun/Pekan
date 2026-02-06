@@ -1991,3 +1991,21 @@ only once per frame.
 
 Done.
 }
+
+{
+Let's do TO-DO task 0092.
+
+Solution here is quite simple.
+The variable
+    CMAKE_SOURCE_DIR
+is problematic because it points to the source directory of whatever the main project is in the current build.
+What we want instead is the source directory of Pekan, no matter what the main project is.
+We can get that from this variable:
+    CMAKE_CURRENT_SOURCE_DIR
+
+We already use that variable when setting PEKAN_ROOT_DIR, on this line:
+    target_compile_definitions(Core PRIVATE PEKAN_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+so yeah, just use that for entt as well.
+
+Done.
+}
