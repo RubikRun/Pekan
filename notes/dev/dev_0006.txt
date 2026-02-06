@@ -2022,3 +2022,23 @@ scale() is not used anywhere (i checked) so nothing to test really.
 
 Done.
 }
+
+{
+Let's look at TO-DO task 0094.
+
+Went through all calls to DrawObject's
+    setIndexData()
+and, indeed, there were a few that had to have
+    BufferDataUsage::StaticDraw
+but didn't.
+Fixed them.
+
+Also checked all calls to DrawObject's
+    setVertexData()
+(it has the same buffer usage logic)
+They were fine, nothing to change there.
+
+Build is fine.
+Everything works as before.
+Done.
+}

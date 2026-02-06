@@ -150,7 +150,7 @@ namespace Renderer2D
             FileUtils::readTextFileToString(SHAPE_WITH_SOLID_COLOR_MATERIAL_FRAGMENT_SHADER_FILEPATH).c_str()
         );
         // Set given indices to the draw object
-        drawObject.setIndexData(indices, sizeof(unsigned) * indicesCount);
+        drawObject.setIndexData(indices, sizeof(unsigned) * indicesCount, BufferDataUsage::StaticDraw);
 
         // Set draw object's shader uniforms
         {

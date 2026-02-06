@@ -287,11 +287,11 @@
 0093 30.01.2026 (DONE): Fix scale() function of TransformComponent2D, it should multiply instead of add:
                             scaleFactor += deltaScale;    --->    scaleFactor *= deltaScale;
 
-0094 30.01.2026 (TODO): Noticed a few places in code where we call
+0094 30.01.2026 (DONE): Noticed a few places in code where we call
                             RenderObject's setIndexData()
                         and we don't pass any BufferDataUsage, which defaults to BufferDataUsage::DynamicDraw,
-                        but in some/most cases we actually want BufferDataUsage::DynamicDraw.
-                        Just pass BufferDataUsage::DynamicDraw as an extra argument to setIndexData()
+                        but in some/most cases we actually want BufferDataUsage::StaticDraw.
+                        Just pass BufferDataUsage::StaticDraw as an extra argument to setIndexData()
 
 0095 01.02.2026 (TODO): Add enableEntity() and disableEntity() functions in class Scene that add/remove DisabledComponent
                         and first check if DisabledComponent is present on the entity.

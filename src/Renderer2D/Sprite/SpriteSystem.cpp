@@ -132,7 +132,7 @@ namespace Renderer2D
         );
         // Set draw object's index data for a sprite formed by two triangles
         static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
-        drawObject.setIndexData(indices, sizeof(unsigned) * 6);
+        drawObject.setIndexData(indices, sizeof(unsigned) * 6, BufferDataUsage::StaticDraw);
 
 		// Set draw object's shader uniforms
         {
@@ -171,7 +171,7 @@ namespace Renderer2D
         );
         // Set draw object's index data for a sprite formed by two triangles
         static constexpr unsigned indices[6] = { 0, 1, 2, 0, 2, 3 };
-        drawObject.setIndexData(indices, sizeof(unsigned) * 6);
+        drawObject.setIndexData(indices, sizeof(unsigned) * 6, BufferDataUsage::StaticDraw);
 
         // Set draw object's shader uniforms
         {

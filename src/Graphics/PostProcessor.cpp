@@ -120,7 +120,7 @@ namespace Graphics
 			FileUtils::readTextFileToString(VERTEX_SHADER_FILEPATH).c_str(),
 			FileUtils::readTextFileToString(postProcessingShaderFilepath).c_str()
 		);
-		g_drawObject.setIndexData(RECTANGLE_INDICES, 6 * sizeof(unsigned));
+		g_drawObject.setIndexData(RECTANGLE_INDICES, 6 * sizeof(unsigned), BufferDataUsage::StaticDraw);
 		// Set "screenTexture" uniform inside the shader to 0,
 		// because we will always bind the frame buffer's texture on slot 0
 		g_drawObject.getShader().setUniform1i("screenTexture", 0);
