@@ -284,7 +284,7 @@
                         is problematic, because if Pekan is used as a dependency to another project,
                         then CMAKE_SOURCE_DIR will be pointing to that project's source directory, NOT Pekan's source directory
 
-0093 30.01.2026 (TODO): Fix scale() function of TransformComponent2D, it should multiply instead of add:
+0093 30.01.2026 (DONE): Fix scale() function of TransformComponent2D, it should multiply instead of add:
                             scaleFactor += deltaScale;    --->    scaleFactor *= deltaScale;
 
 0094 30.01.2026 (TODO): Noticed a few places in code where we call

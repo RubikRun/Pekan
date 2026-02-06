@@ -20,8 +20,11 @@ namespace Renderer2D
 
     /* functions */
 
+        // Moves the entity by given delta position, adding it to the current position.
         void move(glm::vec2 deltaPosition);
+        // Rotates the entity by given delta rotation, adding it to the current rotation.
         void rotate(float deltaRotation);
+        // Scales the entity by given delta scale, multiplying it by the current scale factor.
         void scale(glm::vec2 deltaScale);
     };
 

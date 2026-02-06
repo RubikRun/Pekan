@@ -17,7 +17,7 @@ namespace Renderer2D
 
     void TransformComponent2D::scale(glm::vec2 deltaScale)
     {
-        scaleFactor += deltaScale;
+        scaleFactor *= deltaScale;
     }
 
 } // namespace Renderer2D

@@ -2009,3 +2009,16 @@ so yeah, just use that for entt as well.
 
 Done.
 }
+
+{
+Let's do TO-DO task 0093.
+
+Did it. Easy.
+Also added comments to move(), rotate() and scale() functions in TransformComponent2D.h
+to make it clear that move() and rotate() are adding the deltaPosition and deltaRotation
+and scale() is multiplying by the deltaScale.
+
+scale() is not used anywhere (i checked) so nothing to test really.
+
+Done.
+}
