@@ -10,62 +10,62 @@ using namespace Pekan::Graphics;
 namespace Demo
 {
 
-    bool Demo00_Scene::init()
+	bool Demo00_Scene::init()
 	{
-        // Set up vertex data and configure vertex attributes
-        constexpr float vertices[] =
-        {
-             0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
-            -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
-        };
-        constexpr unsigned indices[] =
-        {
-            0, 1, 3,  // first triangle
-            1, 2, 3   // second triangle
-        };
+		// Set up vertex data and configure vertex attributes
+		constexpr float vertices[] =
+		{
+			 0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
+			 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
+			-0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f // top left
+		};
+		constexpr unsigned indices[] =
+		{
+			0, 1, 3,  // first triangle
+			1, 2, 3   // second triangle
+		};
 
-        m_drawObject.create
-        (
-            vertices, sizeof(vertices),
-            { { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
-            BufferDataUsage::StaticDraw,
-            Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
-            Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
-        );
-        m_drawObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
+		m_drawObject.create
+		(
+			vertices, sizeof(vertices),
+			{ { ShaderDataType::Float2, "position" }, { ShaderDataType::Float4, "color" } },
+			BufferDataUsage::StaticDraw,
+			Pekan::FileUtils::readTextFileToString(vertexShaderFilePath).c_str(),
+			Pekan::FileUtils::readTextFileToString(fragmentShaderFilePath).c_str()
+		);
+		m_drawObject.setIndexData(indices, sizeof(indices), BufferDataUsage::StaticDraw);
 
-        return true;
+		return true;
 	}
 
 	void Demo00_Scene::update(double dt)
 	{
-        // Get position from GUI
-        glm::vec2 position = m_guiWindow->getPosition();
-        // Set "uPosition" uniform inside of the shader
-        Shader& shader = m_drawObject.getShader();
-        shader.bind();
-        shader.setUniform2f("uPosition", position);
-        shader.unbind();
+		// Get position from GUI
+		glm::vec2 position = m_guiWindow->getPosition();
+		// Set "uPosition" uniform inside of the shader
+		Shader& shader = m_drawObject.getShader();
+		shader.bind();
+		shader.setUniform2f("uPosition", position);
+		shader.unbind();
 	}
 
 	void Demo00_Scene::render() const
 	{
-        // Clear background color
-        if (m_guiWindow != nullptr)
-        {
-            glm::vec4 clearColor = m_guiWindow->getClearColor();
-            RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-        }
-        RenderCommands::clear();
+		// Clear background color
+		if (m_guiWindow != nullptr)
+		{
+			glm::vec4 clearColor = m_guiWindow->getClearColor();
+			RenderState::setBackgroundColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+		}
+		RenderCommands::clear();
 
-        m_drawObject.render();
+		m_drawObject.render();
 	}
 
 	void Demo00_Scene::exit()
 	{
-        m_drawObject.destroy();
+		m_drawObject.destroy();
 	}
 
 } // namespace Demo

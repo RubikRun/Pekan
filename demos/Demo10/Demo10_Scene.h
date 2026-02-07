@@ -6,36 +6,36 @@
 namespace Demo
 {
 
-    class Demo10_GUIWindow;
+	class Demo10_GUIWindow;
 
-    class Demo10_Scene : public Pekan::Renderer2D::Scene2D
-    {
-    public:
+	class Demo10_Scene : public Pekan::Renderer2D::Scene2D
+	{
+	public:
 
-        Demo10_Scene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
+		Demo10_Scene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
 
-        void attachGUIWindow(const std::shared_ptr<Demo10_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
+		void attachGUIWindow(const std::shared_ptr<Demo10_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
-        const std::shared_ptr<Demo10_GUIWindow>& getGUIWindow() const { return m_guiWindow; }
+		const std::shared_ptr<Demo10_GUIWindow>& getGUIWindow() const { return m_guiWindow; }
 
-    private: /* functions */
+	private: /* functions */
 
-        bool _init() override;
-        void _exit() override;
+		bool _init() override;
+		void _exit() override;
 
-        void update(double deltaTime) override;
+		void update(double deltaTime) override;
 
-        void createCamera();
+		void createCamera();
 
-        bool onMouseButtonPressed(const Pekan::MouseButtonPressedEvent& event) override;
+		bool onMouseButtonPressed(const Pekan::MouseButtonPressedEvent& event) override;
 
-    private: /* variables */
+	private: /* variables */
 
-        Player m_player;
+		Player m_player;
 
-        entt::entity m_camera = entt::null;
+		entt::entity m_camera = entt::null;
 
-        std::shared_ptr<Demo10_GUIWindow> m_guiWindow;
-    };
+		std::shared_ptr<Demo10_GUIWindow> m_guiWindow;
+	};
 
 } // namespace Demo

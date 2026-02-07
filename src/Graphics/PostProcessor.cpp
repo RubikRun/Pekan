@@ -44,7 +44,7 @@ namespace Graphics
 	// Vertices of a rectangle covering the whole window/viewport
 	constexpr float RECTANGLE_VERTICES[] =
 	{
-		// position     // texture coordinate
+		// position      // texture coordinate
 		-1.0f, -1.0f,    0.0f, 0.0f,
 		1.0f, -1.0f,     1.0f, 0.0f,
 		1.0f, 1.0f,      1.0f, 1.0f,

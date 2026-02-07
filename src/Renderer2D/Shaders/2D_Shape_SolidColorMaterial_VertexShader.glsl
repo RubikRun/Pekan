@@ -9,6 +9,6 @@ uniform mat4 uViewProjectionMatrix;
 
 void main()
 {
-    gl_Position = uViewProjectionMatrix * vec4(aPosition, 0.0, 1.0);
-    vColor = aColor;
+	gl_Position = uViewProjectionMatrix * vec4(aPosition, 0.0, 1.0);
+	vColor = aColor;
 }

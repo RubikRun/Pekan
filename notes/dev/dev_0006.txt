@@ -2059,3 +2059,31 @@ They work same as before, but code is simpler.
 
 Done.
 }
+
+{
+Let's do TO-DO task 0100.
+
+Decided to use tabs for identation,
+and spaces for visual clarity.
+
+Replaced all "    " (consecutive 4 spaces)
+that are used for identation
+with "	" (a tab).
+Went through them manually, made sure a tab makes sense for each one.
+
+Kept "    " (consecutive 4 spaces)
+in places that intentionally use spaces for visual clarity (lining up stuff mostly).
+
+Basic rule of thumb:
+    If 4 spaces are seen in the beginning of a line, they should be a tab.
+    If 4 spaces are seen in the middle of a line, or in a comment, they are ok.
+
+There were also a few shaders that use 3 spaces for indentation.
+There I replaced 3 spaces with a tab.
+
+That's it.
+Now we use tabs and spaces consistenly in all files.
+No other changes were made, everything works as before.
+
+Done.
+}

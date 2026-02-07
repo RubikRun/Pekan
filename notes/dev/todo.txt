@@ -312,4 +312,4 @@
                         Then a system called RenderSourceSystem that renders all entities with RenderSourceComponent
                         using an unerlying DrawObject for each. Eventually this will be optimized with batching, of course.
 
-0100 06.02.2026 (TODO): Use consistent tabs/spaces everywhere
+0100 06.02.2026 (DONE): Use consistent tabs/spaces everywhere

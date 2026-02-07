@@ -17,7 +17,7 @@ namespace Demo
 		m_snake.create();
 		m_apple.create(m_snake);
 
-        return true;
+		return true;
 	}
 
 	void Demo03_Scene::update(double dt)

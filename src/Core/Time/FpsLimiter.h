@@ -33,41 +33,41 @@ namespace Pekan
 {
 
 #if PEKAN_FPS_LIMITER_IMPL_SLEEP_COMPENSATE
-    // A class used to limit FPS in a running application
-    // by waiting some amount of time between frames.
-    class FpsLimiter
-    {
-    public:
-        FpsLimiter(double targetFps);
+	// A class used to limit FPS in a running application
+	// by waiting some amount of time between frames.
+	class FpsLimiter
+	{
+	public:
+		FpsLimiter(double targetFps);
 
-        // Waits some amount of time until enough time has passed
-        // since the last call to wait() such that we hit the target FPS
-        void wait();
+		// Waits some amount of time until enough time has passed
+		// since the last call to wait() such that we hit the target FPS
+		void wait();
 
-    private:
-        double m_targetFrameDuration;
-        std::chrono::high_resolution_clock::time_point m_lastTimePoint;
-        double m_oversleptSum;
-    };
+	private:
+		double m_targetFrameDuration;
+		std::chrono::high_resolution_clock::time_point m_lastTimePoint;
+		double m_oversleptSum;
+	};
 #endif
 
 #if PEKAN_FPS_LIMITER_IMPL_WAIT_BLOCKING
 
-    // A class used to limit FPS in a running application
-    // by waiting some amount of time between frames.
-    class FpsLimiter
-    {
-    public:
-        FpsLimiter(double targetFps);
+	// A class used to limit FPS in a running application
+	// by waiting some amount of time between frames.
+	class FpsLimiter
+	{
+	public:
+		FpsLimiter(double targetFps);
 
-        // Waits some amount of time until enough time has passed
-        // since the last call to wait() such that we hit the target FPS
-        void wait();
+		// Waits some amount of time until enough time has passed
+		// since the last call to wait() such that we hit the target FPS
+		void wait();
 
-    private:
-        double m_targetFrameDuration;
-        std::chrono::high_resolution_clock::time_point m_lastTimePoint;
-    };
+	private:
+		double m_targetFrameDuration;
+		std::chrono::high_resolution_clock::time_point m_lastTimePoint;
+	};
 #endif
 
 } // namespace Pekan

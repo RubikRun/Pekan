@@ -11,12 +11,12 @@ namespace Renderer2D
 {
 	struct CameraComponent2D;
 
-    class SpriteSystem
-    {
-    public:
+	class SpriteSystem
+	{
+	public:
 
-        static void render(const entt::registry& registry, const CameraComponent2D* camera);
-    };
+		static void render(const entt::registry& registry, const CameraComponent2D* camera);
+	};
 
 } // namespace Renderer2D
 } // namespace Pekan

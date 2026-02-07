@@ -8,7 +8,7 @@ uniform float uTime;
 
 void main()
 {
-   vec4 tex0 = texture(uTex0, vTexCoord);
-   vec4 tex1 = texture(uTex1, vTexCoord);
-   FragColor = mix(tex0, tex1, cos(uTime / 5.0) * 0.5 + 0.5);
+	vec4 tex0 = texture(uTex0, vTexCoord);
+	vec4 tex1 = texture(uTex1, vTexCoord);
+	FragColor = mix(tex0, tex1, cos(uTime / 5.0) * 0.5 + 0.5);
 }

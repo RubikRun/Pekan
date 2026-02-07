@@ -25,7 +25,7 @@ constexpr glm::vec4 COORD_SYS_COLOR = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
 namespace Demo
 {
 
-    bool Demo07_Scene::_init()
+	bool Demo07_Scene::_init()
 	{
 		RenderState::enableMultisampleAntiAliasing();
 

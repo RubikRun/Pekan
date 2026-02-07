@@ -20,40 +20,40 @@ const vec2 ptraj_center = vec2(0.5, 0.5);
 
 void main()
 {
-   if (uTime < 0.0) discard; // ensure uniform will not be optimized away
+	if (uTime < 0.0) discard; // ensure uniform will not be optimized away
 
-   float angle = uTime * ptraj_speed;
-   vec2 p0 = vec2(
-      cos(angle) * ptraj_radius + ptraj_center.x,
-      sin(angle) * ptraj_radius + ptraj_center.y
-   );
-   vec2 p1 = vec2(
-      cos(angle + M_PI) * ptraj_radius + ptraj_center.x,
-      sin(angle + M_PI) * ptraj_radius + ptraj_center.y
-   );
+	float angle = uTime * ptraj_speed;
+	vec2 p0 = vec2(
+		cos(angle) * ptraj_radius + ptraj_center.x,
+		sin(angle) * ptraj_radius + ptraj_center.y
+	);
+	vec2 p1 = vec2(
+		cos(angle + M_PI) * ptraj_radius + ptraj_center.x,
+		sin(angle + M_PI) * ptraj_radius + ptraj_center.y
+	);
 
-   if (distance(p0, vTexCoord) < pradius_inner || distance(p1, vTexCoord) < pradius_inner)
-   {
-      FragColor = pcolor_inner;
-      return;
-   }
-   else if (distance(p0, vTexCoord) < pradius_outer || distance(p1, vTexCoord) < pradius_outer)
-   {
-      FragColor = pcolor_outer;
-      return;
-   }
+	if (distance(p0, vTexCoord) < pradius_inner || distance(p1, vTexCoord) < pradius_inner)
+	{
+		FragColor = pcolor_inner;
+		return;
+	}
+	else if (distance(p0, vTexCoord) < pradius_outer || distance(p1, vTexCoord) < pradius_outer)
+	{
+		FragColor = pcolor_outer;
+		return;
+	}
 
-   vec2 p0p1 = vec2(p1.x - p0.x, p1.y - p0.y);
-   vec2 p0v = vec2(vTexCoord.x - p0.x, vTexCoord.y - p0.y);
+	vec2 p0p1 = vec2(p1.x - p0.x, p1.y - p0.y);
+	vec2 p0v = vec2(vTexCoord.x - p0.x, vTexCoord.y - p0.y);
 
-   // Calculate distance from p0 to vTexCoord across the direction p0->p1
-   float p0dist = dot(p0v, normalize(p0p1));
+	// Calculate distance from p0 to vTexCoord across the direction p0->p1
+	float p0dist = dot(p0v, normalize(p0p1));
 
-   float blend = p0dist / distance(p0, p1);
-   blend = clamp(blend, 0.0, 1.0);
+	float blend = p0dist / distance(p0, p1);
+	blend = clamp(blend, 0.0, 1.0);
 
-   vec4 tex0 = texture(uTex0, vTexCoord);
-   vec4 tex1 = texture(uTex1, vTexCoord);
+	vec4 tex0 = texture(uTex0, vTexCoord);
+	vec4 tex1 = texture(uTex1, vTexCoord);
 
-   FragColor = mix(tex0, tex1, blend);
+	FragColor = mix(tex0, tex1, blend);
 }

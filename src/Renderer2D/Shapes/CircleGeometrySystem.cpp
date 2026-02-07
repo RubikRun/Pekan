@@ -17,80 +17,80 @@ namespace Pekan
 namespace Renderer2D
 {
 
-    // Computes local vertex positions for a given circle geometry
-    static std::vector<glm::vec2> getLocalVertexPositions(const CircleGeometryComponent& geometry)
-    {
-        std::vector<glm::vec2> localVertexPositions(geometry.segmentsCount);
-        for (int i = 0; i < geometry.segmentsCount; i++)
-        {
-            const float angle = float(i) * 2.0f * PI / geometry.segmentsCount;
-            const float x = geometry.radius * cos(angle);
-            const float y = geometry.radius * sin(angle);
-            localVertexPositions[i] = { x, y };
-        }
-        return localVertexPositions;
-    }
+	// Computes local vertex positions for a given circle geometry
+	static std::vector<glm::vec2> getLocalVertexPositions(const CircleGeometryComponent& geometry)
+	{
+		std::vector<glm::vec2> localVertexPositions(geometry.segmentsCount);
+		for (int i = 0; i < geometry.segmentsCount; i++)
+		{
+			const float angle = float(i) * 2.0f * PI / geometry.segmentsCount;
+			const float x = geometry.radius * cos(angle);
+			const float y = geometry.radius * sin(angle);
+			localVertexPositions[i] = { x, y };
+		}
+		return localVertexPositions;
+	}
 
-    void CircleGeometrySystem::getVertexPositionsAndIndicesLocal
-    (
-        const entt::registry& registry, entt::entity entity,
-        void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
-        std::vector<unsigned>& indices
-    )
-    {
-        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a CircleGeometryComponent.", "Pekan");
+	void CircleGeometrySystem::getVertexPositionsAndIndicesLocal
+	(
+		const entt::registry& registry, entt::entity entity,
+		void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
+		std::vector<unsigned>& indices
+	)
+	{
+		PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+		PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a CircleGeometryComponent.", "Pekan");
 
-        // Get entity's geometry component
-        const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);
+		// Get entity's geometry component
+		const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);
 
-        // Get local vertex positions from geometry
-        const std::vector<glm::vec2> localVertexPositions = getLocalVertexPositions(geometry);
+		// Get local vertex positions from geometry
+		const std::vector<glm::vec2> localVertexPositions = getLocalVertexPositions(geometry);
 
-        // Set local vertex positions into the vertices array using an attribute view
-        VerticesAttributeView attributeView{ vertices, int(localVertexPositions.size()), vertexSize, positionAttributeOffset };
-        for (int i = 0; i < attributeView.verticesCount; i++)
-        {
-            attributeView.setVertexAttribute<glm::vec2>(i, localVertexPositions[i]);
-        }
+		// Set local vertex positions into the vertices array using an attribute view
+		VerticesAttributeView attributeView{ vertices, int(localVertexPositions.size()), vertexSize, positionAttributeOffset };
+		for (int i = 0; i < attributeView.verticesCount; i++)
+		{
+			attributeView.setVertexAttribute<glm::vec2>(i, localVertexPositions[i]);
+		}
 
-        // Generate triangle fan indices in the indices array
-        indices.resize((verticesCount - 2) * 3);
-        MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
-    }
+		// Generate triangle fan indices in the indices array
+		indices.resize((verticesCount - 2) * 3);
+		MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
+	}
 
-    void CircleGeometrySystem::getVertexPositionsAndIndicesWorld
-    (
-        const entt::registry& registry, entt::entity entity,
-        void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
-        std::vector<unsigned>& indices
-    )
-    {
-        PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
-        PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a CircleGeometryComponent.", "Pekan");
-        PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot get vertex positions of an entity that doesn't have a TransformComponent2D.", "Pekan");
+	void CircleGeometrySystem::getVertexPositionsAndIndicesWorld
+	(
+		const entt::registry& registry, entt::entity entity,
+		void* vertices, int verticesCount, int vertexSize, int positionAttributeOffset,
+		std::vector<unsigned>& indices
+	)
+	{
+		PK_ASSERT(registry.valid(entity), "Cannot get vertex positions of an entity that doesn't exist.", "Pekan");
+		PK_ASSERT(registry.all_of<CircleGeometryComponent>(entity), "Cannot get vertex positions of an entity that doesn't have a CircleGeometryComponent.", "Pekan");
+		PK_ASSERT(registry.all_of<TransformComponent2D>(entity), "Cannot get vertex positions of an entity that doesn't have a TransformComponent2D.", "Pekan");
 
-        // Get entity's geometry and transform components
-        const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);
-        const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
+		// Get entity's geometry and transform components
+		const CircleGeometryComponent& geometry = registry.get<CircleGeometryComponent>(entity);
+		const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
 
-        // Get local vertex positions from geometry
-        const std::vector<glm::vec2> localVertexPositions = getLocalVertexPositions(geometry);
+		// Get local vertex positions from geometry
+		const std::vector<glm::vec2> localVertexPositions = getLocalVertexPositions(geometry);
 
-        // Get world vertex positions using local vertex positions and transform
-        VerticesAttributeView attributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset };
-        Utils2D::getWorldVertexPositions
-        (
-            registry,
-            localVertexPositions.data(), localVertexPositions.size(),
-            transform,
-            attributeView
-        );
+		// Get world vertex positions using local vertex positions and transform
+		VerticesAttributeView attributeView{ vertices, verticesCount, vertexSize, positionAttributeOffset };
+		Utils2D::getWorldVertexPositions
+		(
+			registry,
+			localVertexPositions.data(), localVertexPositions.size(),
+			transform,
+			attributeView
+		);
 
-        // Generate triangle fan indices in the indices array
-        indices.resize((verticesCount - 2) * 3);
-        MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
-    }
+		// Generate triangle fan indices in the indices array
+		indices.resize((verticesCount - 2) * 3);
+		MathUtils::generateTriangleFanIndices(indices.data(), verticesCount);
+	}
 
 } // namespace Renderer2D
 } // namespace Pekan

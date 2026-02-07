@@ -85,7 +85,7 @@ namespace Demo
 		}
 	}
 
-    bool Demo08_Scene::_init()
+	bool Demo08_Scene::_init()
 	{
 		if (m_guiWindow == nullptr)
 		{
@@ -109,7 +109,7 @@ namespace Demo
 		createCenterSquare();
 		createAnimSprite();
 
-        return true;
+		return true;
 	}
 
 	void Demo08_Scene::_exit()

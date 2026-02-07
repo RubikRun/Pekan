@@ -294,25 +294,25 @@ namespace Logger
 // Checks if a condition is met. If not, logs a message and breaks the debugger at current line.
 // CND = condition, MSG = message, SND = sender
 #define PK_ASSERT(CND, MSG, SND) \
-    do \
-    { \
-        if (!(CND)) \
-        { \
+	do \
+	{ \
+		if (!(CND)) \
+		{ \
 			PK_STR(MSG); \
 			Pekan::Logger::_logAssertToConsole(m.c_str(), SND, #CND); \
-            std::abort(); \
-        } \
-    } while (false)
+			std::abort(); \
+		} \
+	} while (false)
 #define PK_ASSERT_QUICK(CND) \
-    do \
-    { \
-        if (!(CND)) \
-        { \
+	do \
+	{ \
+		if (!(CND)) \
+		{ \
 			PK_STR("QuickAssert"); \
 			Pekan::Logger::_logAssertToConsole(#CND); \
-            std::abort(); \
-        } \
-    } while (false)
+			std::abort(); \
+		} \
+	} while (false)
 
 #else
 

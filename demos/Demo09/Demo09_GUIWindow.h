@@ -10,27 +10,27 @@
 namespace Demo
 {
 
-    class Demo09_GUIWindow : public Pekan::GUI::GUIWindow
-    {
-    public:
+	class Demo09_GUIWindow : public Pekan::GUI::GUIWindow
+	{
+	public:
 
-        Demo09_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
+		Demo09_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-        bool init() override;
+		bool init() override;
 
-        // Returns index of selected post-processing shader
-        int getPpsIndex() const { return gui.ppsComboBoxWidget->getIndex(); }
+		// Returns index of selected post-processing shader
+		int getPpsIndex() const { return gui.ppsComboBoxWidget->getIndex(); }
 
-    private: /* functions */
+	private: /* functions */
 
-        Pekan::GUI::GUIWindowProperties getProperties() const override;
+		Pekan::GUI::GUIWindowProperties getProperties() const override;
 
 		struct Widgets
 		{
 			Pekan::GUI::ComboBoxWidget_Ptr ppsComboBoxWidget = std::make_shared<Pekan::GUI::ComboBoxWidget>();
 			Pekan::GUI::TextWidget_Ptr ppsLabel = std::make_shared<Pekan::GUI::TextWidget>();
 		} gui;
-    };
+	};
 
 } // namespace Demo
 

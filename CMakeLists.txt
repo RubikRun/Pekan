@@ -12,18 +12,18 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 project(Pekan)
 
 if(WITH_DEMO_PROJECTS)
-    # Add Demos subdirectories
-    add_subdirectory(demos/Demo00)
-    add_subdirectory(demos/Demo01)
-    add_subdirectory(demos/Demo02)
-    add_subdirectory(demos/Demo03)
-    add_subdirectory(demos/Demo04)
-    add_subdirectory(demos/Demo05)
-    add_subdirectory(demos/Demo06)
-    add_subdirectory(demos/Demo07)
-    add_subdirectory(demos/Demo08)
-    add_subdirectory(demos/Demo09)
-    add_subdirectory(demos/Demo10)
+	# Add Demos subdirectories
+	add_subdirectory(demos/Demo00)
+	add_subdirectory(demos/Demo01)
+	add_subdirectory(demos/Demo02)
+	add_subdirectory(demos/Demo03)
+	add_subdirectory(demos/Demo04)
+	add_subdirectory(demos/Demo05)
+	add_subdirectory(demos/Demo06)
+	add_subdirectory(demos/Demo07)
+	add_subdirectory(demos/Demo08)
+	add_subdirectory(demos/Demo09)
+	add_subdirectory(demos/Demo10)
 endif()
 # Add Graphics subdirectory
 add_subdirectory(src/Graphics)
@@ -50,59 +50,59 @@ set_target_properties(imgui PROPERTIES FOLDER "dep")
 set_target_properties(glm PROPERTIES FOLDER "dep")
 
 if(WITH_DEMO_PROJECTS)
-    # Add all demo projects into a folder called "Demos"
-    set_target_properties(Demo00 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo01 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo02 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo03 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo04 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo05 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo06 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo07 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo08 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo09 PROPERTIES FOLDER "Demos")
-    set_target_properties(Demo10 PROPERTIES FOLDER "Demos")
+	# Add all demo projects into a folder called "Demos"
+	set_target_properties(Demo00 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo01 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo02 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo03 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo04 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo05 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo06 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo07 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo08 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo09 PROPERTIES FOLDER "Demos")
+	set_target_properties(Demo10 PROPERTIES FOLDER "Demos")
 endif()
 
 # Add a static library Core, compiling the following source files
 add_library(Core STATIC
-    src/Core/PekanEngine.h
-    src/Core/PekanEngine.cpp
-    src/Core/PekanApplication.h
-    src/Core/PekanApplication.cpp
-    src/Core/Window.h
-    src/Core/Window.cpp
-    src/Core/Layer.h
-    src/Core/LayerStack.h
-    src/Core/LayerStack.cpp
-    src/Core/Scene.h
-    src/Core/Scene.cpp
-    src/Core/ISubsystem.h
-    src/Core/SubsystemManager.h
-    src/Core/SubsystemManager.cpp
-    src/Core/Logger/PekanLogger.h
-    src/Core/Logger/PekanLogger.cpp
-    src/Core/Utils/RandomizationUtils.h
-    src/Core/Utils/RandomizationUtils.cpp
-    src/Core/Utils/FileUtils.h
-    src/Core/Utils/FileUtils.cpp
-    src/Core/Utils/MathUtils.h
-    src/Core/Utils/MathUtils.cpp
-    src/Core/Utils/stb.cpp
-    src/Core/Events/Event.h
-    src/Core/Events/WindowEvents.h
-    src/Core/Events/KeyEvents.h
-    src/Core/Events/KeyEvents_Enums.h
-    src/Core/Events/MouseEvents_Enums.h
-    src/Core/Events/MouseEvents.h
-    src/Core/Events/EventListener.h
-    src/Core/Time/FpsLimiter.h
-    src/Core/Time/FpsLimiter.cpp
-    src/Core/Time/DeltaTimer.h
-    src/Core/Time/DeltaTimer.cpp
-    src/Core/Time/RecurringCallback.h
-    src/Core/Time/RecurringCallback.cpp
-    src/Core/Entity/DisabledComponent.h
+	src/Core/PekanEngine.h
+	src/Core/PekanEngine.cpp
+	src/Core/PekanApplication.h
+	src/Core/PekanApplication.cpp
+	src/Core/Window.h
+	src/Core/Window.cpp
+	src/Core/Layer.h
+	src/Core/LayerStack.h
+	src/Core/LayerStack.cpp
+	src/Core/Scene.h
+	src/Core/Scene.cpp
+	src/Core/ISubsystem.h
+	src/Core/SubsystemManager.h
+	src/Core/SubsystemManager.cpp
+	src/Core/Logger/PekanLogger.h
+	src/Core/Logger/PekanLogger.cpp
+	src/Core/Utils/RandomizationUtils.h
+	src/Core/Utils/RandomizationUtils.cpp
+	src/Core/Utils/FileUtils.h
+	src/Core/Utils/FileUtils.cpp
+	src/Core/Utils/MathUtils.h
+	src/Core/Utils/MathUtils.cpp
+	src/Core/Utils/stb.cpp
+	src/Core/Events/Event.h
+	src/Core/Events/WindowEvents.h
+	src/Core/Events/KeyEvents.h
+	src/Core/Events/KeyEvents_Enums.h
+	src/Core/Events/MouseEvents_Enums.h
+	src/Core/Events/MouseEvents.h
+	src/Core/Events/EventListener.h
+	src/Core/Time/FpsLimiter.h
+	src/Core/Time/FpsLimiter.cpp
+	src/Core/Time/DeltaTimer.h
+	src/Core/Time/DeltaTimer.cpp
+	src/Core/Time/RecurringCallback.h
+	src/Core/Time/RecurringCallback.cpp
+	src/Core/Entity/DisabledComponent.h
 )
 
 # Group Logger files under a virtual folder called "Logger"
@@ -113,24 +113,24 @@ SOURCE_GROUP("Source Files\\Utils" FILES src/Core/Utils/RandomizationUtils.cpp s
 SOURCE_GROUP("Header Files\\Utils" FILES src/Core/Utils/RandomizationUtils.h src/Core/Utils/FileUtils.h src/Core/Utils/MathUtils.h)
 # Group Events files under a virtual folder called "Events"
 SOURCE_GROUP("Header Files\\Events" FILES
-    src/Core/Events/Event.h
-    src/Core/Events/WindowEvents.h
-    src/Core/Events/KeyEvents.h
-    src/Core/Events/KeyEvents_Enums.h
-    src/Core/Events/MouseEvents.h
-    src/Core/Events/MouseEvents_Enums.h
-    src/Core/Events/EventListener.h
+	src/Core/Events/Event.h
+	src/Core/Events/WindowEvents.h
+	src/Core/Events/KeyEvents.h
+	src/Core/Events/KeyEvents_Enums.h
+	src/Core/Events/MouseEvents.h
+	src/Core/Events/MouseEvents_Enums.h
+	src/Core/Events/EventListener.h
 )
 # Group Time files under a virtual folder called "Time"
 SOURCE_GROUP("Source Files\\Time" FILES
-    src/Core/Time/FpsLimiter.cpp
-    src/Core/Time/DeltaTimer.cpp
-    src/Core/Time/RecurringCallback.cpp
+	src/Core/Time/FpsLimiter.cpp
+	src/Core/Time/DeltaTimer.cpp
+	src/Core/Time/RecurringCallback.cpp
 )
 SOURCE_GROUP("Header Files\\Time" FILES
-    src/Core/Time/FpsLimiter.h
-    src/Core/Time/DeltaTimer.h
-    src/Core/Time/RecurringCallback.h
+	src/Core/Time/FpsLimiter.h
+	src/Core/Time/DeltaTimer.h
+	src/Core/Time/RecurringCallback.h
 )
 # Group Entity files under a virtual folder called "Entity"
 SOURCE_GROUP("Header Files\\Entity" FILES src/Core/Entity/DisabledComponent.h)
@@ -141,22 +141,22 @@ target_link_libraries(Core PUBLIC glm)
 
 # Require directory "dep/entt/single_include" to exist
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dep/entt/single_include")
-    set(ENTT_SINGLE_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/dep/entt/single_include)
+	set(ENTT_SINGLE_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/dep/entt/single_include)
 else()
-    message(FATAL_ERROR "EnTT not found in dep/entt/single_include. You need to initialize EnTT as a git submodule.")
+	message(FATAL_ERROR "EnTT not found in dep/entt/single_include. You need to initialize EnTT as a git submodule.")
 endif()
 
 # Set include directories for Core
 target_include_directories(Core PUBLIC
-    src/Core
-    src/Core/Logger
-    ${ENTT_SINGLE_INCLUDE}
+	src/Core
+	src/Core/Logger
+	${ENTT_SINGLE_INCLUDE}
 )
 target_include_directories(Core PRIVATE dep)
 
 if(WITH_DEMO_PROJECTS)
-    # Set Demo10 to be the startup project by default
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo10)
+	# Set Demo10 to be the startup project by default
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo10)
 endif()
 
 # Set PEKAN_ROOT_DIR macro to be the path to current source directory

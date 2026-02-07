@@ -3,21 +3,21 @@ project(Demo03)
 
 # Add an executable Demo03, compiling the following source files
 add_executable(Demo03
-    main.cpp
-    Demo03_Application.h
-    Demo03_Application.cpp
-    Demo03_Scene.h
-    Demo03_Scene.cpp
-    Snake.h
-    Snake.cpp
-    Apple.h
-    Apple.cpp
+	main.cpp
+	Demo03_Application.h
+	Demo03_Application.cpp
+	Demo03_Scene.h
+	Demo03_Scene.cpp
+	Snake.h
+	Snake.cpp
+	Apple.h
+	Apple.cpp
 )
 
 # Set link libraries for Demo03
 target_link_libraries(Demo03 PRIVATE
-    Core
-    Graphics
+	Core
+	Graphics
 )
 
 # Set Demo03's working directory to be Demo03's source directory
@@ -26,8 +26,8 @@ set_target_properties(Demo03 PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT
 
 # Copy resources to build directory so the executable can find them when run directly
 add_custom_command(TARGET Demo03 POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${PROJECT_SOURCE_DIR}/resources
-        $<TARGET_FILE_DIR:Demo03>/resources
-    COMMENT "Copying Demo03 resources to build directory"
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		${PROJECT_SOURCE_DIR}/resources
+		$<TARGET_FILE_DIR:Demo03>/resources
+	COMMENT "Copying Demo03 resources to build directory"
 )
