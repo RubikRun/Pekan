@@ -1,6 +1,7 @@
 #include "Scene.h"
 
 #include "PekanLogger.h"
+#include "Entity/DisabledComponent.h"
 
 namespace Pekan
 {
@@ -20,6 +21,22 @@ namespace Pekan
 		}
 
 		m_registry.destroy(entity);
+	}
+
+	void Scene::enableEntity(entt::entity entity)
+	{
+		if (m_registry.all_of<DisabledComponent>(entity))
+		{
+			m_registry.remove<DisabledComponent>(entity);
+		}
+	}
+
+	void Scene::disableEntity(entt::entity entity)
+	{
+		if (!m_registry.all_of<DisabledComponent>(entity))
+		{
+			m_registry.emplace<DisabledComponent>(entity);
+		}
 	}
 
 } // namespace Pekan

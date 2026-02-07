@@ -20,8 +20,15 @@ namespace Pekan
 		entt::registry& getRegistry() { return m_registry; }
 		const entt::registry& getRegistry() const { return m_registry; }
 
+		// Creates a new entity in the scene and returns it.
 		entt::entity createEntity();
+		// Destroys the given entity in the scene.
 		void destroyEntity(entt::entity entity);
+
+		// Enables the given entity in the scene.
+		void enableEntity(entt::entity entity);
+		// Disables the given entity in the scene.
+		void disableEntity(entt::entity entity);
 
 	private: /* variables */
 

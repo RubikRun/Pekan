@@ -11,7 +11,6 @@
 #include "SpriteComponent.h"
 #include "RectangleGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
-#include "Entity/DisabledComponent.h"
 
 #include <algorithm>
 
@@ -272,20 +271,14 @@ namespace Demo
 				{ 1.02f, 1.02f }
 			);
 
-			// Make sure sprite entity is not disabled
-			if (m_registry.any_of<DisabledComponent>(m_sprites[i]))
-			{
-				m_registry.remove<DisabledComponent>(m_sprites[i]);
-			}
+			// Make sure sprite entity is enabled
+			enableEntity(m_sprites[i]);
 		}
 
 		// Disable any extra sprites that are beyond the current sprites count
 		for (int i = m_spritesCount; i < m_spritesMaxCount; i++)
 		{
-			if (!m_registry.any_of<DisabledComponent>(m_sprites[i]))
-			{
-				m_registry.emplace<DisabledComponent>(m_sprites[i]);
-			}
+			disableEntity(m_sprites[i]);
 		}
 	}
 

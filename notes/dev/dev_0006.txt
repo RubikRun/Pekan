@@ -2042,3 +2042,20 @@ Build is fine.
 Everything works as before.
 Done.
 }
+
+----------
+07.02.2026
+----------
+
+{
+Let's do TO-DO task 0095.
+
+Created 2 functions in class Scene:
+    void enableEntity(entt::entity entity);
+    void disableEntity(entt::entity entity);
+They just add/remove DisabledComponent from given entity and first check if entity already has DisabledComponent.
+Used these 2 functions in all demos where DisabledComponent was directly used.
+They work same as before, but code is simpler.
+
+Done.
+}

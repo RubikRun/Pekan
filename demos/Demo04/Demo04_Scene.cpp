@@ -9,8 +9,6 @@
 #include "PolygonGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
 
-#include "Entity/DisabledComponent.h"
-
 #include <glm/gtc/constants.hpp>
 constexpr float PI = glm::pi<float>();
 
@@ -194,22 +192,6 @@ namespace Demo
         return a + (b - a) * osc(x);
     }
 
-    static void enableEntity(entt::entity entity, entt::registry& registry)
-    {
-        if (registry.all_of<DisabledComponent>(entity))
-        {
-            registry.remove<DisabledComponent>(entity);
-        }
-    }
-
-    static void disableEntity(entt::entity entity, entt::registry& registry)
-    {
-        if (!registry.all_of<DisabledComponent>(entity))
-        {
-            registry.emplace<DisabledComponent>(entity);
-        }
-    }
-
     void Demo04_Scene::update(double dt)
     {
         PK_ASSERT_QUICK(m_guiWindow != nullptr);
@@ -300,19 +282,19 @@ namespace Demo
 
             if (isEnabledShapes && !m_prevIsEnabledShapes)
             {
-                enableEntity(m_triangle, m_registry);
-                enableEntity(m_rectangle, m_registry);
-                enableEntity(m_circle, m_registry);
-                enableEntity(m_polygon1, m_registry);
-                enableEntity(m_polygon2, m_registry);
+                enableEntity(m_triangle);
+                enableEntity(m_rectangle);
+                enableEntity(m_circle);
+                enableEntity(m_polygon1);
+                enableEntity(m_polygon2);
             }
             else if (!isEnabledShapes && m_prevIsEnabledShapes)
             {
-                disableEntity(m_triangle, m_registry);
-                disableEntity(m_rectangle, m_registry);
-                disableEntity(m_circle, m_registry);
-                disableEntity(m_polygon1, m_registry);
-                disableEntity(m_polygon2, m_registry);
+                disableEntity(m_triangle);
+                disableEntity(m_rectangle);
+                disableEntity(m_circle);
+                disableEntity(m_polygon1);
+                disableEntity(m_polygon2);
             }
 
             m_prevIsEnabledShapes = isEnabledShapes;

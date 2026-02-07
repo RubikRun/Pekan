@@ -16,7 +16,6 @@
 #include "PolygonGeometryComponent.h"
 #include "LineGeometryComponent.h"
 #include "SolidColorMaterialComponent.h"
-#include "Entity/DisabledComponent.h"
 
 #include "Events/KeyEvents.h"
 
@@ -428,10 +427,10 @@ namespace Demo
 	{
 		const bool rectanglesEnabled = m_guiWindow->isEnabledRectangles();
 		// If number of shapes per shape type changed or rectangles enabled state changed,
-		// then we need to update DisabledComponent of rectangle entities.
+		// then we need to update disabled/enabled state of rectangle entities.
 		if ((perShapeTypeCountChanged && rectanglesEnabled) || rectanglesEnabled != m_prevRectanglesEnabled)
 		{
-			updateDisabledComponentOfShapeType(m_rectangles, rectanglesEnabled);
+			updateDisabledEnabledStateOfShapeType(m_rectangles, rectanglesEnabled);
 		}
 		m_prevRectanglesEnabled = rectanglesEnabled;
 		if (rectanglesEnabled)
@@ -441,10 +440,10 @@ namespace Demo
 
 		const bool circlesEnabled = m_guiWindow->isEnabledCircles();
 		// If number of shapes per shape type changed or circles enabled state changed,
-		// then we need to update DisabledComponent of circle entities.
+		// then we need to update disabled/enabled state of circle entities.
 		if ((perShapeTypeCountChanged && circlesEnabled) || circlesEnabled != m_prevCirclesEnabled)
 		{
-			updateDisabledComponentOfShapeType(m_circles, circlesEnabled);
+			updateDisabledEnabledStateOfShapeType(m_circles, circlesEnabled);
 		}
 		m_prevCirclesEnabled = circlesEnabled;
 		if (circlesEnabled)
@@ -454,10 +453,10 @@ namespace Demo
 
 		const bool trianglesEnabled = m_guiWindow->isEnabledTriangles();
 		// If number of shapes per shape type changed or triangles enabled state changed,
-		// then we need to update DisabledComponent of triangle entities.
+		// then we need to update disabled/enabled state of triangle entities.
 		if ((perShapeTypeCountChanged && trianglesEnabled) || trianglesEnabled != m_prevTrianglesEnabled)
 		{
-			updateDisabledComponentOfShapeType(m_triangles, trianglesEnabled);
+			updateDisabledEnabledStateOfShapeType(m_triangles, trianglesEnabled);
 		}
 		m_prevTrianglesEnabled = trianglesEnabled;
 		if (trianglesEnabled)
@@ -467,10 +466,10 @@ namespace Demo
 
 		const bool polygonsEnabled = m_guiWindow->isEnabledPolygons();
 		// If number of shapes per shape type changed or polygons enabled state changed,
-		// then we need to update DisabledComponent of polygon entities.
+		// then we need to update disabled/enabled state of polygon entities.
 		if ((perShapeTypeCountChanged && polygonsEnabled) || polygonsEnabled != m_prevPolygonsEnabled)
 		{
-			updateDisabledComponentOfShapeType(m_polygons, polygonsEnabled);
+			updateDisabledEnabledStateOfShapeType(m_polygons, polygonsEnabled);
 		}
 		m_prevPolygonsEnabled = polygonsEnabled;
 		if (polygonsEnabled)
@@ -480,10 +479,10 @@ namespace Demo
 
 		const bool linesEnabled = m_guiWindow->isEnabledLines();
 		// If number of shapes per shape type changed or lines enabled state changed,
-		// then we need to update DisabledComponent of line entities.
+		// then we need to update disabled/enabled state of line entities.
 		if ((perShapeTypeCountChanged && linesEnabled) || linesEnabled != m_prevLinesEnabled)
 		{
-			updateDisabledComponentOfShapeType(m_lines, linesEnabled);
+			updateDisabledEnabledStateOfShapeType(m_lines, linesEnabled);
 		}
 		m_prevLinesEnabled = linesEnabled;
 		if (linesEnabled)
@@ -492,7 +491,7 @@ namespace Demo
 		}
 	}
 
-	void Demo06_Scene::updateDisabledComponentOfShapeType(std::vector<entt::entity>& shapes, bool enabled)
+	void Demo06_Scene::updateDisabledEnabledStateOfShapeType(std::vector<entt::entity>& shapes, bool enabled)
 	{
 		// If shape type is enabled in GUI,
 		// enable entities up to m_perShapeTypeCount and disable the rest.
@@ -500,17 +499,11 @@ namespace Demo
 		{
 			for (int i = 0; i < m_perShapeTypeCount; i++)
 			{
-				if (m_registry.any_of<DisabledComponent>(shapes[i]))
-				{
-					m_registry.remove<DisabledComponent>(shapes[i]);
-				}
+				enableEntity(shapes[i]);
 			}
 			for (int i = m_perShapeTypeCount; i < m_perShapeTypeMaxCount; i++)
 			{
-				if (!m_registry.any_of<DisabledComponent>(shapes[i]))
-				{
-					m_registry.emplace<DisabledComponent>(shapes[i]);
-				}
+				disableEntity(shapes[i]);
 			}
 		}
 		// If shape type is disabled in GUI,
@@ -519,10 +512,7 @@ namespace Demo
 		{
 			for (int i = 0; i < m_perShapeTypeMaxCount; i++)
 			{
-				if (!m_registry.any_of<DisabledComponent>(shapes[i]))
-				{
-					m_registry.emplace<DisabledComponent>(shapes[i]);
-				}
+				disableEntity(shapes[i]);
 			}
 		}
 	}

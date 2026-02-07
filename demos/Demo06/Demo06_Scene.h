@@ -51,7 +51,7 @@ namespace Demo
 		//
 		// @param[in] shapes - Vector of entities representing shapes of a single shape type
 		// @param[in] enabled - Is this shape type enabled in GUI
-		void updateDisabledComponentOfShapeType(std::vector<entt::entity>& shapes, bool enabled);
+		void updateDisabledEnabledStateOfShapeType(std::vector<entt::entity>& shapes, bool enabled);
 
 		void updateRectangles(float dt);
 		void updateCircles(float dt);

@@ -293,7 +293,7 @@
                         but in some/most cases we actually want BufferDataUsage::StaticDraw.
                         Just pass BufferDataUsage::StaticDraw as an extra argument to setIndexData()
 
-0095 01.02.2026 (TODO): Add enableEntity() and disableEntity() functions in class Scene that add/remove DisabledComponent
+0095 01.02.2026 (DONE): Add enableEntity() and disableEntity() functions in class Scene that add/remove DisabledComponent
                         and first check if DisabledComponent is present on the entity.
 
 0096 01.02.2026 (DONE): Think about creating a RenderObjectComponent in the Graphics module, or something similar.
