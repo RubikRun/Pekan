@@ -2087,3 +2087,36 @@ No other changes were made, everything works as before.
 
 Done.
 }
+
+----------
+09.02.2026
+----------
+
+With that, the Entity Component System is done (more or less).
+At least functionally it covers everything that could be done before we started integrating it.
+
+There are 7 TO-DO tasks left to do,
+but I'll leave them for later, because they kind of depend on the next stages
+and are not needed for the next stages,
+so it's better to do them later.
+
+{
+Next stage in Pekan's development is very essential - the Editor.
+
+It's a good moment to start implementing the Editor now
+because we have a functioning ECS
+and we need to know how the Editor will look, what it will need from other modules,
+what the architecture around it will be,
+we need to know all those things to be able to continue adequately.
+Also, the Editor will be a good testing ground for future features,
+it will allow for quicker and more flexible testing,
+compared to the current approach, which is to create specific demo projects to test specific features.
+
+First step is to create a new module
+    Editor
+
+It will start off as any other application made in Pekan.
+I just copied Demo10, deleted all of its contents and renamed it to Editor.
+That's it.
+That's the skeleton of Editor that we'll start with.
+}

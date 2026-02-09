@@ -31,6 +31,8 @@ add_subdirectory(src/Graphics)
 add_subdirectory(src/Renderer2D)
 # Add GUI subdirectory
 add_subdirectory(src/GUI)
+# Add Editor subdirectory
+add_subdirectory(src/Editor)
 
 # Add GLFW subdirectory
 set(GLFW_BUILD_DOCS OFF)
@@ -154,10 +156,8 @@ target_include_directories(Core PUBLIC
 )
 target_include_directories(Core PRIVATE dep)
 
-if(WITH_DEMO_PROJECTS)
-	# Set Demo10 to be the startup project by default
-	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Demo10)
-endif()
+# Set Editor to be the startup project by default
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Editor)
 
 # Set PEKAN_ROOT_DIR macro to be the path to current source directory
 target_compile_definitions(Core PRIVATE PEKAN_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
