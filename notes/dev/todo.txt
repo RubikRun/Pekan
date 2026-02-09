@@ -313,3 +313,6 @@
                         using an unerlying DrawObject for each. Eventually this will be optimized with batching, of course.
 
 0100 06.02.2026 (DONE): Use consistent tabs/spaces everywhere
+
+0101 09.02.2026 (TODO): Add PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D; in Demo09 and Demo10's main.cpp
+                        Remove #include <windows.h> if not needed in Demo09 and Demo10's main.cpp
