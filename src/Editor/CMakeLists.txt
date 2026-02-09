@@ -10,6 +10,8 @@ add_executable(Editor
 	EditorScene.cpp
 	EntitiesGUIWindow.h
 	EntitiesGUIWindow.cpp
+	EntityPropertiesGUIWindow.h
+	EntityPropertiesGUIWindow.cpp
 )
 
 # Set link libraries for Editor

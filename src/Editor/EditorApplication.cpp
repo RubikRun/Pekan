@@ -2,6 +2,7 @@
 
 #include "EditorScene.h"
 #include "EntitiesGUIWindow.h"
+#include "EntityPropertiesGUIWindow.h"
 
 #include "PekanEngine.h"
 using Pekan::PekanEngine;
@@ -19,10 +20,12 @@ namespace Editor
 		// Create scene and GUI window
 		std::shared_ptr<EditorScene> scene = std::make_shared<EditorScene>(this);
 		std::shared_ptr<EntitiesGUIWindow> entitiesGuiWindow = std::make_shared<EntitiesGUIWindow>(this);
+		std::shared_ptr<EntityPropertiesGUIWindow> entityPropertiesGuiWindow = std::make_shared<EntityPropertiesGUIWindow>(this);
 
 		// Add scene and GUI window to application's layers
 		layerStack.pushLayer(scene);
 		layerStack.pushLayer(entitiesGuiWindow);
+		layerStack.pushLayer(entityPropertiesGuiWindow);
 
 		return true;
 	}
