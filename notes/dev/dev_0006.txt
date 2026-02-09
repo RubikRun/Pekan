@@ -2120,3 +2120,21 @@ I just copied Demo10, deleted all of its contents and renamed it to Editor.
 That's it.
 That's the skeleton of Editor that we'll start with.
 }
+
+{
+Next step.
+We actually need 2 GUIWindow's for the Editor,
+- one for the list of entities
+- another for the properties of a specific entity
+
+First GUIWindow is called
+    EntitiesGUIWindow
+Let's call the second one
+    EntityPropertiesGUIWindow
+
+Hmm did it, but it doesn't work.
+Only the first GUIWindow appears when you run the Editor.
+Seems like that's a bug in Pekan - multiple GUIWindow's don't work at all.
+Created a TO-DO task for that:
+    0102
+}
