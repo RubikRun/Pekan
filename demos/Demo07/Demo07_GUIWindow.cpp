@@ -27,7 +27,7 @@ namespace Demo
 		{ -1.5f, -2.0f }
 	};
 
-	bool Demo07_GUIWindow::init()
+	bool Demo07_GUIWindow::_init()
 	{
 		for (size_t i = 0; i < 5; ++i)
 		{

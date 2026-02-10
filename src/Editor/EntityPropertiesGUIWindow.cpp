@@ -11,7 +11,7 @@ namespace Pekan
 namespace Editor
 {
 
-	bool EntityPropertiesGUIWindow::init()
+	bool EntityPropertiesGUIWindow::_init()
 	{
 		return true;
 	}

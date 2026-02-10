@@ -2138,3 +2138,58 @@ Seems like that's a bug in Pekan - multiple GUIWindow's don't work at all.
 Created a TO-DO task for that:
     0102
 }
+
+----------
+10.02.2026
+----------
+
+{
+Let's do TO-DO task 0102 before we continue with Editor,
+because we definitely need 2 GUI windows in Editor and currently there's no way to do that.
+
+We basically need to separate the code in GUIWindow::render()
+so that this part
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+happens once at the beginning of every frame, before rendering the potentially multiple GUI windows
+and this part
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    // Update and Render additional Platform Windows
+    // (Platform functions may change the current OpenGL context, so we save/restore it)
+    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
+happens once at the end of every frame, after rendering the potentially multiple GUI windows.
+The rest of the code we'll leave in GUIWindow::render() because it is what actually renders a single GUI window.
+
+So how do we make the 2 parts happen at the beginning and end of every frame?
+Easy, we already have the registerOnFrameBeginCallback/registerOnFrameEndCallback mechanism in PekanApplication,
+we just need to register 2 functions that do the 2 parts above.
+A good place to do that is in GUISubsystem.
+Let's create 2 new static private functions there:
+    static void beginFrame();
+    static void endFrame();
+They will be the 2 functions that we will register in PekanApplication to be called at the beginning and end of each frame.
+The registration itself can be done in GUISubsystem's init() function:
+    application->registerOnFrameBeginCallback([]() { GUISubsystem::beginFrame(); });
+    application->registerOnFrameEndCallback([]() { GUISubsystem::endFrame(); });
+Then, we'll implement the 2 functions by just pasting the 2 parts of the old GUIWindow::render() (mentioned above).
+
+One more thing, just as a sanity check and for easier error handling let's add this flag
+    inline static bool m_isFrameActive = false;
+in GUISubsystem, that we'll use to keep track if an ImGui frame is currently active.
+beginFrame() creates and activates an ImGui frame and it remains active until endFrame() is called.
+In the beginning of beginFrame() and endFrame() we can check if m_isFrameActive is what we expect it to be
+just to make sure that we don't try to call beginFrame() when a frame is already active or endFrame() when no frame is currently active.
+
+That's it.
+Editor works now, both GUI windows appear. Looks good.
+
+Done.
+}

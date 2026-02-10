@@ -23,7 +23,7 @@ namespace Demo
 		{ 0.0f, COLOR_DULLNESS, COLOR_DULLNESS }
 	};
 
-	bool Demo02_GUIWindow::init()
+	bool Demo02_GUIWindow::_init()
 	{
 		for (size_t i = 0; i < 6; i++)
 		{

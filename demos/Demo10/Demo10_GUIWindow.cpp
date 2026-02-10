@@ -11,7 +11,7 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
-	bool Demo10_GUIWindow::init()
+	bool Demo10_GUIWindow::_init()
 	{
 		// Create widgets for player body transform
 		gui.bodyWidgets.label->create(this, "Body");

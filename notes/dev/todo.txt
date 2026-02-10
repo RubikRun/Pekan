@@ -317,7 +317,7 @@
 0101 09.02.2026 (TODO): Add PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D; in Demo09 and Demo10's main.cpp
                         Remove #include <windows.h> if not needed in Demo09 and Demo10's main.cpp
 
-0102 09.02.2026 (TODO): Fix issue with multiple GUIWindow's.
+0102 09.02.2026 (DONE): Fix issue with multiple GUIWindow's.
                         Adding more than 1 GUIWindow in an application's layer stack doesn't work currently,
                         because GUIWindow::render() creates a new ImGui frame every time when called:
                             ImGui_ImplOpenGL3_NewFrame()

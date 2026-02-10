@@ -7,7 +7,7 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
-	bool Demo08_GUIWindow::init()
+	bool Demo08_GUIWindow::_init()
 	{
 		gui.numberOfSpritesLabel->create(this, "Number Of Sprites");
 		gui.numberOfSpritesWidget->create(this, "", 200, 1, 800);

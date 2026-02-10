@@ -17,8 +17,6 @@ namespace Demo
 
 		Demo08_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-		bool init() override;
-
 		// Returns current number of sprites
 		int getNumberOfSprites() const { return gui.numberOfSpritesWidget->getValue(); }
 		// Returns maximum number of sprites allowed in GUI
@@ -29,6 +27,8 @@ namespace Demo
 		float getAnimSpeed() const { return gui.animSpeedWidget->getValue(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

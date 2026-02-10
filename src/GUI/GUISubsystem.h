@@ -28,6 +28,11 @@ namespace GUI
 
 	private: /* functions */
 
+		// Begins a new ImGui frame (called automatically at the start of each frame)
+		static void beginFrame();
+		// Ends the current ImGui frame and renders it (called automatically at the end of each frame)
+		static void endFrame();
+
 		bool init() override;
 		void exit() override;
 
@@ -40,6 +45,9 @@ namespace GUI
 
 		// Next available ID for a GUI widget
 		inline static int m_nextWidgetId = 0;
+
+		// A flag indicating if an ImGui frame is currently active
+		inline static bool m_isFrameActive = false;
 	};
 
 } // namespace GUI

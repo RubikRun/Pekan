@@ -16,12 +16,12 @@ namespace Demo
 
 		Demo09_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-		bool init() override;
-
 		// Returns index of selected post-processing shader
 		int getPpsIndex() const { return gui.ppsComboBoxWidget->getIndex(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 
