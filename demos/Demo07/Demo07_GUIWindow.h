@@ -17,8 +17,6 @@ namespace Demo
 
 		Demo07_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-		bool init() override;
-
 		glm::vec2 getRectanglePosition() const { return gui.shapeTypeWidgets[0].positionWidget->getValue(); }
 		float getRectangleRotation() const { return gui.shapeTypeWidgets[0].rotationWidget->getValue(); }
 		glm::vec2 getRectangleScale() const { return gui.shapeTypeWidgets[0].scaleWidget->getValue(); }
@@ -40,6 +38,8 @@ namespace Demo
 		glm::vec2 getLineScale() const { return gui.shapeTypeWidgets[4].scaleWidget->getValue(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

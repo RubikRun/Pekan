@@ -19,8 +19,6 @@ namespace Demo
 
 		Demo01_GUIWindow(Pekan::PekanApplication* application) : Pekan::GUI::GUIWindow(application) {}
 
-		bool init() override;
-
 		bool getMoveThirdSquare() const;
 		int getSquareX(size_t idx) const;
 		int getSquareY(size_t idx) const;
@@ -31,6 +29,8 @@ namespace Demo
 		int getNumberOfSquares() const { return gui.squares.size(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		void update(double deltaTime) override;
 

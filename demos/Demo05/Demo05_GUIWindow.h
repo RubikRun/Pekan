@@ -14,8 +14,6 @@ namespace Demo
 
 		Demo05_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-		bool init() override;
-
 		// Returns current value of background color parameter
 		glm::vec3 getBackgroundColor() const { return gui.backgroundColorWidget->getValue(); }
 
@@ -23,6 +21,8 @@ namespace Demo
 		float getLineThickness() const { return gui.lineThicknessWidget->getValue(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

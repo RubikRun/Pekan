@@ -23,9 +23,9 @@ namespace Editor
 
 		std::string getLayerName() const override { return "entity_properties_gui_window"; }
 
-		bool init() override;
-
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

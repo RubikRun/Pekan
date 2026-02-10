@@ -9,7 +9,7 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
-	bool Demo01_GUIWindow::init()
+	bool Demo01_GUIWindow::_init()
 	{
 		gui.checkboxWidget_moveThirdSquare->create(this, "Move third square slightly", false);
 		gui.buttonWidget_addSquare->create(this, "+");

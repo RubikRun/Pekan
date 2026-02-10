@@ -17,8 +17,6 @@ namespace Demo
 
 		Demo06_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-		bool init() override;
-
 		// Returns current number of shapes
 		int getNumberOfShapes() const { return gui.numberOfShapesWidget->getValue(); }
 		// Returns maximum number of shapes allowed in GUI
@@ -34,6 +32,8 @@ namespace Demo
 		int getPpsIndex() const { return gui.ppsComboBoxWidget->getIndex(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

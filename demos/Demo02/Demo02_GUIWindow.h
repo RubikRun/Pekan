@@ -17,8 +17,6 @@ namespace Demo
 
 		Demo02_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-		bool init() override;
-
 		glm::vec3 getFaceColor(size_t idx) const { return gui.colorEditWidgets[idx]->getValue(); }
 		float getRotation() const { return gui.rotationWidget->getValue(); }
 		float getFOV() const { return gui.fovWidget->getValue(); }
@@ -26,6 +24,8 @@ namespace Demo
 		bool shouldHideFourthFace() const { return gui.hideFourthFaceWidget->isChecked(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

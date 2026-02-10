@@ -8,7 +8,7 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
-	bool Demo00_GUIWindow::init()
+	bool Demo00_GUIWindow::_init()
 	{
 		gui.textWidget_backgroundColor->create(this, "Background Color");
 		gui.colorEditWidget->create(this, { 0.30f, 0.55f, 0.60f });

@@ -15,8 +15,6 @@ namespace Demo
 
 		Demo04_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
-		bool init() override;
-
 		// Returns current value of background color
 		glm::vec4 getBackgroundColor() const { return glm::vec4(gui.backgroundColorWidget->getValue(), 1.0f); }
 
@@ -39,6 +37,8 @@ namespace Demo
 		bool getEnabledFaceCulling() const { return gui.enableFaceCullingWidget->isChecked(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

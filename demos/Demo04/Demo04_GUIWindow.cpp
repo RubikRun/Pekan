@@ -13,7 +13,7 @@ namespace Demo
 		"Two Points Blend 3"
 	};
 
-	bool Demo04_GUIWindow::init()
+	bool Demo04_GUIWindow::_init()
 	{
 		gui.backgroundColorWidget->create(this, { 0.45f, 0.55f, 0.60f });
 		gui.positionWidget->create(this, "Position", -1.0f, 1.0f, 0.01f);

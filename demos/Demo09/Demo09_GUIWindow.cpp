@@ -9,7 +9,7 @@ using namespace Pekan::GUI;
 namespace Demo
 {
 
-	bool Demo09_GUIWindow::init()
+	bool Demo09_GUIWindow::_init()
 	{
 		gui.ppsLabel->create(this, "Post-Processing Shader");
 		gui.ppsComboBoxWidget->create(this, { "Identity", "Sharpen", "Blur", "Edge Detection", "Emboss" });

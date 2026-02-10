@@ -3,14 +3,19 @@
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
-#include <GLFW/glfw3.h>
 
 namespace Pekan
 {
 namespace GUI
 {
+
+	bool GUIWindow::init()
+	{
+		// Cache GUI window's properties
+		m_properties = getProperties();
+
+		return _init();
+	}
 
 	void GUIWindow::exit()
 	{
@@ -31,42 +36,19 @@ namespace GUI
 			return;
 		}
 
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		// Get GUI window's properties, potentially from derived class.
-		// These properties will be the same for the whole lifetime of a GUI window
-		// so we can keep them in a static variable here, to avoid calling getProperties() on every frame.
-		static GUIWindowProperties properties = getProperties();
-
-		ImGui::SetNextWindowSize(ImVec2(properties.size.x, properties.size.y));
-		ImGui::Begin(properties.name.c_str());
+		ImGui::SetNextWindowSize(ImVec2(m_properties.size.x, m_properties.size.y));
+		ImGui::Begin(m_properties.name.c_str());
 
 		// Render all widgets of the GUI window
 		for (const Widget_ConstPtr& widget : m_widgets)
 		{
 			widget->render();
 		}
+
 		// Call derived class' render function
 		_render();
 
 		ImGui::End();
-
-		ImGui::Render();
-
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		// Update and Render additional Platform Windows
-		// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-		//  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			GLFWwindow* backup_current_context = glfwGetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
-		}
 	}
 
 	void GUIWindow::addWidget(const Widget_Ptr& widget)

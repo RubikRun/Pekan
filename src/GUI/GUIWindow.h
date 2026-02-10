@@ -29,7 +29,6 @@ namespace GUI
 		GUIWindow(Pekan::PekanApplication* application) : Layer(application) {}
 		virtual ~GUIWindow() = default;
 
-		void exit() override final;
 		void render() const  override final;
 
 		// Adds a widget to the GUI window.
@@ -48,6 +47,11 @@ namespace GUI
 
 	private: /* functions*/
 
+		bool init() override final;
+		void exit() override final;
+
+		// Can be implemented by derived classes with specific initialization functionality.
+		virtual bool _init() { return true; };
 		// Can be implemented by derived classes with specific exiting functionality.
 		virtual void _exit() {};
 
@@ -71,6 +75,10 @@ namespace GUI
 
 		// Widgets making up the GUI inside the window.
 		std::vector<Widget_Ptr> m_widgets;
+
+		// GUI window's properties, as returned by getProperties().
+		// Cached here to avoid calling getProperties() every frame.
+		mutable GUIWindowProperties m_properties;
 	};
 
 } // namespace GUI

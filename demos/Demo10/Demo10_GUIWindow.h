@@ -17,9 +17,7 @@ namespace Demo
 	{
 	public:
 
-	Demo10_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
-
-		bool init() override;
+		Demo10_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
 		glm::vec2    getBodyPosition() const     { return gui.bodyWidgets.positionWidget->getValue(); }
 		float        getBodyRotation() const     { return gui.bodyWidgets.rotationWidget->getValue(); }
@@ -50,6 +48,8 @@ namespace Demo
 		glm::vec2    getSwordScale() const       { return gui.swordWidgets.scaleWidget->getValue(); }
 
 	private: /* functions */
+
+		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 
