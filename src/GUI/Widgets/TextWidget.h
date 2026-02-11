@@ -21,6 +21,8 @@ namespace GUI
 		void destroy();
 
 		const std::string& getText() const;
+		void setText(const char* text);
+		void setText(const std::string& text);
 
 	private: /* functions */
 

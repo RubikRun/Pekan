@@ -2327,3 +2327,33 @@ We can add entities to the scene by clicking the button in EntitiesGUIWindow.
 They appear in a list there, and we can select an entity.
 The selected entity appears in EntityPropertiesGUIWindow.
 }
+
+{
+To make the code a little nicer let's use
+    class TextWidget
+in EntityPropertiesGUIWindow instead of raw ImGui.
+To do that, we'll need to extend TextWidget with a setter for the text.
+Right now a text widget is created with some text and this text cannot change in TextWidget's lifetime.
+Creating a setter is quite easy, nothing to say:
+    void setText(const char* text);
+    void setText(const std::string& text);
+It just needs to do this:
+    m_text = text;
+
+Other than using TextWidget we can also NOT call setText() on it every frame.
+Instead we can cache the selected entity in a new member variable:
+    entt::entity m_selectedEntity = entt::null;
+And then, in update() we can check if selected entity has changed:
+    const entt::entity selectedEntity = m_entitiesGUIWindow->getSelectedEntity();
+    if (selectedEntity != m_selectedEntity)
+and only then proceed to actually construct the
+    "No entity selected"
+or
+    "Selected Entity: " + std::to_string(static_cast<uint32_t>(selectedEntity))
+text and set it to the text widget by calling setText():
+    gui.entityInfoTextWidget->setText(entityInfoText);
+That's it.
+
+A little optimization + nicer code.
+It works.
+}
