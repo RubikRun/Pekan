@@ -5,7 +5,6 @@
 #include "PekanLogger.h"
 #include "RenderCommands.h"
 
-#include <imgui.h>
 #include <entt/entt.hpp>
 
 using namespace Pekan;
@@ -29,25 +28,35 @@ namespace Editor
 			return false;
 		}
 
+		gui.entityInfoTextWidget->create(this, "No entity selected");
+
 		return true;
 	}
 
-	void EntityPropertiesGUIWindow::_render() const
+	void EntityPropertiesGUIWindow::update(double deltaTime)
 	{
 		PK_ASSERT_QUICK(m_scene != nullptr);
 		PK_ASSERT_QUICK(m_entitiesGUIWindow != nullptr);
 
 		const entt::entity selectedEntity = m_entitiesGUIWindow->getSelectedEntity();
 
-		if (selectedEntity == entt::null)
+		// Only update text if the selected entity has changed
+		if (selectedEntity != m_selectedEntity)
 		{
-			ImGui::Text("No entity selected");
-			return;
+			m_selectedEntity = selectedEntity;
+
+			std::string entityInfoText;
+			if (selectedEntity == entt::null)
+			{
+				entityInfoText = "No entity selected";
+			}
+			else
+			{
+				entityInfoText = "Selected Entity: " + std::to_string(static_cast<uint32_t>(selectedEntity));
+			}
+
+			gui.entityInfoTextWidget->setText(entityInfoText);
 		}
-
-		ImGui::Text("Selected Entity: %u", static_cast<uint32_t>(selectedEntity));
-
-		ImGui::Separator();
 	}
 
 	GUIWindowProperties EntityPropertiesGUIWindow::getProperties() const
