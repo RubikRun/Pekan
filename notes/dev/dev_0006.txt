@@ -2193,3 +2193,137 @@ Editor works now, both GUI windows appear. Looks good.
 
 Done.
 }
+
+{
+Next step for Editor would be to add a "+" button in
+    EntitiesGUIWindow
+When clicked it will add a new entity to the scene.
+Here's the button, as a new member in EntitiesGUIWindow's Widgets:
+    Pekan::GUI::ButtonWidget_Ptr addEntityButtonWidget = std::make_shared<Pekan::GUI::ButtonWidget>();
+Then in EntitiesGUIWindow::update() we can do that:
+    if (gui.addEntityButtonWidget->isClicked() && m_scene != nullptr)
+    {
+        // ...
+    }
+to detect when the button is clicked.
+What do we do when it's clicked?
+We need to add an entity to the scene.
+For that, let's have a pointer to the scene as a member in EntitiesGUIWindow:
+    std::shared_ptr<EditorScene> m_scene;
+together with a setter function:
+    void setScene(std::shared_ptr<EditorScene> scene) { m_scene = scene; }
+Then, in EditorApplication's _fillLayerStack() we can call the setter and set the scene:
+    entitiesGuiWindow->setScene(scene.get());
+Okay, now we have access to the scene from EntitiesGUIWindow.
+To actually add an entity to the scene, we'll need a new public function on EditorScene:
+    void addEntity();
+To implement this function we'll need to create an entity in the scene:
+    entt::entity entity = createEntity();
+but also we need to keep track of all created entities, so let's have a new member in EditorScene:
+    std::vector<entt::entity> m_entities;
+which will be just a list of all created entities (Remember that entt::entity is just an integer - the entity's ID)
+Then, in addEntity() we'll need to also add the created entity to the list of entities:
+    m_entities.push_back(entity);
+That's all for addEntity().
+Now we can easily just call addEntity() from EntitiesGUIWindow if the button is clicked:
+    if (gui.addEntityButtonWidget->isClicked() && m_scene != nullptr)
+    {
+        m_scene->addEntity();
+    }
+
+That was the easy part.
+Now we need to also display the list of entities in EntitiesGUIWindow.
+We don't have a list widget in our GUI module yet, I created a TO-DO task for that.
+For now we can just override the _render() function and implement what we need directly with ImGui.
+First, we'll need to actually get the list of entities from the scene.
+For that, create a getter in EditorScene:
+    const std::vector<entt::entity>& getEntities() const { return m_entities; }
+and call it in EntitiesGUIWindow::_render():
+    const std::vector<entt::entity>& entities = m_scene->getEntities();
+To display entities in a list widget with selectable elements we need to loop over entities:
+    for (const auto& entity : entities)
+and call
+    ImGui::Selectable(const char* label, ...)
+for each one.
+The way it works is if you call ImGui::Selectable() multiple times in a row
+it will just put multiple "selectable" widgets one after the other, like a list
+(not technically a list, they are just independent widgets one after the other)
+So, for each entity we can form a string using entity's ID:
+    const std::string entityLabel = "Entity " + std::to_string(static_cast<uint32_t>(entity));
+and this will be the label that we pass to ImGui::Selectable:
+    ImGui::Selectable(entityLabel.c_str());
+This works for displaying a list of entities in the scene.
+
+----------
+11.02.2026
+----------
+
+However, selecting doesn't work properly yet.
+We need to somehow keep track of which entity is selected and which entities are NOT selected.
+We need to do that manually, because ImGui is an immediate-GUI type of framework
+and the way it works is that this
+    ImGui::Selectable()
+function is a completely stateless call.
+Every frame we call it however we like, it doesn't have any sense of its own state.
+We have to maintain its state manually in our code.
+So, the thing we can do is to keep track of which entity is currently selected.
+To do that, let's have a member variable in EntitiesGUIWindow:
+    mutable entt::entity m_selectedEntity = entt::null;
+Then, when we call ImGui::Selectable() we need to pass it a second argument:
+    ImGui::Selectable(const char* label, bool selected, ...)
+which is a boolean indicating the current "selected" state of the selectable widget.
+The meaning of "current" here is a bit confusing.
+Whatever "selected" state we pass it that's how it's going to render the widget right now, on this frame.
+(if we pass true it will render a selected widget, if we pass false it will render an unselected widget)
+We can calculate the "selected" state by just comparing the current entity in the for loop with the currently selected one:
+    const bool isSelected = (entity == m_selectedEntity);
+then we pass that boolean to ImGui::Selectable, like this:
+    ImGui::Selectable(entityLabel.c_str(), isSelected)
+The return value of ImGui::Selectable() is also a boolean and it indicates whether user is clicking the widget right now.
+So if it returns true we need to mark the entity as selected:
+    if (ImGui::Selectable(entityLabel.c_str(), isSelected))
+    {
+        m_selectedEntity = entity;
+    }
+Once we mark it as selected it will be rendered as selected from now on, thanks to our isSelected parameter.
+That's it for EntitiesGUIWindow::_render().
+It now correctly renders the list of entities and user can select an entity, and we keep track of the currently selected entity.
+Great!
+
+One last thing.
+We'll need to access the currently selected entity in the other GUI window - EntityPropertiesGUIWindow.
+Let's create the mechanism for doing so now.
+I think what makes most sense is to have a pointer to the EntitiesGUIWindow inside EntityPropertiesGUIWindow
+    std::shared_ptr<EntitiesGUIWindow> m_entitiesGUIWindow;
+Same way we have a pointer to the scene.
+We'll think about maybe decoupling the 2 GUI windows in the future and have a central place of control maybe, but for now it's good.
+For now it totally makes sense that the EntityPropertiesGUIWindow depends on EntitiesGUIWindow,
+because it needs to know what the currently selected entity is.
+Okay.
+Together with that pointer we'll need a setter, of course:
+    void setEntitiesGUIWindow(std::shared_ptr<EntitiesGUIWindow> entitiesGUIWindow) { m_entitiesGUIWindow = entitiesGUIWindow; }
+Same way as for the scene.
+Then, we'll make sure to properly set the EntitiesGUIWindow calling this setter in EditorApplication:
+    entityPropertiesGuiWindow->setEntitiesGUIWindow(entitiesGuiWindow);
+Now EntityPropertiesGUIWindow can access EntitiesGUIWindow.
+What it needs is an API for getting the currently selected entity.
+We just need a simple getter for the selected entity in EntitesGUIWindow:
+    entt::entity getSelectedEntity() const { return m_selectedEntity; }
+Then, in EntityPropertiesGUIWindow::_render() we can get the currently selected entity, like this:
+    const entt::entity selectedEntity = m_entitiesGUIWindow->getSelectedEntity();
+And we can just show it as text for now:
+    ImGui::Text("Selected Entity: %u", static_cast<uint32_t>(selectedEntity));
+If there is no selected entity we can show "No entity selected":
+    if (selectedEntity == entt::null)
+    {
+        ImGui::Text("No entity selected");
+        return;
+    }
+Not sure if we'll keep this part like this, but for now it's perfectly good for testing.
+That's it.
+
+It works!
+We can add entities to the scene by clicking the button in EntitiesGUIWindow.
+They appear in a list there, and we can select an entity.
+The selected entity appears in EntityPropertiesGUIWindow.
+}
