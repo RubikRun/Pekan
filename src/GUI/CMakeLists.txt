@@ -76,4 +76,6 @@ target_include_directories(GUI PUBLIC . Widgets)
 
 # Set link libraries for GUI
 target_link_libraries(GUI PUBLIC Core)
-target_link_libraries(GUI PRIVATE imgui)
+
+# TEMP: link imgui publicly because we don't have a list widget yet and we need it in Editor
+target_link_libraries(GUI PUBLIC imgui)

@@ -330,3 +330,18 @@
                         and
                             ImGui::End()
                         multiple times (one time for each GUIWindow)
+
+0103 10.02.2026 (TODO): Create a list widget in the GUI module,
+                        or whatever widget EntitiesGUIWindow::_render() uses to display the entities list.
+                        There should be no raw ImGui code.
+                        After doing this make sure to change this line
+                            target_link_libraries(GUI PUBLIC imgui)
+                        to
+                            target_link_libraries(GUI PRIVATE imgui)
+                        in
+                            src/GUI/CMakeLists.txt
+                        ImGui is not supposed to be linked publicly because client code is not supposed to use ImGui directly.
+
+0104 11.02.2026 (TODO): Think about making Layer's update() and render() functions be private.
+                        Layer's init() and exit() are already private because they are called only internally by LayerStack.
+                        Isn't it the same for update() and render()? Do we need them to be public?

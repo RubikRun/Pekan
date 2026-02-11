@@ -29,5 +29,11 @@ namespace Editor
 	{
 	}
 
+	void EditorScene::addEntity()
+	{
+		const entt::entity entity = createEntity();
+		m_entities.push_back(entity);
+	}
+
 } // namespace Editor
 } // namespace Pekan
