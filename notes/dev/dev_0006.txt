@@ -2357,3 +2357,52 @@ That's it.
 A little optimization + nicer code.
 It works.
 }
+
+----------
+12.02.2026
+----------
+
+{
+Today I did a few things.
+
+First, refactored the "list of selectable widgets" logic from EntitiesGUIWindow into a new class in the GUI module:
+    class SelectableListWidget
+It has a quite simple API, we need basically 2 things:
+We need to be able to set a list of items to be displayed in the list:
+    void setItems(const std::vector<std::string>& items);
+and we need to be able to ask for the index of the currently selected item:
+    int getSelectedIndex() const;
+That's it.
+It works pretty well, looks good.
+
+While integrating SelectableListWidget in EntitiesGUIWindow I got carried away and fundamentally changed
+the architecture of the 3 classes - EntitiesGUIWindow, EditorScene and EntityPropertiesGUIWindow.
+Made it a lot cleaner and better.
+Also, it's more optimized now because the things we check and do every frame are minimal.
+Only after we detect an event (like the clicking of the "+" button or selecting another entity)
+only then we proceed to call functions in the necessary classes and make them react to the event.
+Here's a quick sum up of the current architecture:
+- EditorScene is only responsible for the actual scene, NOT how GUI interacts with it.
+    It has this function:
+        void addEntity();
+    which is called when the "+" button is pressed in EntitiesGUIWindow,
+    and it has this function:
+        const std::vector<entt::entity>& getEntities() const { return m_entities; }
+    which EntitiesGUIWindow uses to display the entities in GUI.
+- EntityPropertiesGUIWindow is only responsible for showing properties of a specific entity.
+    It has this function:
+        void setEntity(entt::entity entity);
+    which is called by EntitiesGUIWindow when the selection of an entity changes in the entities list widget.
+- EntitiesGUIWindow is the connecting piece.
+    It is responsible for showing the list of entities as they are in the scene currently.
+    It's also responsible for keeping EditorScene and EntityPropertiesGUIWindow updated
+    with GUI events happening inside of it - calling EditorScene's addEntity() when the "+" button is clicked
+    and calling EntityPropertiesGUIWindow's setEntity() with the newly selected entity when the entity selection changes.
+That's about it.
+
+At the end I managed to remove all raw ImGui code
+so I changed GUI's CMake file to link ImGui privately.
+
+Looks good!
+It works same as before, but with better architecture, cleaner code, more optimized, and without raw ImGui.
+}

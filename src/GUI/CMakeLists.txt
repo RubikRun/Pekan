@@ -35,6 +35,8 @@ add_library(GUI STATIC
 	Widgets/FPSDisplayWidget.cpp
 	Widgets/NewLineWidget.h
 	Widgets/NewLineWidget.cpp
+	Widgets/SelectableListWidget.h
+	Widgets/SelectableListWidget.cpp
 )
 
 # Group Widgets files under a virtual folder called "Widgets"
@@ -53,6 +55,7 @@ SOURCE_GROUP("Source Files\\Widgets" FILES
 	Widgets/ComboBoxWidget.cpp
 	Widgets/FPSDisplayWidget.cpp
 	Widgets/NewLineWidget.cpp
+	Widgets/SelectableListWidget.cpp
 )
 SOURCE_GROUP("Header Files\\Widgets" FILES
 	Widgets/TextWidget.h
@@ -69,6 +72,7 @@ SOURCE_GROUP("Header Files\\Widgets" FILES
 	Widgets/ComboBoxWidget.h
 	Widgets/FPSDisplayWidget.h
 	Widgets/NewLineWidget.h
+	Widgets/SelectableListWidget.h
 )
 
 # Set include directories for GUI
@@ -76,6 +80,4 @@ target_include_directories(GUI PUBLIC . Widgets)
 
 # Set link libraries for GUI
 target_link_libraries(GUI PUBLIC Core)
-
-# TEMP: link imgui publicly because we don't have a list widget yet and we need it in Editor
-target_link_libraries(GUI PUBLIC imgui)
+target_link_libraries(GUI PRIVATE imgui)

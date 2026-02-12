@@ -1,11 +1,8 @@
 #include "EntitiesGUIWindow.h"
+
 #include "EditorScene.h"
-
+#include "EntityPropertiesGUIWindow.h"
 #include "PekanLogger.h"
-#include "RenderCommands.h"
-
-// TEMP: include imgui.h because we need to build GUI with raw ImGui temporarily until we create necessary wrappers.
-#include <imgui.h>
 
 using namespace Pekan;
 using namespace Pekan::GUI;
@@ -22,6 +19,15 @@ namespace Editor
 		if (gui.addEntityButtonWidget->isClicked())
 		{
 			m_scene->addEntity();
+			updateEntitiesListWidget();
+		}
+
+		// If selected entity has changed, update the "entity properties" GUI window with the new selected entity
+		const int selectedEntityIndex = gui.entitiesListWidget->getSelectedIndex();
+		if (selectedEntityIndex != m_selectedEntityIndex)
+		{
+			m_selectedEntityIndex = selectedEntityIndex;
+			updateEntityPropertiesGUIWindow();
 		}
 	}
 
@@ -32,36 +38,15 @@ namespace Editor
 			PK_LOG_ERROR("Failed to initialize EntitiesGUIWindow because there is no scene attached.", "Pekan");
 			return false;
 		}
+		if (m_entityPropertiesGuiWindow == nullptr)
+		{
+			PK_LOG_ERROR("Failed to initialize EntitiesGUIWindow because there is no EntityPropertiesGUIWindow attached.", "Pekan");
+			return false;
+		}
 
 		gui.addEntityButtonWidget->create(this, "+");
+		gui.entitiesListWidget->create(this);
 		return true;
-	}
-
-	void EntitiesGUIWindow::_render() const
-	{
-		PK_ASSERT_QUICK(m_scene != nullptr);
-
-		// Render a separator between the "+" button and the list of entities
-		ImGui::Separator();
-
-		// Get list of entities from the scene
-		const std::vector<entt::entity>& entities = m_scene->getEntities();
-
-		// Display list of entities
-		for (const entt::entity entity : entities)
-		{
-			const std::string entityLabel = "Entity " + std::to_string(static_cast<uint32_t>(entity));
-
-			// Check if this entity is the currently selected one, so that we can render it as selected/unselected
-			const bool isSelected = (entity == m_selectedEntity);
-
-			// Render selectable widget and check if it's clicked in current frame
-			if (ImGui::Selectable(entityLabel.c_str(), isSelected))
-			{
-				// If widget is clicked, set this entity as the currently selected one
-				m_selectedEntity = entity;
-			}
-		}
 	}
 
 	GUIWindowProperties EntitiesGUIWindow::getProperties() const
@@ -70,6 +55,39 @@ namespace Editor
 		props.size = { 400, 700 };
 		props.name = "Entities";
 		return props;
+	}
+
+	void EntitiesGUIWindow::updateEntitiesListWidget()
+	{
+		PK_ASSERT_QUICK(m_scene != nullptr);
+
+		const std::vector<entt::entity>& entities = m_scene->getEntities();
+
+		// Create a vector of entity labels to display in the list widget
+		std::vector<std::string> entityLabels;
+		for (const entt::entity entity : entities)
+		{
+			entityLabels.push_back("Entity " + std::to_string(static_cast<uint32_t>(entity)));
+		}
+		// Update entities list widget with the new entity labels
+		gui.entitiesListWidget->setItems(entityLabels);
+	}
+
+	void EntitiesGUIWindow::updateEntityPropertiesGUIWindow()
+	{
+		PK_ASSERT_QUICK(m_entityPropertiesGuiWindow != nullptr);
+
+		if (m_selectedEntityIndex < 0)
+		{
+			m_entityPropertiesGuiWindow->setEntity(entt::null);
+			return;
+		}
+
+		const std::vector<entt::entity>& entities = m_scene->getEntities();
+		PK_ASSERT_QUICK(m_selectedEntityIndex < int(entities.size()));
+
+		const entt::entity selectedEntity = entities[m_selectedEntityIndex];
+		m_entityPropertiesGuiWindow->setEntity(selectedEntity);
 	}
 
 } // namespace Editor

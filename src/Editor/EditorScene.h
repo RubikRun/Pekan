@@ -18,7 +18,7 @@ namespace Editor
 		// Adds a new entity to the scene
 		void addEntity();
 
-		// Returns a vector of all entities in the scene
+		// Returns a list of all entities in the scene
 		const std::vector<entt::entity>& getEntities() const { return m_entities; }
 
 	private: /* functions */
