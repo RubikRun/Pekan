@@ -24,8 +24,7 @@ namespace Editor
 
 		// Connect GUI windows to scene
 		entitiesGuiWindow->setScene(scene);
-		entityPropertiesGuiWindow->setScene(scene);
-		entityPropertiesGuiWindow->setEntitiesGUIWindow(entitiesGuiWindow);
+		entitiesGuiWindow->setEntityPropertiesGUIWindow(entityPropertiesGuiWindow);
 
 		// Add scene and GUI windows to application's layers
 		layerStack.pushLayer(scene);

@@ -331,7 +331,7 @@
                             ImGui::End()
                         multiple times (one time for each GUIWindow)
 
-0103 10.02.2026 (TODO): Create a list widget in the GUI module,
+0103 10.02.2026 (DONE): Create a list widget in the GUI module,
                         or whatever widget EntitiesGUIWindow::_render() uses to display the entities list.
                         There should be no raw ImGui code.
                         After doing this make sure to change this line
