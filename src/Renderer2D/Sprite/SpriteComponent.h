@@ -9,8 +9,8 @@ namespace Renderer2D
 
 	struct SpriteComponent
 	{
-		float width = 0.0f;
-		float height = 0.0f;
+		float width = 1.0f;
+		float height = 1.0f;
 
 		Graphics::Texture2D_ConstPtr texture;
 

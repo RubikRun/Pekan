@@ -12,7 +12,7 @@ namespace Renderer2D
 	/* data */
 
 		// Size of camera's view area, in world space
-		glm::vec2 size = { 0.0f, 0.0f };
+		glm::vec2 size = { 16.0f, 9.0f };
 		// Position of the center of camera's view area, in world space
 		glm::vec2 position = { 0.0f, 0.0f };
 		// Rotation of the camera, in radians

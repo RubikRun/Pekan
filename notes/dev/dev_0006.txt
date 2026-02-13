@@ -2406,3 +2406,92 @@ so I changed GUI's CMake file to link ImGui privately.
 Looks good!
 It works same as before, but with better architecture, cleaner code, more optimized, and without raw ImGui.
 }
+
+----------
+13.02.2026
+----------
+
+{
+Next step is to allow components to be added to the selected entity in EntityPropertiesGUIWindow.
+
+The way we'll achieve this, for now, is to have these 2 new widgets:
+    Pekan::GUI::ComboBoxWidget_Ptr addComponentComboBoxWidget = std::make_shared<Pekan::GUI::ComboBoxWidget>();
+    Pekan::GUI::ButtonWidget_Ptr addComponentButtonWidget = std::make_shared<Pekan::GUI::ButtonWidget>();
+A combo box for choosing which component to add
+(from a predefined list of components supported in Pekan, we'll think about custom components later)
+and a button for adding the chosen component.
+Simple.
+Next, to make these widgets work, we need to implement an update() method, and inside of it check this:
+    if (gui.addComponentButtonWidget->isClicked() && m_entity != entt::null)
+basically if button is clicked and a valid entity is selected.
+Then we can get the index of the selected component from the combo box widget like this:
+    const int componentTypeIndex = gui.addComponentComboBoxWidget->getIndex();
+and then using that index we have to call some API on the scene to make it add this component to the entity.
+For that, we'll need to have a pointer to the scene in EntityPropertiesGUIWindow. No problem at all.
+We'll just do it same way as in EntitiesGUIWindow - a pointer member + a setter function:
+    std::shared_ptr<EditorScene> m_scene;
+    ...
+    void setScene(std::shared_ptr<EditorScene> scene) { m_scene = scene; }
+Remember to call setScene() in EditorApplication.
+
+Okay, we have access to the scene.
+Now we need a new API on the scene for adding a component to an entity:
+    void addComponent(entt::entity entity, int componentTypeIndex);
+and we'll call this API in EntityPropertiesGUIWindow's update() function in the if statement described above.
+What will this API do exactly?
+First of all, we have to define what the supported components are and what this componentTypeIndex even means.
+For now, let's just have a static const vector of component types (or more precisely their names) in EditorScene.cpp:
+    static const std::vector<std::string> s_componentTypesNames =
+    {
+        "Transform2D",
+        "Sprite",
+        "Camera2D",
+        "Line",
+        "RectangleGeometry",
+        "CircleGeometry",
+        "TriangleGeometry",
+        "PolygonGeometry",
+        "LineGeometry",
+        "SolidColorMaterial"
+    };
+We'll use that list in GUI for the entries of the combo box.
+Correspondingly, we'll implement addComponent() so that componentTypeIndex is an index into this vector.
+Let's do a simple switch statement for now, we'll see if we need something more fancy later:
+    switch (componentTypeIndex)
+    {
+        case 0: m_registry.emplace<TransformComponent2D>(entity); break;
+        case 1: m_registry.emplace<SpriteComponent>(entity); break;
+        case 2: m_registry.emplace<CameraComponent2D>(entity); break;
+        case 3: m_registry.emplace<LineComponent>(entity); break;
+        case 4: m_registry.emplace<RectangleGeometryComponent>(entity); break;
+        case 5: m_registry.emplace<CircleGeometryComponent>(entity); break;
+        case 6: m_registry.emplace<TriangleGeometryComponent>(entity); break;
+        case 7: m_registry.emplace<PolygonGeometryComponent>(entity); break;
+        case 8: m_registry.emplace<LineGeometryComponent>(entity); break;
+        case 9: m_registry.emplace<SolidColorMaterialComponent>(entity); break;
+    }
+Basically the index tells us which component type is wanted, and then we just need to add that component type to the entity:
+    m_registry.emplace< *ComponentType* >(entity);
+That's all.
+
+Finally, to actually have the component types names in GUI we'll need to expose them through EditorScene with a simple getter:
+    static const std::vector<std::string>& getComponentTypesNames();
+that we will use EntityPropertiesGUIWindow's _init() function to initialize the combo box:
+    gui.addComponentComboBoxWidget->create(this, "", 0, EditorScene::getComponentTypesNames());
+Now the combo box will contain the component types.
+
+That's about it.
+With that, the editor supports adding only default component, we don't have GUI for actually changing the components.
+Let's change our component types with better default values so that we can test this more easily,
+and also it makes sense from user's perspective - if you create a new entity and assign rectangle geometry to it
+you expect to see some default rectangle immediately, not have a rectangle with 0 width and 0 height and have to
+modify them in order to see any rectangle at all.
+Changed most of our component types, like RectangleGeometryComponent, CircleGeometryComponent, LineComponent, etc.
+to have some nice default values.
+Now I can test it.
+It works!
+If you create an entity, select it, add some geometry component (RectangleGeometry, CircleGeometry, etc.)
+and a SolidColorMaterial you see the entity in the scene - it gets correctly rendered.
+(We have no camera in the scene yet so it's looking weird, but it's there!)
+Looking good. Everything works as expected.
+}
