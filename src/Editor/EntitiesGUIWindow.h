@@ -2,13 +2,6 @@
 
 #include "GUIWindow.h"
 
-#include "TextWidget.h"
-#include "ColorEdit3Widget.h"
-#include "DragFloat2Widget.h"
-#include "ComboBoxWidget.h"
-#include "SeparatorWidget.h"
-#include "SliderFloat2Widget.h"
-#include "SliderFloatWidget.h"
 #include "ButtonWidget.h"
 #include "SelectableListWidget.h"
 
