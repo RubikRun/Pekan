@@ -124,4 +124,18 @@ if errorlevel 1 (
 	exit /b 1
 )
 
+:: Run Ninja CMake to generate compile_commands.json for clangd
+echo.
+echo --------------------------------------------------------------------------------
+echo Running Ninja CMake for compile_commands.json (clangd):
+echo %VS_CMAKE% -G Ninja -DCMAKE_BUILD_TYPE=Debug -S . -B build/build-ninja%CMAKE_OPTIONS%
+echo --------------------------------------------------------------------------------
+echo.
+%VS_CMAKE% -G Ninja -DCMAKE_BUILD_TYPE=Debug -S . -B build/build-ninja%CMAKE_OPTIONS%
+if errorlevel 1 (
+	echo WARNING: Ninja configuration failed. compile_commands.json will not be available for clangd.
+) else (
+	echo Ninja configuration succeeded. compile_commands.json is in build/build-ninja/
+)
+
 echo Done!

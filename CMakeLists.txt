@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.6...3.31)
 
+# Export compile commands for clangd and other tooling
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(WITH_DEMO_PROJECTS "When this option is enabled, demo projects are included together with Pekan." ON)
 
 # Require C++ 20
