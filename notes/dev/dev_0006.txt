@@ -2495,3 +2495,29 @@ and a SolidColorMaterial you see the entity in the scene - it gets correctly ren
 (We have no camera in the scene yet so it's looking weird, but it's there!)
 Looking good. Everything works as expected.
 }
+
+----------
+14.02.2026
+----------
+
+{
+Noticed a small bug in Editor.
+If you try to add the same component type multiple times to the same entity
+you will get an assertion, and not one from Pekan, but one from entt.
+
+We need to handle these cases.
+Instead of doing this:
+    m_registry.emplace<TransformComponent2D>(entity);
+we'll have a helper template function
+    template<typename ComponentType>
+    void addComponentOfType(...)
+Inside of it we'll check if the entity already has the given component type
+    if (registry.all_of<ComponentType>(entity))
+and if so, we'll log a warning message and return.
+Otherwise, we'll proceed to add the component as before:
+    registry.emplace<ComponentType>(entity);
+That's it.
+
+It works now. No assertion pops up. Only a warning message from Pekan in console.
+Done.
+}

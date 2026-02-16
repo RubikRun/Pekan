@@ -66,21 +66,33 @@ namespace Editor
 		return s_componentTypesNames;
 	}
 
+	// Adds a component of the given type to a given entity if it doesn't already have that component
+	template<typename ComponentType>
+	void addComponentOfType(entt::registry& registry, entt::entity entity, int componentTypeIndex)
+	{
+		if (registry.all_of<ComponentType>(entity))
+		{
+			PK_LOG_WARNING("Entity " + std::to_string(uint32_t(entity)) + " already has component of type " + s_componentTypesNames[componentTypeIndex] + ".", "Pekan");
+			return;
+		}
+
+		registry.emplace<ComponentType>(entity);
+	}
+
 	void EditorScene::addComponent(entt::entity entity, int componentTypeIndex)
 	{
 		switch (componentTypeIndex)
 		{
-			case 0: m_registry.emplace<TransformComponent2D>(entity); break;
-			case 1: m_registry.emplace<SpriteComponent>(entity); break;
-			case 2: m_registry.emplace<CameraComponent2D>(entity); break;
-			case 3: m_registry.emplace<LineComponent>(entity); break;
-			case 4: m_registry.emplace<RectangleGeometryComponent>(entity); break;
-			case 5: m_registry.emplace<CircleGeometryComponent>(entity); break;
-			case 6: m_registry.emplace<TriangleGeometryComponent>(entity); break;
-			case 7: m_registry.emplace<PolygonGeometryComponent>(entity); break;
-			case 8: m_registry.emplace<LineGeometryComponent>(entity); break;
-			case 9: m_registry.emplace<SolidColorMaterialComponent>(entity); break;
-
+			case 0: addComponentOfType<TransformComponent2D>(m_registry, entity, componentTypeIndex); break;
+			case 1: addComponentOfType<SpriteComponent>(m_registry, entity, componentTypeIndex); break;
+			case 2: addComponentOfType<CameraComponent2D>(m_registry, entity, componentTypeIndex); break;
+			case 3: addComponentOfType<LineComponent>(m_registry, entity, componentTypeIndex); break;
+			case 4: addComponentOfType<RectangleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 5: addComponentOfType<CircleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 6: addComponentOfType<TriangleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 7: addComponentOfType<PolygonGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 8: addComponentOfType<LineGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 9: addComponentOfType<SolidColorMaterialComponent>(m_registry, entity, componentTypeIndex); break;
 			default:
 				PK_LOG_ERROR("Invalid component type index: " + std::to_string(componentTypeIndex), "Pekan");
 				break;
