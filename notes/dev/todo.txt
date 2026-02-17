@@ -357,4 +357,4 @@
                         we can include
                             #include "imgui.h"
 
-0107 13.02.2026 (TODO): Implement a mechanism for hiding GUI widgets
+0107 13.02.2026 (DONE): Implement a mechanism for hiding GUI widgets

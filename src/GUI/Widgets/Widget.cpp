@@ -46,9 +46,29 @@ namespace GUI
 		return m_id >= 0;
 	}
 
+	void Widget::hide()
+	{
+		m_hidden = true;
+	}
+
+	void Widget::unhide()
+	{
+		m_hidden = false;
+	}
+
+	bool Widget::isHidden() const
+	{
+		return m_hidden;
+	}
+
 	void Widget::render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
+
+		if (m_hidden)
+		{
+			return;
+		}
 
 		ImGui::PushID(m_id);
 		_render();

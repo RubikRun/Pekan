@@ -2562,3 +2562,41 @@ and once to generate build-ninja directory that will be used by clangd through t
 It works!
 Done.
 }
+
+----------
+17.02.2026
+----------
+
+{
+Implemented TO-DO 0107: a mechanism for hiding GUI widgets.
+
+Why do we need this?
+The next step in building the Editor is to have widgets for each component type
+(Transform2D, Sprite, Camera2D, etc.) in EntityPropertiesGUIWindow.
+We want to only show the widgets of a specific component type once this component type
+is added to the current entity.
+Otherwise keep them hidden.
+So we need a way to hide/unhide widgets dynamically, every frame if needed,
+depending on what components the selected entity has.
+
+What I did:
+Added 3 new public functions to the base Widget class:
+    void hide();
+    void unhide();
+    bool isHidden() const;
+Plus a private member:
+    bool m_hidden = false;
+Derived classes access it through the API only, not directly.
+
+When a widget is hidden it should not be rendered and user should NOT be able to interact with it.
+The implementation is simple: in Widget::render() we check m_hidden at the start and return early
+if the widget is hidden. That way we never call _render(), so no ImGui elements get created,
+no layout space is taken, no interaction possible.
+If you have widgets A, B, C in a GUIWindow and you hide B, only A and C get rendered in order,
+with C taking the space of B. Exactly what we want.
+
+All widgets inherit from Widget so they all get these 3 functions automatically.
+Can hide/unhide every frame, no problem.
+Tested it. It works.
+Done.
+}

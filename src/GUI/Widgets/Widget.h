@@ -27,18 +27,30 @@ namespace GUI
 		// Checks if widget is valid, meaning that it has been created and not yet destroyed
 		bool isValid() const;
 
+		// Hides the widget. Hidden widgets are not rendered and cannot be interacted with.
+		void hide();
+		// Unhides the widget.
+		void unhide();
+		// Returns true if the widget is currently hidden.
+		bool isHidden() const;
+
 		// Renders widget on current GUI window
 		void render() const;
+
+	protected: /* variables */
+
+		// Widget's ID in the GUI subsystem
+		int m_id = -1;
 
 	private: /* functions */
 
 		// To be implemented by derived classes to render a specific widget type
 		virtual void _render() const = 0;
 
-	protected: /* variables */
+	private: /* variables */
 
-		// Widget's ID in the GUI subsystem
-		int m_id = -1;
+		// When true, widget is not rendered and cannot be interacted with
+		bool m_hidden = false;
 	};
 
 	typedef std::shared_ptr<Widget> Widget_Ptr;
