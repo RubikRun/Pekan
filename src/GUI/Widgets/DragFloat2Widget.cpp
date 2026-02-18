@@ -62,6 +62,11 @@ namespace GUI
 		return m_value;
 	}
 
+	void DragFloat2Widget::setValue(glm::vec2 value)
+	{
+		m_value = value;
+	}
+
 	const std::string& DragFloat2Widget::getLabel() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);

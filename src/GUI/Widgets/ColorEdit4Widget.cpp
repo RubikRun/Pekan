@@ -43,6 +43,11 @@ namespace GUI
 		return m_value;
 	}
 
+	void ColorEdit4Widget::setValue(glm::vec4 value)
+	{
+		m_value = value;
+	}
+
 	const std::string& ColorEdit4Widget::getLabel() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
