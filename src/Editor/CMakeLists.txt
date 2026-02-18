@@ -12,6 +12,8 @@ add_executable(Editor
 	EntitiesGUIWindow.cpp
 	EntityPropertiesGUIWindow.h
 	EntityPropertiesGUIWindow.cpp
+	ComponentWidgetsTypes.h
+	ComponentWidgetsTypes.cpp
 )
 
 # Set link libraries for Editor

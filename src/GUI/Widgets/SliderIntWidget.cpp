@@ -51,6 +51,11 @@ namespace GUI
 		return m_value;
 	}
 
+	void SliderIntWidget::setValue(int value)
+	{
+		m_value = value;
+	}
+
 	const std::string& SliderIntWidget::getLabel() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);

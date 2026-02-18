@@ -43,6 +43,11 @@ namespace GUI
 		return m_isChecked;
 	}
 
+	void CheckboxWidget::setChecked(bool checked)
+	{
+		m_isChecked = checked;
+	}
+
 	const std::string& CheckboxWidget::getLabel() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);

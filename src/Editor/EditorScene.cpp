@@ -24,18 +24,20 @@ namespace Editor
 {
 
 	// Names of component types supported in the editor
+	//
+	// NOTE: Ordering and number of component types must match with addComponent() function
 	static const std::vector<std::string> s_componentTypesNames =
 	{
 		"Transform2D",
 		"Sprite",
-		"Camera2D",
-		"Line",
 		"RectangleGeometry",
 		"CircleGeometry",
 		"TriangleGeometry",
 		"PolygonGeometry",
 		"LineGeometry",
-		"SolidColorMaterial"
+		"SolidColorMaterial",
+		"Line",
+		"Camera2D"
 	};
 
 	bool EditorScene::_init()
@@ -85,14 +87,14 @@ namespace Editor
 		{
 			case 0: addComponentOfType<TransformComponent2D>(m_registry, entity, componentTypeIndex); break;
 			case 1: addComponentOfType<SpriteComponent>(m_registry, entity, componentTypeIndex); break;
-			case 2: addComponentOfType<CameraComponent2D>(m_registry, entity, componentTypeIndex); break;
-			case 3: addComponentOfType<LineComponent>(m_registry, entity, componentTypeIndex); break;
-			case 4: addComponentOfType<RectangleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
-			case 5: addComponentOfType<CircleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
-			case 6: addComponentOfType<TriangleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
-			case 7: addComponentOfType<PolygonGeometryComponent>(m_registry, entity, componentTypeIndex); break;
-			case 8: addComponentOfType<LineGeometryComponent>(m_registry, entity, componentTypeIndex); break;
-			case 9: addComponentOfType<SolidColorMaterialComponent>(m_registry, entity, componentTypeIndex); break;
+			case 2: addComponentOfType<RectangleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 3: addComponentOfType<CircleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 4: addComponentOfType<TriangleGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 5: addComponentOfType<PolygonGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 6: addComponentOfType<LineGeometryComponent>(m_registry, entity, componentTypeIndex); break;
+			case 7: addComponentOfType<SolidColorMaterialComponent>(m_registry, entity, componentTypeIndex); break;
+			case 8: addComponentOfType<LineComponent>(m_registry, entity, componentTypeIndex); break;
+			case 9: addComponentOfType<CameraComponent2D>(m_registry, entity, componentTypeIndex); break;
 			default:
 				PK_LOG_ERROR("Invalid component type index: " + std::to_string(componentTypeIndex), "Pekan");
 				break;

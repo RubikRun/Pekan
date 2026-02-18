@@ -24,6 +24,7 @@ namespace GUI
 		void destroy();
 
 		bool isChecked() const;
+		void setChecked(bool checked);
 
 		const std::string& getLabel() const;
 

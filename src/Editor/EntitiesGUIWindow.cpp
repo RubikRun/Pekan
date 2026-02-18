@@ -46,6 +46,7 @@ namespace Editor
 
 		gui.addEntityButtonWidget->create(this, "+");
 		gui.entitiesListWidget->create(this);
+		updateEntitiesListWidget();
 		return true;
 	}
 

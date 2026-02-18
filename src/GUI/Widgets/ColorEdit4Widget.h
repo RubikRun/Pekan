@@ -24,6 +24,7 @@ namespace GUI
 		void destroy();
 
 		glm::vec4 getValue() const;
+		void setValue(glm::vec4 value);
 
 		const std::string& getLabel() const;
 

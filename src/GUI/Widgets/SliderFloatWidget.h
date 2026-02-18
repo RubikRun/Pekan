@@ -24,6 +24,7 @@ namespace GUI
 		void destroy();
 
 		float getValue() const;
+		void setValue(float value);
 
 		const std::string& getLabel() const;
 

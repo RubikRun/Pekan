@@ -24,6 +24,7 @@ namespace GUI
 		void destroy();
 
 		int getValue() const;
+		void setValue(int value);
 
 		const std::string& getLabel() const;
 

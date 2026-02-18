@@ -2600,3 +2600,69 @@ Can hide/unhide every frame, no problem.
 Tested it. It works.
 Done.
 }
+
+----------
+25.02.2026
+----------
+
+{
+Added widgets for each component type in EntityPropertiesGUIWindow.
+Now when you select an entity you can not only add components to it,
+you can also see and edit the component properties in the GUI.
+
+Created 2 new files:
+    ComponentWidgetsTypes.h
+    ComponentWidgetsTypes.cpp
+They define structs that group widgets for each component type supported in the editor.
+Each struct has a header (TextWidget), the appropriate input widgets for that component's properties,
+and 3 methods: create(), hide(), unhide().
+For example Transform2DWidgets has position (DragFloat2), rotation (SliderFloat), scale (DragFloat2).
+SpriteWidgets has width, height, texCoordMin, texCoordMax.
+CircleGeometryWidgets has radius and segmentsCount.
+Camera2DWidgets has size, position, rotation, zoomLevel, isPrimary, isControllable.
+And so on for all 10 component types: Transform2D, Sprite, RectangleGeometry, CircleGeometry,
+TriangleGeometry, PolygonGeometry, LineGeometry, SolidColorMaterial, Line, Camera2D.
+
+EntityPropertiesGUIWindow now holds instances of all these widget structs in its gui member.
+In _init() we create all of them and initially hide them (no entity selected).
+Then we have 3 key functions that drive the behavior:
+
+1. updateWidgetsVisibility(entity) - shows/hides component widgets based on which component the entity has.
+   Uses registry.all_of<ComponentType>(entity) for each type, hide() or unhide() accordingly.
+   If entity is entt::null, hide everything.
+
+2. updateWidgetsFromComponentsOfEntity(entity) - copies component data into the widgets.
+   For each component type the entity has, we get the component from the registry and call
+   setValue() / setChecked() on the corresponding widgets.
+   This is needed when we first select an entity or when we add a new component.
+
+3. updateComponentsOfEntityFromWidgets(entity) - copies widget values back into the components.
+   The reverse direction. For each component type we set the component in the registry
+   to the values from the widgets. PolygonGeometry is skipped for now - it only has a read-only
+   vertex count display.
+
+We call updateWidgetsVisibility and updateWidgetsFromComponentsOfEntity when setEntity() is called
+(when user selects a different entity) and when addComponentButtonWidget is clicked,
+We call updateComponentsOfEntityFromWidgets every frame in update() when an entity is selected
+(except when we just clicked Add Component - in that case we sync from components to widgets).
+
+To support populating widgets from component data we needed setter functions on the widgets.
+Added setValue() to SliderFloatWidget, SliderFloat2Widget, SliderIntWidget, DragFloat2Widget,
+ColorEdit3Widget, ColorEdit4Widget, and setChecked() to CheckboxWidget.
+Simple: m_value = value; or m_isChecked = checked;
+
+EntityPropertiesGUIWindow needs access to the scene's registry for all this.
+EditorScene inherits from Scene2D which inherits from Scene, and Scene has getRegistry().
+So we can call m_scene->getRegistry() to get the entt::registry.
+
+Also moved setScene() implementation to the .cpp file and added a null check - if scene is null
+we log an error and return.
+
+Reordered the component types in EditorScene's s_componentTypesNames to group geometry types together:
+Transform2D, Sprite, then all geometry (Rectangle, Circle, Triangle, Polygon, LineGeometry), then SolidColorMaterial, Line, Camera2D.
+
+Added a second separator widget between the "Add Component" section and the component property widgets.
+Renamed separatorWidget to firstSeparatorWidget and secondSeparatorWidget for clarity.
+
+It works. You can select an entity, add components, and edit their properties. Changes reflect in the scene.
+}
