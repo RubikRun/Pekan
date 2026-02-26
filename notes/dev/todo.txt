@@ -359,8 +359,12 @@
 
 0107 13.02.2026 (DONE): Implement a mechanism for hiding GUI widgets
 
-0108 17.02.2026 (TODO): Log a warning when trying to render a sprite without a texure in SpriteSystem.
+0108 17.02.2026 (DONE): Log a warning when trying to render a sprite without a texure in SpriteSystem.
                         Currently we crash in Texture2D's isValid() caused by this line
                             sprite.texture->bind(0);
 
 0109 20.02.2026 (TODO): Figure out a way to show user errors/warnings/infos in GUI
+
+0110 26.02.2026 (TODO): Fix camera controller doesn't work in Editor if you have selected the camera entity.
+                        The reason is values from camera component's GUI widgets are enforced
+                        and override changes from camera controller.

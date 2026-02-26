@@ -197,6 +197,11 @@ namespace Renderer2D
 
 		// Get entity's sprite and transform components
 		const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+		if (sprite.texture == nullptr || !sprite.texture->isValid())
+		{
+			PK_LOG_INFO("Skipped rendering an entity with SpriteComponent with invalid texture.", "Pekan");
+			return;
+		}
 		const TransformComponent2D& transform = registry.get<TransformComponent2D>(entity);
 		// Create draw object for the sprite
 		DrawObject drawObject;
@@ -215,6 +220,11 @@ namespace Renderer2D
 
 		// Get entity's sprite component
 		const SpriteComponent& sprite = registry.get<SpriteComponent>(entity);
+		if (sprite.texture == nullptr || !sprite.texture->isValid())
+		{
+			PK_LOG_INFO("Skipped rendering an entity with SpriteComponent with invalid texture.", "Pekan");
+			return;
+		}
 		// Create draw object for the sprite
 		DrawObject drawObject;
 		createDrawObjectForSprite(registry, sprite, 0, drawObject);

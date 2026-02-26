@@ -2666,3 +2666,24 @@ Renamed separatorWidget to firstSeparatorWidget and secondSeparatorWidget for cl
 
 It works. You can select an entity, add components, and edit their properties. Changes reflect in the scene.
 }
+
+----------
+25.02.2026
+----------
+
+{
+Let's look at TO-DO task 0108.
+
+We just need to skip sprites with invalid textures in
+    renderSprite()    (2 overloads)
+We can check if sprite's texture is invalid like this:
+    if (sprite.texture == nullptr || !sprite.texture->isValid())
+and then we can just log an info message:
+    PK_LOG_INFO("Skipped rendering an entity with SpriteComponent with invalid texture.", "Pekan");
+and return.
+
+Decided to log an info message and not a warning message, because having a sprite without a texture
+is kind of valid. It just won't be rendered yet, until a texture is provided.
+
+Done.
+}
