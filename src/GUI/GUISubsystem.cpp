@@ -1,6 +1,7 @@
 #include "GUISubsystem.h"
 
 #include "PekanLogger.h"
+#include "PekanUserMessageBox.h"
 #include "SubsystemManager.h"
 #include "PekanEngine.h"
 #include "PekanApplication.h"
@@ -123,6 +124,10 @@ namespace GUI
 			PK_LOG_ERROR("Attempting to end a GUI frame but no frame is currently active.", "Pekan");
 			return;
 		}
+
+#if PK_USER_MESSAGE_SUPPORT
+		Pekan::GUI::renderPendingUserMessages();
+#endif
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

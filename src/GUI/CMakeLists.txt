@@ -5,6 +5,8 @@ project(GUI)
 add_library(GUI STATIC
 	GUISubsystem.h
 	GUISubsystem.cpp
+	PekanUserMessageBox.h
+	PekanUserMessageBox.cpp
 	GUIWindow.h
 	GUIWindow.cpp
 	Widgets/Widget.h

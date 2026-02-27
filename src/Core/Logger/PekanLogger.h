@@ -11,7 +11,7 @@
 //     [ERROR in Shader.cpp]: sth
 #define PK_LOGGER_USE_FILEPATH_FOR_SOURCE_FILE 0
 
-// Toggle these macros on/off to enable/disable support of different types of log messages
+// Toggle these macros on/off to enable/disable support for different types of log messages
 // or enable/disable support for logging to the console and logging to a file.
 // 
 // NOTE: These macros give compile-time control over the logging.

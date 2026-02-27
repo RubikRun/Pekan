@@ -17,8 +17,20 @@ namespace Logger
 	// or an empty string if given environment variable doesn't exist.
 	static std::string getEnvVar(const std::string& varName)
 	{
+#ifdef _WIN32
+		char* value = nullptr;
+		size_t len = 0;
+		if (_dupenv_s(&value, &len, varName.c_str()) == 0 && value != nullptr)
+		{
+			std::string result(value);
+			free(value);
+			return result;
+		}
+		return "";
+#else
 		const char* value = std::getenv(varName.c_str());
 		return (value == nullptr) ? "" : std::string(value);
+#endif
 	}
 
 	// Returns a bool value from the value of a an environment variable.

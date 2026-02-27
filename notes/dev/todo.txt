@@ -363,7 +363,7 @@
                         Currently we crash in Texture2D's isValid() caused by this line
                             sprite.texture->bind(0);
 
-0109 20.02.2026 (TODO): Figure out a way to show user errors/warnings/infos in GUI
+0109 20.02.2026 (DONE): Figure out a way to show user errors/warnings/infos in GUI
 
 0110 26.02.2026 (DONE): Fix camera controller doesn't work in Editor if you have selected the camera entity.
                         The reason is values from camera component's GUI widgets are enforced

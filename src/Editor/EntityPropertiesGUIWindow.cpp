@@ -3,6 +3,7 @@
 #include "EditorScene.h"
 
 #include "PekanLogger.h"
+#include "PekanUserMessageBox.h"
 
 #include "TransformComponent2D.h"
 #include "SpriteComponent.h"
@@ -70,8 +71,7 @@ namespace Editor
 			}
 			else
 			{
-				// TO-DO 0109: Show a message to user in GUI instead of loggin a warning
-				PK_LOG_WARNING("Cannot add a component because no entity is selected.", "Pekan");
+				PK_SHOW_WARNING("Cannot add a component because no entity is selected.");
 			}
 		}
 		else

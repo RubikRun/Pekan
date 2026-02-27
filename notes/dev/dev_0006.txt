@@ -2801,3 +2801,66 @@ So it's good like that.
 It works!
 Done.
 }
+
+{
+Implemented TO-DO 0109: a way to show error/warning/info messages to the user in GUI.
+
+Motivation:
+We have PekanLogger.h for logging - it supports printing to the console and to syslog files.
+That's great for developers, but normal users don't look at the console or log files.
+We needed a GUI way to show messages to users when something goes wrong or when we want
+to inform them about something. For example: "Cannot add a component because no entity is selected."
+
+What we built: PekanUserMessageBox.
+
+Structure and idea:
+
+1. Two new files in GUI:
+    PekanUserMessageBox.h
+    PekanUserMessageBox.cpp
+
+2. The system is queue-based and thread-safe. Any code, from any thread, can call
+   queueUserMessage(type, message). The message gets pushed onto a queue protected by a mutex.
+   When the GUI thread runs (between ImGui::NewFrame() and ImGui::Render()), renderPendingUserMessages()
+   drains the queue and displays each message as a floating ImGui window.
+
+3. Message types: Error, Warning, Info. Each has its own compile-time toggle
+   (PK_USER_MESSAGE_ERROR_SUPPORT, etc.) and runtime env var (PEKAN_USER_MESSAGE_ERROR_ENABLED, etc.)
+   so you can disable error popups at compile time or at runtime. Same pattern as PekanLogger.
+
+4. Each message appears as a small ImGui window near screen center. Multiple messages stack
+   with a slight offset (WINDOW_OFFSET) so they don't perfectly overlap. Each has a colored
+   title bar (red for Error, yellow for Warning, blue for Info), the message text, and an OK button.
+   User clicks OK to dismiss. These are regular windows, not modals - the rest of the UI stays interactive.
+
+5. GUISubsystem::endFrame() calls renderPendingUserMessages() right before ImGui::Render(),
+   so messages show up in the same frame they're queued (or the next frame if queued after endFrame).
+
+6. Windows compatibility: PekanUserMessageBox needs to read env vars for the enable/disable flags.
+   It has its own getEnvVarBool() that uses _dupenv_s on Windows (std::getenv is not thread-safe there).
+   Unrelated but in the same commit: we fixed PekanLogger's getEnvVar() to use _dupenv_s on Windows too,
+   so the logger's env var reading works correctly on Windows now.
+
+Macros for use in the rest of the code:
+
+Include PekanUserMessageBox.h and use:
+
+    PK_SHOW_ERROR(MSG);
+    PK_SHOW_WARNING(MSG);
+    PK_SHOW_INFO(MSG);
+
+MSG can be any expression that streams to std::ostream. For example:
+    PK_SHOW_WARNING("Cannot add a component because no entity is selected.");
+    PK_SHOW_ERROR("Failed to load " << path << ": " << errorCode);
+
+Under the hood, PK_STR_USER_MSG(MSG) builds a string via std::ostringstream, then the macro
+calls queueUserMessage() with that string. If a given type is disabled at compile time
+(PK_USER_MESSAGE_ERROR_SUPPORT 0, etc.), the macro expands to nothing - no code, no overhead.
+
+First real use: EntityPropertiesGUIWindow. When user clicks "Add Component" but no entity is selected,
+we now call PK_SHOW_WARNING(...) instead of PK_LOG_WARNING(...). The user sees a popup, not just
+a line in the console.
+
+It works!
+Done.
+}
