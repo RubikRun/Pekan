@@ -221,41 +221,61 @@ namespace Editor
 
 		if (registry.all_of<TransformComponent2D>(entity))
 		{
-			auto& c = registry.get<TransformComponent2D>(entity);
-			c.position = gui.transform2DWidgets.position->getValue();
-			c.rotation = gui.transform2DWidgets.rotation->getValue();
-			c.scaleFactor = gui.transform2DWidgets.scale->getValue();
+			Transform2DWidgets& widgets = gui.transform2DWidgets;
+			if (widgets.position->wasChangedByUserSinceLastAccess() || widgets.rotation->wasChangedByUserSinceLastAccess() || widgets.scale->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<TransformComponent2D>(entity);
+				c.position = widgets.position->getValue();
+				c.rotation = widgets.rotation->getValue();
+				c.scaleFactor = widgets.scale->getValue();
+			}
 		}
 
 		if (registry.all_of<SpriteComponent>(entity))
 		{
-			auto& c = registry.get<SpriteComponent>(entity);
-			c.width = gui.spriteWidgets.width->getValue();
-			c.height = gui.spriteWidgets.height->getValue();
-			c.textureCoordinatesMin = gui.spriteWidgets.texCoordMin->getValue();
-			c.textureCoordinatesMax = gui.spriteWidgets.texCoordMax->getValue();
+			SpriteWidgets& widgets = gui.spriteWidgets;
+			if (widgets.width->wasChangedByUserSinceLastAccess() || widgets.height->wasChangedByUserSinceLastAccess() || widgets.texCoordMin->wasChangedByUserSinceLastAccess() || widgets.texCoordMax->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<SpriteComponent>(entity);
+				c.width = widgets.width->getValue();
+				c.height = widgets.height->getValue();
+				c.textureCoordinatesMin = widgets.texCoordMin->getValue();
+				c.textureCoordinatesMax = widgets.texCoordMax->getValue();
+			}
 		}
 
 		if (registry.all_of<RectangleGeometryComponent>(entity))
 		{
-			auto& c = registry.get<RectangleGeometryComponent>(entity);
-			c.width = gui.rectangleGeometryWidgets.width->getValue();
-			c.height = gui.rectangleGeometryWidgets.height->getValue();
+			RectangleGeometryWidgets& widgets = gui.rectangleGeometryWidgets;
+			if (widgets.width->wasChangedByUserSinceLastAccess() || widgets.height->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<RectangleGeometryComponent>(entity);
+				c.width = widgets.width->getValue();
+				c.height = widgets.height->getValue();
+			}
 		}
 
 		if (registry.all_of<CircleGeometryComponent>(entity))
 		{
-			auto& c = registry.get<CircleGeometryComponent>(entity);
-			c.radius = gui.circleGeometryWidgets.radius->getValue();
-			c.segmentsCount = gui.circleGeometryWidgets.segmentsCount->getValue();
+			CircleGeometryWidgets& widgets = gui.circleGeometryWidgets;
+			if (widgets.radius->wasChangedByUserSinceLastAccess() || widgets.segmentsCount->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<CircleGeometryComponent>(entity);
+				c.radius = widgets.radius->getValue();
+				c.segmentsCount = widgets.segmentsCount->getValue();
+			}
 		}
 
 		if (registry.all_of<TriangleGeometryComponent>(entity))
 		{
-			auto& c = registry.get<TriangleGeometryComponent>(entity);
-			c.pointA = gui.triangleGeometryWidgets.pointA->getValue();
-			c.pointB = gui.triangleGeometryWidgets.pointB->getValue();
-			c.pointC = gui.triangleGeometryWidgets.pointC->getValue();
+			TriangleGeometryWidgets& widgets = gui.triangleGeometryWidgets;
+			if (widgets.pointA->wasChangedByUserSinceLastAccess() || widgets.pointB->wasChangedByUserSinceLastAccess() || widgets.pointC->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<TriangleGeometryComponent>(entity);
+				c.pointA = widgets.pointA->getValue();
+				c.pointB = widgets.pointB->getValue();
+				c.pointC = widgets.pointC->getValue();
+			}
 		}
 
 		// Intentionally skipping PolygonGeometry here,
@@ -263,35 +283,51 @@ namespace Editor
 
 		if (registry.all_of<LineGeometryComponent>(entity))
 		{
-			auto& c = registry.get<LineGeometryComponent>(entity);
-			c.pointA = gui.lineGeometryWidgets.pointA->getValue();
-			c.pointB = gui.lineGeometryWidgets.pointB->getValue();
-			c.thickness = gui.lineGeometryWidgets.thickness->getValue();
+			LineGeometryWidgets& widgets = gui.lineGeometryWidgets;
+			if (widgets.pointA->wasChangedByUserSinceLastAccess() || widgets.pointB->wasChangedByUserSinceLastAccess() || widgets.thickness->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<LineGeometryComponent>(entity);
+				c.pointA = widgets.pointA->getValue();
+				c.pointB = widgets.pointB->getValue();
+				c.thickness = widgets.thickness->getValue();
+			}
 		}
 
 		if (registry.all_of<SolidColorMaterialComponent>(entity))
 		{
-			auto& c = registry.get<SolidColorMaterialComponent>(entity);
-			c.color = gui.solidColorMaterialWidgets.color->getValue();
+			SolidColorMaterialWidgets& widgets = gui.solidColorMaterialWidgets;
+			if (widgets.color->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<SolidColorMaterialComponent>(entity);
+				c.color = widgets.color->getValue();
+			}
 		}
 
 		if (registry.all_of<LineComponent>(entity))
 		{
-			auto& c = registry.get<LineComponent>(entity);
-			c.pointA = gui.lineWidgets.pointA->getValue();
-			c.pointB = gui.lineWidgets.pointB->getValue();
-			c.color = gui.lineWidgets.color->getValue();
+			LineWidgets& widgets = gui.lineWidgets;
+			if (widgets.pointA->wasChangedByUserSinceLastAccess() || widgets.pointB->wasChangedByUserSinceLastAccess() || widgets.color->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<LineComponent>(entity);
+				c.pointA = widgets.pointA->getValue();
+				c.pointB = widgets.pointB->getValue();
+				c.color = widgets.color->getValue();
+			}
 		}
 
 		if (registry.all_of<CameraComponent2D>(entity))
 		{
-			auto& c = registry.get<CameraComponent2D>(entity);
-			c.size = gui.camera2DWidgets.size->getValue();
-			c.position = gui.camera2DWidgets.position->getValue();
-			c.rotation = gui.camera2DWidgets.rotation->getValue();
-			c.zoomLevel = gui.camera2DWidgets.zoomLevel->getValue();
-			c.isPrimary = gui.camera2DWidgets.isPrimary->isChecked();
-			c.isControllable = gui.camera2DWidgets.isControllable->isChecked();
+			Camera2DWidgets& widgets = gui.camera2DWidgets;
+			if (widgets.size->wasChangedByUserSinceLastAccess() || widgets.position->wasChangedByUserSinceLastAccess() || widgets.rotation->wasChangedByUserSinceLastAccess() || widgets.zoomLevel->wasChangedByUserSinceLastAccess() || widgets.isPrimary->wasChangedByUserSinceLastAccess() || widgets.isControllable->wasChangedByUserSinceLastAccess())
+			{
+				auto& c = registry.get<CameraComponent2D>(entity);
+				c.size = widgets.size->getValue();
+				c.position = widgets.position->getValue();
+				c.rotation = widgets.rotation->getValue();
+				c.zoomLevel = widgets.zoomLevel->getValue();
+				c.isPrimary = widgets.isPrimary->isChecked();
+				c.isControllable = widgets.isControllable->isChecked();
+			}
 		}
 	}
 

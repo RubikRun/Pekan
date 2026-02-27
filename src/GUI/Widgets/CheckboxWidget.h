@@ -26,6 +26,10 @@ namespace GUI
 		bool isChecked() const;
 		void setChecked(bool checked);
 
+		// Returns true if the checked state of this widget has been changed by user in GUI
+		// since last call to isChecked() or setChecked().
+		bool wasChangedByUserSinceLastAccess() const;
+
 		const std::string& getLabel() const;
 
 	private: /* functions */
@@ -37,8 +41,12 @@ namespace GUI
 		// Label to be displayed next to the widget
 		std::string m_label;
 
-		// The checked states of the checkbox
+		// The checked state of the checkbox
 		mutable bool m_isChecked = false;
+
+		// A flag indicating if the checked state of this widget has been changed by user in GUI
+		// since last call to isChecked() or setChecked().
+		mutable bool m_checkedChangedByUserSinceLastAccess = false;
 	};
 
 	typedef std::shared_ptr<CheckboxWidget> CheckboxWidget_Ptr;

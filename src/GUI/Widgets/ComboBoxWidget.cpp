@@ -49,6 +49,7 @@ namespace GUI
 	int ComboBoxWidget::getIndex() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
+		m_indexChangedByUserSinceLastAccess = false;
 		return m_index;
 	}
 
@@ -67,8 +68,16 @@ namespace GUI
 	void ComboBoxWidget::_render() const
 	{
 		PK_ASSERT_QUICK(isValid());
-		ImGui::Combo(m_label.c_str(), &m_index, m_itemsPointers.data(), m_itemsPointers.size());
+		if (ImGui::Combo(m_label.c_str(), &m_index, m_itemsPointers.data(), m_itemsPointers.size()))
+		{
+			m_indexChangedByUserSinceLastAccess = true;
+		}
 		ImGui::Separator();
+	}
+
+	bool ComboBoxWidget::wasChangedByUserSinceLastAccess() const
+	{
+		return m_indexChangedByUserSinceLastAccess;
 	}
 
 	void ComboBoxWidget::updateItemsPointers()

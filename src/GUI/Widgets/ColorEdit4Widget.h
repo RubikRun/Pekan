@@ -26,6 +26,10 @@ namespace GUI
 		glm::vec4 getValue() const;
 		void setValue(glm::vec4 value);
 
+		// Returns true if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		bool wasChangedByUserSinceLastAccess() const;
+
 		const std::string& getLabel() const;
 
 	private: /* functions */
@@ -39,6 +43,10 @@ namespace GUI
 
 		// The 4 values making up the color
 		mutable glm::vec4 m_value = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		// A flag indicating if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		mutable bool m_valueChangedByUserSinceLastAccess = false;
 	};
 
 	typedef std::shared_ptr<ColorEdit4Widget> ColorEdit4Widget_Ptr;

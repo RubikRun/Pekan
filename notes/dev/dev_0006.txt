@@ -2687,3 +2687,72 @@ is kind of valid. It just won't be rendered yet, until a texture is provided.
 
 Done.
 }
+
+----------
+27.02.2026
+----------
+
+{
+Found a bug with CameraController2D.
+When you select the camera entity in the Editor, the camera controller doesn't work.
+You try to pan, zoom, rotate - nothing happens.
+Why? Because updateComponentsOfEntityFromWidgets() was being called every frame
+and it was writing widget values to the ECS components unconditionally.
+So every frame we overwrote the camera's position, rotation, zoom level, etc.
+with whatever was in the widgets - which hadn't changed since the user last touched them.
+The CameraController2D modifies these values in ECS when you pan/zoom/rotate,
+but we were overwriting them immediately with the stale widget values.
+
+This is actually a general problem. Any time a system or a piece of code changes
+component values in ECS, those changes will be overwritten by the Editor
+as long as the entity is selected and we're blindly syncing widget -> ECS every frame.
+
+We need a mechanism in the GUI module to detect when a widget's value has actually
+been changed by the user in the GUI. Then we only write to ECS when that happens.
+Programmatic changes via setValue() or setChecked() should NOT count - we're the ones
+setting those, so we're already in sync. Only changes coming from actual user interaction
+(dragging a slider, typing in a field, clicking a checkbox, etc.) should trigger an ECS write.
+
+What we implemented:
+
+1. A new function on value widgets:
+        bool wasChangedByUserSinceLastAccess() const;
+   Returns true if the user changed the value in GUI since the last time we "accessed" it.
+   "Access" means either reading (getValue, getIndex, isChecked) or writing (setValue, setChecked).
+   So the flag gets cleared when we call getValue() - we've read it, we're in sync.
+   And it gets cleared when we call setValue() - we've overwritten it programmatically, we're in sync.
+   The flag gets set when ImGui tells us the user interacted (ImGui::DragFloat2 returns true, etc.).
+   This persists across frames until we access the value - so for example we can call it every 60 frames
+   and still detect a change that happened 10 frames ago. Unlike a "consumed this frame" approach.
+
+2. A flag in each value widget. We named it m_valueChangedByUserSinceLastAccess for widgets
+   with getValue/setValue, m_checkedChangedByUserSinceLastAccess for CheckboxWidget,
+   m_indexChangedByUserSinceLastAccess for ComboBoxWidget (which only has getIndex, no setter).
+   The flag is set in _render() when ImGui indicates user changed the value.
+   The flag is cleared in getValue(), setValue(), isChecked(), setChecked(), getIndex().
+
+3. Added this to all 8 value widget types: DragFloat2Widget, SliderFloatWidget, SliderFloat2Widget,
+   SliderIntWidget, ColorEdit3Widget, ColorEdit4Widget, CheckboxWidget, ComboBoxWidget.
+
+In EntityPropertiesGUIWindow's updateComponentsOfEntityFromWidgets() we now check
+wasChangedByUserSinceLastAccess() for each widget before writing. For each component type
+we only write to ECS if at least one of its widgets reports a user change.
+For example, for TransformComponent2D we only write position, rotation, scale to the registry
+if the user touched the position, rotation, or scale widget. Otherwise we skip.
+Same for all other component types.
+
+This fixes the camera controller bug - when you select the camera and pan/zoom/rotate,
+CameraController2D updates the ECS. Our widgets still show the old values until we
+call updateWidgetsFromComponentsOfEntity (e.g. when you select a different entity and back)
+(that's a bug in and of itself, created a TO-DO task for it: 0111),
+but we no longer overwrite the ECS every frame. The camera controller works.
+
+And it fixes the general problem - any system that modifies ECS components of the selected
+entity will no longer have its changes overwritten by the Editor.
+
+As a minor performance improvement, we now do ECS writes only when necessary.
+Before we were writing every component of the selected entity every frame.
+Now we only write when the user actually changed something in the GUI.
+
+Done.
+}

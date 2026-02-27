@@ -26,6 +26,10 @@ namespace GUI
 		glm::vec2 getValue() const;
 		void setValue(glm::vec2 value);
 
+		// Returns true if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		bool wasChangedByUserSinceLastAccess() const;
+
 		const std::string& getLabel() const;
 
 		float getMin() const;
@@ -43,6 +47,10 @@ namespace GUI
 
 		// The 2 float values of the widget
 		mutable glm::vec2 m_value = { 0.0f, 0.0f };
+
+		// A flag indicating if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		mutable bool m_valueChangedByUserSinceLastAccess = false;
 
 		// Minimum and maximum values allowed for the 2 sliders
 		//

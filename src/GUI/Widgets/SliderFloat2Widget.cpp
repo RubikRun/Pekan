@@ -54,12 +54,14 @@ namespace GUI
 	glm::vec2 SliderFloat2Widget::getValue() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
+		m_valueChangedByUserSinceLastAccess = false;
 		return m_value;
 	}
 
 	void SliderFloat2Widget::setValue(glm::vec2 value)
 	{
 		m_value = value;
+		m_valueChangedByUserSinceLastAccess = false;
 	}
 
 	const std::string& SliderFloat2Widget::getLabel() const
@@ -89,7 +91,15 @@ namespace GUI
 	void SliderFloat2Widget::_render() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
-		ImGui::SliderFloat2(m_label.c_str(), glm::value_ptr(m_value), m_min, m_max, m_format.c_str());
+		if (ImGui::SliderFloat2(m_label.c_str(), glm::value_ptr(m_value), m_min, m_max, m_format.c_str()))
+		{
+			m_valueChangedByUserSinceLastAccess = true;
+		}
+	}
+
+	bool SliderFloat2Widget::wasChangedByUserSinceLastAccess() const
+	{
+		return m_valueChangedByUserSinceLastAccess;
 	}
 
 } // namespace GUI

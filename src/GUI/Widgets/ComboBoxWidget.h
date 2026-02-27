@@ -26,6 +26,10 @@ namespace GUI
 		// Returns index of currently selected item
 		int getIndex() const;
 
+		// Returns true if the index of this widget has been changed by user in GUI
+		// since last call to getIndex().
+		bool wasChangedByUserSinceLastAccess() const;
+
 		const std::string& getLabel() const;
 
 		const std::vector<std::string>& getItems() const;
@@ -44,6 +48,10 @@ namespace GUI
 
 		// Index of currently chosen item
 		mutable int m_index = 0;
+
+		// A flag indicating if the index of this widget has been changed by user in GUI
+		// since last call to getIndex().
+		mutable bool m_indexChangedByUserSinceLastAccess = false;
 
 		// Names of items in the combo box
 		std::vector<std::string> m_items;

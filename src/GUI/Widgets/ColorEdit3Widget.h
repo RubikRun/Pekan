@@ -26,6 +26,10 @@ namespace GUI
 		glm::vec3 getValue() const;
 		void setValue(glm::vec3 value);
 
+		// Returns true if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		bool wasChangedByUserSinceLastAccess() const;
+
 		const std::string& getLabel() const;
 
 	private: /* functions */
@@ -39,6 +43,10 @@ namespace GUI
 
 		// The 3 values making up the color
 		mutable glm::vec3 m_value = { 1.0f, 1.0f, 1.0f };
+
+		// A flag indicating if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		mutable bool m_valueChangedByUserSinceLastAccess = false;
 	};
 
 	typedef std::shared_ptr<ColorEdit3Widget> ColorEdit3Widget_Ptr;

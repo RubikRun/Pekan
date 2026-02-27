@@ -26,6 +26,10 @@ namespace GUI
 		int getValue() const;
 		void setValue(int value);
 
+		// Returns true if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		bool wasChangedByUserSinceLastAccess() const;
+
 		const std::string& getLabel() const;
 
 		int getMin() const;
@@ -42,6 +46,10 @@ namespace GUI
 
 		// The integer value of the widget
 		mutable int m_value = 0;
+
+		// A flag indicating if the value of this widget has been changed by user in GUI
+		// since last call to getValue() or setValue().
+		mutable bool m_valueChangedByUserSinceLastAccess = false;
 
 		// Minimum and maximum values allowed for the slider
 		//

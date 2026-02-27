@@ -365,6 +365,8 @@
 
 0109 20.02.2026 (TODO): Figure out a way to show user errors/warnings/infos in GUI
 
-0110 26.02.2026 (TODO): Fix camera controller doesn't work in Editor if you have selected the camera entity.
+0110 26.02.2026 (DONE): Fix camera controller doesn't work in Editor if you have selected the camera entity.
                         The reason is values from camera component's GUI widgets are enforced
-                        and override changes from camera controller.
+                        and overwrite changes from camera controller.
+
+0111 27.02.2026 (TODO): Fix camera component values are not updated in GUI when changed by CameraController2D.

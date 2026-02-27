@@ -40,12 +40,14 @@ namespace GUI
 	glm::vec4 ColorEdit4Widget::getValue() const
 	{
 		PK_ASSERT_QUICK(m_id >= 0);
+		m_valueChangedByUserSinceLastAccess = false;
 		return m_value;
 	}
 
 	void ColorEdit4Widget::setValue(glm::vec4 value)
 	{
 		m_value = value;
+		m_valueChangedByUserSinceLastAccess = false;
 	}
 
 	const std::string& ColorEdit4Widget::getLabel() const
@@ -57,7 +59,15 @@ namespace GUI
 	void ColorEdit4Widget::_render() const
 	{
 		PK_ASSERT_QUICK(isValid());
-		ImGui::ColorEdit4(m_label.c_str(), (float*)(&m_value));
+		if (ImGui::ColorEdit4(m_label.c_str(), (float*)(&m_value)))
+		{
+			m_valueChangedByUserSinceLastAccess = true;
+		}
+	}
+
+	bool ColorEdit4Widget::wasChangedByUserSinceLastAccess() const
+	{
+		return m_valueChangedByUserSinceLastAccess;
 	}
 
 } // namespace GUI
