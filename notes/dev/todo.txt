@@ -369,4 +369,4 @@
                         The reason is values from camera component's GUI widgets are enforced
                         and overwrite changes from camera controller.
 
-0111 27.02.2026 (TODO): Fix camera component values are not updated in GUI when changed by CameraController2D.
+0111 27.02.2026 (DONE): Fix camera component values are not updated in GUI when changed by CameraController2D.

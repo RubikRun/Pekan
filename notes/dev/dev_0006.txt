@@ -2756,3 +2756,48 @@ Now we only write when the user actually changed something in the GUI.
 
 Done.
 }
+
+{
+Let's do TO-DO task 0111.
+
+This is a general problem again.
+Every time when a system or any piece of code changes components of an entity that we have selected in Editor
+we will NOT see those changes in Editor's widgets.
+
+The solution is quite simple, we just need to update Editor widgets with component values every frame.
+We literally just need to call
+    updateWidgetsFromComponentsOfEntity(m_entity);
+in
+    EntityPropertiesGUIWindow::update()
+right after
+    updateComponentsOfEntityFromWidgets(m_entity);
+in the case of "Add Component" button NOT pushed.
+It's a bit weird, from readability perspective now, that we do:
+    updateComponentsOfEntityFromWidgets(m_entity);
+    updateWidgetsFromComponentsOfEntity(m_entity);
+The thing that does NOT become clear from the names of these 2 functions is that the first one
+does NOT actually update all components necessarily. It only updates those whose corresponding widgets have changed.
+It'd be nice to rename the function to reflect that idea better, so here's a new name:
+    pushWidgetEditsToComponentsOfEntity
+Now it doesn't sound so weird calling the 2 functions consecutively like that:
+    pushWidgetEditsToComponentsOfEntity(m_entity);
+    updateWidgetsFromComponentsOfEntity(m_entity);
+We first push any widget edits that come from GUI into ECS
+and then we update widgets with current state of ECS.
+There might be cases when the same component type is updated in both functions, which is kind of redundant,
+but solving that would require merging the two functions and it would become messy, coupling the 2 logics like that.
+So it's good like that.
+(
+    Just to be clear, the redundant case that I'm talking about is, for example the following:
+    Let's say user has selected the camera entity and changes its zoom level in GUI.
+    Then in pushWidgetEditsToComponentsOfEntity we will update the CameraComponent2D of m_entity with the widget value
+    and immediately after in updateWidgetsFromComponentsOfEntity we will update the widget value with the CameraComponent2D of m_entity,
+    so basically doing this kind of logic:
+        A = B;
+        B = A;
+    Pointless, but it's fine. It would be harder and less clean to avoid this than to just do it.
+)
+
+It works!
+Done.
+}

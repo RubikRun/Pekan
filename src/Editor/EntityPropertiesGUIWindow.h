@@ -44,7 +44,7 @@ namespace Editor
 		void hideComponentWidgets();
 
 		void updateWidgetsFromComponentsOfEntity(entt::entity entity);
-		void updateComponentsOfEntityFromWidgets(entt::entity entity);
+		void pushWidgetEditsToComponentsOfEntity(entt::entity entity);
 
 		// Updates visibility of component widgets based on which components the given entity has
 		void updateWidgetsVisibility(entt::entity entity);

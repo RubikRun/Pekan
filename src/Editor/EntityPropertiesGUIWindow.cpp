@@ -78,7 +78,8 @@ namespace Editor
 		{
 			if (m_entity != entt::null)
 			{
-				updateComponentsOfEntityFromWidgets(m_entity);
+				pushWidgetEditsToComponentsOfEntity(m_entity);
+				updateWidgetsFromComponentsOfEntity(m_entity);
 			}
 		}
 	}
@@ -212,7 +213,7 @@ namespace Editor
 		}
 	}
 
-	void EntityPropertiesGUIWindow::updateComponentsOfEntityFromWidgets(entt::entity entity)
+	void EntityPropertiesGUIWindow::pushWidgetEditsToComponentsOfEntity(entt::entity entity)
 	{
 		PK_ASSERT_QUICK(m_scene != nullptr);
 		PK_ASSERT_QUICK(entity != entt::null);
