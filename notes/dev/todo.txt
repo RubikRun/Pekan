@@ -342,7 +342,7 @@
                             src/GUI/CMakeLists.txt
                         ImGui is not supposed to be linked publicly because client code is not supposed to use ImGui directly.
 
-0104 11.02.2026 (TODO): Think about making Layer's update() and render() functions be private.
+0104 11.02.2026 (DONE): Think about making Layer's update() and render() functions be private.
                         Layer's init() and exit() are already private because they are called only internally by LayerStack.
                         Isn't it the same for update() and render()? Do we need them to be public?
 
@@ -370,3 +370,6 @@
                         and overwrite changes from camera controller.
 
 0111 27.02.2026 (DONE): Fix camera component values are not updated in GUI when changed by CameraController2D.
+
+0112 03.02.2026 (TODO): Make createEntity(), destroyEntity(), enableEntity(), disableEntity() be protected in Scene
+                        unless there's a good reason for them to be public.

@@ -16,6 +16,26 @@ namespace Demo
 		return true;
 	}
 
+	void Demo01_GUIWindow::update(double deltaTime)
+	{
+		static const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
+
+		if (gui.buttonWidget_addSquare->isClicked())
+		{
+			// Create new square's widgets
+			Widgets::SquareWidgets squareWidgets;
+			const std::string squareName = std::string("Square ") + std::to_string(gui.squares.size() + 1);
+			squareWidgets.textWidget_name->create(this, squareName.c_str());
+			squareWidgets.sliderWidget_x->create(this, "X", windowSize.x / 2, 0, windowSize.x);
+			squareWidgets.sliderWidget_y->create(this, "Y", windowSize.y / 2, 0, windowSize.y);
+			squareWidgets.sliderWidget_size->create(this, "Size", 60, 0, std::max(windowSize.x, windowSize.y));
+			squareWidgets.sliderWidget_rotation->create(this, "Rotation", 0, 0, 360);
+			squareWidgets.colorWidget->create(this, "Color");
+			// Add new square's widgets to the list of square widgets
+			gui.squares.push_back(squareWidgets);
+		}
+	}
+
 	bool Demo01_GUIWindow::getMoveThirdSquare() const
 	{
 		PK_ASSERT_QUICK(gui.checkboxWidget_moveThirdSquare != nullptr);
@@ -45,26 +65,6 @@ namespace Demo
 	{
 		PK_ASSERT_QUICK(idx >= 0 && idx < gui.squares.size() && gui.squares[idx].colorWidget != nullptr);
 		return gui.squares[idx].colorWidget->getValue();
-	}
-
-	void Demo01_GUIWindow::update(double deltaTime)
-	{
-		static const glm::ivec2 windowSize = PekanEngine::getWindow().getSize();
-
-		if (gui.buttonWidget_addSquare->isClicked())
-		{
-			// Create new square's widgets
-			Widgets::SquareWidgets squareWidgets;
-			const std::string squareName = std::string("Square ") + std::to_string(gui.squares.size() + 1);
-			squareWidgets.textWidget_name->create(this, squareName.c_str());
-			squareWidgets.sliderWidget_x->create(this, "X", windowSize.x / 2, 0, windowSize.x);
-			squareWidgets.sliderWidget_y->create(this, "Y", windowSize.y / 2, 0, windowSize.y);
-			squareWidgets.sliderWidget_size->create(this, "Size", 60, 0, std::max(windowSize.x, windowSize.y));
-			squareWidgets.sliderWidget_rotation->create(this, "Rotation", 0, 0, 360);
-			squareWidgets.colorWidget->create(this, "Color");
-			// Add new square's widgets to the list of square widgets
-			gui.squares.push_back(squareWidgets);
-		}
 	}
 
 	GUIWindowProperties Demo01_GUIWindow::getProperties() const

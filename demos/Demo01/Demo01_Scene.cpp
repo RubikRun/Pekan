@@ -34,6 +34,11 @@ namespace Demo
 		return true;
 	}
 
+	void Demo01_Scene::exit()
+	{
+		m_drawObject.destroy();
+	}
+
 	void Demo01_Scene::update(double dt)
 	{
 		if (m_guiWindow == nullptr)
@@ -66,11 +71,6 @@ namespace Demo
 		RenderCommands::clear();
 
 		m_drawObject.render();
-	}
-
-	void Demo01_Scene::exit()
-	{
-		m_drawObject.destroy();
 	}
 
 	void Demo01_Scene::generateSquareVertices(size_t idx)

@@ -76,6 +76,16 @@ using namespace Pekan::Renderer2D;
 namespace Demo
 {
 
+	// Oscillates between 0 and 1 in a sine wave, as x grows
+	static float osc(float x)
+	{
+		return (cos(x) + 1.0f) / 2.0f;
+	}
+	static float osc(float x, float a, float b)
+	{
+		return a + (b - a) * osc(x);
+	}
+
 	bool Demo04_Scene::_init()
 	{
 		if (m_guiWindow == nullptr)
@@ -180,16 +190,6 @@ namespace Demo
 		destroyEntity(m_circle);
 		destroyEntity(m_rectangle);
 		destroyEntity(m_triangle);
-	}
-
-	// Oscillates between 0 and 1 in a sine wave, as x grows
-	static float osc(float x)
-	{
-		return (cos(x) + 1.0f) / 2.0f;
-	}
-	static float osc(float x, float a, float b)
-	{
-		return a + (b - a) * osc(x);
 	}
 
 	void Demo04_Scene::update(double dt)

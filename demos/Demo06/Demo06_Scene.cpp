@@ -29,79 +29,79 @@ using namespace Pekan::Graphics;
 using namespace Pekan::Renderer2D;
 using namespace Pekan::RandomizationUtils;
 
-static glm::vec2 BBOX_MIN = glm::vec2(-500.0f, -25.0f);
-constexpr float ZOOM_SPEED = 1.1f;
-
-// Returns a random color for a shape
-static glm::vec4 generateShapeColor()
-{
-	return getRandomColor
-	(
-		glm::vec3(0.1f, 0.1f, 0.1f),
-		glm::vec3(0.9f, 0.9f, 0.9f)
-	);
-}
-
-constexpr float kernelIdentity[9] = {
-	0.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-	0.0f, 0.0f, 0.0f
-};
-
-static void lerpKernels(const float* a, const float* b, float* out, float w)
-{
-	for (int i = 0; i < 9; i++)
-	{
-		out[i] = (1.0f - w) * a[i] + w * b[i];
-	}
-}
-
-static void getKernelSharpen(float* kernel, float t)
-{
-	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
-	static constexpr float base[9] = {
-		 0.0f, -1.0f,  0.0f,
-		-1.0f,  5.0f, -1.0f,
-		 0.0f, -1.0f,  0.0f
-	};
-	lerpKernels(kernelIdentity, base, kernel, w);
-}
-
-static void getKernelBlur(float* kernel, float t)
-{
-	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
-	static constexpr float base[9] = {
-		1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
-		1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
-		1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f
-	};
-	lerpKernels(kernelIdentity, base, kernel, w);
-}
-
-static void getKernelEdgeDetection(float* kernel, float t)
-{
-	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
-	static constexpr float base[9] = {
-		 1.0f,  1.0f,  1.0f,
-		 1.0f, -8.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f
-	};
-	lerpKernels(kernelIdentity, base, kernel, w);
-}
-
-static void getKernelEmboss(float* kernel, float t)
-{
-	float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
-	static constexpr float base[9] = {
-		-2.0f, -1.0f,  0.0f,
-		-1.0f,  1.0f,  1.0f,
-		 0.0f,  1.0f,  2.0f
-	};
-	lerpKernels(kernelIdentity, base, kernel, w);
-}
-
 namespace Demo
 {
+	constexpr glm::vec2 BBOX_MIN = glm::vec2(-500.0f, -25.0f);
+	constexpr float ZOOM_SPEED = 1.1f;
+
+	constexpr float kernelIdentity[9] =
+	{
+		0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f
+	};
+
+	// Returns a random color for a shape
+	static glm::vec4 generateShapeColor()
+	{
+		return getRandomColor
+		(
+			glm::vec3(0.1f, 0.1f, 0.1f),
+			glm::vec3(0.9f, 0.9f, 0.9f)
+		);
+	}
+
+	static void lerpKernels(const float* a, const float* b, float* out, float w)
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			out[i] = (1.0f - w) * a[i] + w * b[i];
+		}
+	}
+
+	static void getKernelSharpen(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			 0.0f, -1.0f,  0.0f,
+			-1.0f,  5.0f, -1.0f,
+			 0.0f, -1.0f,  0.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
+
+	static void getKernelBlur(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+			1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f,
+			1.0f / 9.0f, 1.0f / 9.0f, 1.0f / 9.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
+
+	static void getKernelEdgeDetection(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			 1.0f,  1.0f,  1.0f,
+			 1.0f, -8.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
+
+	static void getKernelEmboss(float* kernel, float t)
+	{
+		float w = 0.5f * (sinf(t * 2.0f) + 1.0f);
+		static constexpr float base[9] = {
+			-2.0f, -1.0f,  0.0f,
+			-1.0f,  1.0f,  1.0f,
+			 0.0f,  1.0f,  2.0f
+		};
+		lerpKernels(kernelIdentity, base, kernel, w);
+	}
 
 	// Generates random vertices forming a normal polygon.
 	// A "normal" polygon is a polygon whose sides do NOT intersect. It could be either convex or concave.

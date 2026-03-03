@@ -20,6 +20,12 @@ namespace Demo
 		return true;
 	}
 
+	void Demo03_Scene::exit()
+	{
+		m_snake.destroy();
+		m_apple.destroy();
+	}
+
 	void Demo03_Scene::update(double dt)
 	{
 		m_snake.update();
@@ -37,12 +43,6 @@ namespace Demo
 		RenderCommands::clear();
 		m_apple.render();
 		m_snake.render();
-	}
-
-	void Demo03_Scene::exit()
-	{
-		m_snake.destroy();
-		m_apple.destroy();
 	}
 
 	bool Demo03_Scene::onKeyPressed(const Pekan::KeyPressedEvent& event)

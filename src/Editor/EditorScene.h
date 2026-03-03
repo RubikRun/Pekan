@@ -12,6 +12,11 @@ namespace Editor
 
 	class EditorScene : public Pekan::Renderer2D::Scene2D
 	{
+		bool _init() override;
+		void _exit() override;
+
+		void update(double deltaTime) override;
+
 	public:
 
 		EditorScene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
@@ -29,13 +34,6 @@ namespace Editor
 
 		// Returns a list of names of component types supported in the editor
 		static const std::vector<std::string>& getComponentTypesNames();
-
-	private: /* functions */
-
-		bool _init() override;
-		void _exit() override;
-
-		void update(double deltaTime) override;
 
 	private: /* variables */
 

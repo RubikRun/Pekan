@@ -15,17 +15,14 @@ namespace Demo
 
 	class Demo02_Scene : public Pekan::Layer
 	{
+		bool init() override;
+		void exit() override;
+		void update(double deltaTime) override;
+		void render() const override;
+
 	public:
 
 		Demo02_Scene(Pekan::PekanApplication* application) : Layer(application) {}
-
-		bool init() override;
-
-		void update(double deltaTime) override;
-
-		void render() const override;
-
-		void exit() override;
 
 		// Attaches a GUI window for controlling scene's parameters
 		void attachGUIWindow(const std::shared_ptr<const Demo02_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }

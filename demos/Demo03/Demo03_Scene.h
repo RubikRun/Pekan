@@ -10,17 +10,14 @@ namespace Demo
 
 	class Demo03_Scene : public Pekan::Layer
 	{
+		bool init() override;
+		void exit() override;
+		void update(double deltaTime) override;
+		void render() const override;
+
 	public:
 
 		Demo03_Scene(Pekan::PekanApplication* application) : Layer(application) {}
-
-		bool init() override;
-
-		void update(double deltaTime) override;
-
-		void render() const override;
-
-		void exit() override;
 
 		std::string getLayerName() const override { return "scene_layer"; }
 

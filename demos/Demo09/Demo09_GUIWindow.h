@@ -12,6 +12,8 @@ namespace Demo
 
 	class Demo09_GUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
 	public:
 
 		Demo09_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
@@ -20,8 +22,6 @@ namespace Demo
 		int getPpsIndex() const { return gui.ppsComboBoxWidget->getIndex(); }
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

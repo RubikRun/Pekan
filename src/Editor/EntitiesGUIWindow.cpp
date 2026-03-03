@@ -12,25 +12,6 @@ namespace Pekan
 namespace Editor
 {
 
-	void EntitiesGUIWindow::update(double deltaTime)
-	{
-		PK_ASSERT_QUICK(m_scene != nullptr);
-
-		if (gui.addEntityButtonWidget->isClicked())
-		{
-			m_scene->addEntity();
-			updateEntitiesListWidget();
-		}
-
-		// If selected entity has changed, update the "entity properties" GUI window with the new selected entity
-		const int selectedEntityIndex = gui.entitiesListWidget->getSelectedIndex();
-		if (selectedEntityIndex != m_selectedEntityIndex)
-		{
-			m_selectedEntityIndex = selectedEntityIndex;
-			updateEntityPropertiesGUIWindow();
-		}
-	}
-
 	bool EntitiesGUIWindow::_init()
 	{
 		if (m_scene == nullptr)
@@ -48,6 +29,25 @@ namespace Editor
 		gui.entitiesListWidget->create(this);
 		updateEntitiesListWidget();
 		return true;
+	}
+
+	void EntitiesGUIWindow::update(double deltaTime)
+	{
+		PK_ASSERT_QUICK(m_scene != nullptr);
+
+		if (gui.addEntityButtonWidget->isClicked())
+		{
+			m_scene->addEntity();
+			updateEntitiesListWidget();
+		}
+
+		// If selected entity has changed, update the "entity properties" GUI window with the new selected entity
+		const int selectedEntityIndex = gui.entitiesListWidget->getSelectedIndex();
+		if (selectedEntityIndex != m_selectedEntityIndex)
+		{
+			m_selectedEntityIndex = selectedEntityIndex;
+			updateEntityPropertiesGUIWindow();
+		}
 	}
 
 	GUIWindowProperties EntitiesGUIWindow::getProperties() const

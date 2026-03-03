@@ -11,6 +11,8 @@ namespace Demo
 
 	class Demo04_GUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
 	public:
 
 		Demo04_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
@@ -37,8 +39,6 @@ namespace Demo
 		bool getEnabledFaceCulling() const { return gui.enableFaceCullingWidget->isChecked(); }
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

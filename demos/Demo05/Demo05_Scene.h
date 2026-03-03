@@ -12,6 +12,10 @@ namespace Demo
 
 	class Demo05_Scene : public Pekan::Renderer2D::Scene2D
 	{
+		bool _init() override;
+		void _exit() override;
+		void update(double deltaTime) override;
+
 	public:
 
 		Demo05_Scene(Pekan::PekanApplication* application) : Scene2D(application) {}
@@ -20,10 +24,6 @@ namespace Demo
 		void attachGUIWindow(const std::shared_ptr<const Demo05_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
-
-		bool _init() override;
-		void _exit() override;
-		void update(double deltaTime) override;
 
 		void updateMtt();
 

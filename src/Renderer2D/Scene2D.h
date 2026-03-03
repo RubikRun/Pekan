@@ -11,23 +11,21 @@ namespace Renderer2D {
 	{
 		bool init() override final;
 		void exit() override final;
-
-	public: /* functions */
-
-		Scene2D(PekanApplication* application) : Scene(application) {}
-		void render() const override final;
-
-		// Returns the camera controller used to allow user to control scene's camera with the mouse
-		CameraController2D_Ptr getCameraController() { return m_cameraController; }
-
-	protected: /* functions */
-
-		// Can be implemented by derived classes with additional render logic
-		virtual void _render() const {}
 		// Can be implemented by derived classes with additional initialization logic
 		virtual bool _init() { return true; }
 		// Can be implemented by derived classes with additional exit logic
 		virtual void _exit() {}
+
+		void render() const override final;
+		// Can be implemented by derived classes with additional render logic
+		virtual void _render() const {}
+
+	public: /* functions */
+
+		Scene2D(PekanApplication* application) : Scene(application) {}
+
+		// Returns the camera controller used to allow user to control scene's camera with the mouse
+		CameraController2D_Ptr getCameraController() { return m_cameraController; }
 
 	private: /* variables */
 

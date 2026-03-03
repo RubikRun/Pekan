@@ -13,6 +13,8 @@ namespace Demo
 
 	class Demo02_GUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
 	public:
 
 		Demo02_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
@@ -24,8 +26,6 @@ namespace Demo
 		bool shouldHideFourthFace() const { return gui.hideFourthFaceWidget->isChecked(); }
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

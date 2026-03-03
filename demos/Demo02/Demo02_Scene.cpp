@@ -119,6 +119,11 @@ namespace Demo
 		return true;
 	}
 
+	void Demo02_Scene::exit()
+	{
+		m_drawObject.destroy();
+	}
+
 	void Demo02_Scene::update(double dt)
 	{
 		if (m_guiWindow == nullptr)
@@ -177,11 +182,6 @@ namespace Demo
 		RenderCommands::clear(true, true);
 		// Render cube
 		m_drawObject.render();
-	}
-
-	void Demo02_Scene::exit()
-	{
-		m_drawObject.destroy();
 	}
 
 } // namespace Demo

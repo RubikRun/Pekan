@@ -9,6 +9,10 @@ namespace Demo
 
 	class Demo09_Scene : public Pekan::Renderer2D::Scene2D
 	{
+		bool _init() override;
+		void _exit() override;
+		void update(double deltaTime) override;
+
 	public:
 
 		Demo09_Scene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
@@ -16,11 +20,6 @@ namespace Demo
 		void attachGUIWindow(const std::shared_ptr<Demo09_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
-
-		bool _init() override;
-		void _exit() override;
-
-		void update(double deltaTime) override;
 
 		void createTurkey();
 		void createBull();

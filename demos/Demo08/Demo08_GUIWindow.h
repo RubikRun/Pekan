@@ -13,6 +13,8 @@ namespace Demo
 
 	class Demo08_GUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
 	public:
 
 		Demo08_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
@@ -27,8 +29,6 @@ namespace Demo
 		float getAnimSpeed() const { return gui.animSpeedWidget->getValue(); }
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

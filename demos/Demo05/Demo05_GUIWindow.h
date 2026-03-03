@@ -10,6 +10,8 @@ namespace Demo
 
 	class Demo05_GUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
 	public:
 
 		Demo05_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
@@ -21,8 +23,6 @@ namespace Demo
 		float getLineThickness() const { return gui.lineThicknessWidget->getValue(); }
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

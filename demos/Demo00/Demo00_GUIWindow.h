@@ -11,6 +11,8 @@ namespace Demo
 
 	class Demo00_GUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
 	public:
 
 		Demo00_GUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
@@ -22,8 +24,6 @@ namespace Demo
 		glm::vec2 getPosition() const;
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

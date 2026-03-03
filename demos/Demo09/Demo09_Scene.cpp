@@ -56,6 +56,13 @@ namespace Demo
 	constexpr glm::vec4 LINE1_INITIAL_COLOR = glm::vec4(0.8f, 0.8f, 0.2f, 1.0f);
 	constexpr glm::vec4 LINE2_INITIAL_COLOR = glm::vec4(0.4f, 0.7f, 0.3f, 1.0f);
 
+	constexpr float kernelIdentity[9] =
+	{
+		0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f
+	};
+
 	static float osc(float t)
 	{
 		return cos(t + 1.0f) / 2.0f;
@@ -64,12 +71,6 @@ namespace Demo
 	{
 		return a + (b - a) * osc(t);
 	}
-
-	constexpr float kernelIdentity[9] = {
-		0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f
-	};
 
 	static void lerpKernels(const float* a, const float* b, float* out, float w)
 	{

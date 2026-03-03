@@ -15,6 +15,10 @@ namespace Demo
 
 	class Demo01_GUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
+		void update(double deltaTime) override;
+
 	public:
 
 		Demo01_GUIWindow(Pekan::PekanApplication* application) : Pekan::GUI::GUIWindow(application) {}
@@ -29,10 +33,6 @@ namespace Demo
 		int getNumberOfSquares() const { return gui.squares.size(); }
 
 	private: /* functions */
-
-		bool _init() override;
-
-		void update(double deltaTime) override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

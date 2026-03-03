@@ -23,19 +23,24 @@ namespace Pekan
 	class Layer : public EventListener
 	{
 		// We need LayerStack as a friend class,
-		// because it is reponsible for initializing and exiting layers,
-		// and we don't want any other code to be able to initialize and exit layers.
+		// because it is reponsible for initializing, exiting, updating and rendering layers,
+		// and we don't want any other code to be able to do that.
 		friend class LayerStack;
 
-	public:
-
-		Layer(PekanApplication* application) : m_application(application) {}
-		virtual ~Layer() = default;
+		// Can be implemented by derived classes with specific initialization logic
+		virtual bool init() { return true; }
+		// Can be implemented by derived classes with specific exiting logic
+		virtual void exit() {}
 
 		// Can be implemented by derived classes with specific logic for updating the layer between frames
 		virtual void update(double deltaTime) {}
 		// Can be implemented by derived classes with specific rendering logic
 		virtual void render() const {}
+
+	public:
+
+		Layer(PekanApplication* application) : m_application(application) {}
+		virtual ~Layer() = default;
 
 		// To be implemented by derived classes to return layer's name
 		virtual std::string getLayerName() const = 0;
@@ -49,13 +54,6 @@ namespace Pekan
 
 		// Application containing this layer
 		PekanApplication* m_application = nullptr;
-
-	private: /* functions */
-
-		// Can be implemented by derived classes with specific initialization logic
-		virtual bool init() { return true; }
-		// Can be implemented by derived classes with specific exiting logic
-		virtual void exit() {}
 
 	private: /* variables*/
 

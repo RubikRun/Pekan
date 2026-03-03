@@ -20,13 +20,15 @@ namespace Editor
 
 	class EntityPropertiesGUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
+		void update(double deltaTime) override;
+
 	public:
 
 		EntityPropertiesGUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
 		std::string getLayerName() const override { return "entity_properties_gui_window"; }
-
-		void update(double deltaTime) override;
 
 		// Sets the entity whose properties will be displayed in this GUI window
 		void setEntity(entt::entity entity);
@@ -35,8 +37,6 @@ namespace Editor
 		void setScene(std::shared_ptr<EditorScene> scene);
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

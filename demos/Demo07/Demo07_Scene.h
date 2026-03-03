@@ -10,6 +10,9 @@ namespace Demo
 
 	class Demo07_Scene : public Pekan::Renderer2D::Scene2D
 	{
+		bool _init() override;
+		void _exit() override;
+		void update(double deltaTime) override;
 
 	public:
 
@@ -18,11 +21,6 @@ namespace Demo
 		void attachGUIWindow(const std::shared_ptr<const Demo07_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 	private: /* functions */
-
-		bool _init() override;
-		void _exit() override;
-
-		void update(double deltaTime) override;
 
 		void createCamera();
 		void createCoordSys();

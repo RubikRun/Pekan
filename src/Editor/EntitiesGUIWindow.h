@@ -17,13 +17,15 @@ namespace Editor
 
 	class EntitiesGUIWindow : public Pekan::GUI::GUIWindow
 	{
+		bool _init() override;
+
+		void update(double deltaTime) override;
+
 	public:
 
 		EntitiesGUIWindow(Pekan::PekanApplication* application) : GUIWindow(application) {}
 
 		std::string getLayerName() const override { return "entities_gui_window"; }
-
-		void update(double deltaTime) override;
 
 		// Sets the scene whose entities will be displayed in this GUI window
 		void setScene(std::shared_ptr<EditorScene> scene) { m_scene = scene; }
@@ -35,8 +37,6 @@ namespace Editor
 		int getSelectedEntityIndex() const { return gui.entitiesListWidget->getSelectedIndex(); }
 
 	private: /* functions */
-
-		bool _init() override;
 
 		Pekan::GUI::GUIWindowProperties getProperties() const override;
 

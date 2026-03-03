@@ -11,26 +11,23 @@ namespace Demo
 
 	class Demo04_Scene : public Pekan::Renderer2D::Scene2D
 	{
-	public:
-
-		Demo04_Scene(Pekan::PekanApplication* application) : Scene2D(application) {}
-		
-		// Attaches a GUI window for controlling background's color
-		void attachGUIWindow(const std::shared_ptr<const Demo04_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
-
-	private: /* functions */
-
 		bool _init() override;
-
 		void _exit() override;
-
 		void update(double deltaTime) override;
-
 		// Override Scene2D's _render() function to manually render m_drawObject
 		// since it's not part of ECS and will not be rendered automatically.
 		//
 		// TODO: think about if this is a good idea long-term, or if we should think of something else for such cases.
 		void _render() const override;
+
+	public:
+
+		Demo04_Scene(Pekan::PekanApplication* application) : Scene2D(application) {}
+
+		// Attaches a GUI window for controlling background's color
+		void attachGUIWindow(const std::shared_ptr<const Demo04_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
+
+	private: /* functions */
 
 		void updatePolygon1();
 		void updatePolygon2();

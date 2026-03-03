@@ -24,12 +24,21 @@ namespace GUI
 	// A base class for all GUI windows in Pekan
 	class GUIWindow : public Layer
 	{
+		bool init() override final;
+		void exit() override final;
+		// Can be implemented by derived classes with specific initialization functionality.
+		virtual bool _init() { return true; };
+		// Can be implemented by derived classes with specific exiting functionality.
+		virtual void _exit() {};
+
+		void render() const  override final;
+		// Can be implemented by derived classes with specific render functionality.
+		virtual void _render() const {}
+
 	public:
 
 		GUIWindow(Pekan::PekanApplication* application) : Layer(application) {}
 		virtual ~GUIWindow() = default;
-
-		void render() const  override final;
 
 		// Adds a widget to the GUI window.
 		// Widgets added here will be automatically rendered when the GUI window is rendred
@@ -46,17 +55,6 @@ namespace GUI
 		virtual std::string getLayerName() const override { return "gui_layer"; }
 
 	private: /* functions*/
-
-		bool init() override final;
-		void exit() override final;
-
-		// Can be implemented by derived classes with specific initialization functionality.
-		virtual bool _init() { return true; };
-		// Can be implemented by derived classes with specific exiting functionality.
-		virtual void _exit() {};
-
-		// Can be implemented by derived classes with specific render functionality.
-		virtual void _render() const {}
 
 		// Can be implemented by derived classes to return specific properties of the GUI window
 		virtual GUIWindowProperties getProperties() const { return {}; }

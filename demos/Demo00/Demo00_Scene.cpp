@@ -39,6 +39,11 @@ namespace Demo
 		return true;
 	}
 
+	void Demo00_Scene::exit()
+	{
+		m_drawObject.destroy();
+	}
+
 	void Demo00_Scene::update(double dt)
 	{
 		// Get position from GUI
@@ -61,11 +66,6 @@ namespace Demo
 		RenderCommands::clear();
 
 		m_drawObject.render();
-	}
-
-	void Demo00_Scene::exit()
-	{
-		m_drawObject.destroy();
 	}
 
 } // namespace Demo
