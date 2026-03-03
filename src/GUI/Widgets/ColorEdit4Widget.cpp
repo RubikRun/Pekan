@@ -39,7 +39,7 @@ namespace GUI
 
 	glm::vec4 ColorEdit4Widget::getValue() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_valueChangedByUserSinceLastAccess = false;
 		return m_value;
 	}
@@ -52,7 +52,7 @@ namespace GUI
 
 	const std::string& ColorEdit4Widget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 

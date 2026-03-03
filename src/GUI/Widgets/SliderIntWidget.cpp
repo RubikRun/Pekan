@@ -47,7 +47,7 @@ namespace GUI
 
 	int SliderIntWidget::getValue() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_valueChangedByUserSinceLastAccess = false;
 		return m_value;
 	}
@@ -60,25 +60,25 @@ namespace GUI
 
 	const std::string& SliderIntWidget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 
 	int SliderIntWidget::getMin() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_min;
 	}
 
 	int SliderIntWidget::getMax() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_max;
 	}
 
 	void SliderIntWidget::_render() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		if (ImGui::SliderInt(m_label.c_str(), &m_value, m_min, m_max))
 		{
 			m_valueChangedByUserSinceLastAccess = true;

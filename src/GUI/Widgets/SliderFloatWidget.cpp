@@ -51,7 +51,7 @@ namespace GUI
 
 	float SliderFloatWidget::getValue() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_valueChangedByUserSinceLastAccess = false;
 		return m_value;
 	}
@@ -64,31 +64,31 @@ namespace GUI
 
 	const std::string& SliderFloatWidget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 
 	float SliderFloatWidget::getMin() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_min;
 	}
 
 	float SliderFloatWidget::getMax() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_max;
 	}
 
 	const std::string& SliderFloatWidget::getFormat() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_format;
 	}
 
 	void SliderFloatWidget::_render() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		if (ImGui::SliderFloat(m_label.c_str(), &m_value, m_min, m_max, m_format.c_str()))
 		{
 			m_valueChangedByUserSinceLastAccess = true;

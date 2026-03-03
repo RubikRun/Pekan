@@ -27,19 +27,19 @@ namespace GUI
 
 	const std::string& TextWidget::getText() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_text;
 	}
 
 	void TextWidget::setText(const char* text)
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_text = text;
 	}
 
 	void TextWidget::setText(const std::string& text)
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_text = text;
 	}
 

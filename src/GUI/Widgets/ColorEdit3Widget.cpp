@@ -39,7 +39,7 @@ namespace GUI
 
 	glm::vec3 ColorEdit3Widget::getValue() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_valueChangedByUserSinceLastAccess = false;
 		return m_value;
 	}
@@ -52,13 +52,13 @@ namespace GUI
 
 	const std::string& ColorEdit3Widget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 
 	void ColorEdit3Widget::_render() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		if (ImGui::ColorEdit3(m_label.c_str(), (float*)(&m_value)))
 		{
 			m_valueChangedByUserSinceLastAccess = true;

@@ -2866,7 +2866,7 @@ Done.
 }
 
 ----------
-03.02.2026
+02.03.2026
 ----------
 
 {
@@ -2904,6 +2904,23 @@ I made sure that for all of them the 4 functions (or the overriden part of them)
 are declared as private,
 and declared in the beginning of the class (together with their derived equivalents _init(), _exit(), _update(), _render()).
 Basically all init/exit/update/render logic is always declared in the beginning of a class.
+
+Done.
+}
+
+{
+Let's do TO-DO task 0105:
+    Change all such assertions
+        PK_ASSERT_QUICK(m_id >= 0);
+    in GUI module, to:
+        PK_ASSERT_QUICK(isValid());
+
+Pretty straightforward.
+Only thing to mention is that
+    m_id
+is not used anywhere now (except in the base Widget class itself), after changing all such asserts,
+so we can make m_id be private instead of protected.
+That's it.
 
 Done.
 }

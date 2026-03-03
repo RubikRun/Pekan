@@ -37,11 +37,6 @@ namespace GUI
 		// Renders widget on current GUI window
 		void render() const;
 
-	protected: /* variables */
-
-		// Widget's ID in the GUI subsystem
-		int m_id = -1;
-
 	private: /* functions */
 
 		// To be implemented by derived classes to render a specific widget type
@@ -51,6 +46,9 @@ namespace GUI
 
 		// When true, widget is not rendered and cannot be interacted with
 		bool m_hidden = false;
+
+		// Widget's ID in the GUI subsystem
+		int m_id = -1;
 	};
 
 	typedef std::shared_ptr<Widget> Widget_Ptr;

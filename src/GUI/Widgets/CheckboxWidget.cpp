@@ -39,7 +39,7 @@ namespace GUI
 
 	bool CheckboxWidget::isChecked() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_checkedChangedByUserSinceLastAccess = false;
 		return m_isChecked;
 	}
@@ -52,13 +52,13 @@ namespace GUI
 
 	const std::string& CheckboxWidget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 
 	void CheckboxWidget::_render() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		if (ImGui::Checkbox(m_label.c_str(), &m_isChecked))
 		{
 			m_checkedChangedByUserSinceLastAccess = true;

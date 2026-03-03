@@ -48,20 +48,20 @@ namespace GUI
 
 	int ComboBoxWidget::getIndex() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_indexChangedByUserSinceLastAccess = false;
 		return m_index;
 	}
 
 	const std::string& ComboBoxWidget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 
 	const std::vector<std::string>& ComboBoxWidget::getItems() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_items;
 	}
 

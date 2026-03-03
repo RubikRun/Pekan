@@ -58,7 +58,7 @@ namespace GUI
 
 	glm::vec2 DragFloat2Widget::getValue() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_valueChangedByUserSinceLastAccess = false;
 		return m_value;
 	}
@@ -71,37 +71,37 @@ namespace GUI
 
 	const std::string& DragFloat2Widget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 
 	float DragFloat2Widget::getMin() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_min;
 	}
 
 	float DragFloat2Widget::getMax() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_max;
 	}
 
 	float DragFloat2Widget::getStep() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_step;
 	}
 
 	const std::string& DragFloat2Widget::getFormat() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_format;
 	}
 
 	void DragFloat2Widget::_render() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		if (ImGui::DragFloat2(m_label.c_str(), glm::value_ptr(m_value), m_step, m_min, m_max, m_format.c_str()))
 		{
 			m_valueChangedByUserSinceLastAccess = true;

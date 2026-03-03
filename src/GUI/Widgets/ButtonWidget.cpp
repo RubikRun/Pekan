@@ -28,19 +28,19 @@ namespace GUI
 
 	bool ButtonWidget::isClicked() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_isClicked;
 	}
 
 	const std::string& ButtonWidget::getLabel() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		return m_label;
 	}
 
 	void ButtonWidget::_render() const
 	{
-		PK_ASSERT_QUICK(m_id >= 0);
+		PK_ASSERT_QUICK(isValid());
 		m_isClicked = ImGui::Button(m_label.c_str());
 	}
 

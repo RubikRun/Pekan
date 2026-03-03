@@ -346,7 +346,7 @@
                         Layer's init() and exit() are already private because they are called only internally by LayerStack.
                         Isn't it the same for update() and render()? Do we need them to be public?
 
-0105 11.02.2026 (TODO): Change all such assertions
+0105 11.02.2026 (DONE): Change all such assertions
                             PK_ASSERT_QUICK(m_id >= 0);
                         in GUI module, to:
                             PK_ASSERT_QUICK(isValid());
