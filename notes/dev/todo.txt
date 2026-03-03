@@ -351,7 +351,7 @@
                         in GUI module, to:
                             PK_ASSERT_QUICK(isValid());
 
-0106 13.02.2026 (TODO): In all/most .cpp files in GUI instead of including
+0106 13.02.2026 (DONE): In all/most .cpp files in GUI instead of including
                             #include "imgui_impl_glfw.h"
                             #include "imgui_impl_opengl3.h"
                         we can include
