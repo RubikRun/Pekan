@@ -5,6 +5,7 @@
 #include "PekanLogger.h"
 #include "PekanUserMessageBox.h"
 
+#include "Entity/DisabledComponent.h"
 #include "TransformComponent2D.h"
 #include "SpriteComponent.h"
 #include "CameraComponent2D.h"
@@ -34,6 +35,8 @@ namespace Editor
 		}
 
 		gui.entityInfoTextWidget->create(this, "No entity selected");
+		gui.enabledCheckboxWidget->create(this, "Enabled", true);
+		gui.enabledCheckboxWidget->hide();
 		gui.firstSeparatorWidget->create(this);
 		gui.addComponentComboBoxWidget->create(this, "", 0, EditorScene::getComponentTypesNames());
 		gui.addComponentButtonWidget->create(this, "Add Component");
@@ -78,6 +81,18 @@ namespace Editor
 		{
 			if (m_entity != entt::null)
 			{
+				if (gui.enabledCheckboxWidget->wasChangedByUserSinceLastAccess())
+				{
+					const bool isEntityEnabled = gui.enabledCheckboxWidget->isChecked();
+					if (isEntityEnabled)
+					{
+						m_scene->enableEntity(m_entity);
+					}
+					else
+					{
+						m_scene->disableEntity(m_entity);
+					}
+				}
 				pushWidgetEditsToComponentsOfEntity(m_entity);
 				updateWidgetsFromComponentsOfEntity(m_entity);
 			}
@@ -98,6 +113,18 @@ namespace Editor
 			entityInfoText = "Selected Entity: " + std::to_string(uint32_t(entity));
 		}
 		gui.entityInfoTextWidget->setText(entityInfoText);
+
+		if (entity != entt::null)
+		{
+			gui.enabledCheckboxWidget->unhide();
+			const entt::registry& registry = m_scene->getRegistry();
+			const bool isEntityEnabled = !registry.all_of<DisabledComponent>(entity);
+			gui.enabledCheckboxWidget->setChecked(isEntityEnabled);
+		}
+		else
+		{
+			gui.enabledCheckboxWidget->hide();
+		}
 
 		updateWidgetsVisibility(entity);
 		updateWidgetsFromComponentsOfEntity(entity);
@@ -133,6 +160,12 @@ namespace Editor
 		PK_ASSERT_QUICK(entity != entt::null);
 
 		const entt::registry& registry = m_scene->getRegistry();
+
+		if (!gui.enabledCheckboxWidget->isHidden())
+		{
+			const bool isEnabled = !registry.all_of<DisabledComponent>(entity);
+			gui.enabledCheckboxWidget->setChecked(isEnabled);
+		}
 
 		if (registry.all_of<TransformComponent2D>(entity))
 		{

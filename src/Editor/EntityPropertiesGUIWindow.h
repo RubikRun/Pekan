@@ -5,6 +5,7 @@
 #include "ComponentWidgetsTypes.h"
 
 #include "TextWidget.h"
+#include "CheckboxWidget.h"
 #include "ComboBoxWidget.h"
 #include "SeparatorWidget.h"
 #include "ButtonWidget.h"
@@ -54,6 +55,7 @@ namespace Editor
 		struct Widgets
 		{
 			Pekan::GUI::TextWidget_Ptr entityInfoTextWidget = std::make_shared<Pekan::GUI::TextWidget>();
+			Pekan::GUI::CheckboxWidget_Ptr enabledCheckboxWidget = std::make_shared<Pekan::GUI::CheckboxWidget>();
 			Pekan::GUI::SeparatorWidget_Ptr firstSeparatorWidget = std::make_shared<Pekan::GUI::SeparatorWidget>();
 			Pekan::GUI::ComboBoxWidget_Ptr addComponentComboBoxWidget = std::make_shared<Pekan::GUI::ComboBoxWidget>();
 			Pekan::GUI::ButtonWidget_Ptr addComponentButtonWidget = std::make_shared<Pekan::GUI::ButtonWidget>();

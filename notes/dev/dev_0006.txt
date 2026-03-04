@@ -2944,3 +2944,98 @@ and/or
 That's it.
 Done.
 }
+
+----------
+04.03.2026
+----------
+
+{
+We need a mechanism in Editor for disabling an entity from the scene.
+It'd be nice to have a checkbox in EntityPropertiesGUIWindow (checked by default)
+that disables an entity (adds a DisabledComponent to it in ECS) when unchecked.
+
+Added a checkbox in EntityPropertiesGUIWindow:
+    Pekan::GUI::CheckboxWidget_Ptr enabledCheckboxWidget = std::make_shared<Pekan::GUI::CheckboxWidget>();
+right after the entity info widget, before the components combobox.
+We want the checkbox to be checked by default so we'll create it like this:
+    gui.enabledCheckboxWidget->create(this, "Enabled", true);
+We also want it to be hidden by default, because we will show it once an entity is selected,
+so let's hide it right after creating it in _init():
+	gui.enabledCheckboxWidget->hide();
+Then, at what point exactly are we going to unhide it?
+Well, that'd be in setEntity(), if the given entity is not null:
+    if (entity != entt::null)
+    {
+        gui.enabledCheckboxWidget->unhide();
+        ...
+    }
+We need to do one more thing after unhiding the checkbox.
+We need to set it to checked/unchecked depending on whether the selected entity is disabled or not
+(has DisabledComponent or not).
+We can check if the entity is enabled like this:
+    const entt::registry& registry = m_scene->getRegistry();
+    const bool isEntityEnabled = !registry.all_of<DisabledComponent>(entity);
+and then set the checked/unchecked state of the checkbox accordingly:
+    gui.enabledCheckboxWidget->setChecked(isEntityEnabled);
+If setEntity() happens to be called with a null entity, we'd need to hide the checkbox again:
+    else
+    {
+        gui.enabledCheckboxWidget->hide();
+    }
+This would never happen with our current Editor but could very likely be possible in the future.
+
+Okay, we have the checkbox now. It is hidden in the beginning,
+becomes visible once an entity is selected, and it has the correct checked/unchecked state when it becomes visible.
+What is left to do now is to actually make the checkbox work - make it react to user clicks
+with adding/removing DisabledComponent from the selected entity.
+We need to do that in the update() function,
+in the case when addComponentButtonWidget is NOT clicked (so in the outermost else statement)
+and in the case when a non-null entity is selected
+(because if a null entity is selected then the checkbox is hidden and cannot be clicked)
+so it basically needs to happen *here* :
+    if (gui.addComponentButtonWidget->isClicked())
+    {
+        ...
+    }
+    else
+    {
+        if (m_entity != entt::null)
+        {
+            *here*
+            ...
+        }
+    }
+The logic we need is "if checkbox has been changed by user, enable/disable entity in ECS accordingly".
+Luckily, we already have a wasChangedByUserSinceLastAccess() function so we can just check:
+    if (gui.enabledCheckboxWidget->wasChangedByUserSinceLastAccess())
+Then to check if the entity has to be enabled or disabled based on the checkbox, we do this:
+    const bool isEntityEnabled = gui.enabledCheckboxWidget->isChecked();
+and finally we enable/disable the entity in ECS:
+    if (isEntityEnabled)
+    {
+        m_scene->enableEntity(m_entity);
+    }
+    else
+    {
+        m_scene->disableEntity(m_entity);
+    }
+That handles it. Now whenever the checkbox is hidden we will get the entity disabled/enabled in ECS,
+in other words the checkbox works.
+
+One more things.
+We need to cover the checkbox in updateWidgetsFromComponentsOfEntity() as well
+so that if an entity gets disabled/enabled by some other system or code
+that change will get reflected in GUI - the checkbox will change accordingly.
+We need to do that only if the checkbox is NOT hidden:
+    if (!gui.enabledCheckboxWidget->isHidden())
+We can check if an entity is enabled/disabled in ECS like this:
+    const bool isEnabled = !registry.all_of<DisabledComponent>(entity);
+and then reflect that in GUI by setting the checkbox's checked/unchecked state accordingly:
+    gui.enabledCheckboxWidget->setChecked(isEnabled);
+That's it. Now the checkbox will change its checked/unchecked state automatically
+if an entity gets disabled/enabled in ECS by some other code.
+
+It works! Looks good.
+
+Done.
+}
