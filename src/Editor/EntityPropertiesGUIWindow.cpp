@@ -26,6 +26,26 @@ namespace Pekan
 namespace Editor
 {
 
+	// Returns a list of menu items for the components context menu.
+	static std::vector<ContextMenuWidget::MenuItem> getComponentsContextMenuItems()
+	{
+		const std::vector<std::string>& componentTypeNames = EditorScene::getComponentTypesNames();
+
+		ContextMenuWidget::MenuItem rootMenu;
+		rootMenu.label = "Add Component";
+		rootMenu.children.reserve(componentTypeNames.size());
+
+		for (int i = 0; i < int(componentTypeNames.size()); i++)
+		{
+			ContextMenuWidget::MenuItem item;
+			item.label = componentTypeNames[i];
+			item.itemId = i;
+			rootMenu.children.push_back(item);
+		}
+
+		return { rootMenu };
+	}
+
 	bool EntityPropertiesGUIWindow::_init()
 	{
 		if (m_scene == nullptr)
@@ -38,9 +58,6 @@ namespace Editor
 		gui.enabledCheckboxWidget->create(this, "Enabled", true);
 		gui.enabledCheckboxWidget->hide();
 		gui.firstSeparatorWidget->create(this);
-		gui.addComponentComboBoxWidget->create(this, "", 0, EditorScene::getComponentTypesNames());
-		gui.addComponentButtonWidget->create(this, "Add Component");
-		gui.secondSeparatorWidget->create(this);
 
 		gui.transform2DWidgets.create(this);
 		gui.spriteWidgets.create(this);
@@ -53,6 +70,13 @@ namespace Editor
 		gui.lineWidgets.create(this);
 		gui.camera2DWidgets.create(this);
 
+		gui.componentsContextMenuWidget->create
+		(
+			this,
+			ContextMenuTriggerMode::EmptySpace,
+			getComponentsContextMenuItems()
+		);
+
 		// Hide all component widgets because initially no entity is selected
 		hideComponentWidgets();
 
@@ -63,12 +87,12 @@ namespace Editor
 	{
 		PK_ASSERT_QUICK(m_scene != nullptr);
 
-		if (gui.addComponentButtonWidget->isClicked())
+		const int selectedComponentIndex = gui.componentsContextMenuWidget->getSelectedItemId();
+		if (selectedComponentIndex >= 0)
 		{
 			if (m_entity != entt::null)
 			{
-				const int componentTypeIndex = gui.addComponentComboBoxWidget->getIndex();
-				m_scene->addComponent(m_entity, componentTypeIndex);
+				m_scene->addComponent(m_entity, selectedComponentIndex);
 				updateWidgetsVisibility(m_entity);
 				updateWidgetsFromComponentsOfEntity(m_entity);
 			}
@@ -77,25 +101,23 @@ namespace Editor
 				PK_SHOW_WARNING("Cannot add a component because no entity is selected.");
 			}
 		}
-		else
+
+		if (m_entity != entt::null)
 		{
-			if (m_entity != entt::null)
+			if (gui.enabledCheckboxWidget->wasChangedByUserSinceLastAccess())
 			{
-				if (gui.enabledCheckboxWidget->wasChangedByUserSinceLastAccess())
+				const bool isEntityEnabled = gui.enabledCheckboxWidget->isChecked();
+				if (isEntityEnabled)
 				{
-					const bool isEntityEnabled = gui.enabledCheckboxWidget->isChecked();
-					if (isEntityEnabled)
-					{
-						m_scene->enableEntity(m_entity);
-					}
-					else
-					{
-						m_scene->disableEntity(m_entity);
-					}
+					m_scene->enableEntity(m_entity);
 				}
-				pushWidgetEditsToComponentsOfEntity(m_entity);
-				updateWidgetsFromComponentsOfEntity(m_entity);
+				else
+				{
+					m_scene->disableEntity(m_entity);
+				}
 			}
+			pushWidgetEditsToComponentsOfEntity(m_entity);
+			updateWidgetsFromComponentsOfEntity(m_entity);
 		}
 	}
 

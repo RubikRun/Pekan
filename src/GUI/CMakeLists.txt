@@ -39,6 +39,8 @@ add_library(GUI STATIC
 	Widgets/NewLineWidget.cpp
 	Widgets/SelectableListWidget.h
 	Widgets/SelectableListWidget.cpp
+	Widgets/ContextMenuWidget.h
+	Widgets/ContextMenuWidget.cpp
 )
 
 # Group Widgets files under a virtual folder called "Widgets"
@@ -58,6 +60,7 @@ SOURCE_GROUP("Source Files\\Widgets" FILES
 	Widgets/FPSDisplayWidget.cpp
 	Widgets/NewLineWidget.cpp
 	Widgets/SelectableListWidget.cpp
+	Widgets/ContextMenuWidget.cpp
 )
 SOURCE_GROUP("Header Files\\Widgets" FILES
 	Widgets/TextWidget.h
@@ -75,6 +78,7 @@ SOURCE_GROUP("Header Files\\Widgets" FILES
 	Widgets/FPSDisplayWidget.h
 	Widgets/NewLineWidget.h
 	Widgets/SelectableListWidget.h
+	Widgets/ContextMenuWidget.h
 )
 
 # Set include directories for GUI

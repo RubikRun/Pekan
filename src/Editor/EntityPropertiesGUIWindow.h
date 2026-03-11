@@ -6,9 +6,8 @@
 
 #include "TextWidget.h"
 #include "CheckboxWidget.h"
-#include "ComboBoxWidget.h"
 #include "SeparatorWidget.h"
-#include "ButtonWidget.h"
+#include "ContextMenuWidget.h"
 
 #include <entt/entt.hpp>
 
@@ -57,9 +56,6 @@ namespace Editor
 			Pekan::GUI::TextWidget_Ptr entityInfoTextWidget = std::make_shared<Pekan::GUI::TextWidget>();
 			Pekan::GUI::CheckboxWidget_Ptr enabledCheckboxWidget = std::make_shared<Pekan::GUI::CheckboxWidget>();
 			Pekan::GUI::SeparatorWidget_Ptr firstSeparatorWidget = std::make_shared<Pekan::GUI::SeparatorWidget>();
-			Pekan::GUI::ComboBoxWidget_Ptr addComponentComboBoxWidget = std::make_shared<Pekan::GUI::ComboBoxWidget>();
-			Pekan::GUI::ButtonWidget_Ptr addComponentButtonWidget = std::make_shared<Pekan::GUI::ButtonWidget>();
-			Pekan::GUI::SeparatorWidget_Ptr secondSeparatorWidget = std::make_shared<Pekan::GUI::SeparatorWidget>();
 
 			// Widgets for each component type supported in the editor
 			Transform2DWidgets transform2DWidgets;
@@ -72,6 +68,8 @@ namespace Editor
 			SolidColorMaterialWidgets solidColorMaterialWidgets;
 			LineWidgets lineWidgets;
 			Camera2DWidgets camera2DWidgets;
+
+			Pekan::GUI::ContextMenuWidget_Ptr componentsContextMenuWidget = std::make_shared<Pekan::GUI::ContextMenuWidget>();
 		} gui;
 
 		// Entity whose properties are currently displayed in this GUI window.

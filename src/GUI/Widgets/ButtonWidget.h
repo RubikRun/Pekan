@@ -10,7 +10,7 @@ namespace Pekan
 namespace GUI
 {
 
-	// A button widget allowing you to push it in GUI and cause some event.
+	// A button widget allowing you to click it in GUI and cause some event.
 	//
 	// NOTE: Instances of this class MUST be owned by a ButtonWidget_Ptr
 	class ButtonWidget : public Widget
