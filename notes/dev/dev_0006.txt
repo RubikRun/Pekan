@@ -3039,3 +3039,128 @@ It works! Looks good.
 
 Done.
 }
+
+----------
+11.03.2026
+----------
+
+{
+The way we currently add components in EntityPropertiesGUIWindow is clunky.
+We have a combobox with the component types and then a separate "Add Component" button.
+It works, but UX-wise it does not feel very nice.
+I think it'd be nicer if it was a context menu instead.
+
+What I want is this:
+When user right-clicks on empty space in the entity properties window,
+a context menu should open, and in it there should be a submenu "Add Component"
+containing the different component types that can be added to the currently selected entity.
+
+However, Pekan does not have a context menu wrapper/widget in GUI yet.
+ImGui itself supports context menus, of course,
+but in Pekan's GUI module we have no wrapper,
+so first step is to add that functionality in a reusable way.
+
+Created a new widget
+    ContextMenuWidget
+in
+    ContextMenuWidget.h
+    ContextMenuWidget.cpp
+and added it to GUI's CMakeLists.txt.
+
+I wanted the widget to be reusable, not something hardcoded just for this panel,
+so I made 3 trigger modes:
+    EmptySpace
+    PreviousWidget
+    Window
+in an enum
+    ContextMenuTriggerMode
+These mean:
+- right-click on the remaining empty space in the window
+- right-click on the widget rendered immediately before the context menu widget
+- or right-click anywhere in the whole GUI window
+Right now in EntityPropertiesGUIWindow we need to use
+    EmptySpace
+but the other 2 will likely be useful later.
+
+The interesting implementation detail is
+    EmptySpace
+ImGui does not directly give us a "context menu for the remaining free space" thing.
+So the solution there is:
+Ask ImGui for the remaining available content region with
+    ImGui::GetContentRegionAvail()
+render an invisible button over that whole area,
+and then use
+    ImGui::BeginPopupContextItem()
+on that invisible button.
+Because of that,
+    ContextMenuTriggerMode::EmptySpace
+should be rendered as the last widget in the GUI window.
+
+The menu itself is represented as a tree of
+    MenuItem
+objects:
+If an item has children, it is a submenu.
+If it has no children, it is a selectable leaf item.
+That means the widget supports arbitrary nesting, even though right now we only need
+    Add Component -> component types
+
+One important detail is that leaf items must have non-negative
+    itemId
+values.
+    getSelectedItemId()
+returns the selected item's ID for the current frame, or
+    -1
+if nothing was selected in that frame.
+So future code using this widget should think of it like a button:
+query it every frame and react immediately.
+
+After that I integrated it into
+    EntityPropertiesGUIWindow.
+Removed the old
+    ComboBoxWidget + ButtonWidget
+pair for adding components,
+added
+    ContextMenuWidget_Ptr componentsContextMenuWidget
+and created it in
+    _init()
+with
+    ContextMenuTriggerMode::EmptySpace.
+
+The menu items come from a helper
+    getComponentsContextMenuItems()
+which builds one root item
+    "Add Component"
+and one child leaf item per component type from
+    EditorScene::getComponentTypesNames().
+Each child gets
+    itemId = i
+where
+    i
+is the index of the component type.
+That mapping is important:
+when user selects an item we pass that index directly to
+    m_scene->addComponent(m_entity, selectedComponentIndex);
+so the ordering in
+    getComponentTypesNames()
+must match the ordering expected by
+    addComponent(...).
+
+In
+    EntityPropertiesGUIWindow::update()
+we now ask the context menu widget for the selected item ID,
+and if it is non-negative we add the corresponding component and immediately refresh widget visibility/data.
+So user right-clicks, picks a component, and instantly sees the corresponding controls appear.
+
+Also, after this change the update logic became a bit cleaner:
+react to a possible context menu selection first,
+then handle the enabled checkbox and the rest of the widgets for the selected entity.
+
+It works!
+
+So, end result:
+EntityPropertiesGUIWindow now has a cleaner way to add components,
+and GUI now has a reusable context menu wrapper for future use as well.
+
+Pretty nice.
+Done.
+}
