@@ -5,7 +5,6 @@
 #include "PekanLogger.h"
 
 #include "Demo10_Application.h"
-using Demo::Demo10_Application;
 
 int main(void)
 {
@@ -13,7 +12,7 @@ int main(void)
 	PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D;
 	PEKAN_INCLUDE_SUBSYSTEM_GUI;
 
-	Demo10_Application application;
+	Demo::Demo10_Application application;
 	if (!application.init())
 	{
 		PK_LOG_ERROR("Application failed to initialize.", "Pekan");

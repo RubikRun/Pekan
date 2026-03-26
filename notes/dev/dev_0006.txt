@@ -3223,3 +3223,20 @@ Let's do TO-DO task 0101:
 Nothing to say here.
 Done.
 }
+
+{
+Let's do TO-DO task 0114:
+    Remove lines like this one
+        using Demo::Demo09_Application;
+    from main.cpp files of demos.
+
+Only thing to say is that I also removed this line
+    using Pekan::Editor::EditorApplication;
+from
+    main.cpp
+in
+    Editor
+For the same reason - it's not needed.
+
+Done.
+}
