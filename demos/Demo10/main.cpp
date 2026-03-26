@@ -1,15 +1,16 @@
 #include "GraphicsSubsystem.h"
+#include "Renderer2DSubsystem.h"
 #include "GUISubsystem.h"
 
 #include "PekanLogger.h"
 
 #include "Demo10_Application.h"
-#include <windows.h>
 using Demo::Demo10_Application;
 
 int main(void)
 {
 	PEKAN_INCLUDE_SUBSYSTEM_GRAPHICS;
+	PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D;
 	PEKAN_INCLUDE_SUBSYSTEM_GUI;
 
 	Demo10_Application application;

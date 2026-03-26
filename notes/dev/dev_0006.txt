@@ -3210,3 +3210,16 @@ That's it.
 It works and the 4 entity functions in Scene are no longer public.
 Done.
 }
+
+----------
+26.03.2026
+----------
+
+{
+Let's do TO-DO task 0101:
+    Add PEKAN_INCLUDE_SUBSYSTEM_RENDERER2D; in Demo09 and Demo10's main.cpp
+    Remove #include <windows.h> if not needed in Demo09 and Demo10's main.cpp
+
+Nothing to say here.
+Done.
+}
