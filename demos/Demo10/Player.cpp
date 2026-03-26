@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Demo10_Scene.h"
 
 #include "TransformComponent2D.h"
 #include "SpriteComponent.h"
@@ -20,7 +21,7 @@ using namespace Pekan::Graphics;
 namespace Demo
 {
 
-	void Player::create(Scene* scene)
+	void Player::create(Demo10_Scene* scene)
 	{
 		PK_ASSERT_QUICK(scene != nullptr);
 

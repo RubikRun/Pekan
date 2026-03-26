@@ -24,6 +24,11 @@ namespace Editor
 		// Adds a new entity to the scene
 		void addEntity();
 
+		// Enables the given entity in the scene
+		void enableEntity(entt::entity entity);
+		// Disables the given entity in the scene
+		void disableEntity(entt::entity entity);
+
 		// Returns a list of all entities in the scene
 		const std::vector<entt::entity>& getEntities() const { return m_entities; }
 

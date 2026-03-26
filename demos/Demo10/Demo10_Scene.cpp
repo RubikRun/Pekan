@@ -47,6 +47,16 @@ namespace Demo
 		m_player.update(m_guiWindow.get());
 	}
 
+	entt::entity Demo10_Scene::createEntity()
+	{
+		return Scene::createEntity();
+	}
+
+	void Demo10_Scene::destroyEntity(entt::entity entity)
+	{
+		Scene::destroyEntity(entity);
+	}
+
 	void Demo10_Scene::createCamera()
 	{
 		m_camera = createEntity();

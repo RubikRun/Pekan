@@ -20,6 +20,8 @@ namespace Pekan
 		entt::registry& getRegistry() { return m_registry; }
 		const entt::registry& getRegistry() const { return m_registry; }
 
+	protected: /* functions */
+
 		// Creates a new entity in the scene and returns it.
 		entt::entity createEntity();
 		// Destroys the given entity in the scene.

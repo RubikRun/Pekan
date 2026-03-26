@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Scene.h"
 #include "TransformComponent2D.h"
 #include "Demo10_GUIWindow.h"
 #include <entt/entt.hpp>
 
 namespace Demo
 {
+	class Demo10_Scene;
 
 	class Player
 	{
 	public:
 
-		void create(Pekan::Scene* scene);
+		void create(Demo10_Scene* scene);
 		void destroy();
 
 		void update(Demo10_GUIWindow* guiWindow);
@@ -31,7 +31,7 @@ namespace Demo
 		entt::entity m_head = entt::null;
 		entt::entity m_sword = entt::null;
 
-		Pekan::Scene* m_scene = nullptr;
+		Demo10_Scene* m_scene = nullptr;
 	};
 
 } // namespace Demo

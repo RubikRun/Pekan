@@ -371,5 +371,9 @@
 
 0111 27.02.2026 (DONE): Fix camera component values are not updated in GUI when changed by CameraController2D.
 
-0112 03.02.2026 (TODO): Make createEntity(), destroyEntity(), enableEntity(), disableEntity() be protected in Scene
+0112 02.03.2026 (DONE): Make createEntity(), destroyEntity(), enableEntity(), disableEntity() be protected in Scene
                         unless there's a good reason for them to be public.
+
+0113 26.03.2026 (TODO): Fix what bot said: There is still an existing clang-side error reported in
+                        demos/Demo10/Demo10_Scene.cpp from an included header macro expansion (::MouseMoved token),
+                        which doesn’t appear to be introducedby this refactor.

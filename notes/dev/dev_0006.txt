@@ -3164,3 +3164,49 @@ and GUI now has a reusable context menu wrapper for future use as well.
 Pretty nice.
 Done.
 }
+
+----------
+25.03.2026
+----------
+
+{
+Let's look at TO-DO task 0112:
+    Make createEntity(), destroyEntity(), enableEntity(), disableEntity() be protected in Scene
+    unless there's a good reason for them to be public.
+
+Okay yes, I definitely think it's a good idea to NOT have those function be public.
+It'd be cleaner to expose them to derived scene classes and they can either call them internally
+or expose their own APIs.
+Forcing them to expose their own APIs if needed may seem inconvenient from their viewpoint
+but it's more safe and stable, that way whenever an entity is created/destroyed or enabled/disabled
+we can be sure that it's either from a derived class or from an API that the derived class has intentionally exposed.
+
+Changed the 4 functions to protected in
+    Scene.h
+
+There are 2 places in the whole codebase that require a function from these 4 to be public:
+1. Demo10's Player class.
+    It needs to call createEntity() and destroyEntity() to create the different body parts of the player.
+    The way to fix this is to keep a pointer to Demo10_Scene.
+    We already do that but it's a pointer to Demo10_Scene's base class - Scene, so it's a pure Scene pointer,
+    which means that calling createEntity() and destroyEntity() on it is no longer ok, since they are now protected.
+    The way to do that is to keep an actual pointer to Demo10_Scene and expose an API in Demo10_Scene for creating and destroying an entity.
+    In this case we literally need the same API as in the base Scene:
+        entt::entity createEntity();
+        void destroyEntity(entt::entity entity);
+    A bit redundant but that's fine - it expresses the intention clearly.
+    Now whenever Player calls m_scene->createEntity() or m_scene->destroyEntity() it will be calling Demo10_Scene's wrappers.
+2. EntityPropertiesGUIWindow.
+    It needs to call enableEntity() and disableEntity() whenever an entity is enabled/disabled through UI.
+    It's calling them through an EditorScene pointer, but of course until now the versions of enableEntity() and disableEntity()
+    were the ones from the base Scene class, but they are no longer available, since they are now protected.
+    The way to fix that is to expose that enable/disable API in EditorScene.
+    We need the exact same API as in the base Scene:
+        void enableEntity(entt::entity entity);
+        void disableEntity(entt::entity entity);
+    Again, a bit redundant but it expresses the intention clearly.
+
+That's it.
+It works and the 4 entity functions in Scene are no longer public.
+Done.
+}

@@ -18,6 +18,9 @@ namespace Demo
 
 		Demo10_Scene(Pekan::PekanApplication* application) : Pekan::Renderer2D::Scene2D(application) {}
 
+		entt::entity createEntity();
+		void destroyEntity(entt::entity entity);
+
 		void attachGUIWindow(const std::shared_ptr<Demo10_GUIWindow>& guiWindow) { m_guiWindow = guiWindow; }
 
 		const std::shared_ptr<Demo10_GUIWindow>& getGUIWindow() const { return m_guiWindow; }

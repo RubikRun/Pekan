@@ -63,6 +63,16 @@ namespace Editor
 		m_entities.push_back(entity);
 	}
 
+	void EditorScene::enableEntity(entt::entity entity)
+	{
+		Scene::enableEntity(entity);
+	}
+
+	void EditorScene::disableEntity(entt::entity entity)
+	{
+		Scene::disableEntity(entity);
+	}
+
 	const std::vector<std::string>& EditorScene::getComponentTypesNames()
 	{
 		return s_componentTypesNames;
