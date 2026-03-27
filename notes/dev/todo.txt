@@ -375,8 +375,7 @@
                         unless there's a good reason for them to be public.
 
 0113 26.03.2026 (TODO): Fix what bot said: There is still an existing clang-side error reported in
-                        demos/Demo10/Demo10_Scene.cpp from an included header macro expansion (::MouseMoved token),
-                        which doesn’t appear to be introducedby this refactor.
+                        demos/Demo10/Demo10_Scene.cpp from an included header macro expansion (::MouseMoved token)
 
 0114 26.03.2026 (DONE): Remove lines like this one
                             using Demo::Demo09_Application;
