@@ -3240,3 +3240,58 @@ For the same reason - it's not needed.
 
 Done.
 }
+
+----------
+27.03.2026
+----------
+
+{
+Let's look at TO-DO task 0113:
+    Fix what bot said: There is still an existing clang-side error reported in
+    demos/Demo10/Demo10_Scene.cpp from an included header macro expansion (::MouseMoved token)
+
+Fixed it.
+It was a small mistake in
+    Event.h
+in the
+    EVENT_CLASS_TYPE(type)
+macro.
+
+The macro used to contain this:
+    EventType::##type
+and now it contains this:
+    EventType::type
+
+The reason this change is needed is that ## is the preprocessor's token-pasting operator.
+It glues 2 tokens into 1.
+For example
+    Foo##Bar
+becomes
+    FooBar
+
+But here we do not want token pasting at all.
+We just want normal C++ scope resolution, so if the macro is used like this
+    EVENT_CLASS_TYPE(MouseMoved)
+then we want it to expand to
+    EventType::MouseMoved
+
+Using ## here tells the preprocessor to try to paste
+    ::
+with
+    MouseMoved
+which would form
+    ::MouseMoved
+and that is not a valid preprocessing token.
+That is exactly what the error means:
+    pasting formed '::MouseMoved', an invalid preprocessing token
+
+So the issue was not with MouseMoved itself.
+The macro was simply asking the preprocessor to do the wrong thing.
+Plain C++ syntax was needed here, not token pasting.
+
+Visual Studio didn't have a problem with that, it was building fine,
+but still, it's good to have it nice and working on all compilers.
+
+So the fix is simply to remove ##.
+Done.
+}
