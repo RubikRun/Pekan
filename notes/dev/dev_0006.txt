@@ -3295,3 +3295,25 @@ but still, it's good to have it nice and working on all compilers.
 So the fix is simply to remove ##.
 Done.
 }
+
+----------
+31.03.2026
+----------
+
+{
+While recording a video for Instagram I noticed a bug in the
+    Snake game
+    (Demo03)
+Basically whenever an apple is eaten we grow the snake but at the moment of growing we add a new square
+which looks like a "move" of the snake. However we continue doing the actual moves of the snake
+no matter if an "eating" happened. So sometimes it happens that right after eating an apple
+the snake makes 2 moves too quickly - one actual move and one move from growing the snake.
+To fix that we can just reset the regular move timer to 0 whenever the snake eats an apple:
+    m_frames = 0;
+This happens in
+    moveGrowing()
+so we can just do it at the end of that function.
+That's it.
+
+It works now.
+}

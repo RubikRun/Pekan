@@ -226,6 +226,8 @@ namespace Demo
 		m_drawObject.setVertexData(m_vertices.data(), m_vertices.size() * sizeof(int));
 
 		m_speedIdx++;
+
+		m_frames = 0;
 	}
 
 	void Snake::moveNormally()
