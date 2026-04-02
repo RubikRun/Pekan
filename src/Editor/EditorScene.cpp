@@ -59,8 +59,7 @@ namespace Editor
 
 	void EditorScene::addEntity()
 	{
-		const entt::entity entity = createEntity();
-		m_entities.push_back(entity);
+		createEntity();
 	}
 
 	void EditorScene::enableEntity(entt::entity entity)

@@ -3317,3 +3317,30 @@ That's it.
 
 It works now.
 }
+
+----------
+02.04.2026
+----------
+
+{
+Before proceeding to the next big step, which is a file format for Pekan scenes,
+let's quickly do a small change that will be important.
+
+Right now, we keep all entities in a scene in
+    entt::registry m_registry;
+in the base class
+    class Scene
+However, there is no direct way to get a list of all entities
+and we're going to need that for scene serialization.
+
+Luckily, we already do that in
+    EditorScene
+We manually keep a list of entity IDs:
+    std::vector<entt::entity> m_entities;
+We just need to move that to the base Scene class,
+together with any logic that uses it.
+
+That's it.
+Now we're in better shape for the scene file format.
+Done.
+}

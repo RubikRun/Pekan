@@ -17,8 +17,12 @@ namespace Pekan
 		// if they want a non-default name for their scene's layer
 		virtual std::string getLayerName() const override { return "scene_layer"; }
 
+		// Returns the unerlying ECS registry
 		entt::registry& getRegistry() { return m_registry; }
 		const entt::registry& getRegistry() const { return m_registry; }
+
+		// Returns a list of all entities in the scene
+		const std::vector<entt::entity>& getEntities() const { return m_entities; }
 
 	protected: /* functions */
 
@@ -34,7 +38,14 @@ namespace Pekan
 
 	private: /* variables */
 
+		// Scene's underlying ECS registry
+		// containing all entities and their components
 		entt::registry m_registry;
+
+		// List of all entities in the scene.
+		// More precisely, this is a list of entity IDs.
+		// The actual entities live in the registry.
+		std::vector<entt::entity> m_entities;
 	};
 
 } // namespace Pekan
