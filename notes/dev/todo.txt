@@ -380,3 +380,21 @@
 0114 26.03.2026 (DONE): Remove lines like this one
                             using Demo::Demo09_Application;
                         from main.cpp files of demos.
+
+0115 09.04.2026 (TODO): Replace relevant uses of
+                            registry.all_of<ComponentType>(entity)
+                        followed by
+                            registry.get<ComponentType>(entity)
+                        with
+                            registry.try_get<ComponentType>(entity)
+                        in places where the component is optional and we just want to do something if it exists.
+                        Do not do this in places where the component is required by design,
+                        for example code that already operates on a typed view
+                        or helper/system functions whose contract says the entity must have that component.
+
+0116 12.04.2026 (TODO): Rename
+                            CameraComponent2D
+                        to
+                            Camera2DComponent
+                        Make sure the names of all components end in "Component"
+                        and removing "Component" from the end gives you the user-facing component name.
