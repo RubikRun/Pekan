@@ -47,12 +47,15 @@ add_subdirectory(dep/glad)
 add_subdirectory(dep/imgui)
 # Add glm subdirectory
 add_subdirectory(dep/glm)
+# Add json subdirectory
+add_subdirectory(dep/json)
 
 # Add all projects for external libraries into a folder called "dep"
 set_target_properties(glfw PROPERTIES FOLDER "dep")
 set_target_properties(glad PROPERTIES FOLDER "dep")
 set_target_properties(imgui PROPERTIES FOLDER "dep")
 set_target_properties(glm PROPERTIES FOLDER "dep")
+set_target_properties(json PROPERTIES FOLDER "dep")
 
 if(WITH_DEMO_PROJECTS)
 	# Add all demo projects into a folder called "Demos"
@@ -141,7 +144,7 @@ SOURCE_GROUP("Header Files\\Time" FILES
 SOURCE_GROUP("Header Files\\Entity" FILES src/Core/Entity/DisabledComponent.h)
 
 # Set link libraries for Core
-target_link_libraries(Core PRIVATE glfw)
+target_link_libraries(Core PRIVATE glfw json)
 target_link_libraries(Core PUBLIC glm)
 
 # Require directory "dep/entt/single_include" to exist

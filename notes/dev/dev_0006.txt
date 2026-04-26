@@ -3353,3 +3353,34 @@ Done.
 Created a detail plan for .pksc - a file format for Pekan scenes:
     notes\plan\plan_0006_pkscFileFormat.md
 }
+
+{
+Let's start with Step 1 of the plan.
+
+First, got
+    json.hpp
+from
+    https://github.com/nlohmann/json/releases/tag/v3.12.0    (latest release currently)
+and put it under
+    dep/json/
+
+Then, we could directly use this header,
+we don't need to compile anything into a library and link to it,
+but it would be cleaner to still have a CMake target for JSON.
+Since it doesn't need to be compiled, it can be an INTERFACE target:
+    add_library(json INTERFACE)
+And we'll set the dep/json directory itself as an include directory of the target:
+    target_include_directories(json INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+so that targets thah link agains the json target can include json.hpp like this:
+    #include <json.hpp>
+
+Finally, we need to acutally link Core agains the new json target:
+    target_link_libraries(Core PRIVATE glfw json)
+For now we'll link privately. In the future we might decide to give access to JSON through Pekan's Core.
+
+That's it.
+Tried including json.hpp in a source file in Core and it compiled fine.
+Done.
+}
