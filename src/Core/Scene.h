@@ -1,14 +1,21 @@
 #pragma once
 
 #include "Layer.h"
+#include "Entity/EntityID.h"
 
 #include <entt/entt.hpp>
+#include <vector>
 
 namespace Pekan
 {
+	class SceneSerializer;
 
 	class Scene : public Layer
 	{
+		// Declare SceneSerializer as a friend class so it can call non-public scene-management methods,
+		// like createEntity(EntityID), setNextEntityId(EntityID), etc.
+		friend class SceneSerializer;
+
 	public: /* functions */
 
 		Scene(PekanApplication* application) : Layer(application) {}
@@ -26,7 +33,12 @@ namespace Pekan
 
 	protected: /* functions */
 
+		// Wipes the scene, destroying all entities and components in the registry,
+		// clearing the entity list, and resetting the "next EntityID" counter.
+		virtual void clear();
+
 		// Creates a new entity in the scene and returns it.
+		// Attaches an EntityIDComponent with a newly-generated, unique EntityID.
 		entt::entity createEntity();
 		// Destroys the given entity in the scene.
 		void destroyEntity(entt::entity entity);
@@ -35,6 +47,28 @@ namespace Pekan
 		void enableEntity(entt::entity entity);
 		// Disables the given entity in the scene.
 		void disableEntity(entt::entity entity);
+
+		// Moves / takes ownership of another scene's state,
+		// including its registry, entity list, and "next EntityID" counter.
+		// Other scene's state (layer-level state, application pointer, etc.)
+		// is NOT touched - only the data that defines the scene's contents is moved.
+		virtual void adoptFrom(Scene&& other);
+
+	private: /* functions */
+
+		// Creates a new entity in the scene with the given EntityID.
+		//
+		// Does NOT advance the "next EntityID" counter - the caller is responsible for
+		// calling setNextEntityId() after finished creating entities via this method.
+		entt::entity createEntity(EntityID entityId);
+
+		// Sets the "next EntityID" counter - the value of this counter
+		// determines the next EntityID that will be assigned by createEntity().
+		//
+		// WARNING: EntityIDs are assigned incrementally, so the value provided here must be such that:
+		// - it's a valid non-used EntityID (not equal to INVALID_ENTITY_ID), and
+		// - all greater EntityIDs are also valid and unused
+		void setNextEntityId(EntityID nextEntityId);
 
 	private: /* variables */
 
@@ -46,6 +80,11 @@ namespace Pekan
 		// More precisely, this is a list of entity IDs.
 		// The actual entities live in the registry.
 		std::vector<entt::entity> m_entities;
+
+		// The value of this counter determines the next EntityID that will be assigned by createEntity().
+		// It is incremented after each successful call to createEntity().
+		// Always >= 1, since 0 is reserved for INVALID_ENTITY_ID.
+		EntityID m_nextEntityId = 1;
 	};
 
 } // namespace Pekan
