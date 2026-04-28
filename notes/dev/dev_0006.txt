@@ -3384,3 +3384,28 @@ That's it.
 Tried including json.hpp in a source file in Core and it compiled fine.
 Done.
 }
+
+{
+Step 2 now.
+
+Implemented Step 2 from the .pksc plan,
+except for the last Editor point, i'll do that next.
+
+Nothing surprising here:
+added EntityID, EntityIDComponent, NameComponent,
+and updated Scene so every newly created entity gets a stable EntityIDComponent.
+
+A couple of small implementation details:
+    SceneSerializer is only forward-declared in Scene.h
+so Scene.h does not need to include the future serializer header or pull in JSON.
+
+Also made
+    adoptFrom(Scene&& other)
+guard against self-adoption.
+Probably not something we'll ever intentionally do,
+but it makes the move logic less fragile.
+
+Updated CMakeLists.txt for the new Core entity headers.
+
+Build works.
+}
