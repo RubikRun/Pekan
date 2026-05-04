@@ -3409,3 +3409,39 @@ Updated CMakeLists.txt for the new Core entity headers.
 
 Build works.
 }
+
+----------
+04.05.2026
+----------
+
+{
+Next, finished the last Editor point from Step 2.
+
+The entities window was still showing raw entt::entity values,
+and EntityPropertiesGUIWindow was also storing the selected entity as an entt::entity.
+That is not what we want for the scene file work,
+because entt::entity is just a runtime handle and can become stale/recycled
+after entities are recreated.
+
+So now the entities list uses EntityIDComponent for labels.
+If an entity has a NameComponent, we show:
+    <name> (<id>)
+otherwise we show:
+    Entity <id>
+
+Then changed EntityPropertiesGUIWindow so setEntity() takes an EntityID
+instead of entt::entity.
+Internally it stores the selected EntityID,
+and resolves it back to a live entt::entity when it needs to read/write components.
+
+One small problem appeared:
+Some of the old code assumed updateWidgetsVisibility() could handle entt::null.
+But after this change it is cleaner if that function only gets an actual non-null entity.
+So the null-selection case is handled earlier,
+and we hide the component widgets there.
+
+This keeps the editor UI using the same stable IDs
+that will later be saved in .pksc files.
+
+With that, step 2 is done.
+}

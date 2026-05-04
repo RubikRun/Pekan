@@ -4,6 +4,9 @@
 #include "EntityPropertiesGUIWindow.h"
 #include "PekanLogger.h"
 
+#include "Entity/EntityIDComponent.h"
+#include "Entity/NameComponent.h"
+
 using namespace Pekan;
 using namespace Pekan::GUI;
 
@@ -62,13 +65,32 @@ namespace Editor
 	{
 		PK_ASSERT_QUICK(m_scene != nullptr);
 
+		const entt::registry& registry = m_scene->getRegistry();
 		const std::vector<entt::entity>& entities = m_scene->getEntities();
 
-		// Create a vector of entity labels to display in the list widget
+		// Each list item is built from the entity's stable EntityID
+		// and (when present) its NameComponent, so that:
+		//   - named entities show up as "<name> (<id>)", e.g. "red_rectangle (3)"
+		//   - unnamed entities show up as "Entity <id>", e.g. "Entity 3"
 		std::vector<std::string> entityLabels;
+		entityLabels.reserve(entities.size());
 		for (const entt::entity entity : entities)
 		{
-			entityLabels.push_back("Entity " + std::to_string(static_cast<uint32_t>(entity)));
+			PK_ASSERT_QUICK(registry.all_of<EntityIDComponent>(entity));
+			const EntityID id = registry.get<EntityIDComponent>(entity).id;
+
+			// An entity may or may not have a NameComponent, so we use try_get here
+			const NameComponent* nameComponent = registry.try_get<NameComponent>(entity);
+			const bool hasName = (nameComponent != nullptr) && !nameComponent->name.empty();
+
+			if (hasName)
+			{
+				entityLabels.push_back(nameComponent->name + " (" + std::to_string(id) + ")");
+			}
+			else
+			{
+				entityLabels.push_back("Entity " + std::to_string(id));
+			}
 		}
 		// Update entities list widget with the new entity labels
 		gui.entitiesListWidget->setItems(entityLabels);
@@ -80,15 +102,19 @@ namespace Editor
 
 		if (m_selectedEntityIndex < 0)
 		{
-			m_entityPropertiesGuiWindow->setEntity(entt::null);
+			m_entityPropertiesGuiWindow->setEntity(INVALID_ENTITY_ID);
 			return;
 		}
 
 		const std::vector<entt::entity>& entities = m_scene->getEntities();
 		PK_ASSERT_QUICK(m_selectedEntityIndex < int(entities.size()));
 
+		// Translate the entt::entity of the selected entity to an EntityID
 		const entt::entity selectedEntity = entities[m_selectedEntityIndex];
-		m_entityPropertiesGuiWindow->setEntity(selectedEntity);
+		const entt::registry& registry = m_scene->getRegistry();
+		PK_ASSERT_QUICK(registry.all_of<EntityIDComponent>(selectedEntity));
+		const EntityID selectedEntityId = registry.get<EntityIDComponent>(selectedEntity).id;
+		m_entityPropertiesGuiWindow->setEntity(selectedEntityId);
 	}
 
 } // namespace Editor

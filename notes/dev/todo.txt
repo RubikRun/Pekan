@@ -398,3 +398,18 @@
                             Camera2DComponent
                         Make sure the names of all components end in "Component"
                         and removing "Component" from the end gives you the user-facing component name.
+
+0117 28.04.2026 (TODO): Use "const" in such calls:
+                            registry.view<const EntityIDComponent>
+                        everywhere where possible
+
+0118 04.05.2026 (TODO): Add a Scene-level helper:
+                            findEntityById(EntityID)
+                        and use it in EntityPropertiesGUIWindow::resolveSelectedEntity()
+                        instead of duplicating the EntityID lookup loop there.
+
+0119 06.05.2026 (TODO): Add a Scene-level helper:
+                            getEntityId(entt::entity)
+                        that returns an EntityID
+                        and use it in
+                            EntitiesGUIWindow::updateEntityPropertiesGUIWindow

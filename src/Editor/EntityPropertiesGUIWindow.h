@@ -9,6 +9,8 @@
 #include "SeparatorWidget.h"
 #include "ContextMenuWidget.h"
 
+#include "Entity/EntityID.h"
+
 #include <entt/entt.hpp>
 
 namespace Pekan
@@ -30,8 +32,9 @@ namespace Editor
 
 		std::string getLayerName() const override { return "entity_properties_gui_window"; }
 
-		// Sets the entity whose properties will be displayed in this GUI window
-		void setEntity(entt::entity entity);
+		// Sets the entity whose properties will be displayed in this GUI window.
+		// Pass INVALID_ENTITY_ID to clear the selection.
+		void setEntity(EntityID entityId);
 
 		// Sets the scene to which the entity belongs
 		void setScene(std::shared_ptr<EditorScene> scene);
@@ -48,6 +51,11 @@ namespace Editor
 
 		// Updates visibility of component widgets based on which components the given entity has
 		void updateWidgetsVisibility(entt::entity entity);
+
+		// Resolves the currently selected EntityID to an entt::entity by looking it up in the
+		// scene's registry. Returns entt::null if no entity is selected, or if the selected
+		// entity no longer exists (e.g. it was destroyed since selection).
+		entt::entity resolveSelectedEntity() const;
 
 	private: /* variables */
 
@@ -72,8 +80,10 @@ namespace Editor
 			Pekan::GUI::ContextMenuWidget_Ptr componentsContextMenuWidget = std::make_shared<Pekan::GUI::ContextMenuWidget>();
 		} gui;
 
-		// Entity whose properties are currently displayed in this GUI window.
-		entt::entity m_entity = entt::null;
+		// EntityID of the entity whose properties are currently displayed in this GUI window.
+		// Stored as a stable EntityID (rather than entt::entity) - the corresponding entt::entity
+		// is resolved on demand from current registry.
+		EntityID m_selectedEntityId = INVALID_ENTITY_ID;
 
 		// Pointer to the scene to which the entity belongs
 		std::shared_ptr<EditorScene> m_scene;

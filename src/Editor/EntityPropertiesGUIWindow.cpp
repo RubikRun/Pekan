@@ -6,6 +6,7 @@
 #include "PekanUserMessageBox.h"
 
 #include "Entity/DisabledComponent.h"
+#include "Entity/EntityIDComponent.h"
 #include "TransformComponent2D.h"
 #include "SpriteComponent.h"
 #include "CameraComponent2D.h"
@@ -87,14 +88,24 @@ namespace Editor
 	{
 		PK_ASSERT_QUICK(m_scene != nullptr);
 
+		const entt::entity entity = resolveSelectedEntity();
+
+		// If a non-null EntityID is selected but it no longer resolves to a live entt::entity
+		// (e.g. the entity was destroyed since selection),
+		// reset the UI to the "no entity selected" state.
+		if (m_selectedEntityId != INVALID_ENTITY_ID && entity == entt::null)
+		{
+			setEntity(INVALID_ENTITY_ID);
+		}
+
 		const int selectedComponentIndex = gui.componentsContextMenuWidget->getSelectedItemId();
 		if (selectedComponentIndex >= 0)
 		{
-			if (m_entity != entt::null)
+			if (entity != entt::null)
 			{
-				m_scene->addComponent(m_entity, selectedComponentIndex);
-				updateWidgetsVisibility(m_entity);
-				updateWidgetsFromComponentsOfEntity(m_entity);
+				m_scene->addComponent(entity, selectedComponentIndex);
+				updateWidgetsVisibility(entity);
+				updateWidgetsFromComponentsOfEntity(entity);
 			}
 			else
 			{
@@ -102,28 +113,29 @@ namespace Editor
 			}
 		}
 
-		if (m_entity != entt::null)
+		if (entity != entt::null)
 		{
 			if (gui.enabledCheckboxWidget->wasChangedByUserSinceLastAccess())
 			{
 				const bool isEntityEnabled = gui.enabledCheckboxWidget->isChecked();
 				if (isEntityEnabled)
 				{
-					m_scene->enableEntity(m_entity);
+					m_scene->enableEntity(entity);
 				}
 				else
 				{
-					m_scene->disableEntity(m_entity);
+					m_scene->disableEntity(entity);
 				}
 			}
-			pushWidgetEditsToComponentsOfEntity(m_entity);
-			updateWidgetsFromComponentsOfEntity(m_entity);
+			pushWidgetEditsToComponentsOfEntity(entity);
+			updateWidgetsFromComponentsOfEntity(entity);
 		}
 	}
 
-	void EntityPropertiesGUIWindow::setEntity(entt::entity entity)
+	void EntityPropertiesGUIWindow::setEntity(EntityID entityId)
 	{
-		m_entity = entity;
+		m_selectedEntityId = entityId;
+		const entt::entity entity = resolveSelectedEntity();
 
 		std::string entityInfoText;
 		if (entity == entt::null)
@@ -132,7 +144,8 @@ namespace Editor
 		}
 		else
 		{
-			entityInfoText = "Selected Entity: " + std::to_string(uint32_t(entity));
+			PK_ASSERT_QUICK(m_selectedEntityId != INVALID_ENTITY_ID);
+			entityInfoText = "Selected Entity: " + std::to_string(m_selectedEntityId);
 		}
 		gui.entityInfoTextWidget->setText(entityInfoText);
 
@@ -142,14 +155,15 @@ namespace Editor
 			const entt::registry& registry = m_scene->getRegistry();
 			const bool isEntityEnabled = !registry.all_of<DisabledComponent>(entity);
 			gui.enabledCheckboxWidget->setChecked(isEntityEnabled);
+
+			updateWidgetsVisibility(entity);
+			updateWidgetsFromComponentsOfEntity(entity);
 		}
 		else
 		{
 			gui.enabledCheckboxWidget->hide();
+			hideComponentWidgets();
 		}
-
-		updateWidgetsVisibility(entity);
-		updateWidgetsFromComponentsOfEntity(entity);
 	}
 
 	void EntityPropertiesGUIWindow::setScene(std::shared_ptr<EditorScene> scene)
@@ -160,6 +174,27 @@ namespace Editor
 			return;
 		}
 		m_scene = scene;
+	}
+
+	entt::entity EntityPropertiesGUIWindow::resolveSelectedEntity() const
+	{
+		if (m_selectedEntityId == INVALID_ENTITY_ID)
+		{
+			return entt::null;
+		}
+
+		PK_ASSERT_QUICK(m_scene != nullptr);
+
+		const entt::registry& registry = m_scene->getRegistry();
+		const auto view = registry.view<const EntityIDComponent>();
+		for (const entt::entity entity : view)
+		{
+			if (view.get<const EntityIDComponent>(entity).id == m_selectedEntityId)
+			{
+				return entity;
+			}
+		}
+		return entt::null;
 	}
 
 	void EntityPropertiesGUIWindow::hideComponentWidgets()
@@ -390,14 +425,9 @@ namespace Editor
 	void EntityPropertiesGUIWindow::updateWidgetsVisibility(entt::entity entity)
 	{
 		PK_ASSERT_QUICK(m_scene != nullptr);
+		PK_ASSERT_QUICK(entity != entt::null);
 
 		const entt::registry& registry = m_scene->getRegistry();
-
-		if (entity == entt::null)
-		{
-			hideComponentWidgets();
-			return;
-		}
 
 		if (registry.all_of<TransformComponent2D>(entity))
 		{
