@@ -85,6 +85,8 @@ add_library(Core STATIC
 	src/Core/LayerStack.cpp
 	src/Core/Scene.h
 	src/Core/Scene.cpp
+	src/Core/SceneSerializer.h
+	src/Core/SceneSerializer.cpp
 	src/Core/ISubsystem.h
 	src/Core/SubsystemManager.h
 	src/Core/SubsystemManager.cpp

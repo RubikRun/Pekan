@@ -3445,3 +3445,46 @@ that will later be saved in .pksc files.
 
 With that, step 2 is done.
 }
+
+----------
+10.05.2026
+----------
+
+{
+Continue now to step 3.
+
+I created the header file for the base SceneSerializer class:
+    SceneSerializer.h
+leaving implementations empty for now, will implement later.
+
+SceneSerializer lives in Core and owns the generic .pksc structure:
+    formatVersion
+    sceneType
+    settings
+    entities
+but it does not know anything about Renderer2D components.
+
+So the public API is small:
+    serialize(const Scene& scene)
+    deserialize(const std::string& jsonText, Scene& scene)
+These are not virtual.
+The base class owns the overall algorithm,
+and delegates only the scene-specific parts to virtual hooks:
+    getSceneType()
+    serializeComponents(...)
+    deserializeComponents(...)
+
+There is also one optional hook:
+    postDeserialize(Scene& scene)
+This is for work that needs the whole scene to exist before it can do its thing.
+For example, resolving parent-child relationships.
+
+Finally, the format version constants live here:
+    FORMAT_VERSION_MAJOR = 1
+    FORMAT_VERSION_MINOR = 0
+Writing always uses this version.
+Reading can reject future major versions
+and tolerate future minor versions with a warning.
+
+That's it for the header.
+}
