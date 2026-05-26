@@ -3488,3 +3488,53 @@ and tolerate future minor versions with a warning.
 
 That's it for the header.
 }
+
+----------
+27.05.2026
+----------
+
+{
+Time to implement the methods now.
+Let's start with
+    SceneSerializer::serialize()
+
+It has to write the top-level .pksc JSON object:
+    formatVersion
+    sceneType
+    settings
+    entities
+
+For now settings is just an empty object.
+
+Decided to refactor the part that creates the entities JSON into a small helper:
+    serializeEntities(...)
+This keeps serialize() focused on the top-level structure, and shorter.
+
+Each entity gets:
+    id
+    components
+and optionally:
+    name
+    enabled
+
+The optional fields are only written when needed.
+So unnamed entities don't get a name field, and enabled entities don't get:
+    "enabled": true
+because enabled is the default.
+
+Each entity also has a list of components but, of course, we don't know what specific components
+the entity might have (this depends on the scene type) so we delegate the creation of the components JSON
+to the virtual hook:
+    serializeComponents(...)
+which will be implemented by each specific scene type, for now only "scene2d".
+
+Switched to using
+    nlohmann::ordered_json
+instead of
+    nlohmann::json
+This is useful because we care about readable, deterministic .pksc output.
+
+The final JSON is dumped with 4-space indentation.
+
+That's it for serialize().
+}

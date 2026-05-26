@@ -56,14 +56,14 @@ namespace Pekan
 		//
 		// The returned JSON value must be an object whose keys are component type names
 		// (e.g. "Transform2D", "RectangleGeometry", ...) and whose values are component data.
-		virtual nlohmann::json serializeComponents(entt::entity entity, const entt::registry& registry) const = 0;
+		virtual nlohmann::ordered_json serializeComponents(entt::entity entity, const entt::registry& registry) const = 0;
 
 		// Deserializes a given components JSON object
 		// and emplaces the resulting components on the given entity.
 		//
 		// `componentsJson` is the value of the entity's "components" field — an object whose
 		// keys are component type names. Unknown keys will be reported as warnings and ignored.
-		virtual void deserializeComponents(const nlohmann::json& componentsJson, entt::entity entity, entt::registry& registry) const = 0;
+		virtual void deserializeComponents(const nlohmann::ordered_json& componentsJson, entt::entity entity, entt::registry& registry) const = 0;
 
 		// Optional hook called after deserialization is complete (every entity has been created and its components emplaced).
 		//
@@ -78,6 +78,11 @@ namespace Pekan
 		// - Writing always produces a file with this version.
 		static constexpr int FORMAT_VERSION_MAJOR = 1;
 		static constexpr int FORMAT_VERSION_MINOR = 0;
+
+	private: /* functions */
+
+		// Builds the JSON array for the scene's entities.
+		nlohmann::ordered_json serializeEntities(const Scene& scene, const entt::registry& registry) const;
 	};
 
 } // namespace Pekan
