@@ -3538,3 +3538,30 @@ The final JSON is dumped with 4-space indentation.
 
 That's it for serialize().
 }
+
+----------
+01.06.2026
+----------
+
+{
+Took a break from the .pksc work to set up an
+    AGENTS.md
+file in the root directory.
+This is a summary of the project aimed at AI coding agents, so they can quickly get a grasp
+of what Pekan is and what rules/conventions to follow when working on it.
+
+Most of it was gathered by an agent from the source files, these dev notes, and the demos.
+I then went over it and tweaked a bunch of things.
+
+It covers:
+- what Pekan is
+- repository layout
+- code style (includes ordering, namespaces, naming, logging, asserts)
+- GUI
+- demos
+- the "notes" directory
+- git conventions
+- a quick checklist for agents
+
+It's an initial version. I'll keep extending it over time.
+}
