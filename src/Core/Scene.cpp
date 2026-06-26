@@ -1,5 +1,6 @@
 #include "Scene.h"
 
+#include "Entity/EntityID.h"
 #include "PekanLogger.h"
 
 #include "Entity/DisabledComponent.h"
@@ -12,6 +13,11 @@ namespace Pekan
 
 	entt::entity Scene::createEntity()
 	{
+		PK_ASSERT(m_nextEntityId != INVALID_ENTITY_ID && m_nextEntityId >= MIN_ENTITY_ID,
+			"Cannot generate an ID for a new entity, because scene's \"next EntityID\" counter is invalid.", "Pekan");
+		PK_ASSERT(m_nextEntityId < MAX_ENTITY_ID,
+			"Cannot generate an ID for a new entity, because scene's \"next EntityID\" counter has overflowed.", "Pekan");
+
 		const entt::entity entity = m_registry.create();
 		m_registry.emplace<EntityIDComponent>(entity, m_nextEntityId++);
 		m_entities.push_back(entity);
@@ -20,7 +26,8 @@ namespace Pekan
 
 	entt::entity Scene::createEntity(EntityID entityId)
 	{
-		PK_ASSERT_QUICK(entityId != INVALID_ENTITY_ID);
+		PK_ASSERT(entityId != INVALID_ENTITY_ID && entityId >= MIN_ENTITY_ID && entityId <= MAX_ENTITY_ID,
+			"Cannot create entity because given entity ID is invalid.", "Pekan");
 		// TODO: replace with a helper function that checks if an EntityID exists in the scene.
 		PK_DEBUG_CODE
 		(
@@ -28,7 +35,7 @@ namespace Pekan
 			for (const entt::entity entity : m_entities)
 			{
 				PK_ASSERT(m_registry.get<EntityIDComponent>(entity).id != entityId,
-					"Trying to create entity with Entity ID " + std::to_string(entityId)
+					"Trying to create entity with ID " + std::to_string(entityId)
 					+ " which already exists in the scene.", "Pekan");
 			}
 			// Check if the EntityID already exists in the registry.
@@ -37,7 +44,7 @@ namespace Pekan
 			for (const entt::entity entity : m_registry.view<EntityIDComponent>())
 			{
 				PK_ASSERT(m_registry.get<EntityIDComponent>(entity).id != entityId,
-					"Trying to create entity with Entity ID " + std::to_string(entityId)
+					"Trying to create entity with ID " + std::to_string(entityId)
 					+ " which already exists in the scene.", "Pekan");
 			}
 		);
@@ -85,7 +92,7 @@ namespace Pekan
 	{
 		m_registry.clear();
 		m_entities.clear();
-		m_nextEntityId = 1;
+		m_nextEntityId = MIN_ENTITY_ID;
 	}
 
 	void Scene::adoptFrom(Scene&& other)
@@ -106,28 +113,66 @@ namespace Pekan
 
 	void Scene::setNextEntityId(EntityID nextEntityId)
 	{
-		PK_ASSERT_QUICK(nextEntityId != INVALID_ENTITY_ID);
+		PK_ASSERT(nextEntityId != INVALID_ENTITY_ID && nextEntityId >= MIN_ENTITY_ID && nextEntityId <= MAX_ENTITY_ID,
+			"Trying to set Scene's \"next EntityID\" to an invalid entity ID.", "Pekan");
 		// TODO: replace with a helper function that checks if an EntityID exists in the scene.
 		PK_DEBUG_CODE
 		(
-			// Check if the given "next Entity ID" already exists in the entity list
+			// Check if the given "next EntityID" already exists in the entity list
 			for (const entt::entity entity : m_entities)
 			{
 				PK_ASSERT(m_registry.get<EntityIDComponent>(entity).id != nextEntityId,
-					"Trying to set Scene's \"next Entity ID\" to " + std::to_string(nextEntityId)
+					"Trying to set Scene's \"next EntityID\" to " + std::to_string(nextEntityId)
 					+ " which already exists in the scene.", "Pekan");
 			}
-			// Check if the given "next Entity ID" already exists in the registry.
+			// Check if the given "next EntityID" already exists in the registry.
 			// All entities in the registry are supposed to be in the entity list as well,
 			// but still, do it as a sanity check.
 			for (const entt::entity entity : m_registry.view<EntityIDComponent>())
 			{
 				PK_ASSERT(m_registry.get<EntityIDComponent>(entity).id != nextEntityId,
-					"Trying to set Scene's \"next Entity ID\" to " + std::to_string(nextEntityId)
+					"Trying to set Scene's \"next EntityID\" to " + std::to_string(nextEntityId)
 					+ " which already exists in the scene.", "Pekan");
 			}
 		);
 		m_nextEntityId = nextEntityId;
+	}
+
+	bool Scene::syncNextEntityIdToEntities()
+	{
+		const EntityID maxSceneEntityId = getMaxEntityIdInScene();
+		if (maxSceneEntityId == MAX_ENTITY_ID)
+		{
+			PK_LOG_ERROR("Failed to sync scene's \"next EntityID\" counter to scene's entities. "
+				"Scene already contains an entity with the maximum EntityID value (" + std::to_string(MAX_ENTITY_ID) + ").", "Pekan");
+			return false;
+		}
+		if (maxSceneEntityId == INVALID_ENTITY_ID)
+		{
+			setNextEntityId(MIN_ENTITY_ID);
+			return true;
+		}
+
+		setNextEntityId(maxSceneEntityId + 1);
+		return true;
+	}
+
+	EntityID Scene::getMaxEntityIdInScene() const
+	{
+		const entt::registry& registry = getRegistry();
+
+		EntityID maxEntityId = INVALID_ENTITY_ID;
+		for (const entt::entity entity : getEntities())
+		{
+			PK_ASSERT_QUICK(registry.all_of<EntityIDComponent>(entity));
+			const EntityID entityId = registry.get<EntityIDComponent>(entity).id;
+			if (entityId > maxEntityId)
+			{
+				maxEntityId = entityId;
+			}
+		}
+
+		return maxEntityId;
 	}
 
 } // namespace Pekan

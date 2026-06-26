@@ -1,14 +1,29 @@
 #pragma once
 
+#include "Entity/EntityID.h"
+
 #include <entt/entt.hpp>
 #include <json.hpp>
 
 #include <string>
+#include <unordered_set>
 
 namespace Pekan
 {
 
 	class Scene;
+
+	// A struct representing the format version of a scene file.
+	// It is used to determine the compatibility of a scene file with the current engine version.
+	//
+	// NOTE: Members are deliberately not named "major" and "minor"
+	//       because some system headers define macros with those names
+	//       (e.g. glibc's <sys/sysmacros.h> on Linux).
+	struct FormatVersion
+	{
+		int versionMajor = 0;
+		int versionMinor = 0;
+	};
 
 	// Base class for (de)serializing a Scene to/from a .pksc file.
 	//
@@ -62,8 +77,13 @@ namespace Pekan
 		// and emplaces the resulting components on the given entity.
 		//
 		// `componentsJson` is the value of the entity's "components" field — an object whose
-		// keys are component type names. Unknown keys will be reported as warnings and ignored.
-		virtual void deserializeComponents(const nlohmann::ordered_json& componentsJson, entt::entity entity, entt::registry& registry) const = 0;
+		// keys are component type names.
+		//
+		// Returns true on success, false on a fatal error that should abort the whole load.
+		// Non-fatal issues do not abort the load and still return true, for example:
+		// - unknown component keys are reported as warnings and skipped
+		// - missing optional fields fall back to their defaults
+		virtual bool deserializeComponents(const nlohmann::ordered_json& componentsJson, entt::entity entity, entt::registry& registry) const = 0;
 
 		// Optional hook called after deserialization is complete (every entity has been created and its components emplaced).
 		//
@@ -72,17 +92,25 @@ namespace Pekan
 
 	protected: /* constants */
 
-		// Format version supported by this serializer.
-		// - Reading a file with a higher major version than this is refused.
-		// - Reading a file with a higher minor version than this is allowed (with a warning).
-		// - Writing always produces a file with this version.
-		static constexpr int FORMAT_VERSION_MAJOR = 1;
-		static constexpr int FORMAT_VERSION_MINOR = 0;
+		// Format version supported by Pekan currently.
+		// - Loading a scene file with a higher major version than this is refused.
+		// - Loading a scene file with a higher minor version than this is allowed (with a warning).
+		// - Exporting a scene produces a file with this version.
+		static constexpr FormatVersion FORMAT_VERSION_SUPPORTED = { 1, 0 };
 
 	private: /* functions */
 
 		// Builds the JSON array for the scene's entities.
 		nlohmann::ordered_json serializeEntities(const Scene& scene, const entt::registry& registry) const;
+
+		// Deserializes the entities of a given scene JSON object and directly adds them to the given scene.
+		// Returns true on success, false on error.
+		bool deserializeEntities(const nlohmann::ordered_json& sceneData, Scene& scene) const;
+
+		// Deserializes a single entity from a given entity JSON object and directly adds it to the given scene.
+		// `entityIds` is the set of all entity IDs loaded so far. It is updated with the new entity ID.
+		// Returns true on success, false on error (in which case the set is not changed).
+		bool deserializeEntity(const nlohmann::ordered_json& entityData, Scene& scene, entt::registry& registry, std::unordered_set<EntityID>& entityIds) const;
 	};
 
 } // namespace Pekan

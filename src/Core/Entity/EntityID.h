@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
 
 namespace Pekan
 {
@@ -21,5 +22,11 @@ namespace Pekan
 
 	// An EntityID value reserved to mean "no entity".
 	constexpr EntityID INVALID_ENTITY_ID = 0;
+
+	// The minimum value an EntityID can take.
+	constexpr EntityID MIN_ENTITY_ID = 1;
+
+	// The maximum value an EntityID can take.
+	constexpr EntityID MAX_ENTITY_ID = std::numeric_limits<EntityID>::max();
 
 } // namespace Pekan

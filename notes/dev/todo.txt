@@ -413,3 +413,13 @@
                         that returns an EntityID
                         and use it in
                             EntitiesGUIWindow::updateEntityPropertiesGUIWindow
+
+0120 06.06.2026 (TODO): Change all "//" comments from SceneSerializer.h to "///"
+
+0121 25.06.2026 (TODO): When I run "gen.bat --clean" the whole build directory gets deleted.
+                        Instead I want the Visual Studio build to get deleted, but the ninja build to stay
+                        (It's used for the C++ and CMake extension in Cursor and Visual Studio Code).
+                        I guess a good way to do that is to have build/build-vs and build/build-ninja.
+
+0122 14.07.2026 (TODO): Can Scene's m_nextEntityId ever be MAX_ENTITY_ID or greater?
+                        What will happen then? Maybe we need to handle this case.

@@ -3565,3 +3565,162 @@ It covers:
 
 It's an initial version. I'll keep extending it over time.
 }
+
+----------
+04.06.2026
+----------
+
+{
+Let's implement
+    SceneSerializer::deserialize()
+now.
+
+----------
+31.07.2026
+----------
+
+Completed the implementation.
+Passed an AI Code Review, implemented some suggested changes from it.
+
+High-level, the load is structured like this:
+1. Parse the JSON text.
+2. Validate the generic scene metadata:
+    formatVersion
+    sceneType
+3. Read the entities array and deserialize the generic data of each entity:
+    id
+    name
+    enabled
+    components
+4. Create each entity in the scene with its persistent EntityID,
+   add NameComponent/DisabledComponent when needed,
+   and delegate the actual component loading to:
+    deserializeComponents(...)
+5. Sync Scene's next-EntityID counter to the loaded entities.
+6. Call:
+    postDeserialize(...)
+   after all entities and components exist.
+
+So SceneSerializer still knows nothing about Transform2D, Sprite, Camera2D, etc.
+It owns the common .pksc structure and the overall loading algorithm,
+while a scene-type-specific serializer will handle the contents of components
+and any work that requires the whole loaded scene.
+
+Now, some details.
+
+I split the validation/deserialization into a bunch of small helpers.
+There is quite a lot of input validation here,
+and keeping all of it directly in deserialize() would make the main algorithm difficult to follow.
+The helpers validate both presence and JSON type of required fields,
+and log a specific error when something is wrong.
+
+The whole operation is wrapped in try/catch for nlohmann JSON exceptions.
+Invalid JSON syntax gets a parse-specific error,
+while values that cannot be converted to the expected C++ type get a general JSON-data error.
+The function returns false on every fatal error.
+
+Format version is now represented by one
+    FormatVersion
+value instead of 2 separate integers:
+    FORMAT_VERSION_SUPPORTED = { 1, 0 };
+The members are NOT simply called
+    major
+    minor
+because some Linux system headers define macros with those names.
+Instead they are called
+    versionMajor
+    versionMinor
+
+Loading follows the compatibility rule from the plan:
+- a higher major version is refused
+- a higher minor version with the same major is accepted with a warning
+The warning mentions that unknown components/fields will be ignored.
+The scene type must exactly match:
+    getSceneType()
+of the concrete serializer.
+
+The settings field is intentionally left alone for now.
+It is optional, and the MVP does not define any settings yet.
+
+For each entity we first deserialize all generic top-level data into:
+    EntityTopLevelData
+before creating anything.
+This means we know that its ID, optional name, optional enabled status,
+and components object are structurally valid before adding that entity to the scene.
+
+The optional fields keep the defaults from the format:
+- a missing/empty name means no NameComponent
+- missing enabled means true
+The components field, however, is required and must be an object,
+even if the object is empty.
+
+EntityID validation needed some care.
+The JSON ID is intentionally read into a
+    uint64_t
+first, and only converted to EntityID after validation.
+If we read directly into EntityID, which is currently uint32_t,
+a value greater than uint32_t's maximum could be silently truncated
+before we get a chance to reject it.
+
+Negative IDs are rejected separately,
+then the raw value is checked against new constants:
+    MIN_ENTITY_ID
+    MAX_ENTITY_ID
+Only then is it cast to EntityID.
+We also keep an unordered_set of the IDs loaded so far,
+so duplicate IDs are detected before creating the second entity.
+
+Another important change is that:
+    deserializeComponents(...)
+now returns bool instead of void.
+The generic serializer needs to be able to abort the whole load
+if a concrete serializer finds a fatal component error,
+for example an unresolved name-based parent reference.
+Non-fatal things, such as an unknown component key,
+can still produce a warning and return true.
+Updated the .pksc plan to make this contract explicit for Steps 3 and 4.
+
+After all generic data for an entity has been validated,
+SceneSerializer uses Scene's private explicit-ID creation path:
+    createEntity(entityId)
+Then it adds NameComponent only for a non-empty name,
+disables the entity only when
+    enabled == false
+and passes the entity's components JSON to the virtual hook:
+    deserializeComponents(...)
+where the actual deserialization of the concrete components happens.
+
+Deserialization directly modifies the given Scene.
+If a later entity fails, earlier entities may already have been created,
+so the state of the scene on failure is deliberately unspecified.
+This is okay because the transactional behavior belongs at the Editor integration level in Step 5:
+deserialize into a temporary staging scene,
+and adopt it only when the whole load succeeds.
+
+There was also an EntityID-counter edge case to solve.
+After loading entities from a file, Scene needs to know what ID to give the next newly created entity.
+That should be:
+    max loaded EntityID + 1
+Instead of computing that in SceneSerializer,
+I put the logic in Scene itself:
+    syncNextEntityIdToEntities()
+It looks at all entities currently in the scene,
+finds the highest EntityID,
+and sets the counter to that ID + 1.
+If the scene is empty, it sets the counter back to MIN_ENTITY_ID.
+If the highest ID is already MAX_ENTITY_ID, it fails the load.
+In that case there is no valid next ID left,
+so it is better to fail now than later when createEntity() tries to make a new entity.
+
+Normal entity creation now also asserts that the counter is valid
+and that incrementing it cannot overflow.
+Those checks live in Scene/EntityID, next to the counter itself.
+
+Finally, once all entities are loaded and the counter is synced,
+    postDeserialize(scene)
+is called.
+This is intentionally last so a future Scene2DSerializer can resolve cross-entity references
+only after every referenced entity exists.
+
+With that, SceneSerializer::deserialize() is implemented.
+}

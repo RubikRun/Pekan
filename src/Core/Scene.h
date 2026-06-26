@@ -59,7 +59,7 @@ namespace Pekan
 		// Creates a new entity in the scene with the given EntityID.
 		//
 		// Does NOT advance the "next EntityID" counter - the caller is responsible for
-		// calling setNextEntityId() after finished creating entities via this method.
+		// calling syncNextEntityIdToEntities() after finished creating entities via this method.
 		entt::entity createEntity(EntityID entityId);
 
 		// Sets the "next EntityID" counter - the value of this counter
@@ -70,6 +70,17 @@ namespace Pekan
 		// - all greater EntityIDs are also valid and unused
 		void setNextEntityId(EntityID nextEntityId);
 
+		// Syncs the "next EntityID" counter to the current list of entities,
+		// setting it equal to { the max EntityID of an entity in the scene } + 1.
+		//
+		// Returns true on success, false on error (e.g. if the counter cannot be synced
+		// because an entity in the scene already uses the maximum allowed EntityID value).
+		bool syncNextEntityIdToEntities();
+
+		// Returns the max EntityID currently used by an entity in the scene.
+		// Returns INVALID_ENTITY_ID if the scene has no entities.
+		EntityID getMaxEntityIdInScene() const;
+
 	private: /* variables */
 
 		// Scene's underlying ECS registry
@@ -77,14 +88,12 @@ namespace Pekan
 		entt::registry m_registry;
 
 		// List of all entities in the scene.
-		// More precisely, this is a list of entity IDs.
-		// The actual entities live in the registry.
+		// More precisely, this is a list of entity IDs. The actual entities live in the registry.
 		std::vector<entt::entity> m_entities;
 
 		// The value of this counter determines the next EntityID that will be assigned by createEntity().
 		// It is incremented after each successful call to createEntity().
-		// Always >= 1, since 0 is reserved for INVALID_ENTITY_ID.
-		EntityID m_nextEntityId = 1;
+		EntityID m_nextEntityId = MIN_ENTITY_ID;
 	};
 
 } // namespace Pekan
