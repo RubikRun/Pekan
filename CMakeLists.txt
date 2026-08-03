@@ -22,6 +22,7 @@ if(WITH_DEMO_PROJECTS)
     add_subdirectory(demos/Demo06)
     add_subdirectory(demos/Demo07)
     add_subdirectory(demos/Demo08)
+    add_subdirectory(demos/DemoIg00)
 endif()
 # Add Graphics subdirectory
 add_subdirectory(src/Graphics)
@@ -60,6 +61,7 @@ if(WITH_DEMO_PROJECTS)
     set_target_properties(Demo06 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo07 PROPERTIES FOLDER "Demos")
     set_target_properties(Demo08 PROPERTIES FOLDER "Demos")
+    set_target_properties(DemoIg00 PROPERTIES FOLDER "Demos")
 endif()
 
 # Add a static library Core, compiling the following source files
