@@ -15,8 +15,12 @@ using namespace Pekan::Renderer2D;
 namespace Demo
 {
 
-	// World height in units (width follows window aspect)
 	static constexpr float CAMERA_HEIGHT = 10.0f;
+	static constexpr float GROUND_HEIGHT = 1.0f;
+	static constexpr float GROUND_CENTER_Y = -4.0f;
+	static constexpr float PLAYER_HEIGHT = 1.8f;
+	// Ninja sprites are ~232x439
+	static constexpr float PLAYER_WIDTH = PLAYER_HEIGHT * (232.0f / 439.0f);
 
 	bool DemoIg00_Scene::init()
 	{
@@ -27,25 +31,27 @@ namespace Demo
 
 		createCamera();
 
-		// Placeholder ground platform
-		m_ground.create(24.0f, 1.0f);
-		m_ground.setPosition({ 0.0f, -4.0f });
+		m_ground.create(24.0f, GROUND_HEIGHT);
+		m_ground.setPosition({ 0.0f, GROUND_CENTER_Y });
 		m_ground.setColor({ 0.25f, 0.55f, 0.25f, 1.0f });
+		m_groundTopY = GROUND_CENTER_Y + GROUND_HEIGHT * 0.5f;
 
-		// Placeholder player
-		m_player.create(0.8f, 1.2f);
-		m_player.setPosition({ 0.0f, -2.9f });
-		m_player.setColor({ 0.90f, 0.35f, 0.25f, 1.0f });
+		const glm::vec2 playerSize = { PLAYER_WIDTH, PLAYER_HEIGHT };
+		m_player.create({ 0.0f, m_groundTopY + playerSize.y * 0.5f }, playerSize);
+
+		auto renderer = std::make_unique<DirectSpriteRenderer>();
+		if (!renderer->init())
+		{
+			return false;
+		}
+		m_playerRenderer = std::move(renderer);
 
 		return true;
 	}
 
 	void DemoIg00_Scene::update(double deltaTime)
 	{
-		// Ready for platformer logic:
-		// PekanEngine::isKeyPressed(KeyCode::KEY_A / KEY_D / KEY_LEFT / KEY_RIGHT) — move
-		// PekanEngine::isKeyPressed(KeyCode::KEY_SPACE / KEY_W / KEY_UP) — jump
-		(void)deltaTime;
+		m_player.update(static_cast<float>(deltaTime), m_groundTopY);
 	}
 
 	void DemoIg00_Scene::render() const
@@ -54,14 +60,21 @@ namespace Demo
 		RenderCommands::clear();
 
 		m_ground.render();
-		m_player.render();
+		if (m_playerRenderer != nullptr)
+		{
+			m_playerRenderer->render(m_player.getVisualState());
+		}
 
 		Renderer2DSystem::endFrame();
 	}
 
 	void DemoIg00_Scene::exit()
 	{
-		m_player.destroy();
+		if (m_playerRenderer != nullptr)
+		{
+			m_playerRenderer->destroy();
+			m_playerRenderer.reset();
+		}
 		m_ground.destroy();
 	}
 

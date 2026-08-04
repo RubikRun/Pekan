@@ -4,6 +4,11 @@
 #include "Camera2D.h"
 #include "RectangleShape.h"
 
+#include "Player.h"
+#include "DirectSpriteRenderer.h"
+
+#include <memory>
+
 namespace Demo
 {
 
@@ -27,10 +32,12 @@ namespace Demo
 		void createCamera();
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
-
-		// Placeholder visuals — replace with real player / level later
 		Pekan::Renderer2D::RectangleShape m_ground;
-		Pekan::Renderer2D::RectangleShape m_player;
+
+		Player m_player;
+		std::unique_ptr<IEntityRenderer> m_playerRenderer;
+
+		float m_groundTopY = 0.0f;
 	};
 
 } // namespace Demo

@@ -8,6 +8,12 @@ add_executable(DemoIg00
 	DemoIg00_Application.cpp
 	DemoIg00_Scene.h
 	DemoIg00_Scene.cpp
+	EntityVisualState.h
+	IEntityRenderer.h
+	DirectSpriteRenderer.h
+	DirectSpriteRenderer.cpp
+	Player.h
+	Player.cpp
 )
 
 # Set link libraries for DemoIg00
