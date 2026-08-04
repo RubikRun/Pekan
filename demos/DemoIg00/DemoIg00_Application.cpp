@@ -22,8 +22,8 @@ namespace Demo
 		props.fps = 60.0;
 		props.numberOfSamples = 16;
 		props.windowProperties.title = getName();
-		props.windowProperties.width = 1280;
-		props.windowProperties.height = 720;
+		props.windowProperties.width = 518;
+		props.windowProperties.height = 922;
 		return props;
 	}
 

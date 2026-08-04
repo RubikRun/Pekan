@@ -30,6 +30,7 @@ namespace Demo
 		bool onKeyPressed(const Pekan::KeyPressedEvent& event) override;
 
 		void createCamera();
+		void updateCamera();
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 		Pekan::Renderer2D::RectangleShape m_ground;

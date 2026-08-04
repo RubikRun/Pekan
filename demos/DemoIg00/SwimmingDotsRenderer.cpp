@@ -22,10 +22,9 @@ namespace Demo
 
 	static constexpr int FRAMES_PER_ANIM = 10;
 	static constexpr unsigned char ALPHA_THRESHOLD = 16;
-	static constexpr float CAMERA_HEIGHT = 10.0f;
-	static constexpr float EXTRA_FOOT_OFFSET_WORLD = 5.0f * CAMERA_HEIGHT / 720.0f;
-	static constexpr float MIN_RADIUS_PX = 1.0f;
-	static constexpr float MAX_RADIUS_PX = 3.0f;
+	static constexpr float EXTRA_FOOT_OFFSET_WORLD = 0.11f;
+	static constexpr float MIN_RADIUS_PX = 2.0f;
+	static constexpr float MAX_RADIUS_PX = 6.0f;
 	static constexpr float MAX_SWIM_DIST_PX = 10.0f;
 	static constexpr float MIN_LIFE = 1.5f;
 	static constexpr float MAX_LIFE = 4.0f;
@@ -33,7 +32,12 @@ namespace Demo
 	static float pixelsToWorld()
 	{
 		const float windowHeight = static_cast<float>(PekanEngine::getWindow().getSize().y);
-		return CAMERA_HEIGHT / std::max(windowHeight, 1.0f);
+		float worldHeight = 7.0f;
+		if (const Camera2D_ConstPtr camera = Renderer2DSystem::getCamera())
+		{
+			worldHeight = camera->getSize().y;
+		}
+		return worldHeight / std::max(windowHeight, 1.0f);
 	}
 
 	static float computeBottomPadFraction(const unsigned char* data, int w, int h, int channels)
