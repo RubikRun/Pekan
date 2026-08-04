@@ -5,7 +5,7 @@
 #include "RenderCommands.h"
 #include "RenderState.h"
 #include "Renderer2DSystem.h"
-#include "SwimmingDotsRenderer.h"
+#include "FunctionGraphsRenderer.h"
 
 using Pekan::KeyPressedEvent;
 using Pekan::KeyCode;
@@ -43,7 +43,8 @@ namespace Demo
 		m_player.create({ 0.0f, m_groundTopY + playerSize.y * 0.5f }, playerSize);
 		updateCamera();
 
-		auto renderer = std::make_unique<SwimmingDotsRenderer>();
+		// SwimmingDotsRenderer kept for later gate/portal switching; active renderer:
+		auto renderer = std::make_unique<FunctionGraphsRenderer>();
 		if (!renderer->init())
 		{
 			return false;
