@@ -19,9 +19,9 @@ namespace Demo
 		void destroy() override;
 
 	private:
-		static constexpr int GRAPH_COUNT = 200;
-		static constexpr int SEGMENTS_PER_GRAPH = 56;
-		static constexpr int FUNC_TYPE_COUNT = 8;
+		static constexpr int GRAPH_COUNT = 100;
+		static constexpr int SEGMENTS_PER_GRAPH = 260;
+		static constexpr int FUNC_TYPE_COUNT = 10;
 
 		struct FramePixels
 		{
@@ -44,6 +44,7 @@ namespace Demo
 			float a = 1.0f;
 			float b = 1.0f;
 			float c = 0.0f;
+			float d = 0.0f;
 			float angle = 0.0f;
 			glm::vec2 originLocal = { 0.0f, 0.0f }; // in sprite-local units from center
 			glm::vec2 wiggleOffset = { 0.0f, 0.0f };

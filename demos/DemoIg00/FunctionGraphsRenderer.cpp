@@ -87,68 +87,98 @@ namespace Demo
 
 	void FunctionGraphsRenderer::initGraphs()
 	{
-		// Reference size for parameter scaling (matches typical player bbox)
 		constexpr float refH = 2.0f;
+		constexpr float PI = 3.14159265f;
 
 		for (Graph& g : m_graphs)
 		{
 			g.funcType = getRandomInt(0, FUNC_TYPE_COUNT - 1);
-			g.angle = getRandomFloat(0.0f, 6.2831853f);
+			g.angle = getRandomFloat(0.0f, 2.0f * PI);
 			g.originLocal = {
-				getRandomFloat(-0.35f, 0.35f) * refH * 0.53f,
-				getRandomFloat(-0.4f, 0.4f) * refH
+				getRandomFloat(-0.3f, 0.3f) * refH * 0.53f,
+				getRandomFloat(-0.35f, 0.35f) * refH
 			};
-			g.domain = getRandomFloat(0.55f, 1.15f) * refH;
+			// Slightly wider span so high-frequency waves still cross the silhouette
+			g.domain = getRandomFloat(0.85f, 1.4f) * refH;
 			g.wiggleOffset = { 0.0f, 0.0f };
 			g.wiggleVelocity = { 0.0f, 0.0f };
 			g.angleWiggle = 0.0f;
 			g.angleWiggleVelocity = 0.0f;
+			g.d = 0.0f;
 
 			switch (g.funcType)
 			{
-			case 0: // a * sin(b * x)
-				g.a = getRandomFloat(0.08f, 0.35f) * refH;
-				g.b = getRandomFloat(2.0f, 10.0f);
+			case 0: // a * sin(b * x) — many oscillations ("zoomed out")
+			{
+				const float oscillations = getRandomFloat(10.0f, 18.0f);
+				g.a = getRandomFloat(0.12f, 0.38f) * refH;
+				g.b = oscillations * 2.0f * PI / g.domain;
 				g.c = 0.0f;
 				break;
+			}
 			case 1: // a * cos(b * x)
-				g.a = getRandomFloat(0.08f, 0.35f) * refH;
-				g.b = getRandomFloat(2.0f, 10.0f);
+			{
+				const float oscillations = getRandomFloat(10.0f, 18.0f);
+				g.a = getRandomFloat(0.12f, 0.38f) * refH;
+				g.b = oscillations * 2.0f * PI / g.domain;
 				g.c = 0.0f;
 				break;
-			case 2: // a*x^2 + b*x + c
-				g.a = getRandomFloat(-0.4f, 0.4f) / refH;
-				g.b = getRandomFloat(-0.3f, 0.3f);
-				g.c = getRandomFloat(-0.15f, 0.15f) * refH;
+			}
+			case 2: // a*x^2 + b*x + c — steeper bowls / hills
+				g.a = getRandomFloat(-1.2f, 1.2f) / refH;
+				g.b = getRandomFloat(-0.8f, 0.8f);
+				g.c = getRandomFloat(-0.25f, 0.25f) * refH;
 				break;
-			case 3: // a * x
-				g.a = getRandomFloat(-0.8f, 0.8f);
+			case 3: // a * log(b * |x| + c) — sharper log bend
+				g.c = getRandomFloat(0.04f, 0.15f) * refH;
+				g.b = getRandomFloat(6.0f, 28.0f);
+				g.a = getRandomFloat(0.25f, 0.7f) * refH * (getRandomInt(0, 1) == 0 ? 1.0f : -1.0f);
+				break;
+			case 4: // a * tan(b * x) — denser asymptotes
+			{
+				const float asymptotes = getRandomFloat(3.0f, 6.0f);
+				g.a = getRandomFloat(0.08f, 0.22f) * refH;
+				g.b = asymptotes * PI / g.domain;
+				g.c = 0.0f;
+				break;
+			}
+			case 5: // a * |x| — occasional V, keep rarer feel via steeper slope
+				g.a = getRandomFloat(-1.2f, 1.2f);
 				g.b = 0.0f;
 				g.c = 0.0f;
 				break;
-			case 4: // a * |x|
-				g.a = getRandomFloat(-0.7f, 0.7f);
-				g.b = 0.0f;
+			case 6: // a * exp(-b * x^2) — narrower bumps
+				g.a = getRandomFloat(0.2f, 0.55f) * refH;
+				g.b = getRandomFloat(6.0f, 28.0f) / (refH * refH);
 				g.c = 0.0f;
 				break;
-			case 5: // a * exp(-b * x^2)
-				g.a = getRandomFloat(0.1f, 0.4f) * refH;
-				g.b = getRandomFloat(1.0f, 8.0f) / (refH * refH);
+			case 7: // a / (1 + b * x^2) — narrower peaks
+				g.a = getRandomFloat(0.2f, 0.55f) * refH;
+				g.b = getRandomFloat(8.0f, 40.0f) / (refH * refH);
 				g.c = 0.0f;
 				break;
-			case 6: // a / (1 + b * x^2)
-				g.a = getRandomFloat(0.1f, 0.4f) * refH;
-				g.b = getRandomFloat(1.0f, 12.0f) / (refH * refH);
-				g.c = 0.0f;
+			case 8: // a * sin(b * x) * cos(c * x) — fast beat pattern
+			{
+				const float osc1 = getRandomFloat(10.0f, 16.0f);
+				const float osc2 = getRandomFloat(2.0f, 5.0f);
+				g.a = getRandomFloat(0.12f, 0.36f) * refH;
+				g.b = osc1 * 2.0f * PI / g.domain;
+				g.c = osc2 * 2.0f * PI / g.domain;
 				break;
-			case 7: // a * sin(b * x) + c * x
-				g.a = getRandomFloat(0.06f, 0.28f) * refH;
-				g.b = getRandomFloat(2.0f, 9.0f);
-				g.c = getRandomFloat(-0.35f, 0.35f);
+			}
+			case 9: // a * sin(b * x) + c * sin(d * x) — two fast harmonics
+			{
+				const float osc1 = getRandomFloat(8.0f, 14.0f);
+				const float osc2 = getRandomFloat(14.0f, 22.0f);
+				g.a = getRandomFloat(0.1f, 0.28f) * refH;
+				g.b = osc1 * 2.0f * PI / g.domain;
+				g.c = getRandomFloat(0.08f, 0.22f) * refH;
+				g.d = osc2 * 2.0f * PI / g.domain;
 				break;
+			}
 			default:
-				g.a = 0.2f * refH;
-				g.b = 4.0f;
+				g.a = 0.25f * refH;
+				g.b = 12.0f * 2.0f * PI / g.domain;
 				g.c = 0.0f;
 				break;
 			}
@@ -162,11 +192,13 @@ namespace Demo
 		case 0: return graph.a * std::sin(graph.b * x);
 		case 1: return graph.a * std::cos(graph.b * x);
 		case 2: return graph.a * x * x + graph.b * x + graph.c;
-		case 3: return graph.a * x;
-		case 4: return graph.a * std::abs(x);
-		case 5: return graph.a * std::exp(-graph.b * x * x);
-		case 6: return graph.a / (1.0f + graph.b * x * x);
-		case 7: return graph.a * std::sin(graph.b * x) + graph.c * x;
+		case 3: return graph.a * std::log(graph.b * std::abs(x) + graph.c);
+		case 4: return graph.a * std::tan(graph.b * x);
+		case 5: return graph.a * std::abs(x);
+		case 6: return graph.a * std::exp(-graph.b * x * x);
+		case 7: return graph.a / (1.0f + graph.b * x * x);
+		case 8: return graph.a * std::sin(graph.b * x) * std::cos(graph.c * x);
+		case 9: return graph.a * std::sin(graph.b * x) + graph.c * std::sin(graph.d * x);
 		default: return 0.0f;
 		}
 	}
@@ -316,13 +348,22 @@ namespace Demo
 
 			glm::vec2 prevLocal(0.0f);
 			glm::vec4 prevColor(0.0f);
+			float prevY = 0.0f;
 			bool hasPrev = false;
+			constexpr float maxAbsY = 1.2f; // break near tan asymptotes / explosions
+			constexpr float maxJumpY = 0.55f;
 
 			for (int s = 0; s <= SEGMENTS_PER_GRAPH; s++)
 			{
 				const float t = static_cast<float>(s) / static_cast<float>(SEGMENTS_PER_GRAPH);
 				const float x = (t * 2.0f - 1.0f) * g.domain;
 				const float y = evalFunction(g, x);
+
+				if (!std::isfinite(y) || std::abs(y) > maxAbsY)
+				{
+					hasPrev = false;
+					continue;
+				}
 
 				const glm::vec2 local = {
 					origin.x + ca * x - sa * y,
@@ -338,7 +379,9 @@ namespace Demo
 				const bool opaque = (uv.x >= 0.0f && uv.x <= 1.0f && uv.y >= 0.0f && uv.y <= 1.0f)
 					&& sampleColor(frame, uv, color);
 
-				if (opaque && hasPrev)
+				const bool continuous = hasPrev && (std::abs(y - prevY) <= maxJumpY);
+
+				if (opaque && continuous)
 				{
 					const glm::vec2 world0 = {
 						basis.center.x + basis.facing * prevLocal.x,
@@ -356,6 +399,7 @@ namespace Demo
 				{
 					prevLocal = local;
 					prevColor = color;
+					prevY = y;
 					hasPrev = true;
 				}
 				else
