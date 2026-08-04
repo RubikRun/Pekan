@@ -5,6 +5,7 @@
 #include "RenderCommands.h"
 #include "RenderState.h"
 #include "Renderer2DSystem.h"
+#include "SwimmingDotsRenderer.h"
 
 using Pekan::KeyPressedEvent;
 using Pekan::KeyCode;
@@ -39,7 +40,7 @@ namespace Demo
 		const glm::vec2 playerSize = { PLAYER_WIDTH, PLAYER_HEIGHT };
 		m_player.create({ 0.0f, m_groundTopY + playerSize.y * 0.5f }, playerSize);
 
-		auto renderer = std::make_unique<DirectSpriteRenderer>();
+		auto renderer = std::make_unique<SwimmingDotsRenderer>();
 		if (!renderer->init())
 		{
 			return false;
@@ -51,21 +52,26 @@ namespace Demo
 
 	void DemoIg00_Scene::update(double deltaTime)
 	{
-		m_player.update(static_cast<float>(deltaTime), m_groundTopY);
+		const float dt = static_cast<float>(deltaTime);
+		m_player.update(dt, m_groundTopY);
+		if (m_playerRenderer != nullptr)
+		{
+			m_playerRenderer->update(dt, m_player.getVisualState());
+		}
 	}
 
 	void DemoIg00_Scene::render() const
 	{
 		Renderer2DSystem::beginFrame();
 		RenderCommands::clear();
-
 		m_ground.render();
+		Renderer2DSystem::endFrame();
+
+		// Custom player renderer draws with its own shader after the 2D batch
 		if (m_playerRenderer != nullptr)
 		{
 			m_playerRenderer->render(m_player.getVisualState());
 		}
-
-		Renderer2DSystem::endFrame();
 	}
 
 	void DemoIg00_Scene::exit()

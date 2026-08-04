@@ -12,6 +12,8 @@ add_executable(DemoIg00
 	IEntityRenderer.h
 	DirectSpriteRenderer.h
 	DirectSpriteRenderer.cpp
+	SwimmingDotsRenderer.h
+	SwimmingDotsRenderer.cpp
 	Player.h
 	Player.cpp
 )

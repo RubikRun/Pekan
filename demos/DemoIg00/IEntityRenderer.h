@@ -12,6 +12,9 @@ namespace Demo
 	public:
 		virtual ~IEntityRenderer() = default;
 
+		// Optional per-frame logic (particles, etc.). Default: no-op.
+		virtual void update(float dt, const EntityVisualState& state) { (void)dt; (void)state; }
+
 		virtual void render(const EntityVisualState& state) const = 0;
 		virtual void destroy() = 0;
 	};

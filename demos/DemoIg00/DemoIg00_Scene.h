@@ -5,7 +5,7 @@
 #include "RectangleShape.h"
 
 #include "Player.h"
-#include "DirectSpriteRenderer.h"
+#include "IEntityRenderer.h"
 
 #include <memory>
 
