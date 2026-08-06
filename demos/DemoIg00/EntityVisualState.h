@@ -21,6 +21,8 @@ namespace Demo
 		bool facingRight = true;
 		EntityAnim anim = EntityAnim::Idle;
 		int frame = 0;
+		// 1 = fully visible player texture/effect, 0 = fully replaced by glow
+		float opacity = 1.0f;
 	};
 
 } // namespace Demo

@@ -307,6 +307,7 @@ namespace Demo
 		};
 
 		float* v = m_vertexScratch.data();
+		const float opacity = std::clamp(state.opacity, 0.0f, 1.0f);
 		for (int i = 0; i < DOT_COUNT; i++)
 		{
 			const Dot& dot = m_dots[i];
@@ -329,7 +330,7 @@ namespace Demo
 				*v++ = dot.color.r;
 				*v++ = dot.color.g;
 				*v++ = dot.color.b;
-				*v++ = dot.color.a;
+				*v++ = dot.color.a * opacity;
 			}
 		}
 

@@ -327,6 +327,7 @@ namespace Demo
 
 		float* v = m_vertexScratch.data();
 		int floatCount = 0;
+		const float opacity = std::clamp(state.opacity, 0.0f, 1.0f);
 
 		auto emitVertex = [&](glm::vec2 worldPos, const glm::vec4& color)
 		{
@@ -335,7 +336,7 @@ namespace Demo
 			*v++ = color.r;
 			*v++ = color.g;
 			*v++ = color.b;
-			*v++ = color.a;
+			*v++ = color.a * opacity;
 			floatCount += 6;
 		};
 
