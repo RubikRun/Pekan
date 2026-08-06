@@ -31,14 +31,19 @@ namespace Demo
 
 		void createCamera();
 		void updateCamera();
+		void updatePortalTransition();
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 		Pekan::Renderer2D::RectangleShape m_ground;
+		Pekan::Renderer2D::RectangleShape m_portal;
 
 		Player m_player;
-		std::unique_ptr<IEntityRenderer> m_playerRenderer;
+		std::unique_ptr<IEntityRenderer> m_dotsRenderer;
+		std::unique_ptr<IEntityRenderer> m_functionsRenderer;
+		IEntityRenderer* m_activeRenderer = nullptr;
 
 		float m_groundTopY = 0.0f;
+		float m_portalX = 0.0f;
 	};
 
 } // namespace Demo
