@@ -16,6 +16,8 @@ add_executable(DemoIg00
 	SwimmingDotsRenderer.cpp
 	FunctionGraphsRenderer.h
 	FunctionGraphsRenderer.cpp
+	ColorGridRenderer.h
+	ColorGridRenderer.cpp
 	Player.h
 	Player.cpp
 )
