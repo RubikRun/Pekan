@@ -208,6 +208,7 @@ namespace Demo
 		if (!loadAnim("Idle", m_idle)) return false;
 		if (!loadAnim("Run", m_run)) return false;
 		if (!loadAnim("Jump", m_jump)) return false;
+		if (!loadAnim("Attack", m_attack)) return false;
 
 		initGraphs();
 
@@ -241,6 +242,7 @@ namespace Demo
 		case EntityAnim::Idle: return m_idle;
 		case EntityAnim::Run:  return m_run;
 		case EntityAnim::Jump: return m_jump;
+		case EntityAnim::Attack: return m_attack;
 		}
 		return m_idle;
 	}

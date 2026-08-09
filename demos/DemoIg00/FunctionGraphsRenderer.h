@@ -75,6 +75,7 @@ namespace Demo
 		AnimData m_idle;
 		AnimData m_run;
 		AnimData m_jump;
+		AnimData m_attack;
 
 		std::array<Graph, GRAPH_COUNT> m_graphs{};
 

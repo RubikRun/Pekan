@@ -28,6 +28,8 @@ namespace Demo
 		EntityAnim m_anim = EntityAnim::Idle;
 		int m_frame = 0;
 		float m_animTimer = 0.0f;
+		bool m_attacking = false;
+		bool m_attackKeyWasDown = false;
 	};
 
 } // namespace Demo

@@ -27,6 +27,8 @@ namespace Demo
 		m_anim = EntityAnim::Idle;
 		m_frame = 0;
 		m_animTimer = 0.0f;
+		m_attacking = false;
+		m_attackKeyWasDown = false;
 	}
 
 	void Player::update(float dt, float groundTopY)
@@ -73,21 +75,35 @@ namespace Demo
 
 	void Player::updateAnimation(float dt)
 	{
-		EntityAnim desired = EntityAnim::Idle;
-		if (!m_grounded)
+		const bool attackKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_L);
+		const bool isRunning = m_grounded && std::abs(m_velocity.x) > 0.01f;
+		if (!m_attacking && !isRunning && attackKeyDown && !m_attackKeyWasDown)
 		{
-			desired = EntityAnim::Jump;
-		}
-		else if (std::abs(m_velocity.x) > 0.01f)
-		{
-			desired = EntityAnim::Run;
-		}
-
-		if (desired != m_anim)
-		{
-			m_anim = desired;
+			m_attacking = true;
+			m_anim = EntityAnim::Attack;
 			m_frame = 0;
 			m_animTimer = 0.0f;
+		}
+		m_attackKeyWasDown = attackKeyDown;
+
+		if (!m_attacking)
+		{
+			EntityAnim desired = EntityAnim::Idle;
+			if (!m_grounded)
+			{
+				desired = EntityAnim::Jump;
+			}
+			else if (std::abs(m_velocity.x) > 0.01f)
+			{
+				desired = EntityAnim::Run;
+			}
+
+			if (desired != m_anim)
+			{
+				m_anim = desired;
+				m_frame = 0;
+				m_animTimer = 0.0f;
+			}
 		}
 
 		m_animTimer += dt;
@@ -100,6 +116,22 @@ namespace Demo
 				if (m_frame < ANIM_FRAME_COUNT - 1)
 				{
 					m_frame++;
+				}
+			}
+			else if (m_anim == EntityAnim::Attack)
+			{
+				if (m_frame < ANIM_FRAME_COUNT - 1)
+				{
+					m_frame++;
+				}
+				else
+				{
+					m_attacking = false;
+					m_anim = m_grounded
+						? (std::abs(m_velocity.x) > 0.01f ? EntityAnim::Run : EntityAnim::Idle)
+						: EntityAnim::Jump;
+					m_frame = 0;
+					m_animTimer = 0.0f;
 				}
 			}
 			else
