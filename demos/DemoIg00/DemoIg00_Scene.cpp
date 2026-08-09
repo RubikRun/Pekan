@@ -29,21 +29,21 @@ namespace Demo
 	static constexpr float PLAYER_WIDTH = PLAYER_HEIGHT * (232.0f / 439.0f);
 
 	static constexpr float PORTAL_WIDTH = 0.55f;
-	static constexpr float PORTAL_HEIGHT = 3.6f;
+	static constexpr int PORTAL_SQUARES = 7;
+	static constexpr float PORTAL_HEIGHT = PORTAL_WIDTH * static_cast<float>(PORTAL_SQUARES);
 	// Portal A: functions <-> dots; Portal B: dots <-> color grid
 	static constexpr float PORTAL_A_X = 3.0f;
 	static constexpr float PORTAL_B_X = 23.0f;
 
-	static const glm::vec4 PORTAL_COLOR = { 0.15f, 0.12f, 0.28f, 0.92f };
 	static constexpr int PLAYER_GLOW_LAYER_COUNT = 15;
 	static constexpr float PLAYER_GLOW_RADIUS = 2.4f;
 
-	static float glowFromPortal(const glm::vec2& playerPos, const glm::vec2& playerSize, float portalX, float portalY)
+	static float glowFromPortal(const glm::vec2& playerPos, const glm::vec2& playerSize, float portalX, float portalY, float portalHeight)
 	{
 		const float playerBottom = playerPos.y - playerSize.y * 0.5f;
 		const float playerTop = playerPos.y + playerSize.y * 0.5f;
-		const float portalBottom = portalY - PORTAL_HEIGHT * 0.5f;
-		const float portalTop = portalY + PORTAL_HEIGHT * 0.5f;
+		const float portalBottom = portalY - portalHeight * 0.5f;
+		const float portalTop = portalY + portalHeight * 0.5f;
 
 		const bool verticallyNear =
 			playerBottom < portalTop &&
@@ -79,14 +79,11 @@ namespace Demo
 			return false;
 		}
 
-		m_portalAY = m_groundTopY + PORTAL_HEIGHT * 0.5f;
-		m_portalBY = m_portalAY;
-		m_portalA.create(PORTAL_WIDTH, PORTAL_HEIGHT);
-		m_portalA.setPosition({ PORTAL_A_X, m_portalAY });
-		m_portalA.setColor(PORTAL_COLOR);
-		m_portalB.create(PORTAL_WIDTH, PORTAL_HEIGHT);
-		m_portalB.setPosition({ PORTAL_B_X, m_portalBY });
-		m_portalB.setColor(PORTAL_COLOR);
+		m_portalA.create(PORTAL_A_X, m_groundTopY, PORTAL_WIDTH, PORTAL_SQUARES);
+		m_portalB.create(PORTAL_B_X, m_groundTopY, PORTAL_WIDTH, PORTAL_SQUARES);
+		m_portalAY = m_portalA.getCenterY();
+		m_portalBY = m_portalB.getCenterY();
+		m_portalHeight = m_portalA.getHeight();
 
 		const glm::vec2 playerSize = { PLAYER_WIDTH, PLAYER_HEIGHT };
 		m_player.create({ 0.0f, m_groundTopY + playerSize.y * 0.5f }, playerSize);
@@ -163,8 +160,8 @@ namespace Demo
 		const glm::vec2 playerSize = m_player.getSize();
 
 		m_playerGlow = std::max(
-			glowFromPortal(playerPos, playerSize, PORTAL_A_X, m_portalAY),
-			glowFromPortal(playerPos, playerSize, PORTAL_B_X, m_portalBY)
+			glowFromPortal(playerPos, playerSize, PORTAL_A_X, m_portalAY, m_portalHeight),
+			glowFromPortal(playerPos, playerSize, PORTAL_B_X, m_portalBY, m_portalHeight)
 		);
 
 		const float g = m_playerGlow;

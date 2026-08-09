@@ -9,6 +9,7 @@
 #include "SineGrass.h"
 #include "SdfSky.h"
 #include "KunaiProjectiles.h"
+#include "PortalMosaic.h"
 
 #include <memory>
 #include <array>
@@ -41,8 +42,8 @@ namespace Demo
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 		SdfSky m_sky;
 		SineGrass m_grass;
-		Pekan::Renderer2D::RectangleShape m_portalA;
-		Pekan::Renderer2D::RectangleShape m_portalB;
+		PortalMosaic m_portalA;
+		PortalMosaic m_portalB;
 		std::array<Pekan::Renderer2D::RectangleShape, 15> m_playerGlowLayers;
 
 		Player m_player;
@@ -55,6 +56,7 @@ namespace Demo
 		float m_groundTopY = 0.0f;
 		float m_portalAY = 0.0f;
 		float m_portalBY = 0.0f;
+		float m_portalHeight = 0.0f;
 		float m_playerGlow = 0.0f;
 	};
 
