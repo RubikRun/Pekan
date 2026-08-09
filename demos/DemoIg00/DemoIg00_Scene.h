@@ -8,6 +8,7 @@
 #include "IEntityRenderer.h"
 
 #include <memory>
+#include <array>
 
 namespace Demo
 {
@@ -31,14 +32,25 @@ namespace Demo
 
 		void createCamera();
 		void updateCamera();
+		void updatePortalTransition();
+		void updatePlayerGlow();
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
 		Pekan::Renderer2D::RectangleShape m_ground;
+		Pekan::Renderer2D::RectangleShape m_portalA;
+		Pekan::Renderer2D::RectangleShape m_portalB;
+		std::array<Pekan::Renderer2D::RectangleShape, 15> m_playerGlowLayers;
 
 		Player m_player;
-		std::unique_ptr<IEntityRenderer> m_playerRenderer;
+		std::unique_ptr<IEntityRenderer> m_dotsRenderer;
+		std::unique_ptr<IEntityRenderer> m_functionsRenderer;
+		std::unique_ptr<IEntityRenderer> m_colorGridRenderer;
+		IEntityRenderer* m_activeRenderer = nullptr;
 
 		float m_groundTopY = 0.0f;
+		float m_portalAY = 0.0f;
+		float m_portalBY = 0.0f;
+		float m_playerGlow = 0.0f;
 	};
 
 } // namespace Demo
