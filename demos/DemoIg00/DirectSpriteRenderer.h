@@ -32,6 +32,7 @@ namespace Demo
 		AnimData m_run;
 		AnimData m_jump;
 		AnimData m_attack;
+		AnimData m_throw;
 
 		mutable Pekan::Renderer2D::Sprite m_sprite;
 	};

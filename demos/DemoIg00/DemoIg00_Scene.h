@@ -8,6 +8,7 @@
 #include "IEntityRenderer.h"
 #include "SineGrass.h"
 #include "SdfSky.h"
+#include "KunaiProjectiles.h"
 
 #include <memory>
 #include <array>
@@ -45,6 +46,7 @@ namespace Demo
 		std::array<Pekan::Renderer2D::RectangleShape, 15> m_playerGlowLayers;
 
 		Player m_player;
+		KunaiProjectiles m_kunais;
 		std::unique_ptr<IEntityRenderer> m_dotsRenderer;
 		std::unique_ptr<IEntityRenderer> m_functionsRenderer;
 		std::unique_ptr<IEntityRenderer> m_colorGridRenderer;

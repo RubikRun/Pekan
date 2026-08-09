@@ -28,7 +28,11 @@ namespace Demo
 		m_frame = 0;
 		m_animTimer = 0.0f;
 		m_attacking = false;
+		m_throwing = false;
 		m_attackKeyWasDown = false;
+		m_throwKeyWasDown = false;
+		m_throwRequested = false;
+		m_throwProjectileSpawned = false;
 	}
 
 	void Player::update(float dt, float groundTopY)
@@ -73,31 +77,54 @@ namespace Demo
 		updateAnimation(dt);
 	}
 
+	EntityAnim Player::pickLocomotionAnim() const
+	{
+		if (!m_grounded)
+		{
+			return EntityAnim::Jump;
+		}
+		if (std::abs(m_velocity.x) > 0.01f)
+		{
+			return EntityAnim::Run;
+		}
+		return EntityAnim::Idle;
+	}
+
+	bool Player::consumeThrowRequest()
+	{
+		const bool requested = m_throwRequested;
+		m_throwRequested = false;
+		return requested;
+	}
+
 	void Player::updateAnimation(float dt)
 	{
 		const bool attackKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_L);
+		const bool throwKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_P);
 		const bool isRunning = m_grounded && std::abs(m_velocity.x) > 0.01f;
-		if (!m_attacking && !isRunning && attackKeyDown && !m_attackKeyWasDown)
+		const bool busy = m_attacking || m_throwing;
+
+		if (!busy && !isRunning && attackKeyDown && !m_attackKeyWasDown)
 		{
 			m_attacking = true;
 			m_anim = EntityAnim::Attack;
 			m_frame = 0;
 			m_animTimer = 0.0f;
 		}
-		m_attackKeyWasDown = attackKeyDown;
-
-		if (!m_attacking)
+		else if (!busy && throwKeyDown && !m_throwKeyWasDown)
 		{
-			EntityAnim desired = EntityAnim::Idle;
-			if (!m_grounded)
-			{
-				desired = EntityAnim::Jump;
-			}
-			else if (std::abs(m_velocity.x) > 0.01f)
-			{
-				desired = EntityAnim::Run;
-			}
+			m_throwing = true;
+			m_throwProjectileSpawned = false;
+			m_anim = EntityAnim::Throw;
+			m_frame = 0;
+			m_animTimer = 0.0f;
+		}
+		m_attackKeyWasDown = attackKeyDown;
+		m_throwKeyWasDown = throwKeyDown;
 
+		if (!m_attacking && !m_throwing)
+		{
+			const EntityAnim desired = pickLocomotionAnim();
 			if (desired != m_anim)
 			{
 				m_anim = desired;
@@ -118,7 +145,7 @@ namespace Demo
 					m_frame++;
 				}
 			}
-			else if (m_anim == EntityAnim::Attack)
+			else if (m_anim == EntityAnim::Attack || m_anim == EntityAnim::Throw)
 			{
 				if (m_frame < ANIM_FRAME_COUNT - 1)
 				{
@@ -127,9 +154,9 @@ namespace Demo
 				else
 				{
 					m_attacking = false;
-					m_anim = m_grounded
-						? (std::abs(m_velocity.x) > 0.01f ? EntityAnim::Run : EntityAnim::Idle)
-						: EntityAnim::Jump;
+					m_throwing = false;
+					m_throwProjectileSpawned = false;
+					m_anim = pickLocomotionAnim();
 					m_frame = 0;
 					m_animTimer = 0.0f;
 				}
@@ -138,6 +165,14 @@ namespace Demo
 			{
 				m_frame = (m_frame + 1) % ANIM_FRAME_COUNT;
 			}
+		}
+
+		// Release kunai around 30% through the throw (frame 3 of 0..9)
+		constexpr int throwReleaseFrame = 3;
+		if (m_throwing && !m_throwProjectileSpawned && m_frame >= throwReleaseFrame)
+		{
+			m_throwRequested = true;
+			m_throwProjectileSpawned = true;
 		}
 	}
 

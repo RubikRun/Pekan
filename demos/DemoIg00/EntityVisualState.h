@@ -10,7 +10,8 @@ namespace Demo
 		Idle,
 		Run,
 		Jump,
-		Attack
+		Attack,
+		Throw
 	};
 
 	// Snapshot of an entity for rendering — no GPU / draw details.

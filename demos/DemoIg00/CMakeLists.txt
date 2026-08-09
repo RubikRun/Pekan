@@ -22,6 +22,8 @@ add_executable(DemoIg00
 	SineGrass.cpp
 	SdfSky.h
 	SdfSky.cpp
+	KunaiProjectiles.h
+	KunaiProjectiles.cpp
 	Player.h
 	Player.cpp
 )

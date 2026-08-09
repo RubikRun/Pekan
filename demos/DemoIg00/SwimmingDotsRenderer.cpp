@@ -106,6 +106,7 @@ namespace Demo
 		if (!loadAnim("Run", m_run)) return false;
 		if (!loadAnim("Jump", m_jump)) return false;
 		if (!loadAnim("Attack", m_attack)) return false;
+		if (!loadAnim("Throw", m_throw)) return false;
 
 		const std::string vs = Pekan::FileUtils::readTextFileToString("resources/swimming_dots_vs.glsl");
 		const std::string fs = Pekan::FileUtils::readTextFileToString("resources/swimming_dots_fs.glsl");
@@ -151,6 +152,7 @@ namespace Demo
 		case EntityAnim::Run:  return m_run;
 		case EntityAnim::Jump: return m_jump;
 		case EntityAnim::Attack: return m_attack;
+		case EntityAnim::Throw: return m_throw;
 		}
 		return m_idle;
 	}

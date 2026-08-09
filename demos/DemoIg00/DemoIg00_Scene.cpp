@@ -91,6 +91,11 @@ namespace Demo
 		const glm::vec2 playerSize = { PLAYER_WIDTH, PLAYER_HEIGHT };
 		m_player.create({ 0.0f, m_groundTopY + playerSize.y * 0.5f }, playerSize);
 
+		if (!m_kunais.init())
+		{
+			return false;
+		}
+
 		for (size_t i = 0; i < m_playerGlowLayers.size(); i++)
 		{
 			const float t = (static_cast<float>(i) + 1.0f) / static_cast<float>(PLAYER_GLOW_LAYER_COUNT);
@@ -187,6 +192,12 @@ namespace Demo
 		updateCamera();
 
 		EntityVisualState visualState = m_player.getVisualState();
+		if (m_player.consumeThrowRequest())
+		{
+			m_kunais.spawn(visualState.position, visualState.size, visualState.facingRight);
+		}
+		m_kunais.update(dt, m_camera);
+
 		visualState.opacity = 1.0f - m_playerGlow;
 
 		if (m_activeRenderer != nullptr)
@@ -222,6 +233,8 @@ namespace Demo
 			m_activeRenderer->render(visualState);
 		}
 
+		m_kunais.render();
+
 		Renderer2DSystem::beginFrame();
 		m_portalA.render();
 		m_portalB.render();
@@ -252,6 +265,7 @@ namespace Demo
 		}
 		m_portalA.destroy();
 		m_portalB.destroy();
+		m_kunais.destroy();
 		m_grass.destroy();
 		m_sky.destroy();
 	}

@@ -99,6 +99,7 @@ namespace Demo
 		if (!loadAnim("Run", m_run.textures, m_run.bottomPadFractions, m_run.aspect)) return false;
 		if (!loadAnim("Jump", m_jump.textures, m_jump.bottomPadFractions, m_jump.aspect)) return false;
 		if (!loadAnim("Attack", m_attack.textures, m_attack.bottomPadFractions, m_attack.aspect)) return false;
+		if (!loadAnim("Throw", m_throw.textures, m_throw.bottomPadFractions, m_throw.aspect)) return false;
 
 		m_sprite.create(m_idle.textures[0], 1.0f, 1.0f);
 		return true;
@@ -112,6 +113,7 @@ namespace Demo
 		case EntityAnim::Run:  return m_run;
 		case EntityAnim::Jump: return m_jump;
 		case EntityAnim::Attack: return m_attack;
+		case EntityAnim::Throw: return m_throw;
 		}
 		return m_idle;
 	}

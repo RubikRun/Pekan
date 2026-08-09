@@ -68,6 +68,7 @@ namespace Demo
 		AnimData m_run;
 		AnimData m_jump;
 		AnimData m_attack;
+		AnimData m_throw;
 
 		std::array<Dot, DOT_COUNT> m_dots{};
 		bool m_dotsInitialized = false;

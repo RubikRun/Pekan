@@ -66,6 +66,7 @@ namespace Demo
 		AnimData m_run;
 		AnimData m_jump;
 		AnimData m_attack;
+		AnimData m_throw;
 		std::array<CellJitter, CELL_COUNT> m_cellJitter{};
 
 		mutable Pekan::Graphics::RenderObject m_renderObject;
