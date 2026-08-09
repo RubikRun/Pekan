@@ -37,6 +37,21 @@ namespace Graphics
 		GLCall(glEnable(GL_MULTISAMPLE));
 	}
 
+	void RenderState::enableScissorTest()
+	{
+		GLCall(glEnable(GL_SCISSOR_TEST));
+	}
+
+	void RenderState::disableScissorTest()
+	{
+		GLCall(glDisable(GL_SCISSOR_TEST));
+	}
+
+	void RenderState::setScissorBox(int x, int y, int width, int height)
+	{
+		GLCall(glScissor(x, y, width, height));
+	}
+
 	void RenderState::enableFaceCulling()
 	{
 		GLCall(glEnable(GL_CULL_FACE));

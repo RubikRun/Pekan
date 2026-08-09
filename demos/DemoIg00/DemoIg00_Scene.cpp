@@ -184,6 +184,8 @@ namespace Demo
 		const float dt = static_cast<float>(deltaTime);
 		m_player.update(dt, m_groundTopY);
 		m_grass.update(dt);
+		m_portalA.update(dt);
+		m_portalB.update(dt);
 		updatePortalTransition();
 		updatePlayerGlow();
 		updateCamera();
@@ -232,10 +234,8 @@ namespace Demo
 
 		m_kunais.render();
 
-		Renderer2DSystem::beginFrame();
 		m_portalA.render();
 		m_portalB.render();
-		Renderer2DSystem::endFrame();
 	}
 
 	void DemoIg00_Scene::exit()

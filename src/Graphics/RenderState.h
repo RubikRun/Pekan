@@ -138,6 +138,12 @@ namespace Graphics
 		//            in your application's initialization function.
 		static void enableMultisampleAntiAliasing();
 
+		// Enables/disables scissor test for clipping draws to a window-space rectangle.
+		// Scissor origin is bottom-left, matching OpenGL.
+		static void enableScissorTest();
+		static void disableScissorTest();
+		static void setScissorBox(int x, int y, int width, int height);
+
 		// Enables/disables face culling, which means that triangles will be rendered only if they are front-facing.
 		// Back-facing triangles will not be rendered.
 		static void enableFaceCulling();

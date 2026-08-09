@@ -1,10 +1,10 @@
 #pragma once
 
-#include "RectangleShape.h"
 #include "CircleShape.h"
 #include "LineShape.h"
 #include "PolygonShape.h"
 #include "TriangleShape.h"
+#include "RenderObject.h"
 
 #include <vector>
 #include <array>
@@ -17,6 +17,7 @@ namespace Demo
 	{
 	public:
 		void create(float centerX, float bottomY, float squareSize, int squareCount);
+		void update(float dt);
 		void render() const;
 		void destroy();
 
@@ -25,6 +26,7 @@ namespace Demo
 
 	private:
 		static constexpr int BLUE_ALONG_DIAGONAL = 10;
+		static constexpr float SCROLL_SPEED = 1.5f;
 
 		struct SquareDecor
 		{
@@ -39,10 +41,31 @@ namespace Demo
 			std::vector<Pekan::Renderer2D::LineShape> borders;
 		};
 
-		Pekan::Renderer2D::RectangleShape m_background;
+		float opacityAtY(float y) const;
+		void layoutSquare(SquareDecor& sq, float bottom, bool mirrored);
+		void layoutAll();
+		void enablePortalScissor() const;
+		void disablePortalScissor() const;
+		void renderBackground() const;
+		void renderMosaicShapes() const;
+
+		mutable Pekan::Graphics::RenderObject m_background;
 		std::vector<SquareDecor> m_squares;
+
+		float m_centerX = 0.0f;
+		float m_bottomY = 0.0f;
 		float m_centerY = 0.0f;
 		float m_height = 0.0f;
+		float m_squareSize = 0.0f;
+		int m_squareCount = 0;
+		float m_scroll = 0.0f;
+
+		float m_bigR = 0.0f;
+		float m_smallR = 0.0f;
+		float m_yellowR = 0.0f;
+		float m_blueR = 0.0f;
+		float m_borderThickness = 0.014f;
+		float m_diagonalThickness = 0.022f;
 	};
 
 } // namespace Demo
