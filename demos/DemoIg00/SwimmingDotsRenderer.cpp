@@ -199,6 +199,47 @@ namespace Demo
 			px[2] / 255.0f,
 			px[3] / 255.0f
 		};
+
+		const float origChroma =
+			std::max(outColor.r, std::max(outColor.g, outColor.b)) -
+			std::min(outColor.r, std::min(outColor.g, outColor.b));
+
+		// Mild crayon look: a bit more saturation + soft color snapping
+		float luma = 0.2126f * outColor.r + 0.7152f * outColor.g + 0.0722f * outColor.b;
+		constexpr float satBoost = 1.45f;
+		outColor.r = std::clamp(luma + (outColor.r - luma) * satBoost, 0.0f, 1.0f);
+		outColor.g = std::clamp(luma + (outColor.g - luma) * satBoost, 0.0f, 1.0f);
+		outColor.b = std::clamp(luma + (outColor.b - luma) * satBoost, 0.0f, 1.0f);
+
+		constexpr float steps = 6.0f;
+		const float qr = std::floor(outColor.r * steps + 0.5f) / steps;
+		const float qg = std::floor(outColor.g * steps + 0.5f) / steps;
+		const float qb = std::floor(outColor.b * steps + 0.5f) / steps;
+		constexpr float snap = 0.38f;
+		outColor.r = outColor.r * (1.0f - snap) + qr * snap;
+		outColor.g = outColor.g * (1.0f - snap) + qg * snap;
+		outColor.b = outColor.b * (1.0f - snap) + qb * snap;
+
+		// Dark near-gray dots only: mild random crayon tint (leave light/white alone)
+		constexpr float grayThresh = 0.14f;
+		constexpr float maxLumaForTint = 0.55f;
+		if (origChroma < grayThresh && luma <= maxLumaForTint)
+		{
+			luma = 0.2126f * outColor.r + 0.7152f * outColor.g + 0.0722f * outColor.b;
+			const float grayness = 1.0f - origChroma / grayThresh;
+			const float darkness = 1.0f - luma / maxLumaForTint;
+			const float strength = getRandomFloat(0.10f, 0.22f) * grayness * darkness;
+			const float hue = getRandomFloat(0.0f, 6.2831853f);
+			outColor.r = std::clamp(luma + strength * std::cos(hue), 0.0f, 1.0f);
+			outColor.g = std::clamp(luma + strength * std::cos(hue + 2.0943951f), 0.0f, 1.0f);
+			outColor.b = std::clamp(luma + strength * std::cos(hue + 4.1887902f), 0.0f, 1.0f);
+		}
+
+		// Snap near-black up to a dark crayon floor
+		constexpr float blackFloor = 0.18f;
+		outColor.r = std::max(outColor.r, blackFloor);
+		outColor.g = std::max(outColor.g, blackFloor);
+		outColor.b = std::max(outColor.b, blackFloor);
 		return true;
 	}
 
