@@ -68,10 +68,11 @@ namespace Demo
 
 		createCamera();
 
-		m_ground.create(80.0f, GROUND_HEIGHT);
-		m_ground.setPosition({ 0.0f, GROUND_CENTER_Y });
-		m_ground.setColor({ 0.25f, 0.55f, 0.25f, 1.0f });
 		m_groundTopY = GROUND_CENTER_Y + GROUND_HEIGHT * 0.5f;
+		if (!m_grass.create(10.0f, GROUND_CENTER_Y, 80.0f, GROUND_HEIGHT))
+		{
+			return false;
+		}
 
 		m_portalAY = m_groundTopY + PORTAL_HEIGHT * 0.5f;
 		m_portalBY = m_portalAY;
@@ -175,6 +176,7 @@ namespace Demo
 	{
 		const float dt = static_cast<float>(deltaTime);
 		m_player.update(dt, m_groundTopY);
+		m_grass.update(dt);
 		updatePortalTransition();
 		updatePlayerGlow();
 		updateCamera();
@@ -192,7 +194,11 @@ namespace Demo
 	{
 		Renderer2DSystem::beginFrame();
 		RenderCommands::clear();
-		m_ground.render();
+		Renderer2DSystem::endFrame();
+
+		m_grass.render();
+
+		Renderer2DSystem::beginFrame();
 		if (m_playerGlow > 0.001f)
 		{
 			for (int i = static_cast<int>(m_playerGlowLayers.size()) - 1; i >= 0; i--)
@@ -240,7 +246,7 @@ namespace Demo
 		}
 		m_portalA.destroy();
 		m_portalB.destroy();
-		m_ground.destroy();
+		m_grass.destroy();
 	}
 
 	bool DemoIg00_Scene::onKeyPressed(const KeyPressedEvent& event)

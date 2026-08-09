@@ -18,6 +18,8 @@ add_executable(DemoIg00
 	FunctionGraphsRenderer.cpp
 	ColorGridRenderer.h
 	ColorGridRenderer.cpp
+	SineGrass.h
+	SineGrass.cpp
 	Player.h
 	Player.cpp
 )

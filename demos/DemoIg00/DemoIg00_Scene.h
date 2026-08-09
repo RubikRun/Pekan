@@ -6,6 +6,7 @@
 
 #include "Player.h"
 #include "IEntityRenderer.h"
+#include "SineGrass.h"
 
 #include <memory>
 #include <array>
@@ -36,7 +37,7 @@ namespace Demo
 		void updatePlayerGlow();
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
-		Pekan::Renderer2D::RectangleShape m_ground;
+		SineGrass m_grass;
 		Pekan::Renderer2D::RectangleShape m_portalA;
 		Pekan::Renderer2D::RectangleShape m_portalB;
 		std::array<Pekan::Renderer2D::RectangleShape, 15> m_playerGlowLayers;
