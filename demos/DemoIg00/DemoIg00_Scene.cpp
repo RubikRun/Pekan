@@ -2,6 +2,7 @@
 
 #include "PekanApplication.h"
 #include "Events/KeyEvents.h"
+#include "Events/MouseEvents.h"
 #include "RenderCommands.h"
 #include "RenderState.h"
 #include "Renderer2DSystem.h"
@@ -23,6 +24,10 @@ namespace Demo
 
 	static constexpr float CAMERA_WORLD_HEIGHT = 7.0f;
 	static constexpr float CAMERA_WORLD_WIDTH = CAMERA_WORLD_HEIGHT * (9.0f / 16.0f);
+	// Aggressive scroll zoom so color-grid mini copies are inspectable in ~2-3s of scrolling.
+	static constexpr float CAMERA_ZOOM_SPEED = 1.12f;
+	static constexpr float CAMERA_ZOOM_MIN = 0.6f;
+	static constexpr float CAMERA_ZOOM_MAX = 40.0f;
 	static constexpr float GROUND_HEIGHT = 1.0f;
 	static constexpr float GROUND_CENTER_Y = -2.5f;
 	static constexpr float PLAYER_HEIGHT = 2.0f;
@@ -275,6 +280,31 @@ namespace Demo
 			return true;
 		}
 		return false;
+	}
+
+	bool DemoIg00_Scene::onMouseScrolled(const Pekan::MouseScrolledEvent& event)
+	{
+		if (m_camera == nullptr)
+		{
+			return false;
+		}
+
+		const float scroll = event.getYOffset();
+		if (scroll > 0.0f)
+		{
+			m_camera->zoomIn(CAMERA_ZOOM_SPEED);
+		}
+		else if (scroll < 0.0f)
+		{
+			m_camera->zoomOut(CAMERA_ZOOM_SPEED);
+		}
+		else
+		{
+			return false;
+		}
+
+		m_camera->setZoom(std::clamp(m_camera->getZoom(), CAMERA_ZOOM_MIN, CAMERA_ZOOM_MAX));
+		return true;
 	}
 
 	void DemoIg00_Scene::createCamera()

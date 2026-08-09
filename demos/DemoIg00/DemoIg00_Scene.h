@@ -33,6 +33,7 @@ namespace Demo
 	private:
 
 		bool onKeyPressed(const Pekan::KeyPressedEvent& event) override;
+		bool onMouseScrolled(const Pekan::MouseScrolledEvent& event) override;
 
 		void createCamera();
 		void updateCamera();

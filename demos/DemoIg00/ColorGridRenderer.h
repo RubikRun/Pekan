@@ -19,8 +19,8 @@ namespace Demo
 		void destroy() override;
 
 	private:
-		static constexpr int GRID_COLS = 20;
-		static constexpr int GRID_ROWS = 30;
+		static constexpr int GRID_COLS = 18;
+		static constexpr int GRID_ROWS = 18;
 		static constexpr int CELL_COUNT = GRID_COLS * GRID_ROWS;
 
 

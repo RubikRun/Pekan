@@ -99,8 +99,8 @@ namespace Demo
 
 	void Player::updateAnimation(float dt)
 	{
-		const bool attackKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_L);
-		const bool throwKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_P);
+		const bool attackKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_F);
+		const bool throwKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_R);
 		const bool isRunning = m_grounded && std::abs(m_velocity.x) > 0.01f;
 		const bool busy = m_attacking || m_throwing;
 
