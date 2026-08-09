@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "IEntityRenderer.h"
 #include "SineGrass.h"
+#include "SdfSky.h"
 
 #include <memory>
 #include <array>
@@ -37,6 +38,7 @@ namespace Demo
 		void updatePlayerGlow();
 
 		Pekan::Renderer2D::Camera2D_Ptr m_camera;
+		SdfSky m_sky;
 		SineGrass m_grass;
 		Pekan::Renderer2D::RectangleShape m_portalA;
 		Pekan::Renderer2D::RectangleShape m_portalB;

@@ -64,9 +64,14 @@ namespace Demo
 		RenderState::enableBlending();
 		RenderState::setBlendFunction(BlendFactor::SrcAlpha, BlendFactor::OneMinusSrcAlpha);
 		RenderState::enableMultisampleAntiAliasing();
-		RenderState::setBackgroundColor(0.45f, 0.70f, 0.95f, 1.0f);
+		RenderState::setBackgroundColor(0.40f, 0.66f, 0.92f, 1.0f);
 
 		createCamera();
+
+		if (!m_sky.create())
+		{
+			return false;
+		}
 
 		m_groundTopY = GROUND_CENTER_Y + GROUND_HEIGHT * 0.5f;
 		if (!m_grass.create(10.0f, GROUND_CENTER_Y, 80.0f, GROUND_HEIGHT))
@@ -196,6 +201,7 @@ namespace Demo
 		RenderCommands::clear();
 		Renderer2DSystem::endFrame();
 
+		m_sky.render();
 		m_grass.render();
 
 		Renderer2DSystem::beginFrame();
@@ -247,6 +253,7 @@ namespace Demo
 		m_portalA.destroy();
 		m_portalB.destroy();
 		m_grass.destroy();
+		m_sky.destroy();
 	}
 
 	bool DemoIg00_Scene::onKeyPressed(const KeyPressedEvent& event)
