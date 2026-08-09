@@ -30,7 +30,7 @@ namespace Demo
 
 	static constexpr float PORTAL_WIDTH = 0.55f;
 	static constexpr float PORTAL_HEIGHT = 3.6f;
-	// Portal A: dots <-> function graphs; Portal B: function graphs <-> color grid
+	// Portal A: functions <-> dots; Portal B: dots <-> color grid
 	static constexpr float PORTAL_A_X = 3.0f;
 	static constexpr float PORTAL_B_X = 23.0f;
 
@@ -119,7 +119,7 @@ namespace Demo
 		}
 		m_colorGridRenderer = std::move(colorGrid);
 
-		m_activeRenderer = m_dotsRenderer.get();
+		m_activeRenderer = m_functionsRenderer.get();
 		m_playerGlow = 0.0f;
 
 		return true;
@@ -135,11 +135,11 @@ namespace Demo
 		const float x = m_player.getPosition().x;
 		if (x < PORTAL_A_X)
 		{
-			m_activeRenderer = m_dotsRenderer.get();
+			m_activeRenderer = m_functionsRenderer.get();
 		}
 		else if (x < PORTAL_B_X)
 		{
-			m_activeRenderer = m_functionsRenderer.get();
+			m_activeRenderer = m_dotsRenderer.get();
 		}
 		else
 		{
