@@ -142,8 +142,8 @@ namespace Demo
 				getRandomFloat(-0.35f, 0.35f),
 				getRandomFloat(-0.35f, 0.35f)
 			};
-			cell.sizeScale = getRandomFloat(0.70f, 1.35f);
-			cell.rotation = getRandomFloat(-15.0f, 15.0f) * degToRad;
+			cell.sizeScale = getRandomFloat(0.88f, 1.50f);
+			cell.rotation = getRandomFloat(-6.0f, 6.0f) * degToRad;
 		}
 	}
 
