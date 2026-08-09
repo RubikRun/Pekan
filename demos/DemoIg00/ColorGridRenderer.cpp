@@ -144,7 +144,7 @@ namespace Demo
 				getRandomFloat(-0.35f, 0.35f),
 				getRandomFloat(-0.35f, 0.35f)
 			};
-			cell.sizeScale = getRandomFloat(0.88f, 1.50f);
+			cell.sizeScale = getRandomFloat(0.70f, 1.10f);
 			cell.rotation = getRandomFloat(-6.0f, 6.0f) * degToRad;
 		}
 	}
@@ -203,9 +203,12 @@ namespace Demo
 	void ColorGridRenderer::uploadVertices(const EntityVisualState& state, const FrameData& frame) const
 	{
 		const SpriteBasis basis = getSpriteBasis(state);
+		const AnimData& anim = getAnimData(state.anim);
 		const float opacity = std::clamp(state.opacity, 0.0f, 1.0f);
 		const float cellW = basis.width / static_cast<float>(GRID_COLS);
 		const float cellH = basis.height / static_cast<float>(GRID_ROWS);
+		const float texAspect = anim.aspect;
+		const float copyBaseH = basis.height / 18.0f;
 
 		static const glm::vec2 corners[4] = {
 			{ -0.5f, -0.5f },
@@ -241,15 +244,15 @@ namespace Demo
 					(static_cast<float>(col) + 0.5f + jitter.posOffset.x) * cellW - basis.width * 0.5f;
 				const float centerY =
 					(static_cast<float>(row) + 0.5f + jitter.posOffset.y) * cellH - basis.height * 0.5f;
-				const float w = cellW * jitter.sizeScale;
-				const float h = cellH * jitter.sizeScale;
+				const float copyH = copyBaseH * jitter.sizeScale;
+				const float copyW = copyH * texAspect;
 				const float ca = std::cos(jitter.rotation);
 				const float sa = std::sin(jitter.rotation);
 
 				for (int c = 0; c < 4; c++)
 				{
-					const float rx = corners[c].x * w;
-					const float ry = corners[c].y * h;
+					const float rx = corners[c].x * copyW;
+					const float ry = corners[c].y * copyH;
 					const float lx = centerX + ca * rx - sa * ry;
 					const float ly = centerY + sa * rx + ca * ry;
 					*v++ = basis.center.x + basis.facing * lx;
@@ -321,6 +324,8 @@ namespace Demo
 		destroyAnim(m_idle);
 		destroyAnim(m_run);
 		destroyAnim(m_jump);
+		destroyAnim(m_attack);
+		destroyAnim(m_throw);
 	}
 
 } // namespace Demo
