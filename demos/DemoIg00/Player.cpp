@@ -101,17 +101,17 @@ namespace Demo
 	{
 		const bool attackKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_F);
 		const bool throwKeyDown = PekanEngine::isKeyPressed(KeyCode::KEY_R);
-		const bool isRunning = m_grounded && std::abs(m_velocity.x) > 0.01f;
+		const bool isIdle = m_grounded && std::abs(m_velocity.x) <= 0.01f;
 		const bool busy = m_attacking || m_throwing;
 
-		if (!busy && !isRunning && attackKeyDown && !m_attackKeyWasDown)
+		if (!busy && isIdle && attackKeyDown && !m_attackKeyWasDown)
 		{
 			m_attacking = true;
 			m_anim = EntityAnim::Attack;
 			m_frame = 0;
 			m_animTimer = 0.0f;
 		}
-		else if (!busy && throwKeyDown && !m_throwKeyWasDown)
+		else if (!busy && isIdle && throwKeyDown && !m_throwKeyWasDown)
 		{
 			m_throwing = true;
 			m_throwProjectileSpawned = false;

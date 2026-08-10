@@ -6,6 +6,7 @@
 #include "Utils/FileUtils.h"
 #include "Utils/PekanUtils.h"
 #include "Renderer2DSystem.h"
+#include "Camera2D.h"
 
 #include <cmath>
 #include <algorithm>
@@ -25,6 +26,19 @@ namespace Demo
 	static constexpr float EXTRA_FOOT_OFFSET_WORLD = 0.11f;
 	static constexpr float MAX_WIGGLE_DIST = 0.06f;
 	static constexpr float MAX_ANGLE_WIGGLE = 0.08f;
+	// Between 1px GL lines and the previous 1.5px thick quads
+	static constexpr float LINE_WIDTH_PX = 1.10f;
+
+	static float pixelsToWorld()
+	{
+		const float windowHeight = static_cast<float>(PekanEngine::getWindow().getSize().y);
+		float worldHeight = 7.0f;
+		if (const Camera2D_ConstPtr camera = Renderer2DSystem::getCamera())
+		{
+			worldHeight = camera->getSize().y;
+		}
+		return worldHeight / std::max(windowHeight, 1.0f);
+	}
 
 	static float computeBottomPadFraction(const unsigned char* data, int w, int h, int channels)
 	{
@@ -225,8 +239,8 @@ namespace Demo
 			fs.c_str()
 		);
 
-		// pos2 + color4 = 6 floats/vertex, 2 verts/segment
-		m_vertexScratch.resize(GRAPH_COUNT * SEGMENTS_PER_GRAPH * 2 * 6);
+		// pos2 + color4 = 6 floats/vertex, 6 verts/segment (two triangles for thick lines)
+		m_vertexScratch.resize(GRAPH_COUNT * SEGMENTS_PER_GRAPH * 6 * 6);
 		m_renderObject.setVertexData(
 			m_vertexScratch.data(),
 			static_cast<long long>(m_vertexScratch.size() * sizeof(float)),
@@ -332,6 +346,7 @@ namespace Demo
 		float* v = m_vertexScratch.data();
 		int floatCount = 0;
 		const float opacity = std::clamp(state.opacity, 0.0f, 1.0f);
+		const float halfThickness = 0.5f * LINE_WIDTH_PX * pixelsToWorld();
 
 		auto emitVertex = [&](glm::vec2 worldPos, const glm::vec4& color)
 		{
@@ -396,8 +411,24 @@ namespace Demo
 						basis.center.x + basis.facing * local.x,
 						basis.center.y + local.y
 					};
-					emitVertex(world0, prevColor);
-					emitVertex(world1, color);
+
+					glm::vec2 dir = world1 - world0;
+					const float lenSq = glm::dot(dir, dir);
+					if (lenSq > 1e-12f)
+					{
+						dir *= 1.0f / std::sqrt(lenSq);
+						const glm::vec2 n = { -dir.y * halfThickness, dir.x * halfThickness };
+						const glm::vec2 p0 = world0 + n;
+						const glm::vec2 p1 = world0 - n;
+						const glm::vec2 p2 = world1 - n;
+						const glm::vec2 p3 = world1 + n;
+						emitVertex(p0, prevColor);
+						emitVertex(p1, prevColor);
+						emitVertex(p2, color);
+						emitVertex(p0, prevColor);
+						emitVertex(p2, color);
+						emitVertex(p3, color);
+					}
 				}
 
 				if (opaque)
@@ -446,7 +477,7 @@ namespace Demo
 		}
 		shader.unbind();
 
-		m_renderObject.render(DrawMode::Lines);
+		m_renderObject.render(DrawMode::Triangles);
 	}
 
 	void FunctionGraphsRenderer::destroy()

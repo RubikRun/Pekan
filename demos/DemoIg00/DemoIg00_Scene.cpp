@@ -23,9 +23,9 @@ namespace Demo
 {
 
 	static constexpr float CAMERA_WORLD_HEIGHT = 7.0f;
-	static constexpr float CAMERA_WORLD_WIDTH = CAMERA_WORLD_HEIGHT * (9.0f / 16.0f);
+	static constexpr float CAMERA_WORLD_WIDTH = CAMERA_WORLD_HEIGHT * (1080.0f / 1440.0f);
 	// Aggressive scroll zoom so color-grid mini copies are inspectable in ~2-3s of scrolling.
-	static constexpr float CAMERA_ZOOM_SPEED = 1.12f;
+	static constexpr float CAMERA_ZOOM_SPEED = 1.08f;
 	static constexpr float CAMERA_ZOOM_MIN = 0.6f;
 	static constexpr float CAMERA_ZOOM_MAX = 40.0f;
 	static constexpr float GROUND_HEIGHT = 1.0f;

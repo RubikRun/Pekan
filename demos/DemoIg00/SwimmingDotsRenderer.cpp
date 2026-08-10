@@ -23,8 +23,8 @@ namespace Demo
 	static constexpr int FRAMES_PER_ANIM = 10;
 	static constexpr unsigned char ALPHA_THRESHOLD = 16;
 	static constexpr float EXTRA_FOOT_OFFSET_WORLD = 0.11f;
-	static constexpr float MIN_RADIUS_PX = 2.0f;
-	static constexpr float MAX_RADIUS_PX = 6.0f;
+	static constexpr float MIN_RADIUS_PX = 3.0f;
+	static constexpr float MAX_RADIUS_PX = 9.0f;
 	static constexpr float MAX_SWIM_DIST_PX = 10.0f;
 	static constexpr float MIN_LIFE = 1.5f;
 	static constexpr float MAX_LIFE = 4.0f;
