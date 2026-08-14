@@ -3724,3 +3724,17 @@ only after every referenced entity exists.
 
 With that, SceneSerializer::deserialize() is implemented.
 }
+
+----------
+14.08.2026
+----------
+
+{
+Noticed that the JSON CMake target is linked privately to Core
+    target_link_libraries(Core PRIVATE glfw json)
+It'd be good to link it publicly so that Renderer2D and other targets
+that might want to implement a specific serializer can access JSON.
+So, just link it publicly:
+    target_link_libraries(Core PUBLIC glm json)
+That's it.
+}

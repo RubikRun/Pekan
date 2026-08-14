@@ -154,8 +154,8 @@ SOURCE_GROUP("Header Files\\Entity" FILES
 )
 
 # Set link libraries for Core
-target_link_libraries(Core PRIVATE glfw json)
-target_link_libraries(Core PUBLIC glm)
+target_link_libraries(Core PRIVATE glfw)
+target_link_libraries(Core PUBLIC glm json)
 
 # Require directory "dep/entt/single_include" to exist
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dep/entt/single_include")
