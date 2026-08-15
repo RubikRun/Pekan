@@ -73,11 +73,9 @@ namespace Pekan
 		// (e.g. "Transform2D", "RectangleGeometry", ...) and whose values are component data.
 		virtual nlohmann::ordered_json serializeComponents(entt::entity entity, const entt::registry& registry) const = 0;
 
-		// Deserializes a given components JSON object
-		// and emplaces the resulting components on the given entity.
+		// Deserializes a given components JSON object and emplaces the resulting components on the given entity.
 		//
-		// `componentsJson` is the value of the entity's "components" field — an object whose
-		// keys are component type names.
+		// `componentsJson` is the value of the entity's "components" field — an object whose keys are component type names.
 		//
 		// Returns true on success, false on a fatal error that should abort the whole load.
 		// Non-fatal issues do not abort the load and still return true, for example:

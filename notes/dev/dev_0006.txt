@@ -3738,3 +3738,40 @@ So, just link it publicly:
     target_link_libraries(Core PUBLIC glm json)
 That's it.
 }
+
+----------
+15.08.2026
+----------
+
+{
+Time to move on to step 4 of the .pksc plan.
+
+First create 2 empty files
+    Scene2DSerializer.h
+    Scene2DSerializer.cpp
+under
+    src/Renderer2D/
+
+Declare a Scene2DSerializer class in the header file, deriving from the base SceneSerializer class:
+    class Scene2DSerializer : public SceneSerializer
+It's immediately obvious that the 3 pure virtual functions
+    getSceneType()
+    serializeComponents()
+    deserializeComponents()
+will need to be implemented in Scene2DSerializer so declare them as such:
+    std::string getSceneType() const override;
+    nlohmann::ordered_json serializeComponents(entt::entity entity, const entt::registry& registry) const override;
+    bool deserializeComponents(const nlohmann::ordered_json& componentsJson, entt::entity entity, entt::registry& registry) const override;
+We will also need to implement the virtual function
+    void postDeserialize(Scene& scene) const override;
+because Scene2DSerializer needs to resolve the parent references in
+    TransformComponent2D
+and it needs to do that after all entities have been deserialized.
+
+Then for the implementations of these 4 functions, we can implement getSceneType() right there in the header:
+    std::string getSceneType() const override { return "scene2d"; }
+just returning the scene type as a string.
+For the other 3 I'll generate default implementations in the source file, ready to be filled in.
+That's the skeleton for step 4, the skeleton of Scene2DSerializer.
+
+}

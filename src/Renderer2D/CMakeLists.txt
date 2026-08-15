@@ -9,6 +9,8 @@ add_library(Renderer2D STATIC
 	Renderer2DSubsystem.cpp
 	RenderSystem2D.h
 	RenderSystem2D.cpp
+	Scene2DSerializer.h
+	Scene2DSerializer.cpp
 	Utils2D.h
 	Utils2D.cpp
 	CameraComponent2D.h
