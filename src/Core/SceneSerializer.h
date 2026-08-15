@@ -61,7 +61,7 @@ namespace Pekan
 		// and only adopt it on success.
 		bool deserialize(const std::string& jsonText, Scene& scene) const;
 
-	protected: /* functions */
+	private: /* functions */
 
 		// Returns the value that's supposed to be in the JSON's "sceneType" field.
 		// For example, Scene2DSerializer returns "scene2d".
@@ -90,16 +90,6 @@ namespace Pekan
 		// Used, for example, to resolve cross-entity references (e.g. Transform2D parent EntityIDs -> entt::entity handles).
 		virtual void postDeserialize(Scene& scene) const {}
 
-	protected: /* constants */
-
-		// Format version supported by Pekan currently.
-		// - Loading a scene file with a higher major version than this is refused.
-		// - Loading a scene file with a higher minor version than this is allowed (with a warning).
-		// - Exporting a scene produces a file with this version.
-		static constexpr FormatVersion FORMAT_VERSION_SUPPORTED = { 1, 0 };
-
-	private: /* functions */
-
 		// Builds the JSON array for the scene's entities.
 		nlohmann::ordered_json serializeEntities(const Scene& scene, const entt::registry& registry) const;
 
@@ -111,6 +101,14 @@ namespace Pekan
 		// `entityIds` is the set of all entity IDs loaded so far. It is updated with the new entity ID.
 		// Returns true on success, false on error (in which case the set is not changed).
 		bool deserializeEntity(const nlohmann::ordered_json& entityData, Scene& scene, entt::registry& registry, std::unordered_set<EntityID>& entityIds) const;
+
+	private: /* constants */
+
+		// Format version supported by Pekan currently.
+		// - Loading a scene file with a higher major version than this is refused.
+		// - Loading a scene file with a higher minor version than this is allowed (with a warning).
+		// - Exporting a scene produces a file with this version.
+		static constexpr FormatVersion FORMAT_VERSION_SUPPORTED = { 1, 0 };
 	};
 
 } // namespace Pekan
