@@ -3774,4 +3774,95 @@ just returning the scene type as a string.
 For the other 3 I'll generate default implementations in the source file, ready to be filled in.
 That's the skeleton for step 4, the skeleton of Scene2DSerializer.
 
+Let's implement
+    serializeComponents()
+now.
+
+The outermost form of the implementation will be this:
+    json componentsData;
+    // TODO: fill componentsData with the actual data of the entity's Scene2D-specific components
+    return componentsData;
+Then, to fill componentsData with the entity's Scene2D-specific components let's start with
+    TransformComponent2D
+(You can see the full list of the 10 Scene2D-specific components and how exactly they map to JSON in plan_0006_pkscFileFormat.md)
+To fill componentsData with the data of the entity's TransformComponent2D we need to do the following:
+1. Check if entity has TransformComponent2D and retrieve it if it does
+2. Serialize the TransformComponent2D into a JSON sub-object
+3. Write the serialized JSON sub-object in componentsData under "Transform2D" (as such: componentsData["Transform2D"] = ...)
+First step is pretty standard, we've already done it a few times in the codebase:
+    const TransformComponent2D* transformComponent = registry.try_get<TransformComponent2D>(entity);
+    if (transformComponent != nullptr)
+    {
+        ...
+    }
+Second step, we'll create a helper function for it:
+    static json serializeTransformComponent(const TransformComponent2D& transformComponent, const entt::registry& registry)
+It will return the serialized JSON sub-object ready and containing the TransformComponent2D's data in the correct form.
+Implementing this helper function is pretty straightforward, we just create a JSON object and fill the "position", "rotation"
+and "scaleFactor" properties with the corresponding data from TransformComponent2D's member variables:
+    json transformData =
+    {
+        { "position", { transformComponent.position.x, transformComponent.position.y } },
+        { "rotation", transformComponent.rotation },
+        { "scaleFactor", { transformComponent.scaleFactor.x, transformComponent.scaleFactor.y } }
+    };
+There's just one property missing from the JSON object now and that's "parent".
+We need to set "parent" to the EntityID of TransformComponent2D's parent.
+However, transformComponent.parent is NOT the EntityID of the parent, but the entt::entity handle of the parent.
+To resolve this we just need to get the EntityIDComponent of the parent using its entt::entity handle
+(that's why we need the registry parameter of serializeTransformComponent() - we need the registry to get EntityIDComponent from parent's entt::entity)
+and get the "id" member variable from that, like this:
+    const EntityID parentId = registry.get<EntityIDComponent>(transformComponent.parent).id;
+Parent can be null though so we first need to check if parent is null and do this EntityID retrieval only if it's NOT null:
+    if (transformComponent.parent != entt::null)
+    {
+        const EntityID parentId = registry.get<EntityIDComponent>(transformComponent.parent).id;
+        ...
+    }
+Once we have the EntityID of the parent we just need to set it to the JSON object's "parent" property:
+    transformData["parent"] = parentId;
+That's it. That's serializeTransformComponent() implemented.
+Now we can use that helper function in serializeComponents, calling it like this:
+    serializeTransformComponent(*transformComponent, registry);
+For step 3, we just need to use the result of that serializeTransformComponent() call
+and set it to componentsData's "Transform2D" property, like this:
+    componentsData["Transform2D"] = serializeTransformComponent(*transformComponent, registry);
+So the 3 steps combined look like this:
+    const TransformComponent2D* transformComponent = registry.try_get<TransformComponent2D>(entity);
+    if (transformComponent != nullptr)
+    {
+        componentsData["Transform2D"] = serializeTransformComponent(*transformComponent, registry);
+    }
+Plus the implementation of the helper function, of course.
+That's it for TransformComponent2D.
+Very similarly, even easier, I implemented the same thing for
+    SpriteComponent
+    RectangleGeometryComponent
+    CircleGeometryComponent
+    TriangleGeometryComponent
+with corresponding helper functions
+    serializeSpriteComponent()
+    serializeRectangleGeometryComponent()
+    serializeCircleGeometryComponent()
+    serializeTriangleGeometryComponent()
+
+Then, while implementing the same thing for PolygonGeometryComponent
+I reached a point where it's not so straightforward to implement - serializing a std::vector<...>
+in this case a std::vector<glm::vec2> (PolygonGeometryComponent's vertexPositions are a std::vector<glm::vec2>).
+So I researched how this can be done.
+One way is just to build a json::array and push_back() elements one by one,
+but another, probably better, option is to implement
+    from_json()
+    to_json()
+functions for glm::vec2. That way the std::vector<glm::vec2> would serialize automatically.
+Same thing for single glm::vec2 members (e.g. TransformComponent2D's position),
+instead of writing them as e.g. { position.x, position.y } we would be able to write "position" directly.
+Question now is where should we implement those from_json() and to_json() functions for glm::vec2.
+We could implement them in
+    Scene2DSerializer.cpp
+and have them local to that file, but I feel like glm serialization is wider than just Renderer2D.
+If we have a Renderer3D in the future we will probably want those same serialization functions there.
+Also, in the future we would switch to a maths library of our making probably, so it would be easier
+to have the glm serialization code in one place for the whole Pekan.
+
 }
