@@ -3865,4 +3865,44 @@ If we have a Renderer3D in the future we will probably want those same serializa
 Also, in the future we would switch to a maths library of our making probably, so it would be easier
 to have the glm serialization code in one place for the whole Pekan.
 
+----------
+16.08.2026
+----------
+
+So, to solve this glm serialization thing let's create a new header file:
+    src\Core\Utils\SerializationUtils.h
+We need to define a template specialization for glm::vec2 of
+    struct adl_serializer
+from the
+    nlohmann
+namespace.
+So inside name nlohmann declare the struct like this:
+    template<>
+	struct adl_serializer<glm::vec2>
+and inside of it we need to implement the 2 functions - to_json() and from_json():
+    static void to_json(ordered_json& jsonData, const glm::vec2& vector)
+    static void from_json(const ordered_json& jsonData, glm::vec2& vector)
+Implementing them is straightforward.
+Then do the same for glm::vec4:
+    template<>
+	struct adl_serializer<glm::vec4>
+That's about it.
+Now, wherever SerializationUtils.h is included, nlohmann has access to these
+adl_serializer specializations and can automatically serialize and deserialize glm::vec2 and glm::vec4.
+One thing to note is that we defined to_json() and from_json() for ordered_json only, NOT for json.
+That's fine because we use ordered_json everywhere. If sometime in the future we need json,
+we'll need to implement those functions for json as well.
+
+Side note:
+There were a few places where we had code like this:
+    json sceneData;
+Default-constructing a JSON object and then filling its properties with data like this:
+    sceneData["sceneType"] = getSceneType();
+This works technically, but what happens behind the scenes is that default-constructing a JSON object
+actually constructs it as null. Then at the moment of the first property assignment that's when
+it becomes non-null. This is a bit weird and introduces a window where the JSON object is null,
+which might be dangerous, so we better construct our JSON objects at the moment of declaration properly:
+    json sceneData = json::object();
+Did this change in a few places.
+
 }
