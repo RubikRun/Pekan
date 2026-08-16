@@ -9,6 +9,8 @@
 #include "TriangleGeometryComponent.h"
 #include "PolygonGeometryComponent.h"
 
+#include "Utils/SerializationUtils.h" // IWYU pragma: keep
+
 using json = nlohmann::ordered_json;
 
 namespace Pekan
@@ -20,9 +22,9 @@ namespace Renderer2D {
 	{
 		json transformData =
 		{
-			{ "position", { transformComponent.position.x, transformComponent.position.y } },
+			{ "position", transformComponent.position },
 			{ "rotation", transformComponent.rotation },
-			{ "scaleFactor", { transformComponent.scaleFactor.x, transformComponent.scaleFactor.y } }
+			{ "scaleFactor", transformComponent.scaleFactor }
 		};
 		if (transformComponent.parent != entt::null)
 		{
@@ -43,8 +45,8 @@ namespace Renderer2D {
 			//	     For now we'll always set texturePath to null explicitly, instead of just skipping it,
 			//	     to remember later that it needs to be implemented.
 			{ "texturePath", nullptr },
-			{ "textureCoordinatesMin", { spriteComponent.textureCoordinatesMin.x, spriteComponent.textureCoordinatesMin.y } },
-			{ "textureCoordinatesMax", { spriteComponent.textureCoordinatesMax.x, spriteComponent.textureCoordinatesMax.y } }
+			{ "textureCoordinatesMin", spriteComponent.textureCoordinatesMin },
+			{ "textureCoordinatesMax", spriteComponent.textureCoordinatesMax }
 		};
 		return spriteData;
 	}
@@ -76,17 +78,21 @@ namespace Renderer2D {
 	{
 		const json triangleData =
 		{
-			{ "pointA", { triangleGeometryComponent.pointA.x, triangleGeometryComponent.pointA.y } },
-			{ "pointB", { triangleGeometryComponent.pointB.x, triangleGeometryComponent.pointB.y } },
-			{ "pointC", { triangleGeometryComponent.pointC.x, triangleGeometryComponent.pointC.y } }
+			{ "pointA", triangleGeometryComponent.pointA },
+			{ "pointB", triangleGeometryComponent.pointB },
+			{ "pointC", triangleGeometryComponent.pointC }
 		};
 		return triangleData;
 	}
 
+	// Serializes a given polygon geometry component into a JSON object
 	static json serializePolygonGeometryComponent(const PolygonGeometryComponent& polygonGeometryComponent)
 	{
-		// TODO: implement
-		return {};
+		const json polygonData =
+		{
+			{ "vertexPositions", polygonGeometryComponent.vertexPositions }
+		};
+		return polygonData;
 	}
 
 //////////
@@ -96,7 +102,7 @@ namespace Renderer2D {
 	json Scene2DSerializer::serializeComponents(entt::entity entity, const entt::registry& registry) const
 	{
 		// JSON object that will contain the serialized components data
-		json componentsData;
+		json componentsData = json::object();
 
 		const TransformComponent2D* transformComponent = registry.try_get<TransformComponent2D>(entity);
 		if (transformComponent != nullptr)
@@ -122,6 +128,11 @@ namespace Renderer2D {
 		if (triangleGeometryComponent != nullptr)
 		{
 			componentsData["TriangleGeometry"] = serializeTriangleGeometryComponent(*triangleGeometryComponent);
+		}
+		const PolygonGeometryComponent* polygonGeometryComponent = registry.try_get<PolygonGeometryComponent>(entity);
+		if (polygonGeometryComponent != nullptr)
+		{
+			componentsData["PolygonGeometry"] = serializePolygonGeometryComponent(*polygonGeometryComponent);
 		}
 
 		return componentsData;

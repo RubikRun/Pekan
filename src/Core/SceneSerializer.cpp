@@ -313,7 +313,7 @@ namespace Pekan
 		const entt::registry& registry = scene.getRegistry();
 
 		// The root of the JSON object. Will contain all scene data, serialized.
-		json sceneData;
+		json sceneData = json::object();
 
 		// Write format version metadata.
 		sceneData["formatVersion"] =
@@ -396,7 +396,7 @@ namespace Pekan
 			const NameComponent* nameComponent = registry.try_get<NameComponent>(entity);
 
 			// The JSON object for this entity.
-			json entityData;
+			json entityData = json::object();
 
 			// Write entity ID.
 			entityData["id"] = id;
