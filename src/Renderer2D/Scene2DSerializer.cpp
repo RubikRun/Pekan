@@ -1,21 +1,26 @@
 #include "Scene2DSerializer.h"
 
-#include "Scene.h"
-#include "Entity/EntityIDComponent.h"
 #include "TransformComponent2D.h"
 #include "SpriteComponent.h"
 #include "RectangleGeometryComponent.h"
 #include "CircleGeometryComponent.h"
 #include "TriangleGeometryComponent.h"
 #include "PolygonGeometryComponent.h"
+#include "LineGeometryComponent.h"
+#include "SolidColorMaterialComponent.h"
+#include "LineComponent.h"
+#include "CameraComponent2D.h"
 
+#include "Scene.h"
+#include "Entity/EntityIDComponent.h"
 #include "Utils/SerializationUtils.h" // IWYU pragma: keep
 
 using json = nlohmann::ordered_json;
 
 namespace Pekan
 {
-namespace Renderer2D {
+namespace Renderer2D
+{
 
 	// Serializes a given transform component into a JSON object
 	static json serializeTransformComponent(const TransformComponent2D& transformComponent, const entt::registry& registry)
@@ -42,8 +47,8 @@ namespace Renderer2D {
 			{ "width", spriteComponent.width },
 			{ "height", spriteComponent.height },
 			// NOTE: There is no way to evaluate the correct texture path yet because we don't store the source path in Texture2D.
-			//	     For now we'll always set texturePath to null explicitly, instead of just skipping it,
-			//	     to remember later that it needs to be implemented.
+			//       For now we'll always set texturePath to null explicitly, instead of just skipping it,
+			//       to remember later that it needs to be implemented.
 			{ "texturePath", nullptr },
 			{ "textureCoordinatesMin", spriteComponent.textureCoordinatesMin },
 			{ "textureCoordinatesMax", spriteComponent.textureCoordinatesMax }
@@ -95,6 +100,55 @@ namespace Renderer2D {
 		return polygonData;
 	}
 
+	// Serializes a given line geometry component into a JSON object
+	static json serializeLineGeometryComponent(const LineGeometryComponent& lineGeometryComponent)
+	{
+		const json lineData =
+		{
+			{ "pointA", lineGeometryComponent.pointA },
+			{ "pointB", lineGeometryComponent.pointB },
+			{ "thickness", lineGeometryComponent.thickness }
+		};
+		return lineData;
+	}
+
+	// Serializes a given solid color material component into a JSON object
+	static json serializeSolidColorMaterialComponent(const SolidColorMaterialComponent& solidColorMaterialComponent)
+	{
+		const json solidColorMaterialData =
+		{
+			{ "color", solidColorMaterialComponent.color }
+		};
+		return solidColorMaterialData;
+	}
+
+	// Serializes a given line component into a JSON object
+	static json serializeLineComponent(const LineComponent& lineComponent)
+	{
+		const json lineData =
+		{
+			{ "pointA", lineComponent.pointA },
+			{ "pointB", lineComponent.pointB },
+			{ "color", lineComponent.color }
+		};
+		return lineData;
+	}
+
+	// Serializes a given camera component into a JSON object
+	static json serializeCameraComponent2D(const CameraComponent2D& cameraComponent2D)
+	{
+		const json cameraData =
+		{
+			{ "size", cameraComponent2D.size },
+			{ "position", cameraComponent2D.position },
+			{ "rotation", cameraComponent2D.rotation },
+			{ "zoomLevel", cameraComponent2D.zoomLevel },
+			{ "isPrimary", cameraComponent2D.isPrimary },
+			{ "isControllable", cameraComponent2D.isControllable }
+		};
+		return cameraData;
+	}
+
 //////////
 //////////
 //////////
@@ -133,6 +187,26 @@ namespace Renderer2D {
 		if (polygonGeometryComponent != nullptr)
 		{
 			componentsData["PolygonGeometry"] = serializePolygonGeometryComponent(*polygonGeometryComponent);
+		}
+		const LineGeometryComponent* lineGeometryComponent = registry.try_get<LineGeometryComponent>(entity);
+		if (lineGeometryComponent != nullptr)
+		{
+			componentsData["LineGeometry"] = serializeLineGeometryComponent(*lineGeometryComponent);
+		}
+		const SolidColorMaterialComponent* solidColorMaterialComponent = registry.try_get<SolidColorMaterialComponent>(entity);
+		if (solidColorMaterialComponent != nullptr)
+		{
+			componentsData["SolidColorMaterial"] = serializeSolidColorMaterialComponent(*solidColorMaterialComponent);
+		}
+		const LineComponent* lineComponent = registry.try_get<LineComponent>(entity);
+		if (lineComponent != nullptr)
+		{
+			componentsData["Line"] = serializeLineComponent(*lineComponent);
+		}
+		const CameraComponent2D* cameraComponent2D = registry.try_get<CameraComponent2D>(entity);
+		if (cameraComponent2D != nullptr)
+		{
+			componentsData["Camera2D"] = serializeCameraComponent2D(*cameraComponent2D);
 		}
 
 		return componentsData;

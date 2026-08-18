@@ -3876,7 +3876,7 @@ We need to define a template specialization for glm::vec2 of
 from the
     nlohmann
 namespace.
-So inside name nlohmann declare the struct like this:
+So inside namespace nlohmann declare the struct like this:
     template<>
 	struct adl_serializer<glm::vec2>
 and inside of it we need to implement the 2 functions - to_json() and from_json():
@@ -3904,5 +3904,21 @@ it becomes non-null. This is a bit weird and introduces a window where the JSON 
 which might be dangerous, so we better construct our JSON objects at the moment of declaration properly:
     json sceneData = json::object();
 Did this change in a few places.
+
+----------
+18.08.2026
+----------
+
+With PolygonGeometryComponent done, we have 4 more components to handle:
+    LineGeometryComponent
+    SolidColorMaterialComponent
+    LineComponent
+    CameraComponent2D
+All of them are straightforward - exactly the same as the 6 we already have,
+especially now with the proper GLM serialization it's super easy and trivial to implement those.
+Done.
+
+That's it.
+That's serializeComponents() implemented.
 
 }
