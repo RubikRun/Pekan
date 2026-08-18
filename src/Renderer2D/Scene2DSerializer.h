@@ -15,7 +15,6 @@ private: /* functions */
 		std::string getSceneType() const override { return "scene2d"; }
 
 		// Serializes all Scene2D components on the given entity.
-		// TODO: explain what specific things this implementation does
 		nlohmann::ordered_json serializeComponents(entt::entity entity, const entt::registry& registry) const override;
 
 		// Deserializes a given components JSON object and emplaces the resulting components on the given entity.

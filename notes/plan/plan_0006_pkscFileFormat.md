@@ -97,19 +97,19 @@ struct NameComponent
 
 ### Entity references
 
-When a component references another entity (e.g., `TransformComponent2D::parent`), the value may be:
+When a component can reference another entity (e.g., `TransformComponent2D::parent`), the reference field may be omitted to mean no entity. When present, its value may be:
 
 - a number — the target's `EntityID`
 - a string — the target's `name` (resolved in a pre-pass to exactly one `EntityID`; if not found or ambiguous due to duplicate names, that's an error and load fails)
 - `null` — no entity
 
 ```json
-"parent": 1               // by ID — what the Editor always writes
+"parent": 1               // by ID — what the Editor writes for non-null parents
 "parent": "main_camera"   // by name — convenience for hand-authoring
 "parent": null
 ```
 
-The Editor always writes numeric IDs on save. Name references exist purely as an authoring convenience. On deserialization, a lookup table (EntityID → entt::entity) is built and used to resolve these references.
+The Editor omits the `parent` field when there is no parent, otherwise it writes a numeric ID. Name references exist purely as an authoring convenience. On deserialization, a missing `parent` field is interpreted as `null`, and a lookup table (EntityID → entt::entity) is built and used to resolve non-null references.
 
 ### Scene2D component mappings
 
@@ -118,7 +118,7 @@ The 10 component types valid for `"scene2d"`, matching the Editor's current comp
 
 | JSON key             | C++ type                      | JSON fields                                                                                                     |
 | -------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `Transform2D`        | `TransformComponent2D`        | `position` [x,y], `rotation`, `scaleFactor` [x,y], `parent` (EntityID, name, or null)                           |
+| `Transform2D`        | `TransformComponent2D`        | `position` [x,y], `rotation`, `scaleFactor` [x,y], `parent` (optional; EntityID, name, or null; defaults to null) |
 | `Sprite`             | `SpriteComponent`             | `width`, `height`, `texturePath` (string or null), `textureCoordinatesMin` [x,y], `textureCoordinatesMax` [x,y] |
 | `RectangleGeometry`  | `RectangleGeometryComponent`  | `width`, `height`                                                                                               |
 | `CircleGeometry`     | `CircleGeometryComponent`     | `radius`, `segmentsCount`                                                                                       |
@@ -152,8 +152,7 @@ The 10 component types valid for `"scene2d"`, matching the Editor's current comp
                 "Transform2D": {
                     "position": [0.0, 5.0],
                     "rotation": 0.0,
-                    "scaleFactor": [1.0, 1.0],
-                    "parent": null
+                    "scaleFactor": [1.0, 1.0]
                 },
                 "RectangleGeometry": {
                     "width": 2.0,
@@ -284,9 +283,9 @@ Create `src/Renderer2D/Scene2DSerializer.h` and `.cpp`. Add them to `src/Rendere
 
 Implement:
 
-- `serializeComponents(registry, entity)` — for each of the 10 types (in the fixed order from the component mappings table), call `registry.try_get<T>(entity)`, write JSON if present. For Transform2D parent, look up the parent entity's `EntityIDComponent` to get the ID. Entities are serialized in `scene.getEntities()` vector order. This fixed ordering for both entities and component keys ensures deterministic output — re-saving an unchanged scene produces identical JSON.
+- `serializeComponents(registry, entity)` — for each of the 10 types (in the fixed order from the component mappings table), call `registry.try_get<T>(entity)`, write JSON if present. For a non-null Transform2D parent, look up the parent entity's `EntityIDComponent` and write its ID; omit the `parent` field when the parent is null. Entities are serialized in `scene.getEntities()` vector order. This fixed ordering for both entities and component keys ensures deterministic output — re-saving an unchanged scene produces identical JSON.
 - Before component deserialization, build a `name → EntityID` map from the file. If duplicate non-empty names exist and any component uses string-based references, treat that as an error and fail load.
-- `deserializeComponents(registry, entity, json)` — for each key in the `components` object, default-construct the component, override fields from JSON, emplace on entity. For Transform2D, accept `parent` as number, string (resolved via the name map), or null; store the raw parent EntityID temporarily (set the component's `parent` to `entt::null`). Returns `false` to abort the load on a fatal error (e.g. a string parent reference that doesn't resolve, or is ambiguous due to duplicate names); unknown component keys are warnings + skip and still return `true`.
+- `deserializeComponents(registry, entity, json)` — for each key in the `components` object, default-construct the component, override fields from JSON, emplace on entity. For Transform2D, treat a missing `parent` as null; when present, accept it as a number, string (resolved via the name map), or null. Store a raw parent EntityID temporarily for non-null references while leaving the component's `parent` as `entt::null`. Returns `false` to abort the load on a fatal error (e.g. a string parent reference that doesn't resolve, or is ambiguous due to duplicate names); unknown component keys are warnings + skip and still return `true`.
 - `postDeserialize(scene)` — build an EntityID→entt::entity map from `scene.getEntities()` + `scene.getRegistry()`, iterate all `TransformComponent2D` instances and resolve parent EntityIDs to actual `entt::entity` handles. Then run a single DFS over the parent graph (visited + in-stack sets); on cycle, break it by nulling the offending parent and log the chain.
 
 ### Step 5 — Editor integration
