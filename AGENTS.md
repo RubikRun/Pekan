@@ -199,3 +199,13 @@ Stay focused on the task at hand. If you spot an unrelated bug or an opportunity
 - Logging/asserts use `PK_LOG_`* / `PK_ASSERT`*, not the standard library.
 - Demos must always compile. If a change in engine API breaks them, demo code needs to change accordingly.
 - Non-obvious decisions are explained in intent-focused comments.
+
+---
+
+## 11. Working with the author
+
+- Development proceeds in deliberately small, independently verifiable commits. Treat the requested increment as a hard scope boundary; do not implement later plan points, adjacent refactors, or extra cleanup unless explicitly asked.
+- When asked only for scaffolding, signatures, or TODO markers, make the smallest compile-safe change and leave the actual implementation to the author.
+- Discuss and get confirmation before changing an agreed architecture, API, or implementation plan beyond what the current request requires.
+- Preserve the author's existing comments and prose. Only extend them or minimally edit wording that became inaccurate; do not replace their structure or rewrite them in a different voice.
+- Prefer the simplest solution needed by Pekan today. Avoid generic abstractions, extra template flexibility, or additional data structures unless they solve a concrete current requirement.

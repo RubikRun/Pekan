@@ -448,11 +448,14 @@ namespace Pekan
 		// A set of all entity IDs loaded so far.
 		std::unordered_set<EntityID> entityIds;
 
+		// TODO: Build this map from all entities before deserializing any components.
+		std::unordered_map<std::string, EntityID> entityNameToIdMap;
+
 		// Deserialize each entity from the array into the scene
 		for (const auto& entityData : *itEntities)
 		{
 			// Deserialize the entity from the JSON object into the scene.
-			if (!deserializeEntity(entityData, scene, registry, entityIds))
+			if (!deserializeEntity(entityData, scene, registry, entityIds, entityNameToIdMap))
 			{
 				return false;
 			}
@@ -473,7 +476,14 @@ namespace Pekan
 		return true;
 	}
 
-	bool SceneSerializer::deserializeEntity(const json& entityData, Scene& scene, entt::registry& registry, std::unordered_set<EntityID>& entityIds) const
+	bool SceneSerializer::deserializeEntity
+	(
+		const json& entityData,
+		Scene& scene,
+		entt::registry& registry,
+		std::unordered_set<EntityID>& entityIds,
+		const std::unordered_map<std::string, EntityID>& entityNameToIdMap
+	) const
 	{
 		EntityTopLevelData entityTopLevelData;
 		if (!deserializeEntityTopLevelData(entityData, entityTopLevelData))
@@ -504,7 +514,7 @@ namespace Pekan
 			scene.disableEntity(entity);
 		}
 		// Deserialize entity's components
-		if (!deserializeComponents(*entityTopLevelData.componentsData, entity, registry))
+		if (!deserializeComponents(*entityTopLevelData.componentsData, entity, registry, entityNameToIdMap))
 		{
 			PK_LOG_ERROR("Failed to deserialize the components of entity with ID " << entityId << " from a scene file.", "Pekan");
 			return false;

@@ -214,7 +214,13 @@ namespace Renderer2D
 
 	// Deserializes a given components JSON object and emplaces the resulting components on the given entity.
 	// TODO: explain what specific things this implementation does
-	bool Scene2DSerializer::deserializeComponents(const json& componentsJson, entt::entity entity, entt::registry& registry) const
+	bool Scene2DSerializer::deserializeComponents
+	(
+		const json& componentsJson,
+		entt::entity entity,
+		entt::registry& registry,
+		const std::unordered_map<std::string, EntityID>& entityNameToIdMap
+	) const
 	{
 		// TODO: implement
 		return false;

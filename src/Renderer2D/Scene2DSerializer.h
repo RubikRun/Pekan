@@ -19,7 +19,13 @@ private: /* functions */
 
 		// Deserializes a given components JSON object and emplaces the resulting components on the given entity.
 		// TODO: explain what specific things this implementation does
-		bool deserializeComponents(const nlohmann::ordered_json& componentsJson, entt::entity entity, entt::registry& registry) const override;
+		bool deserializeComponents
+		(
+			const nlohmann::ordered_json& componentsJson,
+			entt::entity entity,
+			entt::registry& registry,
+			const std::unordered_map<std::string, EntityID>& entityNameToIdMap
+		) const override;
 
 		// Called after deserialization is complete by the base SceneSerializer class
 		// TODO: explain what specific things this implementation does

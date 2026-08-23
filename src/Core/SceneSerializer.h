@@ -6,7 +6,7 @@
 #include <json.hpp>
 
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
 
 namespace Pekan
 {
@@ -81,7 +81,16 @@ namespace Pekan
 		// Non-fatal issues do not abort the load and still return true, for example:
 		// - unknown component keys are reported as warnings and skipped
 		// - missing optional fields fall back to their defaults
-		virtual bool deserializeComponents(const nlohmann::ordered_json& componentsJson, entt::entity entity, entt::registry& registry) const = 0;
+		//
+		// `entityNameToIdMap` maps each entity name to its EntityID.
+		// If a name is mapped to INVALID_ENTITY_ID in this map, it means that it's ambiguous - multiple entities have that name.
+		virtual bool deserializeComponents
+		(
+			const nlohmann::ordered_json& componentsJson,
+			entt::entity entity,
+			entt::registry& registry,
+			const std::unordered_map<std::string, EntityID>& entityNameToIdMap
+		) const = 0;
 
 		// Optional hook called after deserialization is complete (every entity has been created and its components emplaced).
 		//
@@ -98,7 +107,14 @@ namespace Pekan
 		// Deserializes a single entity from a given entity JSON object and directly adds it to the given scene.
 		// `entityIds` is the set of all entity IDs loaded so far. It is updated with the new entity ID.
 		// Returns true on success, false on error (in which case the set is not changed).
-		bool deserializeEntity(const nlohmann::ordered_json& entityData, Scene& scene, entt::registry& registry, std::unordered_set<EntityID>& entityIds) const;
+		bool deserializeEntity
+		(
+			const nlohmann::ordered_json& entityData,
+			Scene& scene,
+			entt::registry& registry,
+			std::unordered_set<EntityID>& entityIds,
+			const std::unordered_map<std::string, EntityID>& entityNameToIdMap
+		) const;
 
 	private: /* constants */
 

@@ -3920,5 +3920,33 @@ Done.
 
 That's it.
 That's serializeComponents() implemented.
+}
+
+{
+----------
+23.08.2026
+----------
+
+Before we continue with the rest of step 4,
+there's a small tweak that we need to do to the plan (the .md file)
+and to some function signatures in SceneSerializer.
+
+The next thing to implement in step 4 would be this:
+    - Before component deserialization, build a `name → EntityID` map from the file.
+    If duplicate non-empty names exist and any component uses string-based references, treat that as an error and fail load.
+It's not very clear how we would do this and just by looking at the plan it seems like it's a thing
+to be implemented in Scene2DSerializer, but this makes no sense - the name to EntityID map definitely
+belongs in the base SceneSerializer. The base Scene2DSerializer needs to build that map and then pass it
+to Scene2DSerializer because Scene2DSerializer needs it to resolve parent references in TransformComponent2D.
+
+I tweaked the plan slightly so that it explicitly mentions this name to EntityID map
+and the fact that it's created in SceneSerializer and passed to Scene2DSerializer
+as an argument in this function:
+    deserializeComponents()
+
+Also changed the function signature in SceneSerializer.h/cpp and Scene2DSerializer.h/cpp.
+I left the actual building of the map as a TODO - I will do it in the next commit.
+In this commit I want to lay down the architecture, have the correct function signatures and the correct flow of data.
+Next commit will provide the correct data in the map.
 
 }
