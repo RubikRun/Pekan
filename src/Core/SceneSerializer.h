@@ -104,18 +104,6 @@ namespace Pekan
 		// Returns true on success, false on error.
 		bool deserializeEntities(const nlohmann::ordered_json& sceneData, Scene& scene) const;
 
-		// Deserializes a single entity from a given entity JSON object and directly adds it to the given scene.
-		// `entityIds` is the set of all entity IDs loaded so far. It is updated with the new entity ID.
-		// Returns true on success, false on error (in which case the set is not changed).
-		bool deserializeEntity
-		(
-			const nlohmann::ordered_json& entityData,
-			Scene& scene,
-			entt::registry& registry,
-			std::unordered_set<EntityID>& entityIds,
-			const std::unordered_map<std::string, EntityID>& entityNameToIdMap
-		) const;
-
 	private: /* constants */
 
 		// Format version supported by Pekan currently.

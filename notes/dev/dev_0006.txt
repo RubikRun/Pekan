@@ -3949,4 +3949,70 @@ I left the actual building of the map as a TODO - I will do it in the next commi
 In this commit I want to lay down the architecture, have the correct function signatures and the correct flow of data.
 Next commit will provide the correct data in the map.
 
+----------
+24.08.2026
+----------
+
+Now let's actually fill
+    entityNameToIdMap
+with the correct data.
+
+Currently in
+    deserializeEntities()
+we have a single loop over all entities that does everything for each entity:
+deserialize top-level data, create the entity, emplace NameComponent, disable if needed,
+AND deserialize its components, then move on to the next entity.
+If we fill the map inside that same loop, then when we call
+    deserializeComponents()
+for the first entity, the map will only contain that first entity's name.
+That's not good - a parent name reference on the first entity
+might point to an entity that appears later in the file.
+We need the map to contain ALL entity names before we deserialize ANY components.
+
+So, first, a small restructure: split that 1 for loop into 2.
+
+First loop:
+- deserialize each entity's id, name and enabled status
+- check for duplicate IDs
+- fill entityNameToIdMap
+- create the entity
+- emplace NameComponent if the name is non-empty
+- disable the entity if enabled is false
+
+Second loop:
+- get the entity's components JSON object
+- call deserializeComponents(),
+  passing the now-complete entityNameToIdMap
+
+To do this split cleanly I also inlined
+    deserializeEntity()
+into deserializeEntities(),
+and split
+    deserializeEntityTopLevelData()
+into
+    deserializeEntityIdNameEnabled()
+which only reads id/name/enabled,
+plus a later call to
+    getEntityComponentsData()
+in the second loop.
+No behavior change here, just moving stuff around
+so that there is a place to fully build the map before any components are deserialized.
+
+Then, filling the map itself is straightforward.
+For each entity with a non-empty name:
+    const auto [it, inserted] = entityNameToIdMap.emplace(entityName, entityId);
+If the name was inserted, it's unique so far, mapped to that entity's ID.
+If it was NOT inserted, the name is already in the map - meaning 2 or more entities share that name.
+In that case we mark it as ambiguous:
+    it->second = INVALID_ENTITY_ID;
+Empty/missing names are not put in the map at all.
+So later, when deserializeComponents() looks up a parent name:
+- found, mapped to a real EntityID -> unique, good
+- found, mapped to INVALID_ENTITY_ID -> ambiguous, error
+- not found -> no entity has that name, error
+
+That's it for this tweak.
+entityNameToIdMap is now correctly built in SceneSerializer
+and passed to deserializeComponents() before any components are deserialized.
+Now we can proceed with implementing deserializeComponents().
 }

@@ -1,6 +1,7 @@
 #include "SceneSerializer.h"
 
 #include "Scene.h"
+#include "Entity/EntityID.h"
 #include "Entity/EntityIDComponent.h"
 #include "Entity/NameComponent.h"
 #include "Entity/DisabledComponent.h"
@@ -220,6 +221,7 @@ namespace Pekan
 
 	/// Deserializes the enabled status of a given entity JSON object.
 	/// `id` is the entity's already deserialized ID, used only to identify the entity in error messages.
+	/// If the "enabled" property is missing in the entity JSON data, the enabled status is explicitly set to true.
 	/// Returns true on success, false on error.
 	static bool deserializeEntityEnabled(const json& entityData, EntityID id, bool& enabled)
 	{
@@ -227,7 +229,8 @@ namespace Pekan
 		const auto itEnabled = entityData.find("enabled");
 		if (itEnabled == entityData.end())
 		{
-			// A missing enabled status is valid.
+			// A missing enabled status is valid and it means the entity is enabled.
+			enabled = true;
 			return true;
 		}
 		if (!itEnabled->is_boolean())
@@ -262,9 +265,15 @@ namespace Pekan
 		return true;
 	}
 
-	/// Deserializes the top-level data of a given entity JSON object.
+	/// Deserializes the ID, the name and the enabled status of a given entity JSON object.
 	/// Returns true on success, false on error.
-	static bool deserializeEntityTopLevelData(const json& entityData, EntityTopLevelData& entityTopLevelData)
+	static bool deserializeEntityIdNameEnabled
+	(
+		const json& entityData,
+		EntityID& id,
+		std::string& name,
+		bool& enabled
+	)
 	{
 		if (!entityData.is_object())
 		{
@@ -284,19 +293,14 @@ namespace Pekan
 		{
 			return false;
 		}
-		entityTopLevelData.id = static_cast<EntityID>(rawId);
+		id = static_cast<EntityID>(rawId);
 		// Deserialize name
-		if (!deserializeEntityName(entityData, entityTopLevelData.id, entityTopLevelData.name))
+		if (!deserializeEntityName(entityData, id, name))
 		{
 			return false;
 		}
 		// Deserialize enabled status
-		if (!deserializeEntityEnabled(entityData, entityTopLevelData.id, entityTopLevelData.enabled))
-		{
-			return false;
-		}
-		// Get components data
-		if (!getEntityComponentsData(entityData, entityTopLevelData.id, entityTopLevelData.componentsData))
+		if (!deserializeEntityEnabled(entityData, id, enabled))
 		{
 			return false;
 		}
@@ -446,17 +450,86 @@ namespace Pekan
 		entt::registry& registry = scene.getRegistry();
 
 		// A set of all entity IDs loaded so far.
-		std::unordered_set<EntityID> entityIds;
+		std::unordered_set<EntityID> entityIdsSet;
 
-		// TODO: Build this map from all entities before deserializing any components.
+		// A list of all entity IDs loaded so far.
+		std::vector<EntityID> entityIds(itEntities->size());
+
+		// A list of the entt handles of all entities created so far.
+		std::vector<entt::entity> entities(itEntities->size());
+
+		// A map from each entity's name to its ID.
 		std::unordered_map<std::string, EntityID> entityNameToIdMap;
 
 		// Deserialize each entity from the array into the scene
-		for (const auto& entityData : *itEntities)
+		for (size_t i = 0; i < itEntities->size(); ++i)
 		{
-			// Deserialize the entity from the JSON object into the scene.
-			if (!deserializeEntity(entityData, scene, registry, entityIds, entityNameToIdMap))
+			const auto& entityData = (*itEntities)[i];
+
+			// Deserialize entity's ID, name and enables status from entity data.
+			EntityID entityId = INVALID_ENTITY_ID;
+			std::string entityName = "";
+			bool entityEnabled = true;
+			if (!deserializeEntityIdNameEnabled(entityData, entityId, entityName, entityEnabled))
 			{
+				return false;
+			}
+
+			PK_ASSERT_QUICK(entityId != INVALID_ENTITY_ID);
+			// Don't allow duplicate IDs.
+			if (entityIdsSet.contains(entityId))
+			{
+				PK_LOG_ERROR("Failed to deserialize a scene. Scene file contains more than one entity with ID " << entityId << ".", "Pekan");
+				return false;
+			}
+			entityIdsSet.insert(entityId);
+			entityIds[i] = entityId;
+
+			// Map entity name to entity ID in the entity name to ID map, if the entity has a name at all.
+			if (!entityName.empty())
+			{
+				const auto [it, inserted] = entityNameToIdMap.emplace(entityName, entityId);
+				// If the entity name was NOT inserted, it means it was already in the map. In other words
+				// the name is ambiguous (2 or more entities share that name)
+				// so we need to map it to INVALID_ENTITY_ID (that's how we indicate ambiguous names in this map)
+				if (!inserted)
+				{
+					it->second = INVALID_ENTITY_ID;
+				}
+			}
+
+			// Create an entity in the scene
+			const entt::entity entity = scene.createEntity(entityId);
+			entities[i] = entity;
+			// If entity's deserialized name is not empty, emplace a NameComponent on the entity
+			if (!entityName.empty())
+			{
+				registry.emplace<NameComponent>(entity, entityName);
+			}
+			// If entity's deserialized enabled status is false, disable the entity
+			if (!entityEnabled)
+			{
+				scene.disableEntity(entity);
+			}
+		}
+
+		for (size_t i = 0; i < itEntities->size(); ++i)
+		{
+			const auto& entityData = (*itEntities)[i];
+			const EntityID entityId = entityIds[i];
+			const entt::entity entity = entities[i];
+
+			// Get components data from entity data.
+			const json* componentsData = nullptr;
+			if (!getEntityComponentsData(entityData, entityId, componentsData))
+			{
+				return false;
+			}
+
+			// Deserialize entity's components from components data
+			if (!deserializeComponents(*componentsData, entity, registry, entityNameToIdMap))
+			{
+				PK_LOG_ERROR("Failed to deserialize the components of entity with ID " << entityId << " from a scene file.", "Pekan");
 				return false;
 			}
 		}
@@ -470,53 +543,6 @@ namespace Pekan
 		{
 			PK_LOG_ERROR("Failed to deserialize a scene, because we couldn't sync scene's \"next EntityID\" counter, "
 				"which would leave the scene unable to generate IDs for new entities.", "Pekan");
-			return false;
-		}
-
-		return true;
-	}
-
-	bool SceneSerializer::deserializeEntity
-	(
-		const json& entityData,
-		Scene& scene,
-		entt::registry& registry,
-		std::unordered_set<EntityID>& entityIds,
-		const std::unordered_map<std::string, EntityID>& entityNameToIdMap
-	) const
-	{
-		EntityTopLevelData entityTopLevelData;
-		if (!deserializeEntityTopLevelData(entityData, entityTopLevelData))
-		{
-			return false;
-		}
-		const EntityID entityId = entityTopLevelData.id;
-		PK_ASSERT_QUICK(entityId != INVALID_ENTITY_ID);
-
-		// Don't allow duplicate IDs.
-		if (entityIds.contains(entityId))
-		{
-			PK_LOG_ERROR("Failed to deserialize a scene. Scene file contains more than one entity with ID " << entityId << ".", "Pekan");
-			return false;
-		}
-
-		// Create an entity in the scene
-		const entt::entity entity = scene.createEntity(entityTopLevelData.id);
-		entityIds.insert(entityId);
-		// If entity's deserialized name is not empty, emplace a NameComponent on the entity
-		if (!entityTopLevelData.name.empty())
-		{
-			registry.emplace<NameComponent>(entity, entityTopLevelData.name);
-		}
-		// If entity's deserialized enabled status is false, disable the entity
-		if (!entityTopLevelData.enabled)
-		{
-			scene.disableEntity(entity);
-		}
-		// Deserialize entity's components
-		if (!deserializeComponents(*entityTopLevelData.componentsData, entity, registry, entityNameToIdMap))
-		{
-			PK_LOG_ERROR("Failed to deserialize the components of entity with ID " << entityId << " from a scene file.", "Pekan");
 			return false;
 		}
 
