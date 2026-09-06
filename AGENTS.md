@@ -171,13 +171,120 @@ Use the logger macros (defined in `Core/Logger/PekanLogger.h`) rather than `prin
 
 The author keeps a detailed development journal and design docs. These are the best source of *why* decisions were made.
 
-- `notes/dev/dev_NNNN.txt` — chronological dev journal. The latest (`dev_0006.txt`) is actively appended to. **Most commits add a corresponding journal entry.** Entries are dated and often wrapped in `{ ... }` blocks describing the task, the reasoning, and the outcome.
-- `notes/dev/todo.txt` — a numbered task list. Format: `NNNN DD.MM.YYYY (DONE): description`. Tasks are referenced from journal entries (e.g. "Let's look at TO-DO task 0079").
-- `notes/plan/` — design docs for larger features (e.g. `plan_0006_pkscFileFormat.md` specifies the `.pksc` JSON scene format). Read the relevant plan before implementing a planned feature.
+- `notes/dev/dev_NNNN.txt` — chronological **dev journal**. The latest file (`dev_0006.txt` at the time of writing) is actively appended to. **Most commits add a corresponding journal entry.** Never rewrite old entries; only append. Do not start a new `dev_NNNN.txt` unless the author asks.
+- `notes/dev/todo.txt` — a numbered task list. Format: `NNNN DD.MM.YYYY (DONE): description` or `(TODO)` while open. Continuation lines are indented. Tasks are referenced from the journal as **"TO-DO task 0079"** / **"TO-DO item 0071"** (always "TO-DO", not "TODO"). Entries can be tasks, questions, or "think about X".
+- `notes/plan/` — design docs for larger features. Some are short plain-text lists (`plan_0000.txt`), some are structured specs (`plan_0006_pkscFileFormat.md`). Read the relevant plan before implementing a planned feature. **Do not write plan docs in journal voice**, and **do not write journal entries like a plan/spec**.
+- `notes/general/` — rare high-level notes (e.g. why the project exists). Leave these alone unless asked.
 
-If you do any non-trivial work it's usually a good idea to record it in the current dev journal (what was done and why, what the thought process was, reasoning behind design decisions, even low-level ones).
+If you do any non-trivial work, record it in the current journal: what was done and why, the thought process, reasoning behind design decisions, even low-level ones. Stay focused on the task at hand. If you spot an unrelated bug or an opportunity for improvement, note it down in `todo.txt` rather than fixing it as part of the current change.
 
-Stay focused on the task at hand. If you spot an unrelated bug or an opportunity for improvement along the way, note it down in `todo.txt` rather than fixing it as part of the current change. This keeps each diff clean and scoped to the single task it's solving.
+When asked to write a journal entry, **read the last stretch of the current `dev_NNNN.txt` first** and continue in that voice. The rest of this section is how that voice works.
+
+### Journal mechanics
+
+Date headers look like this, with a blank line after:
+
+```
+----------
+24.08.2026
+----------
+```
+
+Use `DD.MM.YYYY`. A day's work is usually wrapped in `{ ... }` with the braces on their own lines.
+
+- **New task, new `{`.** Several `{` blocks can sit under one date (separate tasks that same day).
+- **Same task, same `{`.** If work continues across days, put the next date header *inside* the still-open block. Do not open a second `{` for the same thought. Close the block when that task/thought is actually finished.
+- `{` is usually right after the date. A continuation date inside an already-open block has no extra `{`.
+- A date can also have a one-liner outside braces (rare: "Started developing Gleam House...").
+- Tiny work can be tiny: "Nothing to say here. Done." is a valid whole entry.
+
+The journal is **plain text, not Markdown.** No `#` headings, no `**bold**`, no \`backticks\`, no fenced code blocks, no tables.
+
+Put names, paths, signatures, and snippets on their own indented line (4 spaces). Short names can stay in the sentence. Multi-line C++ is indented the same way, as real code, not as a fenced listing:
+
+```
+Let's create a new function in PekanApplication:
+    void registerRecurringCallback(std::function<void()> callback, float interval);
+```
+
+Wrap lines around a natural phrase boundary (~80–100 characters, not strict). Blank lines separate thoughts, not every sentence.
+
+Named asides use `--begin LABEL` / `--end LABEL` (e.g. `SIDE NOTE`). Longer recaps sometimes use `====begin SUM UP ... ====end SUM UP`. In-progress placeholders exist: `... class PekanEngine, in progress ...`. You will almost never need those unless the author is mid-thought and stopping for the day.
+
+### Voice
+
+Write **as the author, first person**, as if he typed it that evening. The journal is him talking to himself / his future self — not a commit message, not a PR, not an agent report.
+
+- Mix **"I"** and **"we"**. "I" = a personal choice or what he did that day. "We" = Pekan / the code / the current work. Never "the agent", "we implemented" as a team of AIs, or "this commit".
+- Present tense while working through the thought ("Let's create...", "Now we can..."). Past tense for what already happened ("I copied...", "It worked!").
+- Casual, spoken, slightly messy English. Contractions are normal (`let's`, `that's`, `don't`, `I'll`). Fillers he actually uses: "Okay,", "So,", "Now,", "Next,", "Alright,". Closers he actually uses: **"That's it."**, **"Done."**, **"That's about it."**, **"Okay, it works!"**, **"Looks good."**, **"Done. Easy."**
+- Occasional real personality is fine when it fits the moment: "which is stupid tbh", "it's a bit annoying", "Neat!", "Pretty nice.", "gotta admit", "I feel like...". Do not force slang into every paragraph, and do not invent a jokey narrator.
+- Ordinary words for reasoning: "the idea is", "the bottomline is", "pretty straightforward", "a bit weird", "that's not good enough", "this makes no sense". **Do not** use blog/AI diction: "leverage", "robust", "canonical", "idiomatic", "this ensures", "in order to facilitate", "separation of concerns", "hydration", "pipeline", "going forward".
+- Technical terms are the real C++ / OpenGL / Pekan names (`emplace`, `entt::entity`, `texel`, `EntityID`). Don't invent extra jargon, and don't explain what ECS or JSON is — he already knows.
+- Honest about uncertainty: "I guess we'll see", "Can't really decide", "Idk", "there are quite a few details that I'm missing but they are not that important."
+- He asks himself questions and answers them in the next line: "Why?", "How will it handle it?", "What should these functions do?", "Is this an okay behavior?" That question/answer rhythm is the reasoning, not decoration.
+
+### What an entry actually contains
+
+An entry is a **walkthrough of the thought**, not a summary of the diff.
+
+Typical shape:
+
+1. **Where we are / what we're doing** — "Let's implement `deserialize()`.", "Let's look at TO-DO task 0079.", "Time to move on to step 4 of the .pksc plan."
+2. **Why, if it isn't obvious** — "Why do we need this?", the problem with the current code, why the plan's wording was unclear.
+3. **The approach**, often by talking through options. If there are two ways, say both and pick one with a reason ("I will go with option 1 because I feel like it will be better for our future architecture."). Mention temporary/PoC work when that's what it is, and that it will be done properly later.
+4. **The actual change**, at the level of new files, class/function names, member variables, and the important `if`s. Show the snippet. Explain why that check exists, not only that it exists.
+5. **Close** — "That's it." Then whether it works / what was tested. "Done." If this finishes a larger stretch, say what comes next ("Now we can proceed with implementing `deserializeComponents()`.").
+
+Match **length to the size of the thought**:
+
+- One-line CMake / rename / obvious cleanup → a few sentences.
+- A new function or a small restructure → a short walkthrough (problem → what we changed → the key snippet → done).
+- A new system (events, post-processing, `deserialize()`, a gnarly optimization) → long. Numbered steps, helper by helper, the exact loop, the edge case. This is normal. Do not compress a design-heavy day into a bullet summary.
+
+Skip details he would skip: surrounding architecture that hasn't changed, and "those details are not important, and quite straightforward, so leaving it at that." Do **not** skip the decision that was actually made, even if it looks small (why `enabled` defaults to true, why the map is filled before the second loop, why a function is `protected` not `public`).
+
+He often records a **failed or rejected approach** first, then the one that landed. Keep that when it happened. He also notes leftover work as a new TO-DO item instead of doing it now.
+
+Trivial tasks still get an entry if they were a TO-DO, but it can be "Nothing to say here. Done."
+
+### How this sounds vs how it must not sound
+
+He writes like this (from `dev_0006.txt`, 16.08.2026):
+
+```
+There were a few places where we had code like this:
+    json sceneData;
+Default-constructing a JSON object and then filling its properties with data like this:
+    sceneData["sceneType"] = getSceneType();
+This works technically, but what happens behind the scenes is that default-constructing a JSON object
+actually constructs it as null. Then at the moment of the first property assignment that's when
+it becomes non-null. This is a bit weird and introduces a window where the JSON object is null,
+which might be dangerous, so we better construct our JSON objects at the moment of declaration properly:
+    json sceneData = json::object();
+Did this change in a few places.
+```
+
+Not like this:
+
+```
+## Summary
+Initialized JSON objects with `json::object()` instead of default construction
+to avoid a transient null state. This is more robust and prevents subtle bugs.
+```
+
+The first one is a person thinking. The second one is a changelog. Always write the first kind.
+
+### Don't
+
+- Don't rewrite or restyle old journal text.
+- Don't open with "This commit...", "Changes:", "Summary:", or a bullet dump of files touched.
+- Don't use Markdown inside `dev_*.txt` / `todo.txt`.
+- Don't explain Pekan, ECS, or C++ basics.
+- Don't add "best practice" tips, future-proofing lectures, or extra advice he didn't think.
+- Don't be stiff, polished, or literary. Don't invent metaphors.
+- Don't mimic typos on purpose (the journals have some; write cleanly in the same register).
+- Don't copy the tone of `plan_0006_pkscFileFormat.md` into the journal. Plans are specs. The journal is a session diary.
 
 ## 9. Git conventions
 
@@ -199,6 +306,7 @@ Stay focused on the task at hand. If you spot an unrelated bug or an opportunity
 - Logging/asserts use `PK_LOG_`* / `PK_ASSERT`*, not the standard library.
 - Demos must always compile. If a change in engine API breaks them, demo code needs to change accordingly.
 - Non-obvious decisions are explained in intent-focused comments.
+- Journal entries (when you write them) go at the end of the latest `notes/dev/dev_NNNN.txt`, in the author's first-person voice — see §8. Read the end of that file before writing.
 
 ---
 
