@@ -198,24 +198,31 @@ namespace Pekan
 	/// Deserializes the name of a given entity JSON object.
 	/// `id` is the entity's already deserialized ID, used only to identify the entity in error messages.
 	/// Returns:
-	/// - true, on success (name retrieved successfully or name missing, both are valid)
-	/// - false, on error (name exists but is invalid, e.g. a number)
+	/// - true, on success (non-empty name retrieved successfully, or name missing/null)
+	/// - false, on error (name exists but is invalid, e.g. a number or an empty string)
 	static bool deserializeEntityName(const json& entityData, EntityID id, std::string& name)
 	{
 		// Get entity's name.
 		const auto itName = entityData.find("name");
-		if (itName == entityData.end())
+		if (itName == entityData.end() || itName->is_null())
 		{
-			// A missing name is valid.
+			// A missing or null name is valid and means that the entity is unnamed.
+			name.clear();
 			return true;
 		}
 		if (!itName->is_string())
 		{
-			PK_LOG_ERROR("Failed to deserialize entity with ID " << id << " from a scene file. Entity object's \"name\" field is not a string.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize entity with ID " << id
+				<< " from a scene file. Entity's \"name\" field must be a string or null.", "Pekan");
 			return false;
 		}
 
 		name = itName->get<std::string>();
+		if (name.empty())
+		{
+			PK_LOG_ERROR("Failed to deserialize entity with ID " << id << " from a scene file. Entity's name cannot be empty.", "Pekan");
+			return false;
+		}
 		return true;
 	}
 

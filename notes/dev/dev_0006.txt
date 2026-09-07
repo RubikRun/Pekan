@@ -4016,3 +4016,47 @@ entityNameToIdMap is now correctly built in SceneSerializer
 and passed to deserializeComponents() before any components are deserialized.
 Now we can proceed with implementing deserializeComponents().
 }
+
+----------
+24.09.2026
+----------
+
+{
+Let's settle the exact behavior of entity names in .pksc files.
+
+An omitted name and
+    "name": null
+both mean that the entity is unnamed, so no NameComponent should be emplaced.
+A non-empty string is a valid name. An empty string is not a name though,
+so
+    "name": ""
+should be invalid and fail the load.
+
+Updated deserializeEntityName() accordingly. Missing and null names both clear the output string
+and return true, while a non-null value still has to be a non-empty string.
+
+Transform2D parent references follow the same rules where applicable.
+A missing parent or
+    "parent": null
+means no parent, while an empty string is an invalid name reference and fails the load.
+A non-empty string is resolved through entityNameToIdMap as before.
+
+Updated the .pksc plan to describe all of this and built Renderer2D successfully.
+Done.
+}
+
+{
+Unknown component types already produce a warning and get skipped, but unknown fields inside
+a known component are being silently ignored. The plan says unknown fields should warn as well.
+
+Let's add a small helper in Scene2DSerializer.cpp:
+    warnUnknownComponentFields()
+It will take the component JSON object, its component name and the list of known fields.
+It will iterate through the object and log a warning for every field that isn't in that list.
+The field will still be ignored and will not fail the load.
+
+Let's call it for all 10 Scene2D component types before deserializing their known fields.
+We should also make this behavior explicit in the plan and add it to the edge cases that need testing.
+
+Okay, done. Renderer2D builds successfully.
+}

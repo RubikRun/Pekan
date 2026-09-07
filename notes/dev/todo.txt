@@ -423,3 +423,26 @@
 
 0122 14.07.2026 (TODO): Can Scene's m_nextEntityId ever be MAX_ENTITY_ID or greater?
                         What will happen then? Maybe we need to handle this case.
+
+0123 07.09.2026 (TODO): Look at the json/data double terminology in Scene2DSerializer, stick with one unless there's a reason not to.
+                        What I mean is, for example, deserializeComponents() has an argument called componentsJson,
+                        but in deserializeTransformComponent() it's called componentsData - it's the same argument,
+                        just passed up the call stack so why call it differently? This is a pattern in a few other such places.
+                        Check everywhere in SceneSerializer.h/cpp and Scene2DSerializer.h/cpp.
+
+0124 16.09.2026 (TODO): Isn't it better to use reserve() on this line:
+                            std::vector<entt::entity> entities(itEntities->size());
+                        in
+                            SceneSerializer::deserializeEntities()
+                        to reserve the memory for itEntities->size() elements without default-contructing them?
+
+0125 19.09.2026 (TODO): In all deserialization functions in Scene2DSerializer check basic invariants like
+                            radius >= 0
+                            width >= 0
+                            segmentsCount >= 0
+                            etc.
+
+0126 21.09.2026 (TODO): Refactor the common logic for deserializing an entity ID, currently found in
+                            deserializeTransformComponentParent()    (Scene2DSerializer.cpp)
+                        and
+                            deserializeEntityId()    (SceneSerializer.cpp)

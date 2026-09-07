@@ -2,6 +2,8 @@
 
 #include "SceneSerializer.h"
 
+#include <json.hpp>
+
 namespace Pekan
 {
 namespace Renderer2D
@@ -17,8 +19,8 @@ private: /* functions */
 		// Serializes all Scene2D components on the given entity.
 		nlohmann::ordered_json serializeComponents(entt::entity entity, const entt::registry& registry) const override;
 
-		// Deserializes a given components JSON object and emplaces the resulting components on the given entity.
-		// TODO: explain what specific things this implementation does
+		// Deserializes all Scene2D components from the given components JSON object
+		// and emplaces the resulting components on the given entity
 		bool deserializeComponents
 		(
 			const nlohmann::ordered_json& componentsJson,
