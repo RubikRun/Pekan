@@ -1,7 +1,29 @@
 #pragma once
 
+#include "Entity/EntityID.h"
+
 #include <glm/glm.hpp>
 #include <json.hpp>
+
+#include <cstdint>
+
+namespace Pekan
+{
+namespace SerializationUtils
+{
+
+	/// Deserializes a 64-bit unsigned integer value from a given JSON field.
+	/// Returns true on success, false on failure.
+	/// On failure, `result` is left unchanged.
+	bool deserializeUint64(const nlohmann::ordered_json& field, uint64_t& result);
+
+	/// Deserializes an EntityID value from a given JSON field.
+	/// Returns true on success, false on failure.
+	/// On failure, `result` is left unchanged.
+	bool deserializeEntityID(const nlohmann::ordered_json& field, EntityID& result);
+
+} // namespace SerializationUtils
+} // namespace Pekan
 
 namespace nlohmann
 {

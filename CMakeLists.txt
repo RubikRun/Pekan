@@ -99,6 +99,7 @@ add_library(Core STATIC
 	src/Core/Utils/MathUtils.h
 	src/Core/Utils/MathUtils.cpp
 	src/Core/Utils/SerializationUtils.h
+	src/Core/Utils/SerializationUtils.cpp
 	src/Core/Utils/stb.cpp
 	src/Core/Events/Event.h
 	src/Core/Events/WindowEvents.h
@@ -123,7 +124,13 @@ add_library(Core STATIC
 SOURCE_GROUP("Source Files\\Logger" FILES src/Core/Logger/PekanLogger.cpp)
 SOURCE_GROUP("Header Files\\Logger" FILES src/Core/Logger/PekanLogger.h)
 # Group Utils files under a virtual folder called "Utils"
-SOURCE_GROUP("Source Files\\Utils" FILES src/Core/Utils/RandomizationUtils.cpp src/Core/Utils/FileUtils.cpp src/Core/Utils/MathUtils.cpp src/Core/Utils/stb.cpp)
+SOURCE_GROUP("Source Files\\Utils" FILES
+	src/Core/Utils/RandomizationUtils.cpp
+	src/Core/Utils/FileUtils.cpp
+	src/Core/Utils/MathUtils.cpp
+	src/Core/Utils/SerializationUtils.cpp
+	src/Core/Utils/stb.cpp
+)
 SOURCE_GROUP("Header Files\\Utils" FILES
 	src/Core/Utils/RandomizationUtils.h
 	src/Core/Utils/FileUtils.h

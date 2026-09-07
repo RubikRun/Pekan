@@ -1,13 +1,12 @@
 #include "SceneSerializer.h"
 
+#include "Utils/SerializationUtils.h"
 #include "Scene.h"
 #include "Entity/EntityID.h"
 #include "Entity/EntityIDComponent.h"
 #include "Entity/NameComponent.h"
 #include "Entity/DisabledComponent.h"
 #include "PekanLogger.h"
-
-#include <cstdint>
 
 using json = nlohmann::ordered_json;
 
@@ -106,7 +105,6 @@ namespace Pekan
 	/// Returns true on success, false on error.
 	static bool deserializeSceneType(const json& sceneData, std::string& sceneType)
 	{
-		// Get the scene type.
 		const auto itSceneType = sceneData.find("sceneType");
 		if (itSceneType == sceneData.end())
 		{
@@ -127,7 +125,6 @@ namespace Pekan
 	/// Returns true on valid scene type, false on invalid/error.
 	static bool validateSceneType(const json& sceneData, const std::string& supportedSceneType)
 	{
-		// Deserialize scene type.
 		std::string sceneType;
 		if (!deserializeSceneType(sceneData, sceneType))
 		{
@@ -143,52 +140,19 @@ namespace Pekan
 		return true;
 	}
 
-	/// Deserializes the ID of a given entity JSON object, without validating it.
-	/// The ID is deserialized as a raw uint64_t so that out-of-range values survive for the caller to validate.
-	/// An ID is inherently unsigned, so negative values are discarded here, as part of deserialization.
+	/// Deserializes the ID of a given entity JSON object.
 	/// Returns true on success, false on error.
-	static bool deserializeEntityId(const json& entityData, uint64_t& id)
+	static bool deserializeEntityId(const json& entityData, EntityID& id)
 	{
-		// Get entity's ID.
 		const auto itId = entityData.find("id");
 		if (itId == entityData.end())
 		{
 			PK_LOG_ERROR("Failed to deserialize an entity from a scene file. Entity object is missing the \"id\" field.", "Pekan");
 			return false;
 		}
-		if (!itId->is_number_integer())
+		if (!SerializationUtils::deserializeEntityID(*itId, id))
 		{
-			PK_LOG_ERROR("Failed to deserialize an entity from a scene file. Entity object's \"id\" field is not an integer.", "Pekan");
-			return false;
-		}
-
-		// The JSON library stores integers internally as either signed or unsigned values.
-		// A signed value is not necessarily negative, so check its actual value.
-		if (!itId->is_number_unsigned() && itId->get<int64_t>() < 0)
-		{
-			PK_LOG_ERROR("Failed to deserialize an entity from a scene file. Entity's ID (" << itId->get<int64_t>()
-				<< ") cannot be negative.", "Pekan");
-			return false;
-		}
-
-		id = itId->get<uint64_t>();
-		return true;
-	}
-
-	/// Validates a raw deserialized entity ID.
-	/// Returns true on valid ID, false on invalid.
-	static bool validateEntityId(uint64_t id)
-	{
-		if (id < MIN_ENTITY_ID)
-		{
-			PK_LOG_ERROR("Failed to deserialize an entity from a scene file. Entity's ID (" << id
-				<< ") must be at least " << MIN_ENTITY_ID << ".", "Pekan");
-			return false;
-		}
-		if (id > MAX_ENTITY_ID)
-		{
-			PK_LOG_ERROR("Failed to deserialize an entity from a scene file. Entity's ID (" << id
-				<< ") can be at most " << MAX_ENTITY_ID << ".", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize an entity from a scene file. Entity object's ID is invalid.", "Pekan");
 			return false;
 		}
 
@@ -198,24 +162,31 @@ namespace Pekan
 	/// Deserializes the name of a given entity JSON object.
 	/// `id` is the entity's already deserialized ID, used only to identify the entity in error messages.
 	/// Returns:
-	/// - true, on success (name retrieved successfully or name missing, both are valid)
-	/// - false, on error (name exists but is invalid, e.g. a number)
+	/// - true, on success (non-empty name retrieved successfully, or name missing/null)
+	/// - false, on error (name exists but is invalid, e.g. a number or an empty string)
 	static bool deserializeEntityName(const json& entityData, EntityID id, std::string& name)
 	{
 		// Get entity's name.
 		const auto itName = entityData.find("name");
-		if (itName == entityData.end())
+		if (itName == entityData.end() || itName->is_null())
 		{
-			// A missing name is valid.
+			// A missing or null name is valid and means that the entity is unnamed.
+			name.clear();
 			return true;
 		}
 		if (!itName->is_string())
 		{
-			PK_LOG_ERROR("Failed to deserialize entity with ID " << id << " from a scene file. Entity object's \"name\" field is not a string.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize entity with ID " << id
+				<< " from a scene file. Entity's \"name\" field must be a string or null.", "Pekan");
 			return false;
 		}
 
 		name = itName->get<std::string>();
+		if (name.empty())
+		{
+			PK_LOG_ERROR("Failed to deserialize entity with ID " << id << " from a scene file. Entity's name cannot be empty.", "Pekan");
+			return false;
+		}
 		return true;
 	}
 
@@ -282,18 +253,10 @@ namespace Pekan
 		}
 
 		// Deserialize ID
-		uint64_t rawId = 0;
-		if (!deserializeEntityId(entityData, rawId))
+		if (!deserializeEntityId(entityData, id))
 		{
 			return false;
 		}
-		// Validate the ID before converting it to EntityID,
-		// as the conversion could silently truncate an out-of-range value.
-		if (!validateEntityId(rawId))
-		{
-			return false;
-		}
-		id = static_cast<EntityID>(rawId);
 		// Deserialize name
 		if (!deserializeEntityName(entityData, id, name))
 		{

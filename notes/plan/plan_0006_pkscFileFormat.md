@@ -24,10 +24,12 @@ namespace Pekan
 {
     using EntityID = uint32_t;
     constexpr EntityID INVALID_ENTITY_ID = 0;
+    constexpr EntityID MIN_ENTITY_ID = 1;
+    constexpr EntityID MAX_ENTITY_ID = std::numeric_limits<EntityID>::max();
 }
 ```
 
-Use `EntityID` (not `uint32_t`) everywhere so the underlying type can change later without touching call sites.
+Use `EntityID` (not `uint32_t`) everywhere so the underlying type can change later without touching call sites. Valid entity IDs are integers in the inclusive range [`MIN_ENTITY_ID`, `MAX_ENTITY_ID`]; `INVALID_ENTITY_ID` is reserved to mean no entity.
 
 **Two separate components in Core** — `id` is infrastructure, `name` is user-facing; they have different lifetimes and access patterns:
 
@@ -45,9 +47,9 @@ struct NameComponent
 };
 ```
 
-`EntityIDComponent` is attached automatically to every entity. `NameComponent` is optional — only attached when an entity has a non-empty name. Names have no engine-side behavior, don't need to be unique, and exist purely for readability in `.pksc` files and in the Editor.
+`EntityIDComponent` is attached automatically to every entity. `NameComponent` is optional — it is attached only when an entity has a name. A name must be a non-empty string; an empty string is not a valid name. In a `.pksc` file, an omitted `name` field or an explicit `"name": null` means that the entity is unnamed and has no `NameComponent`. Names have no engine-side behavior, don't need to be unique, and exist purely for readability in `.pksc` files and in the Editor.
 
-`Scene` gains a counter member `EntityID m_nextEntityId = 1`. Every call to `createEntity()` emplaces `EntityIDComponent` with the current counter value and increments it. `INVALID_ENTITY_ID` is never assigned.
+`Scene` gains a counter member `EntityID m_nextEntityId = MIN_ENTITY_ID`. Every call to `createEntity()` emplaces `EntityIDComponent` with the current counter value and increments it. `INVALID_ENTITY_ID` is never assigned.
 
 `Scene` also gets a **private** `createEntity(EntityID entityId)` overload for deserialization. This overload emplaces `EntityIDComponent` with the given ID (instead of auto-incrementing). During deserialization, `SceneSerializer` sets `m_nextEntityId` via a private `setNextEntityId()` helper.
 
@@ -90,8 +92,8 @@ struct NameComponent
 }
 ```
 
-- `id` — the entity's EntityID. Must be unique within the file. Must be > 0.
-- `name` — optional string. When non-empty, a `NameComponent` is attached to the entity. Omitted or empty means no `NameComponent`. Not required to be unique.
+- `id` — the entity's EntityID. Must be an integer in the inclusive range [`MIN_ENTITY_ID`, `MAX_ENTITY_ID`] and unique within the file. Negative, zero, out-of-range, and non-integer values are invalid and cause loading to fail.
+- `name` — optional non-empty string or `null`. A non-empty string attaches a `NameComponent` to the entity. An empty string is invalid and causes loading to fail. An omitted field or `null` means that the entity is unnamed and has no `NameComponent`. Names are not required to be unique.
 - `enabled` — optional, defaults to `true`. When `false`, the entity gets a `DisabledComponent`.
 - `components` — object whose keys are component type names. Which keys are valid depends on `sceneType`.
 
@@ -99,9 +101,9 @@ struct NameComponent
 
 When a component can reference another entity (e.g., `TransformComponent2D::parent`), the reference field may be omitted to mean no entity. When present, its value may be:
 
-- a number — the target's `EntityID`
-- a string — the target's `name` (resolved in a pre-pass to exactly one `EntityID`; if not found or ambiguous due to duplicate names, that's an error and load fails)
-- `null` — no entity
+- an integer within the valid `EntityID` range — the target's `EntityID`; a negative, zero, out-of-range, or non-integer numeric value is invalid and causes loading to fail
+- a non-empty string — the target's `name` (resolved in a pre-pass to exactly one `EntityID`; if empty, not found, or ambiguous due to duplicate names, that's an error and load fails)
+- `null` — no referenced entity (for `parent`, this means that the entity has no parent)
 
 ```json
 "parent": 1               // by ID — what the Editor writes for non-null parents
@@ -109,7 +111,7 @@ When a component can reference another entity (e.g., `TransformComponent2D::pare
 "parent": null
 ```
 
-The Editor omits the `parent` field when there is no parent, otherwise it writes a numeric ID. Name references exist purely as an authoring convenience. On deserialization, a missing `parent` field is interpreted as `null`, and a lookup table (EntityID → entt::entity) is built and used to resolve non-null references.
+The Editor omits the `parent` field when there is no parent, otherwise it writes a numeric ID. Name references exist purely as an authoring convenience. On deserialization, both a missing `parent` field and an explicit `"parent": null` mean that the entity has no parent. This is separate from whether an entity itself is named: an unnamed entity is represented by omitting its `name` field or setting `"name": null`, and it can still be referenced by its EntityID. A lookup table (EntityID → entt::entity) is built and used to resolve non-null references.
 
 ### Scene2D component mappings
 
@@ -231,8 +233,12 @@ This extends naturally — a future `Scene3DSerializer` goes in a Renderer3D mod
 
 - Unknown `sceneType` → error, refuse to load
 - Unknown component keys → warning, skip
-- Invalid parent EntityID (numeric not found / self-reference) → warning, set to null.
-- Invalid parent name reference (not found / ambiguous because of duplicate names) → error, refuse to load.
+- Unknown fields inside known components → warning, skip
+- Invalid entity ID value (negative, zero, greater than `MAX_ENTITY_ID`, or non-integer) → error, refuse to load.
+- Empty-string entity name → error, refuse to load. A null entity name is valid and means that the entity is unnamed.
+- Invalid numeric parent value (negative, zero, greater than the maximum `EntityID`, or non-integer) → error, refuse to load.
+- Valid parent EntityID that is not found, or that creates a self-reference → warning, set to null.
+- Invalid parent name reference (empty / not found / ambiguous because of duplicate names) → error, refuse to load.
 - Parent cycle → detected via a single DFS over the parent graph in `postDeserialize()` (visited + in-stack sets). Break the cycle by setting the offending entity's parent to null and log the chain (e.g. `"cycle: 7 → 12 → 4 → 7"`).
 - Missing component fields → use C++ struct defaults
 - `formatVersion.major` higher than supported → error, refuse to load. `formatVersion.minor` higher than supported → load normally (unknown components/fields already warn and skip).
@@ -250,17 +256,17 @@ Download `json.hpp` from the nlohmann/json GitHub release into `dep/json/json.hp
 
 Create:
 
-- `src/Core/Entity/EntityID.h` — `using EntityID = uint32_t;` and `constexpr EntityID INVALID_ENTITY_ID = 0;`
+- `src/Core/Entity/EntityID.h` — `using EntityID = uint32_t;` plus `INVALID_ENTITY_ID`, `MIN_ENTITY_ID`, and `MAX_ENTITY_ID` constants
 - `src/Core/Entity/EntityIDComponent.h` — `struct EntityIDComponent { EntityID id = INVALID_ENTITY_ID; };`
 - `src/Core/Entity/NameComponent.h` — `struct NameComponent { std::string name; };`
 
 Modify `Scene`:
 
-- Add `EntityID m_nextEntityId = 1` member
+- Add `EntityID m_nextEntityId = MIN_ENTITY_ID` member
 - In `createEntity()`, emplace `EntityIDComponent{m_nextEntityId++}` on the new entity
 - Add a private `createEntity(EntityID entityId)` overload that emplaces `EntityIDComponent` with the given ID and appends to `m_entities` — but does **not** touch `m_nextEntityId`. Used by deserialization.
 - Add `friend class SceneSerializer;` so the serializer can call private/protected scene-management methods (`createEntity(EntityID)`, `setNextEntityId(EntityID)`, `createEntity()`, `disableEntity()`) without making them public.
-- Add a protected `clear()` method — clears the registry, clears `m_entities`, and resets `m_nextEntityId = 1`. Single entry point for wiping a scene.
+- Add a protected `clear()` method — clears the registry, clears `m_entities`, and resets `m_nextEntityId = MIN_ENTITY_ID`. Single entry point for wiping a scene.
 - Add a private `setNextEntityId(EntityID id)` method — used only by `SceneSerializer` after deserialization to resume the counter from `max(loaded IDs) + 1`.
 - Add a protected `adoptFrom(Scene&& other)` method that move-assigns `other.m_registry`, `other.m_entities`, and `other.m_nextEntityId` into `*this`. Used by transactional load in Step 5.
 - Update the Editor to use `EntityID` (not raw `entt::entity`) for any persistent selection state, and display `EntityIDComponent::id` + `NameComponent::name` (when present) in the entity list.
@@ -273,8 +279,8 @@ Create `src/Core/SceneSerializer.h` and `.cpp`. Add them to Core's source list i
 
 The base class must provide:
 
-- `serialize(const Scene&)` → JSON string. Builds the top-level structure (including `formatVersion` as `{ "major", "minor" }` and an empty `settings` object). Iterates `scene.getEntities()`, reads `EntityIDComponent`, `NameComponent` (when present), and `DisabledComponent` from `scene.getRegistry()`, calls virtual `serializeComponents(entity, scene.getRegistry())` for each entity. Writes `name` only when a `NameComponent` is present; omits `enabled` when true (default).
-- `deserialize(Scene&, json)` → populates scene. Parses JSON, validates `sceneType` and `formatVersion.major` (refuses on major > supported; accepts higher minor with a warning), then builds a `name → EntityID` lookup from all non-empty entity names before component deserialization begins. A unique name maps to its EntityID; a duplicate name maps to `INVALID_ENTITY_ID` to mark it as ambiguous; a missing key means that no entity has that name. For each entity: calls `scene.createEntity(entityId)`, emplaces `NameComponent` if `"name"` is present and non-empty, calls `scene.disableEntity()` if `enabled` is false, calls virtual `deserializeComponents(componentsJson, entity, scene.getRegistry(), entityNameToIdMap)` and aborts the load if it returns `false`. After all entities are created, calls virtual `postDeserialize(scene)`, then `scene.setNextEntityId(maxLoadedEntityId + 1)`. Logs errors and warnings directly via `PK_LOG_ERROR` / `PK_LOG_WARNING`. Returns `bool` — `false` on fatal errors (unknown sceneType, unsupported major, duplicate EntityIDs, malformed JSON, invalid parent name references), `true` on success.
+- `serialize(const Scene&)` → JSON string. Builds the top-level structure (including `formatVersion` as `{ "major", "minor" }` and an empty `settings` object). Iterates `scene.getEntities()`, reads `EntityIDComponent`, `NameComponent` (when present), and `DisabledComponent` from `scene.getRegistry()`, calls virtual `serializeComponents(entity, scene.getRegistry())` for each entity. Writes `name` only when a `NameComponent` containing a non-empty name is present; omits `enabled` when true (default).
+- `deserialize(Scene&, json)` → populates scene. Parses JSON, validates `sceneType` and `formatVersion.major` (refuses on major > supported; accepts higher minor with a warning), validates every entity ID as an integer within [`MIN_ENTITY_ID`, `MAX_ENTITY_ID`], validates every present `"name"` field as either `null` or a non-empty string, then builds a `name → EntityID` lookup from all named entities before component deserialization begins. A unique name maps to its EntityID; a duplicate name maps to `INVALID_ENTITY_ID` to mark it as ambiguous; a missing key means that no entity has that name. For each entity: calls `scene.createEntity(entityId)`, emplaces `NameComponent` if `"name"` contains a non-empty string, calls `scene.disableEntity()` if `enabled` is false, calls virtual `deserializeComponents(componentsJson, entity, scene.getRegistry(), entityNameToIdMap)` and aborts the load if it returns `false`. After all entities are created, calls virtual `postDeserialize(scene)`, then `scene.setNextEntityId(maxLoadedEntityId + 1)`. Logs errors and warnings directly via `PK_LOG_ERROR` / `PK_LOG_WARNING`. Returns `bool` — `false` on fatal errors (unknown sceneType, unsupported major, invalid or duplicate EntityIDs, malformed JSON, invalid entity name values such as empty strings, invalid parent name references), `true` on success.
 - Pure virtual hooks: `getSceneType()`, `serializeComponents(entity, registry)`, and `deserializeComponents(componentsJson, entity, registry, entityNameToIdMap)` → `bool` (returns `false` on a fatal error that should abort the load, e.g. an invalid parent name reference; non-fatal issues such as unknown component keys are warnings and still return `true`). Optional virtual: `postDeserialize(scene)`.
 
 ### Step 4 — Scene2DSerializer
@@ -284,7 +290,7 @@ Create `src/Renderer2D/Scene2DSerializer.h` and `.cpp`. Add them to `src/Rendere
 Implement:
 
 - `serializeComponents(entity, registry)` — for each of the 10 types (in the fixed order from the component mappings table), call `registry.try_get<T>(entity)`, write JSON if present. For a non-null Transform2D parent, look up the parent entity's `EntityIDComponent` and write its ID; omit the `parent` field when the parent is null. Entities are serialized in `scene.getEntities()` vector order. This fixed ordering for both entities and component keys ensures deterministic output — re-saving an unchanged scene produces identical JSON.
-- `deserializeComponents(componentsJson, entity, registry, entityNameToIdMap)` — for each key in the `components` object, default-construct the component, override fields from JSON, and emplace it on the entity. For Transform2D, treat a missing `parent` as null; when present, accept it as a number, string (resolved via `entityNameToIdMap`), or null. A referenced name that is missing from the map is not found, while a name mapped to `INVALID_ENTITY_ID` is ambiguous; either case is an error and fails the load, while duplicate names that are never referenced are allowed. Store a raw parent EntityID temporarily for non-null references while leaving the component's `parent` as `entt::null`. Returns `false` to abort the load on a fatal error; unknown component keys are warnings + skip and still return `true`.
+- `deserializeComponents(componentsJson, entity, registry, entityNameToIdMap)` — for each key in the `components` object, default-construct the component, override fields from JSON, and emplace it on the entity. For Transform2D, treat a missing `parent` as null; when present, accept it as an integer EntityID, non-empty string (resolved via `entityNameToIdMap`), or null. A numeric parent must be an integer within the valid `EntityID` range; negative, zero, out-of-range, and non-integer numeric values are fatal errors. An empty referenced name is invalid, a non-empty referenced name missing from the map is not found, and a name mapped to `INVALID_ENTITY_ID` is ambiguous; all three cases are errors and fail the load, while duplicate names that are never referenced are allowed. Store a raw parent EntityID temporarily for non-null references while leaving the component's `parent` as `entt::null`. Returns `false` to abort the load on a fatal error; unknown component keys are warnings + skip and still return `true`.
 - `postDeserialize(scene)` — build an EntityID→entt::entity map from `scene.getEntities()` + `scene.getRegistry()`, iterate all `TransformComponent2D` instances and resolve parent EntityIDs to actual `entt::entity` handles. Then run a single DFS over the parent graph (visited + in-stack sets); on cycle, break it by nulling the offending parent and log the chain.
 
 ### Step 5 — Editor integration
@@ -302,7 +308,7 @@ Implement:
 
 **EntitiesGUIWindow** — add a text input for the file path and Save/Load buttons. Stores the current selection as `EntityID`. The entity list displays each entity's name when present (e.g. `"red_rectangle (1)"`), falling back to just the ID (e.g. `"Entity 1"`) for unnamed entities.
 
-**EntityPropertiesGUIWindow** — shows the selected entity's `EntityID` and a text input for editing its name (adds/removes `NameComponent` as the string becomes non-empty/empty).
+**EntityPropertiesGUIWindow** — shows the selected entity's `EntityID` and a text input for editing its name. Entering a non-empty string adds or updates `NameComponent`; clearing the input removes `NameComponent`, so an empty string is never stored or serialized as an entity name. The Editor omits `name` for unnamed entities, although the loader also accepts an explicit `"name": null`.
 
 **CameraController2D** — if it caches entity handles to camera entities, it must re-find the primary camera after a successful load. Hook this off the successful-load path in `EditorScene::loadFromFile`.
 
@@ -310,7 +316,7 @@ Implement:
 
 - Build a scene in the Editor → save → inspect the `.pksc` file
 - Hand-edit the `.pksc` file → load it → verify it looks right
-- Test edge cases: empty scene, disabled entities, parent-child chains, missing component fields
+- Test edge cases: empty scene, disabled entities, negative/zero/out-of-range/non-integer entity IDs, duplicate entity IDs, omitted and explicitly null entity names, invalid empty-string entity names, parent-child chains, missing and explicitly null parents, nonexistent and self-referencing parent IDs, negative/zero/out-of-range/non-integer numeric parent values, missing component fields, unknown fields inside known components, empty parent name references
 - Re-save a loaded scene and compare output — should be identical
 
 ---

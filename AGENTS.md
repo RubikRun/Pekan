@@ -171,12 +171,12 @@ Use the logger macros (defined in `Core/Logger/PekanLogger.h`) rather than `prin
 
 The author keeps a detailed development journal and design docs. These are the best source of *why* decisions were made.
 
-- `notes/dev/dev_NNNN.txt` — chronological **dev journal**. The latest file (`dev_0006.txt` at the time of writing) is actively appended to. **Most commits add a corresponding journal entry.** Never rewrite old entries; only append. Do not start a new `dev_NNNN.txt` unless the author asks.
+- `notes/dev/dev_NNNN.txt` — chronological **dev journal**. The latest file (`dev_0006.txt` at the time of writing) is actively appended to. The author usually adds a journal entry with a commit. **Agents do not.** Write a journal entry only when the author specifically asks for one. A code change on its own is not that request. Never rewrite old entries; only append. Do not start a new `dev_NNNN.txt` unless the author asks.
 - `notes/dev/todo.txt` — a numbered task list. Format: `NNNN DD.MM.YYYY (DONE): description` or `(TODO)` while open. Continuation lines are indented. Tasks are referenced from the journal as **"TO-DO task 0079"** / **"TO-DO item 0071"** (always "TO-DO", not "TODO"). Entries can be tasks, questions, or "think about X".
 - `notes/plan/` — design docs for larger features. Some are short plain-text lists (`plan_0000.txt`), some are structured specs (`plan_0006_pkscFileFormat.md`). Read the relevant plan before implementing a planned feature. **Do not write plan docs in journal voice**, and **do not write journal entries like a plan/spec**.
 - `notes/general/` — rare high-level notes (e.g. why the project exists). Leave these alone unless asked.
 
-If you do any non-trivial work, record it in the current journal: what was done and why, the thought process, reasoning behind design decisions, even low-level ones. Stay focused on the task at hand. If you spot an unrelated bug or an opportunity for improvement, note it down in `todo.txt` rather than fixing it as part of the current change.
+Do not write a journal entry unless the author specifically asks for one. When asked, record what was done and why, the thought process, and the reasoning behind design decisions, even low-level ones. Stay focused on the task at hand. If you spot an unrelated bug or an opportunity for improvement, note it down in `todo.txt` rather than fixing it as part of the current change.
 
 When asked to write a journal entry, **read the last stretch of the current `dev_NNNN.txt` first** and continue in that voice. The rest of this section is how that voice works.
 
@@ -217,6 +217,8 @@ Write **as the author, first person**, as if he typed it that evening. The journ
 
 - Mix **"I"** and **"we"**. "I" = a personal choice or what he did that day. "We" = Pekan / the code / the current work. Never "the agent", "we implemented" as a team of AIs, or "this commit".
 - Present tense while working through the thought ("Let's create...", "Now we can..."). Past tense for what already happened ("I copied...", "It worked!").
+- New code does not exist yet at the sentence that introduces it. Write "Let's create `deserializeTransformComponent()`", not "There is a function `deserializeTransformComponent()`". Same for new types, members, and files. Past tense ("I created it", "Done.") only after the entry has walked through creating that thing.
+- When introducing the problem, describe the code's **current, pre-change state in the present tense**, because that is what the author is looking at in that moment. Write "unknown fields are silently ignored", not "unknown fields were being silently ignored". The past tense can make it sound like the problem existed only in some earlier revision. Switch to past tense only after the entry has narrated the change, or when referring to something that genuinely happened earlier.
 - Casual, spoken, slightly messy English. Contractions are normal (`let's`, `that's`, `don't`, `I'll`). Fillers he actually uses: "Okay,", "So,", "Now,", "Next,", "Alright,". Closers he actually uses: **"That's it."**, **"Done."**, **"That's about it."**, **"Okay, it works!"**, **"Looks good."**, **"Done. Easy."**
 - Occasional real personality is fine when it fits the moment: "which is stupid tbh", "it's a bit annoying", "Neat!", "Pretty nice.", "gotta admit", "I feel like...". Do not force slang into every paragraph, and do not invent a jokey narrator.
 - Ordinary words for reasoning: "the idea is", "the bottomline is", "pretty straightforward", "a bit weird", "that's not good enough", "this makes no sense". **Do not** use blog/AI diction: "leverage", "robust", "canonical", "idiomatic", "this ensures", "in order to facilitate", "separation of concerns", "hydration", "pipeline", "going forward".
@@ -306,7 +308,7 @@ The first one is a person thinking. The second one is a changelog. Always write 
 - Logging/asserts use `PK_LOG_`* / `PK_ASSERT`*, not the standard library.
 - Demos must always compile. If a change in engine API breaks them, demo code needs to change accordingly.
 - Non-obvious decisions are explained in intent-focused comments.
-- Journal entries (when you write them) go at the end of the latest `notes/dev/dev_NNNN.txt`, in the author's first-person voice — see §8. Read the end of that file before writing.
+- Do not write a journal entry unless the author specifically asks. When asked, append it to the end of the latest `notes/dev/dev_NNNN.txt`, in the author's first-person voice — see §8. Read the end of that file before writing.
 
 ---
 
