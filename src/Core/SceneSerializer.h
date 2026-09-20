@@ -53,7 +53,7 @@ namespace Pekan
 		//   - file's formatVersion.major higher than the supported major version
 		//   - duplicate EntityIDs
 		//   - invalid parent name references (not found / ambiguous due to duplicates)
-		// Non-fatal issues (unknown component keys, higher minor version, ...)
+		// Non-fatal issues (unknown component keys, unknown fields, higher minor version, ...)
 		// are reported as warnings and the load continues.
 		//
 		// On failure the state of `scene` is unspecified.

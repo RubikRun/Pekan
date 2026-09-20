@@ -308,6 +308,30 @@ namespace Pekan
 		return true;
 	}
 
+	/// Returns true if the given key is a known top-level field of a scene file.
+	static bool isKnownSceneKey(const std::string& key)
+	{
+		return
+			key == "formatVersion" ||
+			key == "sceneType" ||
+			key == "settings" ||
+			key == "entities";
+	}
+
+	/// Logs a warning for each unknown top-level field in a given scene JSON object.
+	/// Unknown keys are skipped, they do NOT abort the load.
+	static void warnUnknownSceneKeys(const json& sceneData)
+	{
+		for (auto it = sceneData.begin(); it != sceneData.end(); ++it)
+		{
+			if (!isKnownSceneKey(it.key()))
+			{
+				PK_LOG_WARNING("Ignoring unknown field \"" << it.key()
+					<< "\" because it is not a valid top-level field of a scene file.", "Pekan");
+			}
+		}
+	}
+
 //////////
 //////////
 //////////
@@ -346,6 +370,9 @@ namespace Pekan
 		{
 			// Parse the given JSON text into a JSON object containing all scene data.
 			json sceneData = json::parse(jsonText);
+
+			// Warn about unknown top-level fields and skip them.
+			warnUnknownSceneKeys(sceneData);
 
 			// Check if scene's format version is supported.
 			if (!validateFormatVersion(sceneData, FORMAT_VERSION_SUPPORTED))
