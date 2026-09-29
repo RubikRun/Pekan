@@ -319,3 +319,21 @@ The first one is a person thinking. The second one is a changelog. Always write 
 - Discuss and get confirmation before changing an agreed architecture, API, or implementation plan beyond what the current request requires.
 - Preserve the author's existing comments and prose. Only extend them or minimally edit wording that became inaccurate; do not replace their structure or rewrite them in a different voice.
 - Prefer the simplest solution needed by Pekan today. Avoid generic abstractions, extra template flexibility, or additional data structures unless they solve a concrete current requirement.
+
+---
+
+## 12. Code reviews
+
+When the author asks for a **code review** of a specific commit, the current diff, or a set of commits, review that diff against the goal of the change. Look at the diff. Judge in this order, most important first:
+
+1. **Bugs.**
+2. **Correctness.** Does the code work in every feasible case?
+3. **Completeness.** If something is done in one place, it is also done everywhere it applies. For example, a helper written to cut boilerplate is called in a few places, but another place that should call it was missed.
+4. **Architecture.** Not overengineered. Clean separation, abstraction where it is needed, less boilerplate.
+5. **Readability.** Good names for functions and variables, good comments.
+
+Give the findings as a **numbered list**, so the author can refer to them later ("fix finding #3", "regarding finding #5, what did you mean when you said...").
+
+Findings are about the diff and the goal of that commit. Do not report pre-existing bugs, pre-existing bad architecture, or other problems in surrounding code. A Pekan commit is self-contained and targeted: it can be dropped from history without collateral damage beyond what it was meant to fix or implement. A review must not widen that scope.
+
+If surrounding code has something very important — a major bug, or architecture bad enough that it will have real consequences — mention it after the findings, under a **Side note** heading. In the usual case, do not include a side note.
