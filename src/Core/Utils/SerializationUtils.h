@@ -22,6 +22,10 @@ namespace SerializationUtils
 	/// On failure, `result` is left unchanged.
 	bool deserializeEntityID(const nlohmann::ordered_json& field, EntityID& result);
 
+	/// Checks if a given JSON field is a number that can be safely converted to float.
+	/// Returns false if the field is not a number, or if its value is outside of float's range.
+	bool isNumberInFloatRange(const nlohmann::ordered_json& field);
+
 } // namespace SerializationUtils
 } // namespace Pekan
 

@@ -2,6 +2,9 @@
 
 #include "Entity/EntityID.h"
 
+#include <cmath>
+#include <limits>
+
 using json = nlohmann::ordered_json;
 
 namespace Pekan
@@ -51,6 +54,16 @@ namespace SerializationUtils
 		}
 		result = static_cast<EntityID>(rawId);
 		return true;
+	}
+
+	bool isNumberInFloatRange(const json& field)
+	{
+		if (!field.is_number())
+		{
+			return false;
+		}
+		const double value = field.get<double>();
+		return std::abs(value) <= std::numeric_limits<float>::max();
 	}
 
 } // namespace SerializationUtils

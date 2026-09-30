@@ -20,6 +20,7 @@
 #include <initializer_list>
 
 using json = nlohmann::ordered_json;
+using Pekan::SerializationUtils::isNumberInFloatRange;
 
 namespace Pekan
 {
@@ -220,9 +221,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Transform2D component's position. The \"position\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPosition->at(0).is_number() || !itPosition->at(1).is_number())
+		if (!isNumberInFloatRange(itPosition->at(0)) || !isNumberInFloatRange(itPosition->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Transform2D component's position. The \"position\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Transform2D component's position. The \"position\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPosition->get_to(position);
@@ -242,9 +243,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itRotation->is_number())
+		if (!isNumberInFloatRange(*itRotation))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Transform2D component's rotation. The \"rotation\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Transform2D component's rotation. The \"rotation\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		rotation = itRotation->get<float>();
@@ -274,9 +275,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Transform2D component's scale factor. The \"scaleFactor\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itScaleFactor->at(0).is_number() || !itScaleFactor->at(1).is_number())
+		if (!isNumberInFloatRange(itScaleFactor->at(0)) || !isNumberInFloatRange(itScaleFactor->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Transform2D component's scale factor. The \"scaleFactor\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Transform2D component's scale factor. The \"scaleFactor\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itScaleFactor->get_to(scaleFactor);
@@ -408,9 +409,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itWidth->is_number())
+		if (!isNumberInFloatRange(*itWidth))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Sprite component's width. The \"width\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Sprite component's width. The \"width\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		width = itWidth->get<float>();
@@ -430,9 +431,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itHeight->is_number())
+		if (!isNumberInFloatRange(*itHeight))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Sprite component's height. The \"height\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Sprite component's height. The \"height\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		height = itHeight->get<float>();
@@ -490,9 +491,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Sprite component's min texture coordinates. The \"textureCoordinatesMin\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itTextureCoordinatesMin->at(0).is_number() || !itTextureCoordinatesMin->at(1).is_number())
+		if (!isNumberInFloatRange(itTextureCoordinatesMin->at(0)) || !isNumberInFloatRange(itTextureCoordinatesMin->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Sprite component's min texture coordinates. The \"textureCoordinatesMin\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Sprite component's min texture coordinates. The \"textureCoordinatesMin\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itTextureCoordinatesMin->get_to(textureCoordinatesMin);
@@ -522,9 +523,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Sprite component's max texture coordinates. The \"textureCoordinatesMax\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itTextureCoordinatesMax->at(0).is_number() || !itTextureCoordinatesMax->at(1).is_number())
+		if (!isNumberInFloatRange(itTextureCoordinatesMax->at(0)) || !isNumberInFloatRange(itTextureCoordinatesMax->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Sprite component's max texture coordinates. The \"textureCoordinatesMax\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Sprite component's max texture coordinates. The \"textureCoordinatesMax\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itTextureCoordinatesMax->get_to(textureCoordinatesMax);
@@ -585,9 +586,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itWidth->is_number())
+		if (!isNumberInFloatRange(*itWidth))
 		{
-			PK_LOG_ERROR("Failed to deserialize a RectangleGeometry component's width. The \"width\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a RectangleGeometry component's width. The \"width\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		width = itWidth->get<float>();
@@ -607,9 +608,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itHeight->is_number())
+		if (!isNumberInFloatRange(*itHeight))
 		{
-			PK_LOG_ERROR("Failed to deserialize a RectangleGeometry component's height. The \"height\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a RectangleGeometry component's height. The \"height\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		height = itHeight->get<float>();
@@ -667,9 +668,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itRadius->is_number())
+		if (!isNumberInFloatRange(*itRadius))
 		{
-			PK_LOG_ERROR("Failed to deserialize a CircleGeometry component's radius. The \"radius\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a CircleGeometry component's radius. The \"radius\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		radius = itRadius->get<float>();
@@ -786,9 +787,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point A. The \"pointA\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPointA->at(0).is_number() || !itPointA->at(1).is_number())
+		if (!isNumberInFloatRange(itPointA->at(0)) || !isNumberInFloatRange(itPointA->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point A. The \"pointA\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point A. The \"pointA\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPointA->get_to(pointA);
@@ -818,9 +819,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point B. The \"pointB\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPointB->at(0).is_number() || !itPointB->at(1).is_number())
+		if (!isNumberInFloatRange(itPointB->at(0)) || !isNumberInFloatRange(itPointB->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point B. The \"pointB\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point B. The \"pointB\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPointB->get_to(pointB);
@@ -850,9 +851,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point C. The \"pointC\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPointC->at(0).is_number() || !itPointC->at(1).is_number())
+		if (!isNumberInFloatRange(itPointC->at(0)) || !isNumberInFloatRange(itPointC->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point C. The \"pointC\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a TriangleGeometry component's point C. The \"pointC\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPointC->get_to(pointC);
@@ -937,10 +938,10 @@ namespace {
 					         "Each element of the \"vertexPositions\" array must contain exactly 2 elements.", "Pekan");
 				return false;
 			}
-			if (!vertexPositionData.at(0).is_number() || !vertexPositionData.at(1).is_number())
+			if (!isNumberInFloatRange(vertexPositionData.at(0)) || !isNumberInFloatRange(vertexPositionData.at(1)))
 			{
 				PK_LOG_ERROR("Failed to deserialize a PolygonGeometry component's vertex positions. "
-				             "Each element of the \"vertexPositions\" array must contain numeric values only.", "Pekan");
+				             "Each element of the \"vertexPositions\" array must contain numeric values within float range only.", "Pekan");
 				return false;
 			}
 
@@ -1010,9 +1011,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's point A. The \"pointA\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPointA->at(0).is_number() || !itPointA->at(1).is_number())
+		if (!isNumberInFloatRange(itPointA->at(0)) || !isNumberInFloatRange(itPointA->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's point A. The \"pointA\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's point A. The \"pointA\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPointA->get_to(pointA);
@@ -1042,9 +1043,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's point B. The \"pointB\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPointB->at(0).is_number() || !itPointB->at(1).is_number())
+		if (!isNumberInFloatRange(itPointB->at(0)) || !isNumberInFloatRange(itPointB->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's point B. The \"pointB\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's point B. The \"pointB\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPointB->get_to(pointB);
@@ -1064,9 +1065,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itThickness->is_number())
+		if (!isNumberInFloatRange(*itThickness))
 		{
-			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's thickness. The \"thickness\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a LineGeometry component's thickness. The \"thickness\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		thickness = itThickness->get<float>();
@@ -1135,9 +1136,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a SolidColorMaterial component's color. The \"color\" array must contain exactly 4 elements.", "Pekan");
 			return false;
 		}
-		if (!itColor->at(0).is_number() || !itColor->at(1).is_number() || !itColor->at(2).is_number() || !itColor->at(3).is_number())
+		if (!isNumberInFloatRange(itColor->at(0)) || !isNumberInFloatRange(itColor->at(1)) || !isNumberInFloatRange(itColor->at(2)) || !isNumberInFloatRange(itColor->at(3)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a SolidColorMaterial component's color. The \"color\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a SolidColorMaterial component's color. The \"color\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itColor->get_to(color);
@@ -1202,9 +1203,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Line component's point A. The \"pointA\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPointA->at(0).is_number() || !itPointA->at(1).is_number())
+		if (!isNumberInFloatRange(itPointA->at(0)) || !isNumberInFloatRange(itPointA->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Line component's point A. The \"pointA\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Line component's point A. The \"pointA\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPointA->get_to(pointA);
@@ -1234,9 +1235,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Line component's point B. The \"pointB\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPointB->at(0).is_number() || !itPointB->at(1).is_number())
+		if (!isNumberInFloatRange(itPointB->at(0)) || !isNumberInFloatRange(itPointB->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Line component's point B. The \"pointB\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Line component's point B. The \"pointB\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPointB->get_to(pointB);
@@ -1266,9 +1267,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Line component's color. The \"color\" array must contain exactly 4 elements.", "Pekan");
 			return false;
 		}
-		if (!itColor->at(0).is_number() || !itColor->at(1).is_number() || !itColor->at(2).is_number() || !itColor->at(3).is_number())
+		if (!isNumberInFloatRange(itColor->at(0)) || !isNumberInFloatRange(itColor->at(1)) || !isNumberInFloatRange(itColor->at(2)) || !isNumberInFloatRange(itColor->at(3)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Line component's color. The \"color\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Line component's color. The \"color\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itColor->get_to(color);
@@ -1337,9 +1338,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Camera2D component's size. The \"size\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itSize->at(0).is_number() || !itSize->at(1).is_number())
+		if (!isNumberInFloatRange(itSize->at(0)) || !isNumberInFloatRange(itSize->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Camera2D component's size. The \"size\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Camera2D component's size. The \"size\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itSize->get_to(size);
@@ -1369,9 +1370,9 @@ namespace {
 			PK_LOG_ERROR("Failed to deserialize a Camera2D component's position. The \"position\" array must contain exactly 2 elements.", "Pekan");
 			return false;
 		}
-		if (!itPosition->at(0).is_number() || !itPosition->at(1).is_number())
+		if (!isNumberInFloatRange(itPosition->at(0)) || !isNumberInFloatRange(itPosition->at(1)))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Camera2D component's position. The \"position\" array's elements must be numbers.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Camera2D component's position. The \"position\" array's elements must be numbers within float range.", "Pekan");
 			return false;
 		}
 		itPosition->get_to(position);
@@ -1391,9 +1392,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itRotation->is_number())
+		if (!isNumberInFloatRange(*itRotation))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Camera2D component's rotation. The \"rotation\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Camera2D component's rotation. The \"rotation\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		rotation = itRotation->get<float>();
@@ -1413,9 +1414,9 @@ namespace {
 			// The field is missing, which is ok. Just use the default value.
 			return true;
 		}
-		if (!itZoomLevel->is_number())
+		if (!isNumberInFloatRange(*itZoomLevel))
 		{
-			PK_LOG_ERROR("Failed to deserialize a Camera2D component's zoom level. The \"zoomLevel\" field must be a number.", "Pekan");
+			PK_LOG_ERROR("Failed to deserialize a Camera2D component's zoom level. The \"zoomLevel\" field must be a number within float range.", "Pekan");
 			return false;
 		}
 		zoomLevel = itZoomLevel->get<float>();
