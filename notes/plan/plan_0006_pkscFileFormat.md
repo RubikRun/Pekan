@@ -231,16 +231,28 @@ This extends naturally — a future `Scene3DSerializer` goes in a Renderer3D mod
 
 **Error handling on load:**
 
-- Unknown `sceneType` → error, refuse to load
+- Malformed JSON that fails to parse (invalid syntax, invalid UTF-8, or a number too large to be represented as a `double`) → error, refuse to load.
+- Top-level JSON value that is not an object → error, refuse to load.
+- Missing, non-string, or unknown `sceneType` → error, refuse to load
 - Unknown component keys → warning, skip
 - Unknown fields inside known components → warning, skip
-- Invalid entity ID value (negative, zero, greater than `MAX_ENTITY_ID`, or non-integer) → error, refuse to load.
-- Empty-string entity name → error, refuse to load. A null entity name is valid and means that the entity is unnamed.
+- Missing `entities` field, or an `entities` value that is not an array → error, refuse to load.
+- An element of `entities` that is not an object → error, refuse to load.
+- Missing entity ID, or invalid entity ID value (negative, zero, greater than `MAX_ENTITY_ID`, or non-integer) → error, refuse to load.
+- An entity with ID `MAX_ENTITY_ID` → error, refuse to load. The ID itself is valid, but the scene's next-EntityID counter cannot be set past it, so the loaded scene would be unable to create new entities.
+- Empty-string entity name, or a `name` value that is neither a string nor null → error, refuse to load. A null entity name is valid and means that the entity is unnamed.
+- An `enabled` value that is not a boolean → error, refuse to load.
+- Missing `components` field, or a `components` value that is not an object → error, refuse to load.
+- A known component whose value is not an object → error, refuse to load.
+- A known component field whose value has the wrong type or shape → error, refuse to load. Scalar number fields must be numbers (`segmentsCount` must be an integer), `[x,y]` fields must be arrays of exactly 2 numbers, `[r,g,b,a]` fields must be arrays of exactly 4 numbers, `vertexPositions` must be an array of `[x,y]` arrays, boolean fields must be booleans, and `texturePath` must be a string or null.
+- A known component field whose number does not fit its C++ type (a float field or vector element outside `float` range, or a `segmentsCount` outside `int` range) → error, refuse to load.
 - Invalid numeric parent value (negative, zero, greater than the maximum `EntityID`, or non-integer) → error, refuse to load.
+- A `parent` value that is not a number, a string, or null (a boolean, an array, or an object) → error, refuse to load.
 - Valid parent EntityID that is not found, or that creates a self-reference → warning, set to null.
 - Invalid parent name reference (empty / not found / ambiguous because of duplicate names) → error, refuse to load.
 - Parent cycle → detected via a single DFS over the parent graph in `postDeserialize()` (visited + in-stack sets). Break the cycle by setting the offending entity's parent to null and log the chain (e.g. `"cycle: 7 → 12 → 4 → 7"`).
 - Missing component fields → use C++ struct defaults
+- Missing `formatVersion` field, or a `formatVersion` value that is not an object, is missing `major` or `minor`, or has a non-integer `major` or `minor` → error, refuse to load.
 - `formatVersion.major` higher than supported → error, refuse to load. `formatVersion.minor` higher than supported → load normally (unknown components/fields already warn and skip).
 - Duplicate EntityIDs → error. Do not silently generate replacement IDs, because references to that duplicated ID would become ambiguous.
 
