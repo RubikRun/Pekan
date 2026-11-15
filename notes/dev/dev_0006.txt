@@ -4162,3 +4162,20 @@ We should also make this behavior explicit in the plan and add it to the edge ca
 
 Okay, done. Renderer2D builds successfully.
 }
+
+----------
+15.11.2026
+----------
+
+{
+Today my Cursor subscription ended and I started using Codex instead.
+(My Codex subscription began a few days ago, actually, but today was the first day that I did something real with it)
+
+First thing I did with Codex was to ask it to research the whole codebase
+and update AGENTS.md to its liking. It also decided to create a new aimed-at-AI-agents file:
+    CODEBASE_GUIDE.md
+I skimmed through the file and through the changes in AGENTS.md,
+removed some things, changed some things, but overall it was looking good.
+
+Committed.
+}

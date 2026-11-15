@@ -11,7 +11,7 @@ Pekan is a **2D game engine**. It focuses on:
 
 - **Modular, subsystem-based architecture** — features are split into subsystems that can be enabled/disabled at compile time.
 - **ECS-driven design** — game logic is built on an ECS registry, keeping data (components) and logic (systems) decoupled.
-- **High-performance 2D rendering** — a custom OpenGL-based batch renderer for sprites and shapes.
+- **2D rendering** — custom OpenGL rendering for sprites and shapes. The current ECS renderer draws entities individually; batching was deliberately deferred during the ECS transition (TO-DO items 0074–0076).
 
 The author has been building Pekan from first principles.  
 **Prefer designing things "the Pekan way" over copying patterns from elsewhere.**
@@ -56,20 +56,21 @@ Pekan/
 
 ## 3. Building
 
-- **Requirements:** CMake 3.6+, an OpenGL 3.3+ capable system, a C++20 compiler.
+- **Requirements:** CMake 3.6+, OpenGL 4.3+, C++20.
 - **Windows (primary dev environment, PowerShell):**
   ```powershell
-  gen.bat
+  .\gen.bat
   ```
-  This script auto-detects the latest installed Visual Studio and generates `build/Pekan.sln` using the CMake executable that ships with Visual Studio (not needed to have "cmake" in PATH). Open the generated solution and build. The script also forwards `-D` CMake options.
+  This script auto-detects the latest installed Visual Studio and generates a solution under `build/` using the CMake executable that ships with Visual Studio (not needed to have "cmake" in PATH). The solution may be `Pekan.sln` or `Pekan.slnx`, depending on the toolchain. Open the generated solution and build. The script also supports forwarding `-D` CMake options.
 - The default startup project in the VS solution is `**Editor**`.
 - `CMAKE_EXPORT_COMPILE_COMMANDS` is on - **clangd** is configured via `.clangd` to read `build/build-ninja`.
-- Demos copy their `resources/` folder next to the built `.exe` via a post-build step, so executables can be run directly.
+- Demos with external files copy their `resources/`, `Shaders/`, or `assets/` directories next to the built `.exe` via post-build steps. Relative paths are resolved from the working directory: use the demo's source directory (as the VS debugger does) or its executable directory when running directly.
 - `WITH_DEMO_PROJECTS` (ON by default) controls whether demos are built. Pekan can also be consumed as a dependency (CMake uses `CMAKE_CURRENT_SOURCE_DIR`, not `CMAKE_SOURCE_DIR`).
 
 ### CMake conventions
 
-- Each module under `src/` is its own **static library** target (`Core`, `Graphics`, `Renderer2D`, `GUI`, `Editor`). Each demo is an **executable** target.
+- `Core`, `Graphics`, `Renderer2D`, and `GUI` are **static library** targets. `Editor` and each demo are **executable** targets.
+- `Core` is declared in the **root** `CMakeLists.txt`; there is no `src/Core/CMakeLists.txt`. The other modules have their own CMake files.
 - Source files are listed **explicitly** in `CMakeLists.txt` (no globbing). When you add a `.h`/`.cpp`, add it to the relevant `CMakeLists.txt`.
 - Headers are listed alongside sources, and grouped with `SOURCE_GROUP(...)` into virtual folders for the VS solution.
 - A per-module root-dir macro is defined (e.g. `PEKAN_ROOT_DIR`, `PEKAN_RENDERER2D_ROOT_DIR`) and used to build absolute resource/shader paths.
@@ -94,7 +95,7 @@ Pekan/
 - An app derives from `PekanApplication` and implements `_fillLayerStack()` (and optionally `_init()`, `getName()`, `getProperties()`).
 - Lifecycle is **init → run → exit**; `PekanApplication` owns the main loop, delta timing, recurring callbacks, and frame-begin/frame-end callbacks.
 - A `LayerStack` composes any number of `Layer`s (e.g. game world, UI, debug overlays). Layers are rendered bottom-to-top.
-- **Event propagation is the reverse of render order** — the top-most (last-rendered) layer gets events first, and a layer can mark an event handled to stop propagation. Unhandled events fall through to an event queue.
+- **Event propagation is the reverse of render order** — the top-most (last-rendered) layer gets events first, and a layer can mark an event handled to stop propagation. If no layer handles the event, registered event listeners receive it; only events still unhandled enter the event queue.
 - `Scene` **is a `Layer`** that owns an `entt::registry`. Scenes are the home of the ECS world.
 
 ### ECS conventions
@@ -104,6 +105,8 @@ Pekan/
 - Iterate with views, and exclude as needed: `registry.view<SpriteComponent, TransformComponent2D>(entt::exclude<DisabledComponent>)`.
 - **Naming:** components → `XComponent` / `XComponent2D`; ECS systems → `XSystem` / `XSystem2D`.
 - **Entity identity:** `entt::entity` is an internal, recyclable handle. For anything stable/persistent (save/load, cross-entity references like parent links) use `**EntityID`** (`uint32_t` alias, `INVALID_ENTITY_ID == 0`), stored in an auto-attached `EntityIDComponent`. Always use the `EntityID` alias at call sites, never `uint32_t` directly.
+- **Entity references:** For runtime references between entities in the same scene (e.g. a transform's parent), use `entt::entity`. Serialize them as `EntityID` and resolve them back to runtime handles when loading.
+- Create and destroy entities through `Scene`'s methods to keep the ECS registry, entity list, and IDs in sync.
 
 ---
 
@@ -151,6 +154,7 @@ Use the logger macros (defined in `Core/Logger/PekanLogger.h`) rather than `prin
 - A `GUIWindow` (a `Layer`) hosts `Widget`s. GUI is built using the existing typed widgets (`ButtonWidget`, `CheckboxWidget`, `SliderFloatWidget`, `ColorEdit4Widget`, `ComboBoxWidget`, `TextWidget`, `SelectableListWidget`, `ContextMenuWidget`, …).
 - Create one ImGui frame **per frame**, not per window. User-facing messages go through `PekanUserMessageBox` (error/warning/info popups).
 - Widgets support `hide()`/`unhide()`/`isHidden()`; hidden widgets are not rendered and skip `_render()`.
+- Editable widgets track `wasChangedByUserSinceLastAccess()`. Reading their value or setting it programmatically clears that flag. In the Editor, push user edits to components **before** refreshing widget values from components; this allows, for example, camera control and GUI editing to coexist.
 
 ---
 
@@ -160,7 +164,7 @@ Use the logger macros (defined in `Core/Logger/PekanLogger.h`) rather than `prin
 - Standard demo structure:
   - `main.cpp` — includes the needed subsystem macros, creates the app, `init()` + `run()`.
   - `DemoNN_Application.{h,cpp}` — derives `PekanApplication`.
-  - `DemoNN_Scene.{h,cpp}` — derives `Scene` and fills the ECS world.
+  - `DemoNN_Scene.{h,cpp}` — Demo00–Demo03 derive directly from `Layer` and use low-level graphics; Demo04–Demo10 derive from `Scene2D` and fill the ECS world.
   - Gameplay-specific classes and `resources/` (shaders, textures).
 - Demos live in namespace `Demo` and link against the relevant engine targets (`Core`, `Graphics`, …).
 - When changing engine APIs, **keep the demos compiling** — they are used as integration tests as well.
@@ -314,6 +318,8 @@ The first one is a person thinking. The second one is a changelog. Always write 
 
 ## 11. Working with the author
 
+- Pekan is designed and implemented by the author. AI assistance is primarily for commit reviews, design discussions, and explicitly requested mechanical/boilerplate work. A research request, design discussion, or unfinished plan item is not an instruction to implement it.
+- Current compatibility targets are Pekan's demos and Editor. The author confirmed on 15.11.2026 that no external application needs to be kept compatible for now; Gleam House remains historical context in the notes.
 - Development proceeds in deliberately small, independently verifiable commits. Treat the requested increment as a hard scope boundary; do not implement later plan points, adjacent refactors, or extra cleanup unless explicitly asked.
 - When asked only for scaffolding, signatures, or TODO markers, make the smallest compile-safe change and leave the actual implementation to the author.
 - Discuss and get confirmation before changing an agreed architecture, API, or implementation plan beyond what the current request requires.
@@ -337,3 +343,12 @@ Give the findings as a **numbered list**, so the author can refer to them later 
 Findings are about the diff and the goal of that commit. Do not report pre-existing bugs, pre-existing bad architecture, or other problems in surrounding code. A Pekan commit is self-contained and targeted: it can be dropped from history without collateral damage beyond what it was meant to fix or implement. A review must not widen that scope.
 
 If surrounding code has something very important — a major bug, or architecture bad enough that it will have real consequences — mention it after the findings, under a **Side note** heading. In the usual case, do not include a side note.
+
+---
+
+## 13. Context for a new session
+
+- Keep supporting documentation for AI agents under `docs/agents/`, with this file as the root entry point.
+- Read [CODEBASE_GUIDE.md](docs/agents/CODEBASE_GUIDE.md) when codebase context is needed: source entry points, runtime behavior, demo coverage, build commands, and the dated development snapshot. It is a navigation aid, not a replacement for reading the relevant code and notes.
+- Before a review or change, check the current diff/history, the relevant stretch of the latest dev journal, and any applicable plan. Plans describe intended behavior; verify which parts are actually implemented.
+- Consult [todo.txt](notes/dev/todo.txt) before proposing follow-up work. Several deliberate deferrals already have entries, including ECS batching, transform caching, rendering order, and deserialized component invariants. An open task is context, not permission to start it.
